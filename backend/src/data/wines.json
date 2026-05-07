@@ -1,0 +1,42 @@
+[
+  {
+    "id": "lafite-2018",
+    "name": "Château Lafite Rothschild 2018",
+    "region": "Bordeaux",
+    "lwin": "101187720180600750",
+    "currentPrice": 820,
+    "risk": "Basso",
+    "liquidity": "Alta",
+    "source": "demo"
+  },
+  {
+    "id": "sassicaia-2016",
+    "name": "Sassicaia 2016",
+    "region": "Toscana",
+    "lwin": "109521720160600750",
+    "currentPrice": 510,
+    "risk": "Medio",
+    "liquidity": "Alta",
+    "source": "demo"
+  },
+  {
+    "id": "monfortino-2016",
+    "name": "Barolo Monfortino 2016",
+    "region": "Piemonte",
+    "lwin": "demo-monfortino-2016",
+    "currentPrice": 1150,
+    "risk": "Medio",
+    "liquidity": "Media",
+    "source": "demo"
+  },
+  {
+    "id": "domp-p2-2004",
+    "name": "Dom Pérignon P2 2004",
+    "region": "Champagne",
+    "lwin": "demo-domp-p2-2004",
+    "currentPrice": 430,
+    "risk": "Basso",
+    "liquidity": "Alta",
+    "source": "demo"
+  }
+]

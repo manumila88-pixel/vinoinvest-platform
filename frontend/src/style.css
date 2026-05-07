@@ -1,0 +1,119 @@
+body {
+  margin: 0;
+  background: #0d0a07;
+  color: #f0e6d3;
+  font-family: Georgia, serif;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid #3a2a10;
+  background: #151009;
+}
+
+.logo {
+  font-size: 24px;
+}
+
+.logo span {
+  color: #c9943a;
+  font-style: italic;
+}
+
+.badge {
+  color: #c9943a;
+  border: 1px solid #3a2a10;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+main {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 20px;
+  padding: 20px;
+}
+
+aside {
+  background: #151009;
+  border: 1px solid #3a2a10;
+  padding: 12px;
+  border-radius: 8px;
+  height: fit-content;
+}
+
+aside button {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid #3a2a10;
+  color: #f0e6d3;
+  cursor: pointer;
+  border-radius: 6px;
+  text-transform: capitalize;
+}
+
+aside button.active {
+  color: #c9943a;
+  background: rgba(201,148,58,.08);
+}
+
+.hero, .card, .notice {
+  background: #1a1208;
+  border: 1px solid #3a2a10;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.hero h1 {
+  font-size: 42px;
+  max-width: 800px;
+  line-height: 1.05;
+}
+
+.hero p, .card p {
+  color: #bba98b;
+}
+
+.grid, .cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.card h3, .card h2 {
+  color: #f5e8c8;
+}
+
+.card small {
+  display: block;
+  color: #8a7a62;
+  margin-bottom: 8px;
+}
+
+.card strong {
+  font-size: 28px;
+  color: #c9943a;
+}
+
+button {
+  background: #c9943a;
+  border: 0;
+  padding: 10px 12px;
+  margin-right: 8px;
+  margin-top: 8px;
+  cursor: pointer;
+  border-radius: 6px;
+  color: #0d0a07;
+}
+
+@media (max-width: 800px) {
+  main, .grid, .cards {
+    grid-template-columns: 1fr;
+  }
+}
