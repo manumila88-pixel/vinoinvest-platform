@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:3001";
-
+const API = "https://vinoinvest-backend.onrender.com";
 function App() {
   const [tab, setTab] = useState("dashboard");
   const [wines, setWines] = useState([]);
