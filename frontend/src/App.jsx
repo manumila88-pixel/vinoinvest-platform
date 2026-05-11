@@ -1,17 +1,5 @@
 import React, { useEffect, useState } from "react";
-
 import { createRoot } from "react-dom/client";
-
-import {
-  LineChart,
-  Line,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid
-} from "recharts";
-
 import "./style.css";
 
 const API = "https://vinoinvest-backend.onrender.com";
@@ -22,9 +10,7 @@ function App() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-
     loadData();
-
   }, []);
 
   async function loadData() {
@@ -34,10 +20,20 @@ function App() {
 
     setWines(winesData);
 
-    const ordersRes = await fetch(`${API}/api/orders`);
-    const ordersData = await ordersRes.json();
+    try {
 
-    setOrders(ordersData);
+      const ordersRes = await fetch(`${API}/api/orders`);
+      const ordersData = await ordersRes.json();
+
+      if (Array.isArray(ordersData)) {
+        setOrders(ordersData);
+      } else {
+        setOrders([]);
+      }
+
+    } catch {
+      setOrders([]);
+    }
 
   }
 
@@ -58,10 +54,14 @@ function App() {
 
   }
 
-  const chartData = wines.map((wine, index) => ({
-    name: wine.name.slice(0, 12),
-    value: wine.currentPrice,
-    index
+  const totalMarket = wines.reduce(
+    (sum, wine) => sum + Number(wine.currentPrice || 0),
+    0
+  );
+
+  const chartData = wines.map(wine => ({
+    name: wine.name,
+    value: wine.currentPrice
   }));
 
   return (
@@ -70,150 +70,208 @@ function App() {
 
       <header className="header">
 
-        <div>
+        <div className="logo">
+          🍷 Vino<span>Invest</span> Platform
+        </div>
 
-          <h1>🍷 VinoInvest PRO</h1>
-
-          <p>
-            Fine Wine Investment Intelligence
-          </p>
-
+        <div className="badge">
+          real-data ready
         </div>
 
       </header>
 
       <main className="main">
 
-        <section className="hero">
+        <aside className="sidebar">
 
-          <div className="heroCard">
+          <button>Dashboard</button>
+          <button className="active">Market</button>
+          <button>Analysis</button>
+          <button>Partners</button>
+          <button>Wine</button>
 
-            <h2>Mercato Fine Wine</h2>
+        </aside>
 
-            <h1>
-              € {
-                wines.reduce(
-                  (sum, wine) => sum + Number(wine.currentPrice || 0),
-                  0
-                )
-              }
-            </h1>
+        <section className="content">
 
-            <p>
-              valore totale monitorato
-            </p>
+          <section className="hero">
 
-          </div>
+            <div className="heroText">
 
-          <div className="heroCard">
+              <h1>
+                Piattaforma pronta per dati reali,
+                storico, stime e ordini sicuri.
+              </h1>
 
-            <h2>Ordini Totali</h2>
+              <p>
+                Backend collegato. Database attivo.
+                Sistema pronto per API reali.
+              </p>
 
-            <h1>{orders.length}</h1>
+            </div>
 
-            <p>
-              ordini registrati nel database
-            </p>
+          </section>
 
-          </div>
+          <section className="statsGrid">
 
-        </section>
+            <div className="statCard">
 
-        <section className="chartPanel">
+              <small>Mercato totale</small>
 
-          <h2>Market Performance</h2>
+              <h2>
+                € {totalMarket}
+              </h2>
 
-          <div className="chartBox">
+            </div>
 
-            <ResponsiveContainer width="100%" height={400}>
+            <div className="statCard">
 
-              <LineChart data={chartData}>
+              <small>Asset monitorati</small>
 
-                <CartesianGrid strokeDasharray="3 3" />
+              <h2>
+                {wines.length}
+              </h2>
 
-                <XAxis dataKey="name" />
+            </div>
 
-                <YAxis />
+            <div className="statCard">
 
-                <Tooltip />
+              <small>Ordini registrati</small>
 
-                <Line
-                  type="monotone"
-                  dataKey="value"
-                  stroke="#c9a227"
-                  strokeWidth={3}
-                />
+              <h2>
+                {orders.length}
+              </h2>
 
-              </LineChart>
+            </div>
 
-            </ResponsiveContainer>
+          </section>
 
-          </div>
+          <section className="chartPanel">
 
-        </section>
+            <h2>Market Performance</h2>
 
-        <section className="marketGrid">
+            <div className="chartBox">
 
-          {wines.map(wine => (
+              {chartData.map(item => (
 
-            <div className="wineCard" key={wine.id}>
+                <div
+                  key={item.name}
+                  style={{
+                    marginBottom: "22px"
+                  }}
+                >
 
-              <h2>{wine.name}</h2>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginBottom: "8px"
+                    }}
+                  >
 
-              <p>{wine.region}</p>
+                    <span>{item.name}</span>
 
-              <h3>
-                € {wine.currentPrice}
-              </h3>
+                    <span>
+                      € {item.value}
+                    </span>
 
-              <div className="tags">
+                  </div>
 
-                <span>{wine.risk}</span>
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "14px",
+                      background: "#1c1207",
+                      borderRadius: "20px",
+                      overflow: "hidden"
+                    }}
+                  >
 
-                <span>{wine.source}</span>
+                    <div
+                      style={{
+                        width: `${item.value / 12}%`,
+                        height: "100%",
+                        background: "#c9a227"
+                      }}
+                    />
 
-              </div>
+                  </div>
 
-              <button
-                onClick={() => buyWine(wine.id)}
+                </div>
+
+              ))}
+
+            </div>
+
+          </section>
+
+          <section className="marketGrid">
+
+            {wines.map(wine => (
+
+              <div
+                className="wineCard"
+                key={wine.id}
               >
-                Compra
-              </button>
 
-            </div>
+                <h2>{wine.name}</h2>
 
-          ))}
+                <p>{wine.region}</p>
 
-        </section>
+                <h3>
+                  € {wine.currentPrice}
+                </h3>
 
-        <section className="ordersPanel">
+                <div className="tags">
 
-          <h2>Ordini Live</h2>
+                  <span>{wine.risk}</span>
 
-          {orders.map(order => (
+                  <span>{wine.source}</span>
 
-            <div
-              className="orderRow"
-              key={order.id}
-            >
+                </div>
 
-              <div>
-
-                <strong>{order.wine_id}</strong>
-
-              </div>
-
-              <div>
-
-                quantità:
-                {" "}
-                {order.quantity}
+                <button
+                  onClick={() => buyWine(wine.id)}
+                >
+                  Compra
+                </button>
 
               </div>
 
-            </div>
+            ))}
 
-          ))}
+          </section>
+
+          <section className="ordersPanel">
+
+            <h2>Ordini Live</h2>
+
+            {orders.length === 0 && (
+              <p>Nessun ordine registrato.</p>
+            )}
+
+            {orders.map((order, index) => (
+
+              <div
+                className="orderRow"
+                key={index}
+              >
+
+                <strong>
+                  {order.wine_id || order.wineId}
+                </strong>
+
+                <span>
+                  quantità:
+                  {" "}
+                  {order.quantity}
+                </span>
+
+              </div>
+
+            ))}
+
+          </section>
 
         </section>
 
