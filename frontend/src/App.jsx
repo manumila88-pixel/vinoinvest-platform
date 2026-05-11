@@ -7,7 +7,8 @@ import {
   Area,
   XAxis,
   YAxis,
-  Tooltip
+  Tooltip,
+  CartesianGrid
 } from "recharts";
 
 import "./style.css";
@@ -67,6 +68,15 @@ function App() {
     (sum, wine) => sum + Number(wine.currentPrice || 0),
     0
   );
+
+  const chartData = [
+    { month: "Jan", value: 1800 },
+    { month: "Feb", value: 1950 },
+    { month: "Mar", value: 2100 },
+    { month: "Apr", value: 2250 },
+    { month: "May", value: 2500 },
+    { month: "Jun", value: 2910 }
+  ];
 
   return (
 
@@ -233,22 +243,13 @@ function App() {
 
             <section className="chartPanel">
 
-              <h2>TEST GRAFICO NUOVO</h2>
+              <h2>Market Performance</h2>
 
               <div className="chartBox">
 
                 <ResponsiveContainer width="100%" height={500}>
 
-                  <AreaChart
-                    data={[
-                      { month: "Jan", value: 1800 },
-                      { month: "Feb", value: 2100 },
-                      { month: "Mar", value: 2400 },
-                      { month: "Apr", value: 2300 },
-                      { month: "May", value: 2600 },
-                      { month: "Jun", value: 2910 }
-                    ]}
-                  >
+                  <AreaChart data={chartData}>
 
                     <defs>
 
@@ -261,13 +262,13 @@ function App() {
                       >
 
                         <stop
-                          offset="0%"
+                          offset="5%"
                           stopColor="#c9a227"
                           stopOpacity={0.8}
                         />
 
                         <stop
-                          offset="100%"
+                          offset="95%"
                           stopColor="#c9a227"
                           stopOpacity={0}
                         />
@@ -276,13 +277,17 @@ function App() {
 
                     </defs>
 
+                    <CartesianGrid
+                      stroke="#1b1b1b"
+                    />
+
                     <XAxis
                       dataKey="month"
-                      stroke="#666"
+                      stroke="#999"
                     />
 
                     <YAxis
-                      stroke="#666"
+                      stroke="#999"
                     />
 
                     <Tooltip />
@@ -291,6 +296,7 @@ function App() {
                       type="monotone"
                       dataKey="value"
                       stroke="#c9a227"
+                      fillOpacity={1}
                       fill="url(#gold)"
                       strokeWidth={4}
                     />
@@ -315,9 +321,7 @@ function App() {
 
                 <h2>Liv-ex</h2>
 
-                <p>
-                  Market data provider
-                </p>
+                <p>Market data provider</p>
 
               </div>
 
@@ -325,9 +329,7 @@ function App() {
 
                 <h2>Wine Searcher</h2>
 
-                <p>
-                  Global wine pricing
-                </p>
+                <p>Global wine pricing</p>
 
               </div>
 
@@ -335,9 +337,7 @@ function App() {
 
                 <h2>Sotheby's Wine</h2>
 
-                <p>
-                  Auction data
-                </p>
+                <p>Auction data</p>
 
               </div>
 
