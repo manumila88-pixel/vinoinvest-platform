@@ -233,7 +233,7 @@ function App() {
 
             <section className="chartPanel">
 
-              <h2>Market Performance</h2>
+              <h2>TEST GRAFICO NUOVO</h2>
 
               <div className="chartBox">
 
