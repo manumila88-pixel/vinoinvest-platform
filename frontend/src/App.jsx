@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from "react";
+
 import { createRoot } from "react-dom/client";
+
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip
+} from "recharts";
+
 import "./style.css";
 
 const API = "https://vinoinvest-backend.onrender.com";
@@ -227,54 +238,37 @@ function App() {
 
               <h2>Market Performance</h2>
 
-              {wines.map(wine => (
+              <div
+                style={{
+                  width: "100%",
+                  height: "500px"
+                }}
+              >
 
-                <div
-                  key={wine.id}
-                  style={{
-                    marginBottom: "30px"
-                  }}
-                >
+                <ResponsiveContainer width="100%" height="100%">
 
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginBottom: "10px"
-                    }}
-                  >
+                  <AreaChart data={wines}>
 
-                    <span>{wine.name}</span>
+                    <XAxis dataKey="name" />
 
-                    <span>
-                      € {wine.currentPrice}
-                    </span>
+                    <YAxis />
 
-                  </div>
+                    <Tooltip />
 
-                  <div
-                    style={{
-                      width: "100%",
-                      height: "14px",
-                      background: "#1a1207",
-                      borderRadius: "20px",
-                      overflow: "hidden"
-                    }}
-                  >
-
-                    <div
-                      style={{
-                        width: `${wine.currentPrice / 12}%`,
-                        height: "100%",
-                        background: "#c9a227"
-                      }}
+                    <Area
+                      type="monotone"
+                      dataKey="currentPrice"
+                      stroke="#c9a227"
+                      fill="#c9a227"
+                      fillOpacity={0.2}
+                      strokeWidth={4}
                     />
 
-                  </div>
+                  </AreaChart>
 
-                </div>
+                </ResponsiveContainer>
 
-              ))}
+              </div>
 
             </section>
 
@@ -286,33 +280,37 @@ function App() {
 
               <h2>Partner API</h2>
 
-              <div className="wineCard">
+              <div className="marketGrid">
 
-                <h2>Liv-ex</h2>
+                <div className="wineCard">
 
-                <p>
-                  Market data provider
-                </p>
+                  <h2>Liv-ex</h2>
 
-              </div>
+                  <p>
+                    Market data provider
+                  </p>
 
-              <div className="wineCard">
+                </div>
 
-                <h2>Wine Searcher</h2>
+                <div className="wineCard">
 
-                <p>
-                  Global wine pricing
-                </p>
+                  <h2>Wine Searcher</h2>
 
-              </div>
+                  <p>
+                    Global wine pricing
+                  </p>
 
-              <div className="wineCard">
+                </div>
 
-                <h2>Sotheby's Wine</h2>
+                <div className="wineCard">
 
-                <p>
-                  Auction data
-                </p>
+                  <h2>Sotheby's Wine</h2>
+
+                  <p>
+                    Auction data
+                  </p>
+
+                </div>
 
               </div>
 
