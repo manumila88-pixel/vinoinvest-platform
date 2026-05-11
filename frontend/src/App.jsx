@@ -6,7 +6,10 @@ const API = "https://vinoinvest-backend.onrender.com";
 
 function App() {
 
+  const [tab, setTab] = useState("dashboard");
+
   const [wines, setWines] = useState([]);
+
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
@@ -27,13 +30,9 @@ function App() {
 
       if (Array.isArray(ordersData)) {
         setOrders(ordersData);
-      } else {
-        setOrders([]);
       }
 
-    } catch {
-      setOrders([]);
-    }
+    } catch {}
 
   }
 
@@ -52,17 +51,14 @@ function App() {
 
     loadData();
 
+    alert("Ordine creato");
+
   }
 
   const totalMarket = wines.reduce(
     (sum, wine) => sum + Number(wine.currentPrice || 0),
     0
   );
-
-  const chartData = wines.map(wine => ({
-    name: wine.name,
-    value: wine.currentPrice
-  }));
 
   return (
 
@@ -84,80 +80,159 @@ function App() {
 
         <aside className="sidebar">
 
-          <button>Dashboard</button>
-          <button className="active">Market</button>
-          <button>Analysis</button>
-          <button>Partners</button>
-          <button>Wine</button>
+          <button
+            className={tab === "dashboard" ? "active" : ""}
+            onClick={() => setTab("dashboard")}
+          >
+            Dashboard
+          </button>
+
+          <button
+            className={tab === "market" ? "active" : ""}
+            onClick={() => setTab("market")}
+          >
+            Market
+          </button>
+
+          <button
+            className={tab === "analysis" ? "active" : ""}
+            onClick={() => setTab("analysis")}
+          >
+            Analysis
+          </button>
+
+          <button
+            className={tab === "partners" ? "active" : ""}
+            onClick={() => setTab("partners")}
+          >
+            Partners
+          </button>
+
+          <button
+            className={tab === "orders" ? "active" : ""}
+            onClick={() => setTab("orders")}
+          >
+            Orders
+          </button>
 
         </aside>
 
         <section className="content">
 
-          <section className="hero">
+          {tab === "dashboard" && (
 
-            <div className="heroText">
+            <>
 
-              <h1>
-                Piattaforma pronta per dati reali,
-                storico, stime e ordini sicuri.
-              </h1>
+              <section className="hero">
 
-              <p>
-                Backend collegato. Database attivo.
-                Sistema pronto per API reali.
-              </p>
+                <div className="heroText">
 
-            </div>
+                  <h1>
+                    Piattaforma pronta per dati reali,
+                    storico, stime e ordini sicuri.
+                  </h1>
 
-          </section>
+                  <p>
+                    Backend collegato.
+                    Database attivo.
+                    Sistema pronto per API reali.
+                  </p>
 
-          <section className="statsGrid">
+                </div>
 
-            <div className="statCard">
+              </section>
 
-              <small>Mercato totale</small>
+              <section className="statsGrid">
 
-              <h2>
-                € {totalMarket}
-              </h2>
+                <div className="statCard">
 
-            </div>
+                  <small>Mercato totale</small>
 
-            <div className="statCard">
+                  <h2>
+                    € {totalMarket}
+                  </h2>
 
-              <small>Asset monitorati</small>
+                </div>
 
-              <h2>
-                {wines.length}
-              </h2>
+                <div className="statCard">
 
-            </div>
+                  <small>Asset monitorati</small>
 
-            <div className="statCard">
+                  <h2>
+                    {wines.length}
+                  </h2>
 
-              <small>Ordini registrati</small>
+                </div>
 
-              <h2>
-                {orders.length}
-              </h2>
+                <div className="statCard">
 
-            </div>
+                  <small>Ordini registrati</small>
 
-          </section>
+                  <h2>
+                    {orders.length}
+                  </h2>
 
-          <section className="chartPanel">
+                </div>
 
-            <h2>Market Performance</h2>
+              </section>
 
-            <div className="chartBox">
+            </>
 
-              {chartData.map(item => (
+          )}
+
+          {tab === "market" && (
+
+            <section className="marketGrid">
+
+              {wines.map(wine => (
 
                 <div
-                  key={item.name}
+                  className="wineCard"
+                  key={wine.id}
+                >
+
+                  <h2>{wine.name}</h2>
+
+                  <p>{wine.region}</p>
+
+                  <h3>
+                    € {wine.currentPrice}
+                  </h3>
+
+                  <div className="tags">
+
+                    <span>{wine.risk}</span>
+
+                    <span>{wine.source}</span>
+
+                  </div>
+
+                  <button
+                    onClick={() => buyWine(wine.id)}
+                  >
+                    Compra
+                  </button>
+
+                </div>
+
+              ))}
+
+            </section>
+
+          )}
+
+          {tab === "analysis" && (
+
+            <section className="chartPanel">
+
+              <h2>Market Performance</h2>
+
+              {wines.map(wine => (
+
+                <div
+                  key={wine.id}
                   style={{
-                    marginBottom: "22px"
+                    marginBottom: "30px"
                   }}
                 >
 
@@ -165,14 +240,14 @@ function App() {
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
-                      marginBottom: "8px"
+                      marginBottom: "10px"
                     }}
                   >
 
-                    <span>{item.name}</span>
+                    <span>{wine.name}</span>
 
                     <span>
-                      € {item.value}
+                      € {wine.currentPrice}
                     </span>
 
                   </div>
@@ -181,7 +256,7 @@ function App() {
                     style={{
                       width: "100%",
                       height: "14px",
-                      background: "#1c1207",
+                      background: "#1a1207",
                       borderRadius: "20px",
                       overflow: "hidden"
                     }}
@@ -189,7 +264,7 @@ function App() {
 
                     <div
                       style={{
-                        width: `${item.value / 12}%`,
+                        width: `${wine.currentPrice / 12}%`,
                         height: "100%",
                         background: "#c9a227"
                       }}
@@ -201,77 +276,84 @@ function App() {
 
               ))}
 
-            </div>
+            </section>
 
-          </section>
+          )}
 
-          <section className="marketGrid">
+          {tab === "partners" && (
 
-            {wines.map(wine => (
+            <section className="chartPanel">
 
-              <div
-                className="wineCard"
-                key={wine.id}
-              >
+              <h2>Partner API</h2>
 
-                <h2>{wine.name}</h2>
+              <div className="wineCard">
 
-                <p>{wine.region}</p>
+                <h2>Liv-ex</h2>
 
-                <h3>
-                  € {wine.currentPrice}
-                </h3>
+                <p>
+                  Market data provider
+                </p>
 
-                <div className="tags">
+              </div>
 
-                  <span>{wine.risk}</span>
+              <div className="wineCard">
 
-                  <span>{wine.source}</span>
+                <h2>Wine Searcher</h2>
+
+                <p>
+                  Global wine pricing
+                </p>
+
+              </div>
+
+              <div className="wineCard">
+
+                <h2>Sotheby's Wine</h2>
+
+                <p>
+                  Auction data
+                </p>
+
+              </div>
+
+            </section>
+
+          )}
+
+          {tab === "orders" && (
+
+            <section className="ordersPanel">
+
+              <h2>Ordini Live</h2>
+
+              {orders.length === 0 && (
+                <p>Nessun ordine registrato.</p>
+              )}
+
+              {orders.map((order, index) => (
+
+                <div
+                  className="orderRow"
+                  key={index}
+                >
+
+                  <strong>
+                    {order.wine_id || order.wineId}
+                  </strong>
+
+                  <span>
+                    quantità:
+                    {" "}
+                    {order.quantity}
+                  </span>
 
                 </div>
 
-                <button
-                  onClick={() => buyWine(wine.id)}
-                >
-                  Compra
-                </button>
+              ))}
 
-              </div>
+            </section>
 
-            ))}
-
-          </section>
-
-          <section className="ordersPanel">
-
-            <h2>Ordini Live</h2>
-
-            {orders.length === 0 && (
-              <p>Nessun ordine registrato.</p>
-            )}
-
-            {orders.map((order, index) => (
-
-              <div
-                className="orderRow"
-                key={index}
-              >
-
-                <strong>
-                  {order.wine_id || order.wineId}
-                </strong>
-
-                <span>
-                  quantità:
-                  {" "}
-                  {order.quantity}
-                </span>
-
-              </div>
-
-            ))}
-
-          </section>
+          )}
 
         </section>
 
