@@ -69,7 +69,11 @@ function App() {
       const ordersRes = await fetch(`${API}/api/orders`);
       const ordersData = await ordersRes.json();
 
-      setOrders(Array.isArray(ordersData) ? ordersData : []);
+      setOrders(
+        Array.isArray(ordersData)
+          ? ordersData
+          : []
+      );
 
     } catch {
 
@@ -140,8 +144,13 @@ function App() {
   const filteredWines = useMemo(() => {
 
     return wines.filter(wine =>
-      wine.name.toLowerCase().includes(search.toLowerCase()) ||
-      wine.region.toLowerCase().includes(search.toLowerCase())
+      wine.name
+        .toLowerCase()
+        .includes(search.toLowerCase()) ||
+
+      wine.region
+        .toLowerCase()
+        .includes(search.toLowerCase())
     );
 
   }, [wines, search]);
@@ -175,7 +184,52 @@ function App() {
   });
 
   const totalMarket = wines.reduce(
-    (sum, wine) => sum + Number(wine.currentPrice || 0),
+    (sum, wine) =>
+      sum + Number(wine.currentPrice || 0),
+    0
+  );
+
+  const holdings = orders.reduce((acc, order) => {
+
+    const wine = wines.find(
+      w => w.id === order.wine_id
+    );
+
+    if (!wine) return acc;
+
+    const existing = acc.find(
+      item => item.id === wine.id
+    );
+
+    if (existing) {
+
+      existing.quantity += order.quantity;
+
+      existing.totalValue =
+        existing.quantity *
+        wine.currentPrice;
+
+    } else {
+
+      acc.push({
+        id: wine.id,
+        name: wine.name,
+        quantity: order.quantity,
+        currentPrice: wine.currentPrice,
+        totalValue:
+          wine.currentPrice *
+          order.quantity
+      });
+
+    }
+
+    return acc;
+
+  }, []);
+
+  const portfolioValue = holdings.reduce(
+    (sum, item) =>
+      sum + item.totalValue,
     0
   );
 
@@ -200,28 +254,55 @@ function App() {
         <aside className="sidebar">
 
           <button
-            className={tab === "dashboard" ? "active" : ""}
+            className={
+              tab === "dashboard"
+                ? "active"
+                : ""
+            }
             onClick={() => setTab("dashboard")}
           >
             Dashboard
           </button>
 
           <button
-            className={tab === "market" ? "active" : ""}
+            className={
+              tab === "market"
+                ? "active"
+                : ""
+            }
             onClick={() => setTab("market")}
           >
             Market
           </button>
 
           <button
-            className={tab === "analysis" ? "active" : ""}
+            className={
+              tab === "analysis"
+                ? "active"
+                : ""
+            }
             onClick={() => setTab("analysis")}
           >
             Analysis
           </button>
 
           <button
-            className={tab === "orders" ? "active" : ""}
+            className={
+              tab === "portfolio"
+                ? "active"
+                : ""
+            }
+            onClick={() => setTab("portfolio")}
+          >
+            Portfolio
+          </button>
+
+          <button
+            className={
+              tab === "orders"
+                ? "active"
+                : ""
+            }
             onClick={() => setTab("orders")}
           >
             Orders
@@ -244,9 +325,10 @@ function App() {
                   </h1>
 
                   <p>
-                    Monitoraggio vini,
-                    storico prezzi,
-                    watchlist e analisi premium.
+                    Portfolio,
+                    watchlist,
+                    storico prezzi
+                    e analisi premium.
                   </p>
 
                 </div>
@@ -257,7 +339,9 @@ function App() {
 
                 <div className="statCard">
 
-                  <small>Mercato totale</small>
+                  <small>
+                    Mercato totale
+                  </small>
 
                   <h2>
                     € {totalMarket}
@@ -267,17 +351,21 @@ function App() {
 
                 <div className="statCard">
 
-                  <small>Vini monitorati</small>
+                  <small>
+                    Portfolio Value
+                  </small>
 
                   <h2>
-                    {wines.length}
+                    € {portfolioValue}
                   </h2>
 
                 </div>
 
                 <div className="statCard">
 
-                  <small>Watchlist</small>
+                  <small>
+                    Watchlist
+                  </small>
 
                   <h2>
                     {watchlist.length}
@@ -299,7 +387,9 @@ function App() {
                 className="searchInput"
                 placeholder="Cerca vino o regione..."
                 value={search}
-                onChange={e => setSearch(e.target.value)}
+                onChange={e =>
+                  setSearch(e.target.value)
+                }
               />
 
               <section className="marketGrid">
@@ -328,13 +418,17 @@ function App() {
                     </div>
 
                     <button
-                      onClick={() => buyWine(wine.id)}
+                      onClick={() =>
+                        buyWine(wine.id)
+                      }
                     >
                       Compra
                     </button>
 
                     <button
-                      onClick={() => toggleWatchlist(wine.id)}
+                      onClick={() =>
+                        toggleWatchlist(wine.id)
+                      }
                     >
 
                       {watchlist.includes(wine.id)
@@ -357,11 +451,16 @@ function App() {
 
             <section className="chartPanel">
 
-              <h2>Wine Market Watchlist</h2>
+              <h2>
+                Wine Market Watchlist
+              </h2>
 
               <div className="chartBox">
 
-                <ResponsiveContainer width="100%" height={560}>
+                <ResponsiveContainer
+                  width="100%"
+                  height={560}
+                >
 
                   <LineChart data={chartData}>
 
@@ -382,29 +481,39 @@ function App() {
 
                     <Legend />
 
-                    {watchlist.map((wineId, index) => {
+                    {watchlist.map(
+                      (wineId, index) => {
 
-                      const wine = wines.find(
-                        item => item.id === wineId
-                      );
+                        const wine =
+                          wines.find(
+                            item =>
+                              item.id === wineId
+                          );
 
-                      return (
+                        return (
 
-                        <Line
-                          key={wineId}
-                          type="monotone"
-                          dataKey={wineId}
-                          name={wine?.name || wineId}
-                          stroke={
-                            colors[index % colors.length]
-                          }
-                          strokeWidth={4}
-                          dot={false}
-                        />
+                          <Line
+                            key={wineId}
+                            type="monotone"
+                            dataKey={wineId}
+                            name={
+                              wine?.name ||
+                              wineId
+                            }
+                            stroke={
+                              colors[
+                                index %
+                                colors.length
+                              ]
+                            }
+                            strokeWidth={4}
+                            dot={false}
+                          />
 
-                      );
+                        );
 
-                    })}
+                      }
+                    )}
 
                   </LineChart>
 
@@ -416,11 +525,66 @@ function App() {
 
           )}
 
+          {tab === "portfolio" && (
+
+            <section className="ordersPanel">
+
+              <h2>
+                Portfolio Holdings
+              </h2>
+
+              {holdings.length === 0 && (
+                <p>
+                  Nessun asset acquistato.
+                </p>
+              )}
+
+              {holdings.map(item => (
+
+                <div
+                  className="orderRow"
+                  key={item.id}
+                >
+
+                  <div>
+
+                    <strong>
+                      {item.name}
+                    </strong>
+
+                    <p>
+                      quantità:
+                      {" "}
+                      {item.quantity}
+                    </p>
+
+                  </div>
+
+                  <div>
+
+                    <strong>
+                      €
+                      {" "}
+                      {item.totalValue}
+                    </strong>
+
+                  </div>
+
+                </div>
+
+              ))}
+
+            </section>
+
+          )}
+
           {tab === "orders" && (
 
             <section className="ordersPanel">
 
-              <h2>Ordini Live</h2>
+              <h2>
+                Ordini Live
+              </h2>
 
               {orders.length === 0 && (
                 <p>
@@ -428,26 +592,31 @@ function App() {
                 </p>
               )}
 
-              {orders.map((order, index) => (
+              {orders.map(
+                (order, index) => (
 
-                <div
-                  className="orderRow"
-                  key={order.id || index}
-                >
+                  <div
+                    className="orderRow"
+                    key={
+                      order.id || index
+                    }
+                  >
 
-                  <strong>
-                    {order.wine_id || order.wineId}
-                  </strong>
+                    <strong>
+                      {order.wine_id ||
+                        order.wineId}
+                    </strong>
 
-                  <span>
-                    quantità:
-                    {" "}
-                    {order.quantity}
-                  </span>
+                    <span>
+                      quantità:
+                      {" "}
+                      {order.quantity}
+                    </span>
 
-                </div>
+                  </div>
 
-              ))}
+                )
+              )}
 
             </section>
 
