@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import { createRoot } from "react-dom/client";
 
 import {
@@ -238,29 +237,64 @@ function App() {
 
               <h2>Market Performance</h2>
 
-              <div
-                style={{
-                  width: "100%",
-                  height: "500px"
-                }}
-              >
+              <div className="chartBox">
 
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height={500}>
 
-                  <AreaChart data={wines}>
+                  <AreaChart
+                    data={[
+                      { month: "Jan", value: 1800 },
+                      { month: "Feb", value: 2100 },
+                      { month: "Mar", value: 2400 },
+                      { month: "Apr", value: 2300 },
+                      { month: "May", value: 2600 },
+                      { month: "Jun", value: 2910 }
+                    ]}
+                  >
 
-                    <XAxis dataKey="name" />
+                    <defs>
 
-                    <YAxis />
+                      <linearGradient
+                        id="colorValue"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+
+                        <stop
+                          offset="5%"
+                          stopColor="#c9a227"
+                          stopOpacity={0.8}
+                        />
+
+                        <stop
+                          offset="95%"
+                          stopColor="#c9a227"
+                          stopOpacity={0}
+                        />
+
+                      </linearGradient>
+
+                    </defs>
+
+                    <XAxis
+                      dataKey="month"
+                      stroke="#999"
+                    />
+
+                    <YAxis
+                      stroke="#999"
+                    />
 
                     <Tooltip />
 
                     <Area
                       type="monotone"
-                      dataKey="currentPrice"
+                      dataKey="value"
                       stroke="#c9a227"
-                      fill="#c9a227"
-                      fillOpacity={0.2}
+                      fillOpacity={1}
+                      fill="url(#colorValue)"
                       strokeWidth={4}
                     />
 
@@ -280,37 +314,33 @@ function App() {
 
               <h2>Partner API</h2>
 
-              <div className="marketGrid">
+              <div className="wineCard">
 
-                <div className="wineCard">
+                <h2>Liv-ex</h2>
 
-                  <h2>Liv-ex</h2>
+                <p>
+                  Market data provider
+                </p>
 
-                  <p>
-                    Market data provider
-                  </p>
+              </div>
 
-                </div>
+              <div className="wineCard">
 
-                <div className="wineCard">
+                <h2>Wine Searcher</h2>
 
-                  <h2>Wine Searcher</h2>
+                <p>
+                  Global wine pricing
+                </p>
 
-                  <p>
-                    Global wine pricing
-                  </p>
+              </div>
 
-                </div>
+              <div className="wineCard">
 
-                <div className="wineCard">
+                <h2>Sotheby's Wine</h2>
 
-                  <h2>Sotheby's Wine</h2>
-
-                  <p>
-                    Auction data
-                  </p>
-
-                </div>
+                <p>
+                  Auction data
+                </p>
 
               </div>
 
