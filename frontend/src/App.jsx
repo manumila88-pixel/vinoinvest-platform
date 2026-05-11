@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 
 import {
@@ -28,11 +28,18 @@ const colors = [
 ];
 
 function App() {
+
   const [tab, setTab] = useState("dashboard");
+
   const [wines, setWines] = useState([]);
+
   const [orders, setOrders] = useState([]);
-  const [selectedWines, setSelectedWines] = useState([]);
+
+  const [watchlist, setWatchlist] = useState([]);
+
   const [histories, setHistories] = useState({});
+
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     loadData();
@@ -40,37 +47,60 @@ function App() {
 
   useEffect(() => {
     loadHistories();
-  }, [selectedWines]);
+  }, [watchlist]);
 
   async function loadData() {
+
     const winesRes = await fetch(`${API}/api/market/wines`);
     const winesData = await winesRes.json();
 
     setWines(winesData);
-    setSelectedWines(winesData.slice(0, 3).map(wine => wine.id));
+
+    if (watchlist.length === 0 && winesData.length > 0) {
+
+      setWatchlist(
+        winesData.slice(0, 3).map(w => w.id)
+      );
+
+    }
 
     try {
+
       const ordersRes = await fetch(`${API}/api/orders`);
       const ordersData = await ordersRes.json();
+
       setOrders(Array.isArray(ordersData) ? ordersData : []);
+
     } catch {
+
       setOrders([]);
+
     }
+
   }
 
   async function loadHistories() {
+
     const output = {};
 
-    for (const wineId of selectedWines) {
-      const res = await fetch(`${API}/api/market/wines/${wineId}`);
+    for (const wineId of watchlist) {
+
+      const res = await fetch(
+        `${API}/api/market/wines/${wineId}`
+      );
+
       const data = await res.json();
+
       output[wineId] = data.history || [];
+
     }
 
     setHistories(output);
+
   }
 
   async function buyWine(wineId) {
+
     await fetch(`${API}/api/orders`, {
       method: "POST",
       headers: {
@@ -83,21 +113,38 @@ function App() {
     });
 
     loadData();
+
     alert("Ordine creato");
+
   }
 
-  function toggleWine(wineId) {
-    if (selectedWines.includes(wineId)) {
-      setSelectedWines(selectedWines.filter(id => id !== wineId));
+  function toggleWatchlist(wineId) {
+
+    if (watchlist.includes(wineId)) {
+
+      setWatchlist(
+        watchlist.filter(id => id !== wineId)
+      );
+
     } else {
-      setSelectedWines([...selectedWines, wineId]);
+
+      setWatchlist([
+        ...watchlist,
+        wineId
+      ]);
+
     }
+
   }
 
-  const totalMarket = wines.reduce(
-    (sum, wine) => sum + Number(wine.currentPrice || 0),
-    0
-  );
+  const filteredWines = useMemo(() => {
+
+    return wines.filter(wine =>
+      wine.name.toLowerCase().includes(search.toLowerCase()) ||
+      wine.region.toLowerCase().includes(search.toLowerCase())
+    );
+
+  }, [wines, search]);
 
   const allDates = Array.from(
     new Set(
@@ -108,190 +155,314 @@ function App() {
   ).sort();
 
   const chartData = allDates.map(date => {
+
     const row = { date };
 
-    selectedWines.forEach(wineId => {
-      const point = histories[wineId]?.find(item => item.date === date);
-      row[wineId] = point ? point.price : null;
+    watchlist.forEach(wineId => {
+
+      const point = histories[wineId]?.find(
+        item => item.date === date
+      );
+
+      row[wineId] = point
+        ? point.price
+        : null;
+
     });
 
     return row;
+
   });
 
+  const totalMarket = wines.reduce(
+    (sum, wine) => sum + Number(wine.currentPrice || 0),
+    0
+  );
+
   return (
+
     <div className="app">
+
       <header className="header">
+
         <div className="logo">
           🍷 Vino<span>Invest</span> Platform
         </div>
 
         <div className="badge">
-          real-data ready
+          AI market ready
         </div>
+
       </header>
 
       <main className="main">
+
         <aside className="sidebar">
-          <button className={tab === "dashboard" ? "active" : ""} onClick={() => setTab("dashboard")}>Dashboard</button>
-          <button className={tab === "market" ? "active" : ""} onClick={() => setTab("market")}>Market</button>
-          <button className={tab === "analysis" ? "active" : ""} onClick={() => setTab("analysis")}>Analysis</button>
-          <button className={tab === "partners" ? "active" : ""} onClick={() => setTab("partners")}>Partners</button>
-          <button className={tab === "orders" ? "active" : ""} onClick={() => setTab("orders")}>Orders</button>
+
+          <button
+            className={tab === "dashboard" ? "active" : ""}
+            onClick={() => setTab("dashboard")}
+          >
+            Dashboard
+          </button>
+
+          <button
+            className={tab === "market" ? "active" : ""}
+            onClick={() => setTab("market")}
+          >
+            Market
+          </button>
+
+          <button
+            className={tab === "analysis" ? "active" : ""}
+            onClick={() => setTab("analysis")}
+          >
+            Analysis
+          </button>
+
+          <button
+            className={tab === "orders" ? "active" : ""}
+            onClick={() => setTab("orders")}
+          >
+            Orders
+          </button>
+
         </aside>
 
         <section className="content">
+
           {tab === "dashboard" && (
+
             <>
+
               <section className="hero">
+
                 <div className="heroText">
+
                   <h1>
-                    Piattaforma pronta per dati reali,
-                    storico, stime e ordini sicuri.
+                    Fine Wine Intelligence Platform
                   </h1>
 
                   <p>
-                    Ogni utente potrà scegliere quali vini seguire.
-                    Le API reali aggiungeranno tutto il mercato.
+                    Monitoraggio vini,
+                    storico prezzi,
+                    watchlist e analisi premium.
                   </p>
+
                 </div>
+
               </section>
 
               <section className="statsGrid">
+
                 <div className="statCard">
+
                   <small>Mercato totale</small>
-                  <h2>€ {totalMarket}</h2>
+
+                  <h2>
+                    € {totalMarket}
+                  </h2>
+
                 </div>
 
                 <div className="statCard">
-                  <small>Asset monitorati</small>
-                  <h2>{wines.length}</h2>
+
+                  <small>Vini monitorati</small>
+
+                  <h2>
+                    {wines.length}
+                  </h2>
+
                 </div>
 
                 <div className="statCard">
-                  <small>Ordini registrati</small>
-                  <h2>{orders.length}</h2>
+
+                  <small>Watchlist</small>
+
+                  <h2>
+                    {watchlist.length}
+                  </h2>
+
                 </div>
+
               </section>
+
             </>
+
           )}
 
           {tab === "market" && (
-            <section className="marketGrid">
-              {wines.map(wine => (
-                <div className="wineCard" key={wine.id}>
-                  <h2>{wine.name}</h2>
-                  <p>{wine.region}</p>
-                  <h3>€ {wine.currentPrice}</h3>
 
-                  <div className="tags">
-                    <span>{wine.risk}</span>
-                    <span>{wine.source}</span>
+            <>
+
+              <input
+                className="searchInput"
+                placeholder="Cerca vino o regione..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+              />
+
+              <section className="marketGrid">
+
+                {filteredWines.map(wine => (
+
+                  <div
+                    className="wineCard"
+                    key={wine.id}
+                  >
+
+                    <h2>{wine.name}</h2>
+
+                    <p>{wine.region}</p>
+
+                    <h3>
+                      € {wine.currentPrice}
+                    </h3>
+
+                    <div className="tags">
+
+                      <span>{wine.risk}</span>
+
+                      <span>{wine.source}</span>
+
+                    </div>
+
+                    <button
+                      onClick={() => buyWine(wine.id)}
+                    >
+                      Compra
+                    </button>
+
+                    <button
+                      onClick={() => toggleWatchlist(wine.id)}
+                    >
+
+                      {watchlist.includes(wine.id)
+                        ? "Rimuovi Watchlist"
+                        : "Aggiungi Watchlist"}
+
+                    </button>
+
                   </div>
 
-                  <button onClick={() => buyWine(wine.id)}>
-                    Compra
-                  </button>
-                </div>
-              ))}
-            </section>
+                ))}
+
+              </section>
+
+            </>
+
           )}
 
           {tab === "analysis" && (
+
             <section className="chartPanel">
-              <h2>Wine Watchlist</h2>
 
-              <p style={{ color: "#aaa", marginBottom: "24px" }}>
-                Scegli i vini da confrontare nel tempo.
-              </p>
-
-              <div className="marketGrid" style={{ marginBottom: "40px" }}>
-                {wines.map(wine => (
-                  <div className="wineCard" key={wine.id}>
-                    <h2>{wine.name}</h2>
-                    <p>{wine.region}</p>
-
-                    <button onClick={() => toggleWine(wine.id)}>
-                      {selectedWines.includes(wine.id)
-                        ? "Rimuovi dal grafico"
-                        : "Aggiungi al grafico"}
-                    </button>
-                  </div>
-                ))}
-              </div>
+              <h2>Wine Market Watchlist</h2>
 
               <div className="chartBox">
-                <ResponsiveContainer width="100%" height={520}>
+
+                <ResponsiveContainer width="100%" height={560}>
+
                   <LineChart data={chartData}>
-                    <CartesianGrid stroke="#1f1f1f" />
-                    <XAxis dataKey="date" stroke="#888" />
-                    <YAxis stroke="#888" />
+
+                    <CartesianGrid
+                      stroke="#1f1f1f"
+                    />
+
+                    <XAxis
+                      dataKey="date"
+                      stroke="#888"
+                    />
+
+                    <YAxis
+                      stroke="#888"
+                    />
+
                     <Tooltip />
+
                     <Legend />
 
-                    {selectedWines.map((wineId, index) => {
-                      const wine = wines.find(item => item.id === wineId);
+                    {watchlist.map((wineId, index) => {
+
+                      const wine = wines.find(
+                        item => item.id === wineId
+                      );
 
                       return (
+
                         <Line
                           key={wineId}
                           type="monotone"
                           dataKey={wineId}
                           name={wine?.name || wineId}
-                          stroke={colors[index % colors.length]}
+                          stroke={
+                            colors[index % colors.length]
+                          }
                           strokeWidth={4}
                           dot={false}
                         />
+
                       );
+
                     })}
+
                   </LineChart>
+
                 </ResponsiveContainer>
+
               </div>
+
             </section>
-          )}
 
-          {tab === "partners" && (
-            <section className="chartPanel">
-              <h2>Partner API</h2>
-
-              <div className="marketGrid">
-                <div className="wineCard">
-                  <h2>Liv-ex</h2>
-                  <p>Market data provider.</p>
-                </div>
-
-                <div className="wineCard">
-                  <h2>Wine Searcher</h2>
-                  <p>Global wine pricing.</p>
-                </div>
-
-                <div className="wineCard">
-                  <h2>Sotheby's Wine</h2>
-                  <p>Auction data.</p>
-                </div>
-              </div>
-            </section>
           )}
 
           {tab === "orders" && (
+
             <section className="ordersPanel">
+
               <h2>Ordini Live</h2>
 
               {orders.length === 0 && (
-                <p>Nessun ordine registrato.</p>
+                <p>
+                  Nessun ordine registrato.
+                </p>
               )}
 
               {orders.map((order, index) => (
-                <div className="orderRow" key={order.id || index}>
-                  <strong>{order.wine_id || order.wineId}</strong>
-                  <span>quantità: {order.quantity}</span>
+
+                <div
+                  className="orderRow"
+                  key={order.id || index}
+                >
+
+                  <strong>
+                    {order.wine_id || order.wineId}
+                  </strong>
+
+                  <span>
+                    quantità:
+                    {" "}
+                    {order.quantity}
+                  </span>
+
                 </div>
+
               ))}
+
             </section>
+
           )}
+
         </section>
+
       </main>
+
     </div>
+
   );
+
 }
 
-createRoot(document.getElementById("root")).render(<App />);
+createRoot(
+  document.getElementById("root")
+).render(<App />);
