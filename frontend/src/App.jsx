@@ -17,9 +17,7 @@ const API = "https://vinoinvest-backend.onrender.com";
 function App() {
 
   const [tab, setTab] = useState("dashboard");
-
   const [wines, setWines] = useState([]);
-
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
@@ -255,7 +253,7 @@ function App() {
                     <defs>
 
                       <linearGradient
-                        id="colorValue"
+                        id="gold"
                         x1="0"
                         y1="0"
                         x2="0"
@@ -263,13 +261,13 @@ function App() {
                       >
 
                         <stop
-                          offset="5%"
+                          offset="0%"
                           stopColor="#c9a227"
                           stopOpacity={0.8}
                         />
 
                         <stop
-                          offset="95%"
+                          offset="100%"
                           stopColor="#c9a227"
                           stopOpacity={0}
                         />
@@ -280,11 +278,11 @@ function App() {
 
                     <XAxis
                       dataKey="month"
-                      stroke="#999"
+                      stroke="#666"
                     />
 
                     <YAxis
-                      stroke="#999"
+                      stroke="#666"
                     />
 
                     <Tooltip />
@@ -293,8 +291,7 @@ function App() {
                       type="monotone"
                       dataKey="value"
                       stroke="#c9a227"
-                      fillOpacity={1}
-                      fill="url(#colorValue)"
+                      fill="url(#gold)"
                       strokeWidth={4}
                     />
 
