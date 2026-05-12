@@ -1,0 +1,65 @@
+[
+  {
+    "id": "romanee-conti-2015",
+    "name": "Romanée-Conti Grand Cru 2015",
+    "producer": "Domaine de la Romanée-Conti",
+    "region": "Burgundy",
+    "country": "France",
+    "vintage": 2015,
+    "criticScore": 100,
+    "investmentScore": 100,
+    "currentPrice": 28500,
+    "risk": "Alto",
+    "liquidity": "Alta",
+    "marketTrend": "Bullish",
+    "source": "external-market"
+  },
+
+  {
+    "id": "opus-one-2018",
+    "name": "Opus One 2018",
+    "producer": "Opus One Winery",
+    "region": "Napa Valley",
+    "country": "USA",
+    "vintage": 2018,
+    "criticScore": 97,
+    "investmentScore": 92,
+    "currentPrice": 540,
+    "risk": "Medio",
+    "liquidity": "Alta",
+    "marketTrend": "Bullish",
+    "source": "external-market"
+  },
+
+  {
+    "id": "penfolds-grange-2016",
+    "name": "Penfolds Grange 2016",
+    "producer": "Penfolds",
+    "region": "South Australia",
+    "country": "Australia",
+    "vintage": 2016,
+    "criticScore": 99,
+    "investmentScore": 95,
+    "currentPrice": 930,
+    "risk": "Medio",
+    "liquidity": "Media",
+    "marketTrend": "Bullish",
+    "source": "external-market"
+  },
+
+  {
+    "id": "vega-sicilia-unico-2012",
+    "name": "Vega Sicilia Unico 2012",
+    "producer": "Vega Sicilia",
+    "region": "Ribera del Duero",
+    "country": "Spain",
+    "vintage": 2012,
+    "criticScore": 98,
+    "investmentScore": 94,
+    "currentPrice": 670,
+    "risk": "Basso",
+    "liquidity": "Alta",
+    "marketTrend": "Stable",
+    "source": "external-market"
+  }
+]

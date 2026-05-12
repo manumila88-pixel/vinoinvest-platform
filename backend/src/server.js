@@ -64,6 +64,11 @@ app.get("/api/search", (req, res) => {
 
   }
 
+  const queryWords =
+    query
+      .split(" ")
+      .filter(Boolean);
+
   const results = wines.filter(wine => {
 
     const searchable = `
@@ -71,10 +76,15 @@ app.get("/api/search", (req, res) => {
       ${wine.producer}
       ${wine.region}
       ${wine.country}
+      ${wine.vintage}
+      ${wine.marketTrend}
+      ${wine.source}
     `
       .toLowerCase();
 
-    return searchable.includes(query);
+    return queryWords.every(word =>
+      searchable.includes(word)
+    );
 
   });
 
@@ -85,9 +95,20 @@ app.get("/api/search", (req, res) => {
         platform => platform.verified
       );
 
+    const estimatedReturn =
+      Math.round(
+        wine.currentPrice *
+        (
+          wine.investmentScore / 100
+        ) *
+        0.35
+      );
+
     return {
 
       ...wine,
+
+      estimatedReturn,
 
       platforms: matchingPlatforms,
 
@@ -105,7 +126,15 @@ app.get("/api/search", (req, res) => {
         recommendation:
           wine.marketTrend === "Bullish"
             ? "Interessante per monitoraggio"
-            : "Monitorare il trend"
+            : "Monitorare il trend",
+
+        liquidity: wine.liquidity,
+
+        aiScore:
+          (
+            wine.investmentScore +
+            wine.criticScore
+          ) / 2
 
       }
 
@@ -126,21 +155,33 @@ app.get("/api/orders", (req, res) => {
 app.post("/api/orders", (req, res) => {
 
   const order = {
+
     id: Date.now(),
+
     wineId: req.body.wineId,
-    quantity: req.body.quantity || 1
+
+    quantity:
+      req.body.quantity || 1,
+
+    createdAt:
+      new Date().toISOString()
+
   };
 
   orders.push(order);
 
   res.json({
+
     success: true,
+
     order
+
   });
 
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT =
+  process.env.PORT || 3000;
 
 app.listen(PORT, () => {
 
