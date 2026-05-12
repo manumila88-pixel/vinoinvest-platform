@@ -7,6 +7,7 @@ app.use(cors());
 app.use(express.json());
 
 const wines = [
+
   {
     id: "romanee-conti-2015",
     name: "Romanée-Conti Grand Cru 2015",
@@ -37,8 +38,43 @@ const wines = [
     liquidity: "Alta",
     marketTrend: "Bullish",
     source: "external-market"
+  },
+
+  {
+    id: "penfolds-grange-2016",
+    name: "Penfolds Grange 2016",
+    producer: "Penfolds",
+    region: "South Australia",
+    country: "Australia",
+    vintage: 2016,
+    criticScore: 99,
+    investmentScore: 95,
+    currentPrice: 930,
+    risk: "Medio",
+    liquidity: "Media",
+    marketTrend: "Bullish",
+    source: "external-market"
+  },
+
+  {
+    id: "vega-sicilia-unico-2012",
+    name: "Vega Sicilia Unico 2012",
+    producer: "Vega Sicilia",
+    region: "Ribera del Duero",
+    country: "Spain",
+    vintage: 2012,
+    criticScore: 98,
+    investmentScore: 94,
+    currentPrice: 670,
+    risk: "Basso",
+    liquidity: "Alta",
+    marketTrend: "Stable",
+    source: "external-market"
   }
+
 ];
+
+let orders = [];
 
 function normalize(text) {
 
@@ -61,6 +97,8 @@ function searchWines(query) {
         ${wine.name}
         ${wine.producer}
         ${wine.region}
+        ${wine.country}
+        ${wine.vintage}
       `);
 
     return searchable.includes(
@@ -74,8 +112,15 @@ function searchWines(query) {
 app.get("/", (req, res) => {
 
   res.json({
-    status: "online"
+    status: "online",
+    service: "vinoinvest-backend"
   });
+
+});
+
+app.get("/api/market/wines", (req, res) => {
+
+  res.json(wines);
 
 });
 
@@ -85,60 +130,60 @@ app.get("/api/global-search", (req, res) => {
     req.query.q || "";
 
   const results =
-  searchWines(query)
-    .map(wine => {
+    searchWines(query)
+      .map(wine => {
 
-      const aiScore =
-        (
-          wine.investmentScore +
-          wine.criticScore
-        ) / 2;
+        const aiScore =
+          (
+            wine.investmentScore +
+            wine.criticScore
+          ) / 2;
 
-      let signal = "Hold";
+        let signal = "Hold";
 
-      if (
-        aiScore >= 98 &&
-        wine.marketTrend === "Bullish"
-      ) {
+        if (
+          aiScore >= 98 &&
+          wine.marketTrend === "Bullish"
+        ) {
 
-        signal = "Strong Buy";
+          signal = "Strong Buy";
 
-      } else if (
-        aiScore >= 94
-      ) {
+        } else if (
+          aiScore >= 94
+        ) {
 
-        signal = "Buy";
-
-      }
-
-      return {
-
-        ...wine,
-
-        estimatedReturn:
-          Math.round(
-            wine.currentPrice * 0.35
-          ),
-
-        analysis: {
-
-          aiScore,
-
-          signal,
-
-          trustLevel:
-            "High",
-
-          recommendation:
-            wine.marketTrend === "Bullish"
-              ? "Interesting"
-              : "Monitor"
+          signal = "Buy";
 
         }
 
-      };
+        return {
 
-    });
+          ...wine,
+
+          estimatedReturn:
+            Math.round(
+              wine.currentPrice * 0.35
+            ),
+
+          analysis: {
+
+            aiScore,
+
+            signal,
+
+            trustLevel:
+              "High",
+
+            recommendation:
+              wine.marketTrend === "Bullish"
+                ? "Interesting"
+                : "Monitor"
+
+          }
+
+        };
+
+      });
 
   res.json({
 
@@ -148,6 +193,41 @@ app.get("/api/global-search", (req, res) => {
       results.length,
 
     results
+
+  });
+
+});
+
+app.get("/api/orders", (req, res) => {
+
+  res.json(orders);
+
+});
+
+app.post("/api/orders", (req, res) => {
+
+  const order = {
+
+    id: Date.now(),
+
+    wineId:
+      req.body.wineId,
+
+    quantity:
+      req.body.quantity || 1,
+
+    createdAt:
+      new Date().toISOString()
+
+  };
+
+  orders.push(order);
+
+  res.json({
+
+    success: true,
+
+    order
 
   });
 
