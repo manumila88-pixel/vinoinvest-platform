@@ -122,49 +122,84 @@ const platforms = [
 let orders = [];
 
 function enrichWine(wine) {
+
+  const aiScore =
+    (
+      wine.investmentScore +
+      wine.criticScore
+    ) / 2;
+
+  let signal = "Hold";
+
+  if (
+    aiScore >= 98 &&
+    wine.marketTrend === "Bullish"
+  ) {
+
+    signal = "Strong Buy";
+
+  } else if (
+    aiScore >= 94
+  ) {
+
+    signal = "Buy";
+
+  } else if (
+    wine.risk === "Alto"
+  ) {
+
+    signal = "Speculative";
+
+  }
+
+  const volatility =
+    wine.risk === "Alto"
+      ? "Alta"
+      : wine.risk === "Medio"
+      ? "Media"
+      : "Bassa";
+
   return {
+
     ...wine,
-    estimatedReturn: Math.round(wine.currentPrice * 0.35),
+
+    estimatedReturn:
+      Math.round(
+        wine.currentPrice * 0.35
+      ),
+
     platforms,
+
     analysis: {
+
       investmentPotential:
         wine.investmentScore >= 97
           ? "Molto alto"
           : wine.investmentScore >= 93
           ? "Alto"
           : "Medio",
-      marketRisk: wine.risk,
+
+      marketRisk:
+        wine.risk,
+
       recommendation:
         wine.marketTrend === "Bullish"
           ? "Interessante per monitoraggio"
           : "Monitorare il trend",
-      aiScore: (wine.investmentScore + wine.criticScore) / 2,
-      trustLevel: "Alto"
+
+      aiScore,
+
+      volatility,
+
+      signal,
+
+      trustLevel:
+        "Alto"
+
     }
+
   };
-}
 
-function searchWines(query) {
-  const normalizedQuery = query.toLowerCase().trim();
-
-  if (!normalizedQuery) {
-    return [];
-  }
-
-  const words = normalizedQuery.split(" ").filter(Boolean);
-
-  return wines.filter(wine => {
-    const searchable = `
-      ${wine.name}
-      ${wine.producer}
-      ${wine.region}
-      ${wine.country}
-      ${wine.vintage}
-      ${wine.source}
-    `.toLowerCase();
-
-    return words.every(word => searchable.includes(word));
-  });
 }
 
 app.get("/", (req, res) => {
