@@ -428,25 +428,73 @@ function App() {
 
           {tab === "dashboard" && (
 
-            <section className="hero">
+            <>
 
-              <div className="heroText">
+              <section className="hero">
 
-                <h1>
-                  Global Wine
-                  Investment Platform
-                </h1>
+                <div className="heroText">
 
-                <p>
-                  AI portfolio builder,
-                  wine intelligence,
-                  analytics and
-                  worldwide search.
-                </p>
+                  <h1>
+                    Global Wine
+                    Investment Platform
+                  </h1>
 
-              </div>
+                  <p>
+                    AI portfolio builder,
+                    wine intelligence,
+                    analytics and
+                    worldwide search.
+                  </p>
 
-            </section>
+                </div>
+
+              </section>
+
+              <section className="statsGrid">
+
+                <div className="statCard">
+
+                  <small>
+                    Global Market
+                  </small>
+
+                  <h2>
+                    €
+                    {" "}
+                    {totalMarket}
+                  </h2>
+
+                </div>
+
+                <div className="statCard">
+
+                  <small>
+                    Portfolio
+                  </small>
+
+                  <h2>
+                    €
+                    {" "}
+                    {portfolioValue}
+                  </h2>
+
+                </div>
+
+                <div className="statCard">
+
+                  <small>
+                    Watchlist
+                  </small>
+
+                  <h2>
+                    {watchlist.length}
+                  </h2>
+
+                </div>
+
+              </section>
+
+            </>
 
           )}
 
@@ -519,6 +567,24 @@ function App() {
                       Add Position
                     </button>
 
+                    <button
+                      onClick={() =>
+                        toggleWatchlist(
+                          wine.id
+                        )
+                      }
+                    >
+
+                      {watchlist.includes(
+                        wine.id
+                      )
+
+                        ? "Remove Watchlist"
+
+                        : "Add Watchlist"}
+
+                    </button>
+
                   </div>
 
                 ))}
@@ -536,6 +602,15 @@ function App() {
               <h2>
                 Watchlist Analysis
               </h2>
+
+              {watchlist.length === 0 && (
+
+                <p>
+                  Add wines to watchlist
+                  from Market section.
+                </p>
+
+              )}
 
               <div className="chartBox">
 
@@ -800,6 +875,16 @@ function App() {
                             {" "}
                             {
                               item.allocatedAmount
+                            }
+                          </p>
+
+                          <p>
+                            Estimated Return:
+                            {" "}
+                            €
+                            {" "}
+                            {
+                              item.estimatedReturn
                             }
                           </p>
 
