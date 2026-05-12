@@ -1,31 +1,78 @@
 import express from "express";
 import cors from "cors";
 
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const wines = [
 
-const wines = JSON.parse(
-  fs.readFileSync(
-    path.join(__dirname, "data", "wines.json"),
-    "utf-8"
-  )
-);
+  {
+    id: "lafite-2018",
+    name: "Château Lafite Rothschild 2018",
+    producer: "Lafite Rothschild",
+    region: "Bordeaux",
+    country: "France",
+    vintage: 2018,
+    criticScore: 99,
+    investmentScore: 96,
+    currentPrice: 820,
+    risk: "Basso",
+    liquidity: "Alta",
+    marketTrend: "Bullish",
+    source: "liv-ex"
+  },
 
-const platforms = JSON.parse(
-  fs.readFileSync(
-    path.join(__dirname, "data", "platforms.json"),
-    "utf-8"
-  )
-);
+  {
+    id: "romanee-conti-2015",
+    name: "Romanée-Conti Grand Cru 2015",
+    producer: "Domaine de la Romanée-Conti",
+    region: "Burgundy",
+    country: "France",
+    vintage: 2015,
+    criticScore: 100,
+    investmentScore: 100,
+    currentPrice: 28500,
+    risk: "Alto",
+    liquidity: "Alta",
+    marketTrend: "Bullish",
+    source: "external-market"
+  },
+
+  {
+    id: "opus-one-2018",
+    name: "Opus One 2018",
+    producer: "Opus One Winery",
+    region: "Napa Valley",
+    country: "USA",
+    vintage: 2018,
+    criticScore: 97,
+    investmentScore: 92,
+    currentPrice: 540,
+    risk: "Medio",
+    liquidity: "Alta",
+    marketTrend: "Bullish",
+    source: "external-market"
+  }
+
+];
+
+const platforms = [
+
+  {
+    id: "liv-ex",
+    name: "Liv-ex",
+    verified: true
+  },
+
+  {
+    id: "wine-searcher",
+    name: "Wine-Searcher",
+    verified: true
+  }
+
+];
 
 let orders = [];
 
@@ -44,12 +91,6 @@ app.get("/api/market/wines", (req, res) => {
 
 });
 
-app.get("/api/platforms", (req, res) => {
-
-  res.json(platforms);
-
-});
-
 app.get("/api/search", (req, res) => {
 
   const query =
@@ -64,83 +105,51 @@ app.get("/api/search", (req, res) => {
 
   }
 
-  const queryWords =
-    query
-      .split(" ")
-      .filter(Boolean);
+  const results =
+    wines.filter(wine => {
 
-  const results = wines.filter(wine => {
+      const searchable = `
+        ${wine.name}
+        ${wine.producer}
+        ${wine.region}
+        ${wine.country}
+      `
+        .toLowerCase();
 
-    const searchable = `
-      ${wine.name}
-      ${wine.producer}
-      ${wine.region}
-      ${wine.country}
-      ${wine.vintage}
-      ${wine.marketTrend}
-      ${wine.source}
-    `
-      .toLowerCase();
+      return searchable.includes(query);
 
-    return queryWords.every(word =>
-      searchable.includes(word)
-    );
+    });
 
-  });
+  const enrichedResults =
+    results.map(wine => {
 
-  const enrichedResults = results.map(wine => {
+      return {
 
-    const matchingPlatforms =
-      platforms.filter(
-        platform => platform.verified
-      );
+        ...wine,
 
-    const estimatedReturn =
-      Math.round(
-        wine.currentPrice *
-        (
-          wine.investmentScore / 100
-        ) *
-        0.35
-      );
+        estimatedReturn:
+          Math.round(
+            wine.currentPrice * 0.35
+          ),
 
-    return {
+        platforms,
 
-      ...wine,
+        analysis: {
 
-      estimatedReturn,
+          investmentPotential:
+            "Molto alto",
 
-      platforms: matchingPlatforms,
+          marketRisk:
+            wine.risk,
 
-      analysis: {
+          recommendation:
+            "Interessante per monitoraggio"
 
-        investmentPotential:
-          wine.investmentScore >= 97
-            ? "Molto alto"
-            : wine.investmentScore >= 93
-            ? "Alto"
-            : "Moderato",
+        }
 
-        marketRisk: wine.risk,
+      };
 
-        recommendation:
-          wine.marketTrend === "Bullish"
-            ? "Interessante per monitoraggio"
-            : "Monitorare il trend",
-
-        liquidity: wine.liquidity,
-
-        aiScore:
-          (
-            wine.investmentScore +
-            wine.criticScore
-          ) / 2
-
-      }
-
-    };
-
-  });
+    });
 
   res.json(enrichedResults);
 
@@ -158,13 +167,11 @@ app.post("/api/orders", (req, res) => {
 
     id: Date.now(),
 
-    wineId: req.body.wineId,
+    wineId:
+      req.body.wineId,
 
     quantity:
-      req.body.quantity || 1,
-
-    createdAt:
-      new Date().toISOString()
+      req.body.quantity || 1
 
   };
 
@@ -189,4 +196,4 @@ app.listen(PORT, () => {
     `Server running on port ${PORT}`
   );
 
-});
+});sss
