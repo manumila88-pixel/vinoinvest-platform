@@ -50,6 +50,18 @@ function App() {
   const [searchResults, setSearchResults] =
     useState([]);
 
+  const [portfolio, setPortfolio] =
+    useState(null);
+
+  const [budget, setBudget] =
+    useState(10000);
+
+  const [risk, setRisk] =
+    useState("medio");
+
+  const [years, setYears] =
+    useState(5);
+
   useEffect(() => {
 
     loadData();
@@ -92,41 +104,84 @@ function App() {
 
   }
 
- async function searchWine(value) {
+  async function searchWine(value) {
 
-  setSearch(value);
+    setSearch(value);
 
-  if (!value.trim()) {
+    if (!value.trim()) {
 
-    setSearchResults([]);
+      setSearchResults([]);
 
-    return;
+      return;
 
-  }
+    }
 
-  try {
+    try {
 
-    const res =
-      await fetch(
-        `${API}/api/global-search?q=${value}`
+      const res =
+        await fetch(
+          `${API}/api/global-search?q=${value}`
+        );
+
+      const data =
+        await res.json();
+
+      setSearchResults(
+        data.results || []
       );
 
-    const data =
-      await res.json();
+    } catch (error) {
 
-    setSearchResults(
-      data.results || []
-    );
+      console.error(error);
 
-  } catch (error) {
+      setSearchResults([]);
 
-    console.error(error);
-
-    setSearchResults([]);
+    }
 
   }
 
-}
+  async function generatePortfolio() {
+
+    try {
+
+      const res =
+        await fetch(
+          `${API}/api/portfolio-builder`,
+          {
+
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+
+            body: JSON.stringify({
+
+              budget,
+
+              risk,
+
+              horizonYears:
+                years
+
+            })
+
+          }
+        );
+
+      const data =
+        await res.json();
+
+      setPortfolio(data);
+
+    } catch (error) {
+
+      console.error(error);
+
+    }
+
+  }
 
   async function buyWine(wineId) {
 
@@ -364,7 +419,7 @@ function App() {
               setTab("portfolio")
             }
           >
-            Portfolio
+            Portfolio AI
           </button>
 
         </aside>
@@ -373,70 +428,25 @@ function App() {
 
           {tab === "dashboard" && (
 
-            <>
+            <section className="hero">
 
-              <section className="hero">
+              <div className="heroText">
 
-                <div className="heroText">
+                <h1>
+                  Global Wine
+                  Investment Platform
+                </h1>
 
-                  <h1>
-                    Global Wine
-                    Investment Platform
-                  </h1>
+                <p>
+                  AI portfolio builder,
+                  wine intelligence,
+                  analytics and
+                  worldwide search.
+                </p>
 
-                  <p>
-                    Search engine,
-                    analytics,
-                    trust layer,
-                    investment intelligence
-                    and market aggregation.
-                  </p>
+              </div>
 
-                </div>
-
-              </section>
-
-              <section className="statsGrid">
-
-                <div className="statCard">
-
-                  <small>
-                    Global Market
-                  </small>
-
-                  <h2>
-                    € {totalMarket}
-                  </h2>
-
-                </div>
-
-                <div className="statCard">
-
-                  <small>
-                    Portfolio
-                  </small>
-
-                  <h2>
-                    € {portfolioValue}
-                  </h2>
-
-                </div>
-
-                <div className="statCard">
-
-                  <small>
-                    Watchlist
-                  </small>
-
-                  <h2>
-                    {watchlist.length}
-                  </h2>
-
-                </div>
-
-              </section>
-
-            </>
+            </section>
 
           )}
 
@@ -480,109 +490,26 @@ function App() {
                     </p>
 
                     <p>
-                      {wine.region}
-                      {" · "}
-                      {wine.country}
-                    </p>
-
-                    <h3>
                       €
                       {" "}
                       {wine.currentPrice}
-                    </h3>
+                    </p>
 
-                    <div className="tags">
+                    <p>
+                      AI Score:
+                      {" "}
+                      {
+                        wine.analysis?.aiScore
+                      }
+                    </p>
 
-                      <span>
-                        score
-                        {" "}
-                        {wine.investmentScore}
-                      </span>
-
-                      <span>
-                        {wine.marketTrend}
-                      </span>
-
-                      <span>
-                        risk
-                        {" "}
-                        {wine.risk}
-                      </span>
-
-                    </div>
-
-                    <div
-                      style={{
-                        marginTop: 20
-                      }}
-                    >
-
-                      <strong>
-                        Investment:
-                      </strong>
-
-                      <p>
-                        {
-                          wine.analysis
-                            .investmentPotential
-                        }
-                      </p>
-
-                    </div>
-
-                    <div
-                      style={{
-                        marginTop: 20
-                      }}
-                    >
-
-                      <strong>
-                        Recommendation:
-                      </strong>
-
-                      <p>
-                        {
-                          wine.analysis
-                            .recommendation
-                        }
-                      </p>
-
-                    </div>
-
-                    <div
-                      style={{
-                        marginTop: 20
-                      }}
-                    >
-
-                      <strong>
-                        Verified Platforms
-                      </strong>
-
-                      {wine.platforms
-                        .slice(0, 3)
-                        .map(platform => (
-
-                          <p
-                            key={platform.id}
-                          >
-
-                            ✅
-                            {" "}
-                            {platform.name}
-                            {" · "}
-                            Trust:
-                            {" "}
-                            {
-                              platform
-                                .trustScore
-                            }
-
-                          </p>
-
-                        ))}
-
-                    </div>
+                    <p>
+                      Signal:
+                      {" "}
+                      {
+                        wine.analysis?.signal
+                      }
+                    </p>
 
                     <button
                       onClick={() =>
@@ -590,24 +517,6 @@ function App() {
                       }
                     >
                       Add Position
-                    </button>
-
-                    <button
-                      onClick={() =>
-                        toggleWatchlist(
-                          wine.id
-                        )
-                      }
-                    >
-
-                      {watchlist.includes(
-                        wine.id
-                      )
-
-                        ? "Remove Watchlist"
-
-                        : "Add Watchlist"}
-
                     </button>
 
                   </div>
@@ -708,43 +617,202 @@ function App() {
             <section className="ordersPanel">
 
               <h2>
-                Portfolio Holdings
+                AI Portfolio Builder
               </h2>
 
-              {holdings.map(item => (
+              <div
+                style={{
+                  display: "flex",
+                  gap: 12,
+                  marginBottom: 20,
+                  flexWrap: "wrap"
+                }}
+              >
 
-                <div
-                  className="orderRow"
-                  key={item.id}
+                <input
+
+                  type="number"
+
+                  value={budget}
+
+                  onChange={e =>
+                    setBudget(
+                      Number(e.target.value)
+                    )
+                  }
+
+                  className="searchInput"
+
+                />
+
+                <select
+
+                  value={risk}
+
+                  onChange={e =>
+                    setRisk(e.target.value)
+                  }
+
+                  className="searchInput"
+
                 >
 
-                  <div>
+                  <option value="basso">
+                    Low Risk
+                  </option>
 
-                    <strong>
-                      {item.name}
-                    </strong>
+                  <option value="medio">
+                    Medium Risk
+                  </option>
 
-                    <p>
-                      quantità:
-                      {" "}
-                      {item.quantity}
-                    </p>
+                  <option value="alto">
+                    High Risk
+                  </option>
+
+                </select>
+
+                <input
+
+                  type="number"
+
+                  value={years}
+
+                  onChange={e =>
+                    setYears(
+                      Number(e.target.value)
+                    )
+                  }
+
+                  className="searchInput"
+
+                />
+
+                <button
+                  onClick={
+                    generatePortfolio
+                  }
+                >
+                  Generate Portfolio
+                </button>
+
+              </div>
+
+              {portfolio && (
+
+                <>
+
+                  <div className="statsGrid">
+
+                    <div className="statCard">
+
+                      <small>
+                        Expected ROI
+                      </small>
+
+                      <h2>
+                        {
+                          portfolio.expectedROI
+                        }%
+                      </h2>
+
+                    </div>
+
+                    <div className="statCard">
+
+                      <small>
+                        Expected Profit
+                      </small>
+
+                      <h2>
+                        €
+                        {" "}
+                        {
+                          portfolio.expectedProfit
+                        }
+                      </h2>
+
+                    </div>
+
+                    <div className="statCard">
+
+                      <small>
+                        Expected Value
+                      </small>
+
+                      <h2>
+                        €
+                        {" "}
+                        {
+                          portfolio.expectedValue
+                        }
+                      </h2>
+
+                    </div>
 
                   </div>
 
-                  <div>
+                  <div
+                    style={{
+                      marginTop: 30
+                    }}
+                  >
 
-                    <strong>
-                      €
-                      {" "}
-                      {item.totalValue}
-                    </strong>
+                    {portfolio.allocation.map(
+                      item => (
+
+                        <div
+                          key={item.wineId}
+                          className="wineCard"
+                        >
+
+                          <h2>
+                            {item.wineName}
+                          </h2>
+
+                          <p>
+                            {item.region}
+                          </p>
+
+                          <p>
+                            Signal:
+                            {" "}
+                            {item.signal}
+                          </p>
+
+                          <p>
+                            AI Score:
+                            {" "}
+                            {item.aiScore}
+                          </p>
+
+                          <p>
+                            Bottles:
+                            {" "}
+                            {
+                              item.estimatedBottles
+                            }
+                          </p>
+
+                          <p>
+                            Allocation:
+                            {" "}
+                            €
+                            {" "}
+                            {
+                              item.allocatedAmount
+                            }
+                          </p>
+
+                        </div>
+
+                      )
+                    )}
 
                   </div>
 
-                </div>
+                </>
 
-              ))}
+              )}
 
             </section>
 
