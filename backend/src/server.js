@@ -85,7 +85,60 @@ app.get("/api/global-search", (req, res) => {
     req.query.q || "";
 
   const results =
-    searchWines(query);
+  searchWines(query)
+    .map(wine => {
+
+      const aiScore =
+        (
+          wine.investmentScore +
+          wine.criticScore
+        ) / 2;
+
+      let signal = "Hold";
+
+      if (
+        aiScore >= 98 &&
+        wine.marketTrend === "Bullish"
+      ) {
+
+        signal = "Strong Buy";
+
+      } else if (
+        aiScore >= 94
+      ) {
+
+        signal = "Buy";
+
+      }
+
+      return {
+
+        ...wine,
+
+        estimatedReturn:
+          Math.round(
+            wine.currentPrice * 0.35
+          ),
+
+        analysis: {
+
+          aiScore,
+
+          signal,
+
+          trustLevel:
+            "High",
+
+          recommendation:
+            wine.marketTrend === "Bullish"
+              ? "Interesting"
+              : "Monitor"
+
+        }
+
+      };
+
+    });
 
   res.json({
 
