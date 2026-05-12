@@ -54,6 +54,38 @@ const wines = [
     liquidity: "Alta",
     marketTrend: "Bullish",
     source: "external-market"
+  },
+
+  {
+    id: "penfolds-grange-2016",
+    name: "Penfolds Grange 2016",
+    producer: "Penfolds",
+    region: "South Australia",
+    country: "Australia",
+    vintage: 2016,
+    criticScore: 99,
+    investmentScore: 95,
+    currentPrice: 930,
+    risk: "Medio",
+    liquidity: "Media",
+    marketTrend: "Bullish",
+    source: "external-market"
+  },
+
+  {
+    id: "vega-sicilia-unico-2012",
+    name: "Vega Sicilia Unico 2012",
+    producer: "Vega Sicilia",
+    region: "Ribera del Duero",
+    country: "Spain",
+    vintage: 2012,
+    criticScore: 98,
+    investmentScore: 94,
+    currentPrice: 670,
+    risk: "Basso",
+    liquidity: "Alta",
+    marketTrend: "Stable",
+    source: "external-market"
   }
 
 ];
@@ -69,6 +101,12 @@ const platforms = [
   {
     id: "wine-searcher",
     name: "Wine-Searcher",
+    verified: true
+  },
+
+  {
+    id: "bordeaux-index",
+    name: "Bordeaux Index",
     verified: true
   }
 
@@ -88,6 +126,12 @@ app.get("/", (req, res) => {
 app.get("/api/market/wines", (req, res) => {
 
   res.json(wines);
+
+});
+
+app.get("/api/platforms", (req, res) => {
+
+  res.json(platforms);
 
 });
 
@@ -113,6 +157,7 @@ app.get("/api/search", (req, res) => {
         ${wine.producer}
         ${wine.region}
         ${wine.country}
+        ${wine.vintage}
       `
         .toLowerCase();
 
@@ -137,13 +182,23 @@ app.get("/api/search", (req, res) => {
         analysis: {
 
           investmentPotential:
-            "Molto alto",
+            wine.investmentScore >= 97
+              ? "Molto alto"
+              : "Alto",
 
           marketRisk:
             wine.risk,
 
           recommendation:
-            "Interessante per monitoraggio"
+            wine.marketTrend === "Bullish"
+              ? "Interessante per monitoraggio"
+              : "Monitorare il trend",
+
+          aiScore:
+            (
+              wine.investmentScore +
+              wine.criticScore
+            ) / 2
 
         }
 
@@ -171,7 +226,10 @@ app.post("/api/orders", (req, res) => {
       req.body.wineId,
 
     quantity:
-      req.body.quantity || 1
+      req.body.quantity || 1,
+
+    createdAt:
+      new Date().toISOString()
 
   };
 
@@ -196,4 +254,4 @@ app.listen(PORT, () => {
     `Server running on port ${PORT}`
   );
 
-});sss
+});
