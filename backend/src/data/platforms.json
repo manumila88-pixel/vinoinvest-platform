@@ -1,0 +1,97 @@
+[
+  {
+    "id": "liv-ex",
+    "name": "Liv-ex",
+    "type": "Fine Wine Exchange",
+    "trustScore": 99,
+    "riskLevel": "Molto basso",
+    "verified": true,
+    "apiAvailable": true,
+    "globalMarket": true,
+    "recommended": true,
+    "fees": "Professional",
+    "website": "https://www.liv-ex.com",
+    "strengths": [
+      "Trading professionale",
+      "Market data",
+      "Alta liquidità",
+      "Prezzi globali"
+    ]
+  },
+
+  {
+    "id": "wine-searcher",
+    "name": "Wine-Searcher",
+    "type": "Global Search Engine",
+    "trustScore": 95,
+    "riskLevel": "Basso",
+    "verified": true,
+    "apiAvailable": false,
+    "globalMarket": true,
+    "recommended": true,
+    "fees": "Variabili",
+    "website": "https://www.wine-searcher.com",
+    "strengths": [
+      "Ricerca globale",
+      "Confronto prezzi",
+      "Merchant worldwide"
+    ]
+  },
+
+  {
+    "id": "bordeaux-index",
+    "name": "Bordeaux Index",
+    "type": "Wine Trading Platform",
+    "trustScore": 97,
+    "riskLevel": "Molto basso",
+    "verified": true,
+    "apiAvailable": true,
+    "globalMarket": true,
+    "recommended": true,
+    "fees": "Professional",
+    "website": "https://www.bordeauxindex.com",
+    "strengths": [
+      "Trading",
+      "Storage",
+      "Mercato premium"
+    ]
+  },
+
+  {
+    "id": "sothebys",
+    "name": "Sotheby's Wine",
+    "type": "Auction House",
+    "trustScore": 98,
+    "riskLevel": "Molto basso",
+    "verified": true,
+    "apiAvailable": false,
+    "globalMarket": true,
+    "recommended": true,
+    "fees": "Auction fees",
+    "website": "https://www.sothebys.com",
+    "strengths": [
+      "Aste premium",
+      "Vini rari",
+      "Alta reputazione"
+    ]
+  },
+
+  {
+    "id": "idealwine",
+    "name": "iDealwine",
+    "type": "Wine Marketplace",
+    "trustScore": 93,
+    "riskLevel": "Basso",
+    "verified": true,
+    "apiAvailable": false,
+    "globalMarket": true,
+    "recommended": true,
+    "fees": "Marketplace fees",
+    "website": "https://www.idealwine.com",
+    "strengths": [
+      "Marketplace globale",
+      "Aste online",
+      "Ampio catalogo"
+    ]
+  }
+]
