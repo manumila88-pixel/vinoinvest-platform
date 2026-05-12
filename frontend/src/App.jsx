@@ -12,23 +12,13 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  CartesianGrid,
-  Legend
+  CartesianGrid
 } from "recharts";
 
 import "./style.css";
 
 const API =
   "https://vinoinvest-backend-2.onrender.com";
-
-const colors = [
-  "#c9a227",
-  "#00c2ff",
-  "#00ff88",
-  "#ff4d6d",
-  "#a855f7",
-  "#f97316"
-];
 
 function App() {
 
@@ -53,6 +43,12 @@ function App() {
   const [portfolio, setPortfolio] =
     useState(null);
 
+  const [chartData, setChartData] =
+    useState([]);
+
+  const [selectedWine, setSelectedWine] =
+    useState(null);
+
   const [budget, setBudget] =
     useState(10000);
 
@@ -70,17 +66,17 @@ function App() {
 
   async function loadData() {
 
-    const winesRes =
-      await fetch(
-        `${API}/api/market/wines`
-      );
-
-    const winesData =
-      await winesRes.json();
-
-    setWines(winesData);
-
     try {
+
+      const winesRes =
+        await fetch(
+          `${API}/api/market/wines`
+        );
+
+      const winesData =
+        await winesRes.json();
+
+      setWines(winesData);
 
       const ordersRes =
         await fetch(
@@ -96,9 +92,9 @@ function App() {
           : []
       );
 
-    } catch {
+    } catch (error) {
 
-      setOrders([]);
+      console.error(error);
 
     }
 
@@ -135,6 +131,45 @@ function App() {
       console.error(error);
 
       setSearchResults([]);
+
+    }
+
+  }
+
+  async function loadChart(
+    wineId
+  ) {
+
+    try {
+
+      const res =
+        await fetch(
+          `${API}/api/price-history/${wineId}`
+        );
+
+      const data =
+        await res.json();
+
+      const formatted =
+        data.points.map(
+          item => ({
+
+            date:
+              item.date.slice(0, 4),
+
+            price:
+              item.price
+
+          })
+        );
+
+      setChartData(
+        formatted
+      );
+
+    } catch (error) {
+
+      console.error(error);
 
     }
 
@@ -183,31 +218,46 @@ function App() {
 
   }
 
-  async function buyWine(wineId) {
+  async function buyWine(
+    wineId
+  ) {
 
-    await fetch(`${API}/api/orders`, {
+    await fetch(
+      `${API}/api/orders`,
+      {
 
-      method: "POST",
+        method: "POST",
 
-      headers: {
-        "Content-Type":
-          "application/json"
-      },
+        headers: {
+          "Content-Type":
+            "application/json"
+        },
 
-      body: JSON.stringify({
-        wineId,
-        quantity: 1
-      })
+        body: JSON.stringify({
 
-    });
+          wineId,
+
+          quantity: 1
+
+        })
+
+      }
+    );
 
     loadData();
 
-    alert("Ordine creato");
+    alert(
+      "Position added"
+    );
 
   }
 
-  function toggleWatchlist(wineId) {
+  async function toggleWatchlist(
+    wine
+  ) {
+
+    const wineId =
+      wine.id;
 
     if (
       watchlist.includes(wineId)
@@ -219,12 +269,20 @@ function App() {
         )
       );
 
+      setSelectedWine(null);
+
+      setChartData([]);
+
     } else {
 
       setWatchlist([
         ...watchlist,
         wineId
       ]);
+
+      setSelectedWine(wine);
+
+      loadChart(wineId);
 
     }
 
@@ -234,118 +292,95 @@ function App() {
     wines.reduce(
 
       (sum, wine) =>
+
         sum +
         Number(
           wine.currentPrice || 0
         ),
 
       0
+
     );
 
   const holdings =
-    orders.reduce((acc, order) => {
+    orders.reduce(
+      (
+        acc,
+        order
+      ) => {
 
-      const wine =
-        wines.find(
-          w =>
-            w.id ===
-            (order.wine_id ||
-              order.wineId)
-        );
-
-      if (!wine) return acc;
-
-      const existing =
-        acc.find(
-          item =>
-            item.id === wine.id
-        );
-
-      if (existing) {
-
-        existing.quantity +=
-          Number(
-            order.quantity || 1
+        const wine =
+          wines.find(
+            w =>
+              w.id ===
+              (
+                order.wine_id ||
+                order.wineId
+              )
           );
 
-      } else {
+        if (!wine)
+          return acc;
 
-        acc.push({
+        const existing =
+          acc.find(
+            item =>
+              item.id ===
+              wine.id
+          );
 
-          id: wine.id,
+        if (existing) {
 
-          name: wine.name,
-
-          quantity:
+          existing.quantity +=
             Number(
               order.quantity || 1
-            ),
+            );
 
-          totalValue:
-            Number(
-              wine.currentPrice || 0
-            ) *
-            Number(
-              order.quantity || 1
-            )
+        } else {
 
-        });
+          acc.push({
 
-      }
+            id:
+              wine.id,
 
-      return acc;
+            name:
+              wine.name,
 
-    }, []);
+            quantity:
+              Number(
+                order.quantity || 1
+              ),
+
+            totalValue:
+              Number(
+                wine.currentPrice || 0
+              ) *
+              Number(
+                order.quantity || 1
+              )
+
+          });
+
+        }
+
+        return acc;
+
+      },
+
+      []
+
+    );
 
   const portfolioValue =
     holdings.reduce(
 
       (sum, item) =>
-        sum + item.totalValue,
+        sum +
+        item.totalValue,
 
       0
+
     );
-
-  const chartData = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun"
-  ].map((date, index) => {
-
-    const row = { date };
-
-    watchlist.forEach(wineId => {
-
-      const wine =
-        wines.find(
-          w => w.id === wineId
-        );
-
-      if (!wine) return;
-
-      const factors = [
-        0.72,
-        0.78,
-        0.84,
-        0.9,
-        0.96,
-        1
-      ];
-
-      row[wineId] =
-        Math.round(
-          wine.currentPrice *
-          factors[index]
-        );
-
-    });
-
-    return row;
-
-  });
 
   return (
 
@@ -522,72 +557,117 @@ function App() {
 
               <section className="marketGrid">
 
-                {searchResults.map(wine => (
+                {searchResults.map(
+                  wine => (
 
-                  <div
-                    className="wineCard"
-                    key={wine.id}
-                  >
-
-                    <h2>
-                      {wine.name}
-                    </h2>
-
-                    <p>
-                      {wine.producer}
-                    </p>
-
-                    <p>
-                      €
-                      {" "}
-                      {wine.currentPrice}
-                    </p>
-
-                    <p>
-                      AI Score:
-                      {" "}
-                      {
-                        wine.analysis?.aiScore
-                      }
-                    </p>
-
-                    <p>
-                      Signal:
-                      {" "}
-                      {
-                        wine.analysis?.signal
-                      }
-                    </p>
-
-                    <button
-                      onClick={() =>
-                        buyWine(wine.id)
-                      }
+                    <div
+                      className="wineCard"
+                      key={wine.id}
                     >
-                      Add Position
-                    </button>
 
-                    <button
-                      onClick={() =>
-                        toggleWatchlist(
+                      <h2>
+                        {wine.name}
+                      </h2>
+
+                      <p>
+                        {wine.producer}
+                      </p>
+
+                      <p>
+                        {wine.region}
+                        {" · "}
+                        {wine.country}
+                      </p>
+
+                      <p>
+                        €
+                        {" "}
+                        {
+                          wine.currentPrice
+                        }
+                      </p>
+
+                      <p>
+                        AI Score:
+                        {" "}
+                        {
+                          wine.analysis
+                            ?.aiScore
+                        }
+                      </p>
+
+                      <p>
+                        Signal:
+                        {" "}
+                        {
+                          wine.analysis
+                            ?.signal
+                        }
+                      </p>
+
+                      <p>
+                        Estimated Return:
+                        {" "}
+                        €
+                        {" "}
+                        {
+                          wine.estimatedReturn || 0
+                        }
+                      </p>
+
+                      <p>
+                        Trust Level:
+                        {" "}
+                        {
+                          wine.analysis
+                            ?.trustLevel || "High"
+                        }
+                      </p>
+
+                      <p>
+                        Risk:
+                        {" "}
+                        {wine.risk}
+                      </p>
+
+                      <p>
+                        Trend:
+                        {" "}
+                        {wine.marketTrend}
+                      </p>
+
+                      <button
+                        onClick={() =>
+                          buyWine(
+                            wine.id
+                          )
+                        }
+                      >
+                        Add Position
+                      </button>
+
+                      <button
+                        onClick={() =>
+                          toggleWatchlist(
+                            wine
+                          )
+                        }
+                      >
+
+                        {watchlist.includes(
                           wine.id
                         )
-                      }
-                    >
 
-                      {watchlist.includes(
-                        wine.id
-                      )
+                          ? "Remove Watchlist"
 
-                        ? "Remove Watchlist"
+                          : "Add Watchlist"}
 
-                        : "Add Watchlist"}
+                      </button>
 
-                    </button>
+                    </div>
 
-                  </div>
-
-                ))}
+                  )
+                )}
 
               </section>
 
@@ -603,12 +683,57 @@ function App() {
                 Watchlist Analysis
               </h2>
 
-              {watchlist.length === 0 && (
+              {!selectedWine && (
 
                 <p>
-                  Add wines to watchlist
-                  from Market section.
+                  Add wines to
+                  watchlist from
+                  Market section.
                 </p>
+
+              )}
+
+              {selectedWine && (
+
+                <div
+                  style={{
+                    marginBottom: 30
+                  }}
+                >
+
+                  <h3
+                    style={{
+                      fontSize: 28,
+                      marginBottom: 10
+                    }}
+                  >
+
+                    {
+                      selectedWine.name
+                    }
+
+                  </h3>
+
+                  <p>
+                    Current Price:
+                    {" "}
+                    €
+                    {" "}
+                    {
+                      selectedWine.currentPrice
+                    }
+                  </p>
+
+                  <p>
+                    Investment Score:
+                    {" "}
+                    {
+                      selectedWine
+                        .investmentScore
+                    }
+                  </p>
+
+                </div>
 
               )}
 
@@ -638,44 +763,13 @@ function App() {
 
                     <Tooltip />
 
-                    <Legend />
-
-                    {watchlist.map(
-                      (
-                        wineId,
-                        index
-                      ) => {
-
-                        const wine =
-                          wines.find(
-                            w =>
-                              w.id ===
-                              wineId
-                          );
-
-                        return (
-
-                          <Line
-                            key={wineId}
-                            type="monotone"
-                            dataKey={wineId}
-                            name={
-                              wine?.name
-                            }
-                            stroke={
-                              colors[
-                                index %
-                                colors.length
-                              ]
-                            }
-                            strokeWidth={4}
-                            dot={false}
-                          />
-
-                        );
-
-                      }
-                    )}
+                    <Line
+                      type="monotone"
+                      dataKey="price"
+                      stroke="#c9a227"
+                      strokeWidth={4}
+                      dot={true}
+                    />
 
                   </LineChart>
 
@@ -697,10 +791,15 @@ function App() {
 
               <div
                 style={{
+
                   display: "flex",
+
                   gap: 12,
+
                   marginBottom: 20,
+
                   flexWrap: "wrap"
+
                 }}
               >
 
@@ -712,7 +811,9 @@ function App() {
 
                   onChange={e =>
                     setBudget(
-                      Number(e.target.value)
+                      Number(
+                        e.target.value
+                      )
                     )
                   }
 
@@ -725,7 +826,9 @@ function App() {
                   value={risk}
 
                   onChange={e =>
-                    setRisk(e.target.value)
+                    setRisk(
+                      e.target.value
+                    )
                   }
 
                   className="searchInput"
@@ -754,7 +857,9 @@ function App() {
 
                   onChange={e =>
                     setYears(
-                      Number(e.target.value)
+                      Number(
+                        e.target.value
+                      )
                     )
                   }
 
@@ -786,7 +891,8 @@ function App() {
 
                       <h2>
                         {
-                          portfolio.expectedROI
+                          portfolio
+                            .expectedROI
                         }%
                       </h2>
 
@@ -802,7 +908,8 @@ function App() {
                         €
                         {" "}
                         {
-                          portfolio.expectedProfit
+                          portfolio
+                            .expectedProfit
                         }
                       </h2>
 
@@ -818,7 +925,8 @@ function App() {
                         €
                         {" "}
                         {
-                          portfolio.expectedValue
+                          portfolio
+                            .expectedValue
                         }
                       </h2>
 
@@ -832,66 +940,80 @@ function App() {
                     }}
                   >
 
-                    {portfolio.allocation.map(
-                      item => (
+                    {portfolio
+                      .allocation.map(
+                        item => (
 
-                        <div
-                          key={item.wineId}
-                          className="wineCard"
-                        >
-
-                          <h2>
-                            {item.wineName}
-                          </h2>
-
-                          <p>
-                            {item.region}
-                          </p>
-
-                          <p>
-                            Signal:
-                            {" "}
-                            {item.signal}
-                          </p>
-
-                          <p>
-                            AI Score:
-                            {" "}
-                            {item.aiScore}
-                          </p>
-
-                          <p>
-                            Bottles:
-                            {" "}
-                            {
-                              item.estimatedBottles
+                          <div
+                            key={
+                              item.wineId
                             }
-                          </p>
+                            className="wineCard"
+                          >
 
-                          <p>
-                            Allocation:
-                            {" "}
-                            €
-                            {" "}
-                            {
-                              item.allocatedAmount
-                            }
-                          </p>
+                            <h2>
+                              {
+                                item.wineName
+                              }
+                            </h2>
 
-                          <p>
-                            Estimated Return:
-                            {" "}
-                            €
-                            {" "}
-                            {
-                              item.estimatedReturn
-                            }
-                          </p>
+                            <p>
+                              {
+                                item.region
+                              }
+                            </p>
 
-                        </div>
+                            <p>
+                              Signal:
+                              {" "}
+                              {
+                                item.signal
+                              }
+                            </p>
 
-                      )
-                    )}
+                            <p>
+                              AI Score:
+                              {" "}
+                              {
+                                item.aiScore
+                              }
+                            </p>
+
+                            <p>
+                              Bottles:
+                              {" "}
+                              {
+                                item
+                                  .estimatedBottles
+                              }
+                            </p>
+
+                            <p>
+                              Allocation:
+                              {" "}
+                              €
+                              {" "}
+                              {
+                                item
+                                  .allocatedAmount
+                              }
+                            </p>
+
+                            <p>
+                              Estimated Return:
+                              {" "}
+                              €
+                              {" "}
+                              {
+                                item
+                                  .estimatedReturn
+                              }
+                            </p>
+
+                          </div>
+
+                        )
+                      )}
 
                   </div>
 
