@@ -303,84 +303,126 @@ function App() {
     );
 
   const holdings =
-    orders.reduce(
-      (
-        acc,
-        order
-      ) => {
+  orders
+    .map(order => {
 
-        const wine =
-          wines.find(
-            w =>
-              w.id ===
+      const wine =
+        wines.find(
+          w =>
+            w.id ===
+            (
+              order.wine_id ||
+              order.wineId
+            )
+        );
+
+      if (!wine) {
+        return null;
+      }
+
+      const quantity =
+        Number(
+          order.quantity || 1
+        );
+
+      const purchasePrice =
+        Number(
+          order.purchasePrice || 0
+        );
+
+      const currentPrice =
+        Number(
+          wine.currentPrice || 0
+        );
+
+      const invested =
+        purchasePrice *
+        quantity;
+
+      const currentValue =
+        currentPrice *
+        quantity;
+
+      const profit =
+        currentValue -
+        invested;
+
+      const roi =
+        invested > 0
+
+          ? (
               (
-                order.wine_id ||
-                order.wineId
-              )
-          );
+                profit /
+                invested
+              ) * 100
+            ).toFixed(2)
 
-        if (!wine)
-          return acc;
+          : 0;
 
-        const existing =
-          acc.find(
-            item =>
-              item.id ===
-              wine.id
-          );
+      return {
 
-        if (existing) {
+        id:
+          wine.id,
 
-          existing.quantity +=
-            Number(
-              order.quantity || 1
-            );
+        name:
+          wine.name,
 
-        } else {
+        quantity,
 
-          acc.push({
+        purchasePrice,
 
-            id:
-              wine.id,
+        currentPrice,
 
-            name:
-              wine.name,
+        invested,
 
-            quantity:
-              Number(
-                order.quantity || 1
-              ),
+        currentValue,
 
-            totalValue:
-              Number(
-                wine.currentPrice || 0
-              ) *
-              Number(
-                order.quantity || 1
-              )
+        profit,
 
-          });
+        roi,
 
-        }
+        purchaseDate:
+          order.purchaseDate
 
-        return acc;
+      };
 
-      },
-
-      []
-
-    );
+    })
+    .filter(Boolean);
 
   const portfolioValue =
-    holdings.reduce(
+  holdings.reduce(
+    (sum, item) =>
+      sum +
+      item.currentValue,
+    0
+  );
 
-      (sum, item) =>
-        sum +
-        item.totalValue,
+const totalInvested =
+  holdings.reduce(
 
-      0
+    (sum, item) =>
+      sum +
+      item.invested,
 
-    );
+    0
+
+  );
+
+const totalProfit =
+  portfolioValue -
+  totalInvested;
+
+const portfolioROI =
+  totalInvested > 0
+
+    ? (
+        (
+          totalProfit /
+          totalInvested
+        ) * 100
+      ).toFixed(2)
+
+    : 0;
 
   return (
 
@@ -487,47 +529,89 @@ function App() {
 
               <section className="statsGrid">
 
-                <div className="statCard">
+  <div className="statCard">
 
-                  <small>
-                    Global Market
-                  </small>
+    <small>
+      Global Market
+    </small>
 
-                  <h2>
-                    €
-                    {" "}
-                    {totalMarket}
-                  </h2>
+    <h2>
+      €
+      {" "}
+      {totalMarket.toFixed(0)}
+    </h2>
 
-                </div>
+  </div>
 
-                <div className="statCard">
+  <div className="statCard">
 
-                  <small>
-                    Portfolio
-                  </small>
+    <small>
+      Portfolio Value
+    </small>
 
-                  <h2>
-                    €
-                    {" "}
-                    {portfolioValue}
-                  </h2>
+    <h2>
+      €
+      {" "}
+      {portfolioValue.toFixed(0)}
+    </h2>
 
-                </div>
+  </div>
 
-                <div className="statCard">
+  <div className="statCard">
 
-                  <small>
-                    Watchlist
-                  </small>
+    <small>
+      Invested
+    </small>
 
-                  <h2>
-                    {watchlist.length}
-                  </h2>
+    <h2>
+      €
+      {" "}
+      {totalInvested.toFixed(0)}
+    </h2>
 
-                </div>
+  </div>
 
-              </section>
+  <div className="statCard">
+
+    <small>
+      Profit / Loss
+    </small>
+
+    <h2>
+      €
+      {" "}
+      {totalProfit.toFixed(0)}
+    </h2>
+
+  </div>
+
+  <div className="statCard">
+
+  <small>
+    ROI
+  </small>
+
+  <h2>
+    {portfolioROI}%
+  </h2>
+
+</div>
+
+  <div className="statCard">
+
+    <small>
+      Watchlist
+    </small>
+
+    <h2>
+      {watchlist.length}
+    </h2>
+
+  </div>
+
+  
+
+</section>
 
             </>
 
