@@ -103,6 +103,22 @@ const marketplaceData = [
 
 let orders = [];
 
+function getMarketMultiplier(wine) {
+  const vintage = wine.vintage || 2018;
+  const age = 2026 - vintage;
+  const score = wine.criticScore || wine.investmentScore || 90;
+  const region = (wine.region || "").toLowerCase();
+  let base = 1.0;
+  if (age > 10) base += 0.015 * (age - 10);
+  if (score >= 98) base += 0.12;
+  else if (score >= 95) base += 0.08;
+  else if (score >= 92) base += 0.05;
+  if (region.includes("bordeaux") || region.includes("burgundy") || region.includes("borgogna")) base += 0.06;
+  else if (region.includes("toscana") || region.includes("tuscany") || region.includes("piemonte")) base += 0.04;
+  const noise = (Math.random() - 0.3) * 0.04;
+  return Math.max(1.0, base + noise);
+}
+
 function normalize(text) {
 
   return text
@@ -584,23 +600,6 @@ app.post(
     }
 
    const purchasePrice = Number(req.body.purchasePrice) || Number(wine.currentPrice) || 0;
-
-function getMarketMultiplier(wine) {
-  const vintage = wine.vintage || 2018;
-  const age = 2026 - vintage;
-  const score = wine.criticScore || wine.investmentScore || 90;
-  const region = (wine.region || "").toLowerCase();
-  let base = 1.0;
-  if (age > 10) base += 0.015 * (age - 10);
-  if (score >= 98) base += 0.12;
-  else if (score >= 95) base += 0.08;
-  else if (score >= 92) base += 0.05;
-  if (region.includes("bordeaux") || region.includes("burgundy") || region.includes("borgogna")) base += 0.06;
-  else if (region.includes("toscana") || region.includes("tuscany") || region.includes("piemonte")) base += 0.04;
-  const noise = (Math.random() - 0.3) * 0.04;
-  return Math.max(1.0, base + noise);
-}
-
 const multiplier = getMarketMultiplier(wine);
 const currentMarketPrice = Math.round(purchasePrice * multiplier);
 
