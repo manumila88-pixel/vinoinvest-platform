@@ -953,6 +953,45 @@ const portfolioROI =
           </tbody>
         </table>
 
+<div style={{ marginTop: 40, marginBottom: 20 }}>
+          <h3 style={{ fontSize: 18, marginBottom: 16, color: "#c9a227" }}>
+            Portfolio Growth
+          </h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart
+              data={(() => {
+                const months = [];
+                const now = new Date();
+                for (let i = 11; i >= 0; i--) {
+                  const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                  const label = d.toLocaleString("default", { month: "short", year: "2-digit" });
+                  const factor = 1 - (i * 0.008);
+                  months.push({
+                    date: label,
+                    value: Math.round(portfolioValue * factor)
+                  });
+                }
+                return months;
+              })()}
+            >
+              <CartesianGrid stroke="#1a1a1a" />
+              <XAxis dataKey="date" stroke="#555" tick={{ fontSize: 11 }} />
+              <YAxis stroke="#555" tick={{ fontSize: 11 }} tickFormatter={v => `€${v}`} />
+              <Tooltip formatter={v => [`€${v}`, "Portfolio"]} />
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke="#c9a227"
+                strokeWidth={3}
+                dot={false}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        <p style={{ marginTop: 16, fontSize: 12, color: "#555" }}>
+          * Estimated values based on 8% average annual growth (wine market historical avera...
+          
         <p style={{ marginTop: 16, fontSize: 12, color: "#555" }}>
           * Estimated values based on 8% average annual growth (wine market historical average)
         </p>
