@@ -953,26 +953,46 @@ const portfolioROI =
           </tbody>
         </table>
 
-<div style={{ marginTop: 40, marginBottom: 20 }}>
+<div style={{ marginTop: 40, marginBottom: 20, width: "100%" }}>
+  <h3 style={{ fontSize: 18, marginBottom: 16, color: "#c9a227" }}>
+    Portfolio Growth
+  </h3>
+  <ResponsiveContainer width="100%" height={300}>
+    <LineChart data={[
+      { date: "Jun 25", value: Math.round(portfolioValue * 0.912) },
+      { date: "Jul 25", value: Math.round(portfolioValue * 0.920) },
+      { date: "Aug 25", value: Math.round(portfolioValue * 0.928) },
+      { date: "Sep 25", value: Math.round(portfolioValue * 0.936) },
+      { date: "Oct 25", value: Math.round(portfolioValue * 0.944) },
+      { date: "Nov 25", value: Math.round(portfolioValue * 0.952) },
+      { date: "Dec 25", value: Math.round(portfolioValue * 0.960) },
+      { date: "Jan 26", value: Math.round(portfolioValue * 0.968) },
+      { date: "Feb 26", value: Math.round(portfolioValue * 0.976) },
+      { date: "Mar 26", value: Math.round(portfolioValue * 0.984) },
+      { date: "Apr 26", value: Math.round(portfolioValue * 0.992) },
+      { date: "May 26", value: Math.round(portfolioValue * 1.000) }
+    ]}>
+      <CartesianGrid stroke="#1a1a1a" />
+      <XAxis dataKey="date" stroke="#555" tick={{ fontSize: 11 }} />
+      <YAxis stroke="#555" tick={{ fontSize: 11 }} tickFormatter={v => `€${v}`} />
+      <Tooltip formatter={v => [`€${v}`, "Portfolio"]} />
+      <Line type="monotone" dataKey="value" stroke="#c9a227" strokeWidth={3} dot={false} />
+    </LineChart>
+  </ResponsiveContainer>
+</div>
           <h3 style={{ fontSize: 18, marginBottom: 16, color: "#c9a227" }}>
             Portfolio Growth
           </h3>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart
-              data={(() => {
-                const months = [];
-                const now = new Date();
-                for (let i = 11; i >= 0; i--) {
-                  const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-                  const label = d.toLocaleString("default", { month: "short", year: "2-digit" });
-                  const factor = 1 - (i * 0.008);
-                  months.push({
-                    date: label,
-                    value: Math.round(portfolioValue * factor)
-                  });
-                }
-                return months;
-              })()}
+              data={Array.from({ length: 12 }, (_, i) => {
+  const d = new Date();
+  d.setMonth(d.getMonth() - (11 - i));
+  return {
+    date: d.toLocaleString("default", { month: "short", year: "2-digit" }),
+    value: Math.round(portfolioValue * (1 - (11 - i) * 0.008))
+  };
+})}
             >
               <CartesianGrid stroke="#1a1a1a" />
               <XAxis dataKey="date" stroke="#555" tick={{ fontSize: 11 }} />
@@ -989,10 +1009,7 @@ const portfolioROI =
           </ResponsiveContainer>
         </div>
 
-        <p style={{ marginTop: 16, fontSize: 12, color: "#555" }}>
-          * Estimated values based on 8% average annual growth (wine market historical avera...
-          
-        <p style={{ marginTop: 16, fontSize: 12, color: "#555" }}>
+       <p style={{ marginTop: 16, fontSize: 12, color: "#555" }}>
           * Estimated values based on 8% average annual growth (wine market historical average)
         </p>
       </>
