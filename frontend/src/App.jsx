@@ -218,29 +218,20 @@ function App() {
 
   }
 
-  async function buyWine(
-    wineId
-  ) {
+  async function buyWine(wineId, purchasePrice) {
 
     await fetch(
       `${API}/api/orders`,
       {
-
         method: "POST",
-
         headers: {
-          "Content-Type":
-            "application/json"
+          "Content-Type": "application/json"
         },
-
         body: JSON.stringify({
-
           wineId,
-
-          quantity: 1
-
+          quantity: 1,
+          purchasePrice
         })
-
       }
     );
 
@@ -487,17 +478,30 @@ const portfolioROI =
           </button>
 
           <button
-            className={
-              tab === "portfolio"
-                ? "active"
-                : ""
-            }
-            onClick={() =>
-              setTab("portfolio")
-            }
-          >
-            Portfolio AI
-          </button>
+  className={
+    tab === "myportfolio"
+      ? "active"
+      : ""
+  }
+  onClick={() =>
+    setTab("myportfolio")
+  }
+>
+  My Portfolio
+</button>
+
+<button
+  className={
+    tab === "portfolio"
+      ? "active"
+      : ""
+  }
+  onClick={() =>
+    setTab("portfolio")
+  }
+>
+  Portfolio AI
+</button>
 
         </aside>
 
@@ -721,11 +725,7 @@ const portfolioROI =
                       </p>
 
                       <button
-                        onClick={() =>
-                          buyWine(
-                            wine.id
-                          )
-                        }
+                        onClick={() => buyWine(wine.id, wine.currentPrice)}
                       >
                         Add Position
                       </button>
@@ -865,6 +865,103 @@ const portfolioROI =
 
           )}
 
+{tab === "myportfolio" && (
+  <section className="ordersPanel">
+
+    <h2 style={{ marginBottom: 24 }}>My Portfolio</h2>
+
+    {holdings.length === 0 && (
+      <p style={{ color: "#888" }}>
+        No positions yet. Go to Market and add a position.
+      </p>
+    )}
+
+    {holdings.length > 0 && (
+      <>
+        <div className="statsGrid" style={{ marginBottom: 32 }}>
+          <div className="statCard">
+            <small>Portfolio Value</small>
+            <h2>€ {portfolioValue.toFixed(0)}</h2>
+          </div>
+          <div className="statCard">
+            <small>Total Invested</small>
+            <h2>€ {totalInvested.toFixed(0)}</h2>
+          </div>
+          <div className="statCard">
+            <small>Profit / Loss</small>
+            <h2 style={{ color: totalProfit >= 0 ? "#4caf50" : "#e53935" }}>
+              € {totalProfit.toFixed(0)}
+            </h2>
+          </div>
+          <div className="statCard">
+            <small>ROI</small>
+            <h2 style={{ color: portfolioROI >= 0 ? "#4caf50" : "#e53935" }}>
+              {portfolioROI}%
+            </h2>
+          </div>
+        </div>
+
+        <table style={{
+          width: "100%",
+          borderCollapse: "collapse",
+          fontSize: 14
+        }}>
+          <thead>
+            <tr style={{ borderBottom: "1px solid #333", color: "#888" }}>
+              <th style={{ textAlign: "left", padding: "10px 8px" }}>Wine</th>
+              <th style={{ textAlign: "right", padding: "10px 8px" }}>Bottles</th>
+              <th style={{ textAlign: "right", padding: "10px 8px" }}>Buy Price</th>
+              <th style={{ textAlign: "right", padding: "10px 8px" }}>Current</th>
+              <th style={{ textAlign: "right", padding: "10px 8px" }}>Invested</th>
+              <th style={{ textAlign: "right", padding: "10px 8px" }}>Value</th>
+              <th style={{ textAlign: "right", padding: "10px 8px" }}>P/L</th>
+              <th style={{ textAlign: "right", padding: "10px 8px" }}>ROI</th>
+              <th style={{ textAlign: "right", padding: "10px 8px" }}>1Y Est.</th>
+              <th style={{ textAlign: "right", padding: "10px 8px" }}>5Y Est.</th>
+              <th style={{ textAlign: "right", padding: "10px 8px" }}>10Y Est.</th>
+            </tr>
+          </thead>
+          <tbody>
+            {holdings.map((h, i) => {
+              const est1y  = (h.currentValue * 1.08).toFixed(0);
+              const est5y  = (h.currentValue * Math.pow(1.08, 5)).toFixed(0);
+              const est10y = (h.currentValue * Math.pow(1.08, 10)).toFixed(0);
+              return (
+                <tr key={h.id} style={{
+                  borderBottom: "1px solid #1a1a1a",
+                  background: i % 2 === 0 ? "transparent" : "#0d0d0d"
+                }}>
+                  <td style={{ padding: "12px 8px", fontWeight: 500 }}>{h.name}</td>
+                  <td style={{ textAlign: "right", padding: "12px 8px" }}>{h.quantity}</td>
+                  <td style={{ textAlign: "right", padding: "12px 8px" }}>€ {h.purchasePrice}</td>
+                  <td style={{ textAlign: "right", padding: "12px 8px" }}>€ {h.currentPrice}</td>
+                  <td style={{ textAlign: "right", padding: "12px 8px" }}>€ {h.invested.toFixed(0)}</td>
+                  <td style={{ textAlign: "right", padding: "12px 8px" }}>€ {h.currentValue.toFixed(0)}</td>
+                  <td style={{ textAlign: "right", padding: "12px 8px",
+                    color: h.profit >= 0 ? "#4caf50" : "#e53935" }}>
+                    {h.profit >= 0 ? "+" : ""}€ {h.profit.toFixed(0)}
+                  </td>
+                  <td style={{ textAlign: "right", padding: "12px 8px",
+                    color: h.roi >= 0 ? "#4caf50" : "#e53935" }}>
+                    {h.roi >= 0 ? "+" : ""}{h.roi}%
+                  </td>
+                  <td style={{ textAlign: "right", padding: "12px 8px", color: "#c9a227" }}>€ {est1y}</td>
+                  <td style={{ textAlign: "right", padding: "12px 8px", color: "#c9a227" }}>€ {est5y}</td>
+                  <td style={{ textAlign: "right", padding: "12px 8px", color: "#c9a227" }}>€ {est10y}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+
+        <p style={{ marginTop: 16, fontSize: 12, color: "#555" }}>
+          * Estimated values based on 8% average annual growth (wine market historical average)
+        </p>
+      </>
+    )}
+
+  </section>
+)}
           {tab === "portfolio" && (
 
             <section className="ordersPanel">
