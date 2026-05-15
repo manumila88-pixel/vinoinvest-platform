@@ -322,9 +322,8 @@ function App() {
         );
 
       const currentPrice =
-        Number(
-          wine.currentPrice || 0
-        );
+  Number(order.currentMarketPrice) ||
+  Number(wine.currentPrice || 0);
 
       const invested =
         purchasePrice *
