@@ -103,6 +103,18 @@ const marketplaceData = [
 
 let orders = [];
 
+function normalize(text) {
+
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(
+      /[\u0300-\u036f]/g,
+      ""
+    );
+
+}
+
 app.get("/", (req, res) => {
 
   res.json({
@@ -130,9 +142,10 @@ app.get(
   (req, res) => {
 
     const query =
-      (req.query.q || "")
+      (
+        req.query.q || ""
+      )
         .toString()
-        .toLowerCase()
         .trim();
 
     if (!query) {
@@ -149,32 +162,22 @@ app.get(
 
     }
 
+    const normalizedQuery =
+      normalize(query);
+
     const results =
       allWines
 
         .filter(wine => {
 
-          const searchable = `
-            ${wine.name}
-            ${wine.producer}
-            ${wine.region}
-            ${wine.country}
-            ${wine.vintage}
-          `
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(
-              /[\u0300-\u036f]/g,
-              ""
-            );
-
-          const normalizedQuery =
-            query
-              .normalize("NFD")
-              .replace(
-                /[\u0300-\u036f]/g,
-                ""
-              );
+          const searchable =
+            normalize(`
+              ${wine.name}
+              ${wine.producer}
+              ${wine.region}
+              ${wine.country}
+              ${wine.vintage}
+            `);
 
           return searchable.includes(
             normalizedQuery
@@ -251,35 +254,27 @@ app.get(
   (req, res) => {
 
     const query =
-      (req.query.q || "")
+      (
+        req.query.q || ""
+      )
         .toString()
-        .toLowerCase();
+        .trim();
+
+    const normalizedQuery =
+      normalize(query);
 
     const results =
       allWines
 
         .filter(wine => {
 
-          const searchable = `
-            ${wine.name}
-            ${wine.producer}
-            ${wine.region}
-            ${wine.country}
-          `
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(
-              /[\u0300-\u036f]/g,
-              ""
-            );
-
-          const normalizedQuery =
-            query
-              .normalize("NFD")
-              .replace(
-                /[\u0300-\u036f]/g,
-                ""
-              );
+          const searchable =
+            normalize(`
+              ${wine.name}
+              ${wine.producer}
+              ${wine.region}
+              ${wine.country}
+            `);
 
           return searchable.includes(
             normalizedQuery
@@ -297,7 +292,7 @@ app.get(
             );
 
           const bestPrice =
-            markets.length > 0
+            markets.length
 
               ? Math.min(
                   ...markets.map(
@@ -408,7 +403,7 @@ app.post(
 
     } = req.body;
 
-    let selected;
+    let selected = [];
 
     if (risk === "basso") {
 
@@ -436,9 +431,9 @@ app.post(
         allWines.filter(
           wine =>
             wine.risk ===
-            "Medio" ||
+              "Medio" ||
             wine.risk ===
-            "Basso"
+              "Basso"
         );
 
     }
@@ -446,24 +441,18 @@ app.post(
     const top =
       selected
         .sort(
-          (
-            a,
-            b
-          ) =>
+          (a, b) =>
             b.investmentScore -
             a.investmentScore
         )
         .slice(0, 3);
 
+    const percentages =
+      [0.45, 0.35, 0.2];
+
     const allocation =
       top.map(
-        (
-          wine,
-          index
-        ) => {
-
-          const percentages =
-            [0.45, 0.35, 0.2];
+        (wine, index) => {
 
           const allocatedAmount =
             Math.round(
@@ -471,15 +460,6 @@ app.post(
               percentages[
                 index
               ]
-            );
-
-          const estimatedBottles =
-            Math.max(
-              1,
-              Math.floor(
-                allocatedAmount /
-                wine.currentPrice
-              )
             );
 
           return {
@@ -510,7 +490,14 @@ app.post(
             currentPrice:
               wine.currentPrice,
 
-            estimatedBottles,
+            estimatedBottles:
+              Math.max(
+                1,
+                Math.floor(
+                  allocatedAmount /
+                  wine.currentPrice
+                )
+              ),
 
             estimatedReturn:
               Math.round(
@@ -527,10 +514,6 @@ app.post(
       Math.round(
         budget * 0.35
       );
-
-    const expectedValue =
-      budget +
-      expectedProfit;
 
     res.json({
 
@@ -550,7 +533,9 @@ app.post(
       totalAllocated:
         budget,
 
-      expectedValue,
+      expectedValue:
+        budget +
+        expectedProfit,
 
       expectedProfit,
 
@@ -576,6 +561,28 @@ app.post(
   "/api/orders",
   (req, res) => {
 
+    const wine =
+      allWines.find(
+        w =>
+          w.id ===
+          req.body.wineId
+      );
+
+    if (!wine) {
+
+      return res
+        .status(404)
+        .json({
+
+          success: false,
+
+          error:
+            "Wine not found"
+
+        });
+
+    }
+
     const order = {
 
       id: Date.now(),
@@ -585,6 +592,13 @@ app.post(
 
       quantity:
         req.body.quantity || 1,
+
+      purchasePrice:
+        wine.currentPrice,
+
+      purchaseDate:
+        new Date()
+          .toISOString(),
 
       createdAt:
         new Date()
