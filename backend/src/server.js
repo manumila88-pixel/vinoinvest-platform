@@ -52,9 +52,18 @@ const priceHistory =
     )
   );
 
+const bigWines =
+  JSON.parse(
+    fs.readFileSync(
+      path.join(__dirname, "data", "bigWines.json"),
+      "utf-8"
+    )
+  );
+
 const allWines = [
   ...wines,
-  ...externalWines
+  ...externalWines,
+  ...bigWines
 ];
 
 const marketplaceData = [
