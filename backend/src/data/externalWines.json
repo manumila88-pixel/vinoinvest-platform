@@ -1,8 +1,8 @@
 [
   {
     "id": "romanee-conti-2015",
-    "name": "Romanée-Conti Grand Cru 2015",
-    "producer": "Domaine de la Romanée-Conti",
+    "name": "Roman\u00e9e-Conti Grand Cru 2015",
+    "producer": "Domaine de la Roman\u00e9e-Conti",
     "region": "Burgundy",
     "country": "France",
     "vintage": 2015,
@@ -12,9 +12,9 @@
     "risk": "Alto",
     "liquidity": "Alta",
     "marketTrend": "Bullish",
-    "source": "external-market"
+    "source": "external-market",
+    "imageUrl": "https://www.wine-searcher.com/images/labels/10/51/10005110.jpg"
   },
-
   {
     "id": "opus-one-2018",
     "name": "Opus One 2018",
@@ -28,9 +28,9 @@
     "risk": "Medio",
     "liquidity": "Alta",
     "marketTrend": "Bullish",
-    "source": "external-market"
+    "source": "external-market",
+    "imageUrl": "https://www.wine-searcher.com/images/labels/10/04/10001004.jpg"
   },
-
   {
     "id": "penfolds-grange-2016",
     "name": "Penfolds Grange 2016",
@@ -44,9 +44,9 @@
     "risk": "Medio",
     "liquidity": "Media",
     "marketTrend": "Bullish",
-    "source": "external-market"
+    "source": "external-market",
+    "imageUrl": "https://www.wine-searcher.com/images/labels/10/03/10001003.jpg"
   },
-
   {
     "id": "vega-sicilia-unico-2012",
     "name": "Vega Sicilia Unico 2012",
@@ -60,6 +60,7 @@
     "risk": "Basso",
     "liquidity": "Alta",
     "marketTrend": "Stable",
-    "source": "external-market"
+    "source": "external-market",
+    "imageUrl": "https://www.wine-searcher.com/images/labels/10/06/10001006.jpg"
   }
 ]
