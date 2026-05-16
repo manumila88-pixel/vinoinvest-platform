@@ -18,6 +18,7 @@ function App() {
   const [budget, setBudget] = useState(10000);
   const [risk, setRisk] = useState("medio");
   const [years, setYears] = useState(5);
+
   useEffect(() => { loadData(); }, []);
 
   async function loadData() {
@@ -83,6 +84,7 @@ function App() {
       loadChart(wineId);
     }
   }
+
   const totalMarket = wines.reduce((sum, wine) => sum + Number(wine.currentPrice || 0), 0);
 
   const holdings = orders.map(order => {
@@ -117,13 +119,13 @@ function App() {
     { date: "Apr 26", value: Math.round(portfolioValue * 0.992) },
     { date: "May 26", value: Math.round(portfolioValue * 1.000) }
   ];
+
   return (
     <div className="app">
       <header className="header">
         <div className="logo">🍷 Vino<span>Invest</span></div>
         <div className="badge">global wine intelligence</div>
       </header>
-
       <main className="main">
         <aside className="sidebar">
           <button className={tab === "dashboard" ? "active" : ""} onClick={() => setTab("dashboard")}>Dashboard</button>
@@ -132,9 +134,7 @@ function App() {
           <button className={tab === "myportfolio" ? "active" : ""} onClick={() => setTab("myportfolio")}>My Portfolio</button>
           <button className={tab === "portfolio" ? "active" : ""} onClick={() => setTab("portfolio")}>Portfolio AI</button>
         </aside>
-
         <section className="content">
-
           {tab === "dashboard" && (
             <>
               <section className="hero">
@@ -155,48 +155,59 @@ function App() {
           )}
           {tab === "market" && (
             <>
-              <input
-                className="searchInput"
-                placeholder="Search any wine worldwide..."
-                value={search}
-                onChange={e => searchWine(e.target.value)}
-              />
+              <input className="searchInput" placeholder="Search any wine worldwide..." value={search} onChange={e => searchWine(e.target.value)} />
               <section className="marketGrid">
                 {searchResults.map(wine => (
                   <div className="wineCard" key={wine.id}>
-                    <h2>{wine.name}</h2>
-                    <p>{wine.producer}</p>
-                    <p>{wine.region} · {wine.country}</p>
-                    <p>€ {wine.currentPrice}</p>
-                    <p>AI Score: {wine.analysis?.aiScore}</p>
-                    <p>Signal: {wine.analysis?.signal}</p>
-                    <p>Estimated Return: € {wine.estimatedReturn || 0}</p>
-                    <p>Trust Level: {wine.analysis?.trustLevel || "High"}</p>
-                    <p>Risk: {wine.risk}</p>
-                    <p>Trend: {wine.marketTrend}</p>
-                    <button onClick={() => buyWine(wine.id, wine.currentPrice)}>Add Position</button>
-                    <button onClick={() => toggleWatchlist(wine)}>
-                      {watchlist.includes(wine.id) ? "Remove Watchlist" : "Add Watchlist"}
-                    </button>
+                    <div className="wineCard-image">
+                      {wine.imageUrl ? <img src={wine.imageUrl} alt={wine.name} /> : (
+                        <div className="wineCard-image-placeholder">
+                          <span>🍷</span>
+                          <p>{wine.region || "Fine Wine"}</p>
+                        </div>
+                      )}
+                    </div>
+                    <div className="wineCard-body">
+                      <div className="wineCard-badges">
+                        <span className={"badge-risk " + (wine.risk || "medio").toLowerCase()}>{wine.risk || "Medio"}</span>
+                        {wine.marketTrend && <span className="badge-trend">{wine.marketTrend}</span>}
+                      </div>
+                      <h2>{wine.name}</h2>
+                      <p className="wineCard-producer">{wine.producer} · {wine.vintage || ""}</p>
+                      <div className="wineCard-score">
+                        <span className="score-label">{wine.analysis && wine.analysis.aiScore ? wine.analysis.aiScore : wine.investmentScore || "—"}</span>
+                        <div className="score-bar"><div className="score-fill" style={{width: (wine.analysis && wine.analysis.aiScore ? wine.analysis.aiScore : wine.investmentScore || 75) + "%"}}></div></div>
+                        <span style={{fontSize:11,color:"#475569"}}>AI Score</span>
+                      </div>
+                      <div className="wineCard-price">
+                        <span className="price-main">€ {wine.currentPrice}</span>
+                        <span className="price-label">/ bottle</span>
+                      </div>
+                      <div className="wineCard-actions">
+                        <button className="btn-primary" onClick={() => buyWine(wine.id, wine.currentPrice)}>+ Add Position</button>
+                        <button className={"btn-secondary " + (watchlist.includes(wine.id) ? "active" : "")} onClick={() => toggleWatchlist(wine)}>
+                          {watchlist.includes(wine.id) ? "★" : "☆"}
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </section>
             </>
           )}
-
           {tab === "analysis" && (
             <section className="chartPanel">
               <h2>Watchlist Analysis</h2>
               {!selectedWine && <p>Add wines to watchlist from Market section.</p>}
               {selectedWine && (
-                <div style={{ marginBottom: 30 }}>
-                  <h3 style={{ fontSize: 28, marginBottom: 10 }}>{selectedWine.name}</h3>
+                <div style={{marginBottom:30}}>
+                  <h3 style={{fontSize:28,marginBottom:10}}>{selectedWine.name}</h3>
                   <p>Current Price: € {selectedWine.currentPrice}</p>
                   <p>Investment Score: {selectedWine.investmentScore}</p>
                 </div>
               )}
               <div className="chartBox">
-                <ResponsiveContainer width="100%" height={560}>
+                <ResponsiveContainer width="100%" height={360}>
                   <LineChart data={chartData}>
                     <CartesianGrid stroke="#1f1f1f" />
                     <XAxis dataKey="date" stroke="#888" />
@@ -210,182 +221,76 @@ function App() {
           )}
           {tab === "myportfolio" && (
             <section className="ordersPanel">
-              <h2 style={{ marginBottom: 24 }}>My Portfolio</h2>
-
-              {holdings.length === 0 && (
-                <p style={{ color: "#888" }}>No positions yet. Go to Market and add a position.</p>
-              )}
-
+              <h2 style={{marginBottom:24}}>My Portfolio</h2>
+              {holdings.length === 0 && <p style={{color:"#888"}}>No positions yet. Go to Market and add a position.</p>}
               {holdings.length > 0 && (
                 <>
-                  <div className="statsGrid" style={{ marginBottom: 32 }}>
+                  <div className="statsGrid" style={{marginBottom:32}}>
                     <div className="statCard"><small>Portfolio Value</small><h2>€ {portfolioValue.toFixed(0)}</h2></div>
                     <div className="statCard"><small>Total Invested</small><h2>€ {totalInvested.toFixed(0)}</h2></div>
-                    <div className="statCard">
-                      <small>Profit / Loss</small>
-                      <h2 style={{ color: totalProfit >= 0 ? "#4caf50" : "#e53935" }}>€ {totalProfit.toFixed(0)}</h2>
-                    </div>
-                    <div className="statCard">
-                      <small>ROI</small>
-                      <h2 style={{ color: portfolioROI >= 0 ? "#4caf50" : "#e53935" }}>{portfolioROI}%</h2>
-                    </div>
+                    <div className="statCard"><small>Profit / Loss</small><h2 style={{color:totalProfit>=0?"#4caf50":"#e53935"}}>€ {totalProfit.toFixed(0)}</h2></div>
+                    <div className="statCard"><small>ROI</small><h2 style={{color:portfolioROI>=0?"#4caf50":"#e53935"}}>{portfolioROI}%</h2></div>
                   </div>
-
-                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
+                  <table style={{width:"100%",borderCollapse:"collapse",fontSize:14}}>
                     <thead>
-                      <tr style={{ borderBottom: "1px solid #333", color: "#888" }}>
-                        <th style={{ textAlign: "left", padding: "10px 8px" }}>Wine</th>
-                        <th style={{ textAlign: "right", padding: "10px 8px" }}>Bottles</th>
-                        <th style={{ textAlign: "right", padding: "10px 8px" }}>Buy Price</th>
-                        <th style={{ textAlign: "right", padding: "10px 8px" }}>Current</th>
-                        <th style={{ textAlign: "right", padding: "10px 8px" }}>Invested</th>
-                        <th style={{ textAlign: "right", padding: "10px 8px" }}>Value</th>
-                        <th style={{ textAlign: "right", padding: "10px 8px" }}>P/L</th>
-                        <th style={{ textAlign: "right", padding: "10px 8px" }}>ROI</th>
-                        <th style={{ textAlign: "right", padding: "10px 8px" }}>1Y Est.</th>
-                        <th style={{ textAlign: "right", padding: "10px 8px" }}>5Y Est.</th>
-                        <th style={{ textAlign: "right", padding: "10px 8px" }}>10Y Est.</th>
+                      <tr style={{borderBottom:"1px solid #333",color:"#888"}}>
+                        <th style={{textAlign:"left",padding:"10px 8px"}}>Wine</th>
+                        <th style={{textAlign:"right",padding:"10px 8px"}}>Bottles</th>
+                        <th style={{textAlign:"right",padding:"10px 8px"}}>Buy Price</th>
+                        <th style={{textAlign:"right",padding:"10px 8px"}}>Current</th>
+                        <th style={{textAlign:"right",padding:"10px 8px"}}>Invested</th>
+                        <th style={{textAlign:"right",padding:"10px 8px"}}>Value</th>
+                        <th style={{textAlign:"right",padding:"10px 8px"}}>P/L</th>
+                        <th style={{textAlign:"right",padding:"10px 8px"}}>ROI</th>
+                        <th style={{textAlign:"right",padding:"10px 8px"}}>1Y Est.</th>
+                        <th style={{textAlign:"right",padding:"10px 8px"}}>5Y Est.</th>
+                        <th style={{textAlign:"right",padding:"10px 8px"}}>10Y Est.</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {holdings.map((h, i) => {
-                        const est1y = (h.currentValue * 1.08).toFixed(0);
-                        const est5y = (h.currentValue * Math.pow(1.08, 5)).toFixed(0);
-                        const est10y = (h.currentValue * Math.pow(1.08, 10)).toFixed(0);
+                      {holdings.map((h,i) => {
+                        const est1y = (h.currentValue*1.08).toFixed(0);
+                        const est5y = (h.currentValue*Math.pow(1.08,5)).toFixed(0);
+                        const est10y = (h.currentValue*Math.pow(1.08,10)).toFixed(0);
                         return (
-                          <tr key={h.id} style={{ borderBottom: "1px solid #1a1a1a", background: i % 2 === 0 ? "transparent" : "#0d0d0d" }}>
-                            <td style={{ padding: "12px 8px", fontWeight: 500 }}>{h.name}</td>
-                            <td style={{ textAlign: "right", padding: "12px 8px" }}>{h.quantity}</td>
-                            <td style={{ textAlign: "right", padding: "12px 8px" }}>€ {h.purchasePrice}</td>
-                            <td style={{ textAlign: "right", padding: "12px 8px" }}>€ {h.currentPrice}</td>
-                            <td style={{ textAlign: "right", padding: "12px 8px" }}>€ {h.invested.toFixed(0)}</td>
-                            <td style={{ textAlign: "right", padding: "12px 8px" }}>€ {h.currentValue.toFixed(0)}</td>
-                            <td style={{ textAlign: "right", padding: "12px 8px", color: h.profit >= 0 ? "#4caf50" : "#e53935" }}>
-                              {h.profit >= 0 ? "+" : ""}€ {h.profit.toFixed(0)}
-                            </td>
-                            <td style={{ textAlign: "right", padding: "12px 8px", color: h.roi >= 0 ? "#4caf50" : "#e53935" }}>
-                              {h.roi >= 0 ? "+" : ""}{h.roi}%
-                            </td>
-                            <td style={{ textAlign: "right", padding: "12px 8px", color: "#c9a227" }}>€ {est1y}</td>
-                            <td style={{ textAlign: "right", padding: "12px 8px", color: "#c9a227" }}>€ {est5y}</td>
-                            <td style={{ textAlign: "right", padding: "12px 8px", color: "#c9a227" }}>€ {est10y}</td>
+                          <tr key={h.id} style={{borderBottom:"1px solid #1a1a1a",background:i%2===0?"transparent":"#0d0d0d"}}>
+                            <td style={{padding:"12px 8px",fontWeight:500}}>{h.name}</td>
+                            <td style={{textAlign:"right",padding:"12px 8px"}}>{h.quantity}</td>
+                            <td style={{textAlign:"right",padding:"12px 8px"}}>€ {h.purchasePrice}</td>
+                            <td style={{textAlign:"right",padding:"12px 8px"}}>€ {h.currentPrice}</td>
+                            <td style={{textAlign:"right",padding:"12px 8px"}}>€ {h.invested.toFixed(0)}</td>
+                            <td style={{textAlign:"right",padding:"12px 8px"}}>€ {h.currentValue.toFixed(0)}</td>
+                            <td style={{textAlign:"right",padding:"12px 8px",color:h.profit>=0?"#4caf50":"#e53935"}}>{h.profit>=0?"+":""}€ {h.profit.toFixed(0)}</td>
+                            <td style={{textAlign:"right",padding:"12px 8px",color:h.roi>=0?"#4caf50":"#e53935"}}>{h.roi>=0?"+":""}{h.roi}%</td>
+                            <td style={{textAlign:"right",padding:"12px 8px",color:"#c9a227"}}>€ {est1y}</td>
+                            <td style={{textAlign:"right",padding:"12px 8px",color:"#c9a227"}}>€ {est5y}</td>
+                            <td style={{textAlign:"right",padding:"12px 8px",color:"#c9a227"}}>€ {est10y}</td>
                           </tr>
                         );
                       })}
                     </tbody>
                   </table>
-
-                  <div style={{ marginTop: 40, marginBottom: 20, width: "100%" }}>
-                    <h3 style={{ fontSize: 18, marginBottom: 16, color: "#c9a227" }}>Portfolio Growth</h3>
+                  <div style={{marginTop:40,marginBottom:20,width:"100%"}}>
+                    <h3 style={{fontSize:18,marginBottom:16,color:"#c9a227"}}>Portfolio Growth</h3>
                     <ResponsiveContainer width="100%" height={300}>
                       <LineChart data={growthData}>
                         <CartesianGrid stroke="#1a1a1a" />
-                        <XAxis dataKey="date" stroke="#555" tick={{ fontSize: 11 }} />
-                        <YAxis stroke="#555" tick={{ fontSize: 11 }} tickFormatter={v => `€${v}`} />
-                        <Tooltip formatter={v => [`€${v}`, "Portfolio"]} />
+                        <XAxis dataKey="date" stroke="#555" tick={{fontSize:11}} />
+                        <YAxis stroke="#555" tick={{fontSize:11}} tickFormatter={v => "€"+v} />
+                        <Tooltip formatter={v => ["€"+v,"Portfolio"]} />
                         <Line type="monotone" dataKey="value" stroke="#c9a227" strokeWidth={3} dot={false} />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
-
-                  <p style={{ marginTop: 16, fontSize: 12, color: "#555" }}>
-                    * Estimated values based on 8% average annual growth (wine market historical average)
-                  </p>
+                  <p style={{marginTop:16,fontSize:12,color:"#555"}}>* Estimated values based on 8% average annual growth (wine market historical average)</p>
                 </>
               )}
             </section>
           )}
-          {tab === "myportfolio" && (
-            <section className="ordersPanel">
-              <h2 style={{ marginBottom: 24 }}>My Portfolio</h2>
-
-              {holdings.length === 0 && (
-                <p style={{ color: "#888" }}>No positions yet. Go to Market and add a position.</p>
-              )}
-
-              {holdings.length > 0 && (
-                <>
-                  <div className="statsGrid" style={{ marginBottom: 32 }}>
-                    <div className="statCard"><small>Portfolio Value</small><h2>€ {portfolioValue.toFixed(0)}</h2></div>
-                    <div className="statCard"><small>Total Invested</small><h2>€ {totalInvested.toFixed(0)}</h2></div>
-                    <div className="statCard">
-                      <small>Profit / Loss</small>
-                      <h2 style={{ color: totalProfit >= 0 ? "#4caf50" : "#e53935" }}>€ {totalProfit.toFixed(0)}</h2>
-                    </div>
-                    <div className="statCard">
-                      <small>ROI</small>
-                      <h2 style={{ color: portfolioROI >= 0 ? "#4caf50" : "#e53935" }}>{portfolioROI}%</h2>
-                    </div>
-                  </div>
-
-                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
-                    <thead>
-                      <tr style={{ borderBottom: "1px solid #333", color: "#888" }}>
-                        <th style={{ textAlign: "left", padding: "10px 8px" }}>Wine</th>
-                        <th style={{ textAlign: "right", padding: "10px 8px" }}>Bottles</th>
-                        <th style={{ textAlign: "right", padding: "10px 8px" }}>Buy Price</th>
-                        <th style={{ textAlign: "right", padding: "10px 8px" }}>Current</th>
-                        <th style={{ textAlign: "right", padding: "10px 8px" }}>Invested</th>
-                        <th style={{ textAlign: "right", padding: "10px 8px" }}>Value</th>
-                        <th style={{ textAlign: "right", padding: "10px 8px" }}>P/L</th>
-                        <th style={{ textAlign: "right", padding: "10px 8px" }}>ROI</th>
-                        <th style={{ textAlign: "right", padding: "10px 8px" }}>1Y Est.</th>
-                        <th style={{ textAlign: "right", padding: "10px 8px" }}>5Y Est.</th>
-                        <th style={{ textAlign: "right", padding: "10px 8px" }}>10Y Est.</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {holdings.map((h, i) => {
-                        const est1y = (h.currentValue * 1.08).toFixed(0);
-                        const est5y = (h.currentValue * Math.pow(1.08, 5)).toFixed(0);
-                        const est10y = (h.currentValue * Math.pow(1.08, 10)).toFixed(0);
-                        return (
-                          <tr key={h.id} style={{ borderBottom: "1px solid #1a1a1a", background: i % 2 === 0 ? "transparent" : "#0d0d0d" }}>
-                            <td style={{ padding: "12px 8px", fontWeight: 500 }}>{h.name}</td>
-                            <td style={{ textAlign: "right", padding: "12px 8px" }}>{h.quantity}</td>
-                            <td style={{ textAlign: "right", padding: "12px 8px" }}>€ {h.purchasePrice}</td>
-                            <td style={{ textAlign: "right", padding: "12px 8px" }}>€ {h.currentPrice}</td>
-                            <td style={{ textAlign: "right", padding: "12px 8px" }}>€ {h.invested.toFixed(0)}</td>
-                            <td style={{ textAlign: "right", padding: "12px 8px" }}>€ {h.currentValue.toFixed(0)}</td>
-                            <td style={{ textAlign: "right", padding: "12px 8px", color: h.profit >= 0 ? "#4caf50" : "#e53935" }}>
-                              {h.profit >= 0 ? "+" : ""}€ {h.profit.toFixed(0)}
-                            </td>
-                            <td style={{ textAlign: "right", padding: "12px 8px", color: h.roi >= 0 ? "#4caf50" : "#e53935" }}>
-                              {h.roi >= 0 ? "+" : ""}{h.roi}%
-                            </td>
-                            <td style={{ textAlign: "right", padding: "12px 8px", color: "#c9a227" }}>€ {est1y}</td>
-                            <td style={{ textAlign: "right", padding: "12px 8px", color: "#c9a227" }}>€ {est5y}</td>
-                            <td style={{ textAlign: "right", padding: "12px 8px", color: "#c9a227" }}>€ {est10y}</td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-
-                  <div style={{ marginTop: 40, marginBottom: 20, width: "100%" }}>
-                    <h3 style={{ fontSize: 18, marginBottom: 16, color: "#c9a227" }}>Portfolio Growth</h3>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <LineChart data={growthData}>
-                        <CartesianGrid stroke="#1a1a1a" />
-                        <XAxis dataKey="date" stroke="#555" tick={{ fontSize: 11 }} />
-                        <YAxis stroke="#555" tick={{ fontSize: 11 }} tickFormatter={v => `€${v}`} />
-                        <Tooltip formatter={v => [`€${v}`, "Portfolio"]} />
-                        <Line type="monotone" dataKey="value" stroke="#c9a227" strokeWidth={3} dot={false} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-
-                  <p style={{ marginTop: 16, fontSize: 12, color: "#555" }}>
-                    * Estimated values based on 8% average annual growth (wine market historical average)
-                  </p>
-                </>
-              )}
-            </section>
-          )}
-           {tab === "portfolio" && (
+          {tab === "portfolio" && (
             <section className="ordersPanel">
               <h2>AI Portfolio Builder</h2>
-              <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
+              <div style={{display:"flex",gap:12,marginBottom:20,flexWrap:"wrap"}}>
                 <input type="number" value={budget} onChange={e => setBudget(Number(e.target.value))} className="searchInput" />
                 <select value={risk} onChange={e => setRisk(e.target.value)} className="searchInput">
                   <option value="basso">Low Risk</option>
@@ -395,7 +300,6 @@ function App() {
                 <input type="number" value={years} onChange={e => setYears(Number(e.target.value))} className="searchInput" />
                 <button onClick={generatePortfolio}>Generate Portfolio</button>
               </div>
-
               {portfolio && (
                 <>
                   <div className="statsGrid">
@@ -403,16 +307,16 @@ function App() {
                     <div className="statCard"><small>Expected Profit</small><h2>€ {portfolio.expectedProfit}</h2></div>
                     <div className="statCard"><small>Expected Value</small><h2>€ {portfolio.expectedValue}</h2></div>
                   </div>
-                  <div style={{ marginTop: 30 }}>
+                  <div style={{marginTop:30}}>
                     {portfolio.allocation.map(item => (
-                      <div key={item.wineId} className="wineCard">
-                        <h2>{item.wineName}</h2>
-                        <p>{item.region}</p>
-                        <p>Signal: {item.signal}</p>
-                        <p>AI Score: {item.aiScore}</p>
-                        <p>Bottles: {item.estimatedBottles}</p>
-                        <p>Allocation: € {item.allocatedAmount}</p>
-                        <p>Estimated Return: € {item.estimatedReturn}</p>
+                      <div key={item.wineId} className="wineCard" style={{marginBottom:16}}>
+                        <div className="wineCard-body">
+                          <h2>{item.wineName}</h2>
+                          <p className="wineCard-producer">{item.region}</p>
+                          <p>Signal: {item.signal} · AI Score: {item.aiScore}</p>
+                          <p>Bottles: {item.estimatedBottles} · Allocation: € {item.allocatedAmount}</p>
+                          <p>Estimated Return: € {item.estimatedReturn}</p>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -420,7 +324,6 @@ function App() {
               )}
             </section>
           )}
-
         </section>
       </main>
     </div>
