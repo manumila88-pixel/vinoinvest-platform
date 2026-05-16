@@ -1,7 +1,7 @@
 [
   {
     "id": "lafite-2018",
-    "name": "Château Lafite Rothschild 2018",
+    "name": "Ch\u00e2teau Lafite Rothschild 2018",
     "producer": "Lafite Rothschild",
     "region": "Bordeaux",
     "country": "France",
@@ -12,11 +12,12 @@
     "risk": "Basso",
     "liquidity": "Alta",
     "marketTrend": "Bullish",
-    "source": "liv-ex"
+    "source": "liv-ex",
+    "imageUrl": "https://images.vivino.com/thumbs/ApnIiXjcqWTX03ZD9dX9Lg_pb_x600.png"
   },
   {
     "id": "mouton-2018",
-    "name": "Château Mouton Rothschild 2018",
+    "name": "Ch\u00e2teau Mouton Rothschild 2018",
     "producer": "Mouton Rothschild",
     "region": "Bordeaux",
     "country": "France",
@@ -27,12 +28,13 @@
     "risk": "Basso",
     "liquidity": "Alta",
     "marketTrend": "Bullish",
-    "source": "liv-ex"
+    "source": "liv-ex",
+    "imageUrl": "https://images.vivino.com/thumbs/GrGNKxjbJRnzVoEN5ZFmdQ_pb_x600.png"
   },
   {
     "id": "margaux-2015",
-    "name": "Château Margaux 2015",
-    "producer": "Château Margaux",
+    "name": "Ch\u00e2teau Margaux 2015",
+    "producer": "Ch\u00e2teau Margaux",
     "region": "Bordeaux",
     "country": "France",
     "vintage": 2015,
@@ -42,11 +44,12 @@
     "risk": "Basso",
     "liquidity": "Alta",
     "marketTrend": "Bullish",
-    "source": "liv-ex"
+    "source": "liv-ex",
+    "imageUrl": "https://images.vivino.com/thumbs/Q1Nu8x8-QbCMIhSQE3b6Pg_pb_x600.png"
   },
   {
     "id": "hautbrion-2016",
-    "name": "Château Haut-Brion 2016",
+    "name": "Ch\u00e2teau Haut-Brion 2016",
     "producer": "Haut-Brion",
     "region": "Bordeaux",
     "country": "France",
@@ -72,7 +75,8 @@
     "risk": "Medio",
     "liquidity": "Alta",
     "marketTrend": "Bullish",
-    "source": "wine-searcher"
+    "source": "wine-searcher",
+    "imageUrl": "https://images.vivino.com/thumbs/b-9f_aRQZZOHdVR56njhYg_pb_x600.png"
   },
   {
     "id": "ornellaia-2015",
@@ -117,11 +121,12 @@
     "risk": "Medio",
     "liquidity": "Media",
     "marketTrend": "Bullish",
-    "source": "wine-searcher"
+    "source": "wine-searcher",
+    "imageUrl": "https://images.vivino.com/thumbs/6bBCMBNYTOOqKnHPmJrFGg_pb_x600.png"
   },
   {
     "id": "gaja-sori-2015",
-    "name": "Gaja Sorì San Lorenzo 2015",
+    "name": "Gaja Sor\u00ec San Lorenzo 2015",
     "producer": "Gaja",
     "region": "Piemonte",
     "country": "Italy",
@@ -136,8 +141,8 @@
   },
   {
     "id": "domp-p2-2004",
-    "name": "Dom Pérignon P2 2004",
-    "producer": "Dom Pérignon",
+    "name": "Dom P\u00e9rignon P2 2004",
+    "producer": "Dom P\u00e9rignon",
     "region": "Champagne",
     "country": "France",
     "vintage": 2004,
@@ -147,7 +152,8 @@
     "risk": "Basso",
     "liquidity": "Alta",
     "marketTrend": "Bullish",
-    "source": "liv-ex"
+    "source": "liv-ex",
+    "imageUrl": "https://images.vivino.com/thumbs/l2nQPQSRQqeKkEkbvE01Gw_pb_x600.png"
   },
   {
     "id": "krug-2008",
@@ -162,7 +168,8 @@
     "risk": "Basso",
     "liquidity": "Alta",
     "marketTrend": "Bullish",
-    "source": "liv-ex"
+    "source": "liv-ex",
+    "imageUrl": "https://images.vivino.com/thumbs/e-5TDX2q7A5MpGbSudSilA_pb_x600.png"
   },
   {
     "id": "salon-2012",
@@ -177,6 +184,7 @@
     "risk": "Alto",
     "liquidity": "Media",
     "marketTrend": "Bullish",
-    "source": "liv-ex"
+    "source": "liv-ex",
+    "imageUrl": "https://images.vivino.com/thumbs/V8cVRjrFqbDFyWcGBTtCcQ_pb_x600.png"
   }
 ]
