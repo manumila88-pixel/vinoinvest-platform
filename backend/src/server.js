@@ -1,4 +1,5 @@
 import express from "express";
+import pg from "pg";
 import cors from "cors";
 
 import fs from "fs";
@@ -110,7 +111,6 @@ const marketplaceData = [
 
 ];
 
-import pg from "pg";
 const { Pool } = pg;
 
 const pool = process.env.DATABASE_URL ? new Pool({
