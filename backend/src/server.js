@@ -110,6 +110,57 @@ const marketplaceData = [
 
 ];
 
+import pg from "pg";
+const { Pool } = pg;
+
+const pool = process.env.DATABASE_URL ? new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+}) : null;
+
+async function initDB() {
+  if (!pool) return;
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS orders (
+      id BIGINT PRIMARY KEY,
+      wine_id TEXT,
+      quantity INTEGER,
+      purchase_price NUMERIC,
+      current_market_price NUMERIC,
+      purchase_date TEXT,
+      created_at TEXT
+    )
+  `);
+}
+initDB();
+
+async function getOrders() {
+  if (!pool) return [];
+  try {
+    const r = await pool.query("SELECT * FROM orders ORDER BY created_at DESC");
+    return r.rows.map(row => ({
+      id: row.id,
+      wineId: row.wine_id,
+      wine_id: row.wine_id,
+      quantity: row.quantity,
+      purchasePrice: Number(row.purchase_price),
+      currentMarketPrice: Number(row.current_market_price),
+      purchaseDate: row.purchase_date,
+      createdAt: row.created_at
+    }));
+  } catch(e) { console.error(e); return []; }
+}
+
+async function saveOrder(order) {
+  if (!pool) return;
+  try {
+    await pool.query(
+      "INSERT INTO orders (id, wine_id, quantity, purchase_price, current_market_price, purchase_date, created_at) VALUES ($1,$2,$3,$4,$5,$6,$7) ON CONFLICT (id) DO NOTHING",
+      [order.id, order.wineId, order.quantity, order.purchasePrice, order.currentMarketPrice || 0, order.purchaseDate, order.createdAt]
+    );
+  } catch(e) { console.error(e); }
+}
+
 let orders = [];
 
 function getMarketMultiplier(wine) {
@@ -584,7 +635,7 @@ app.get(
 
 app.post(
   "/api/orders",
-  (req, res) => {
+  async (req, res) => {
 
     const wine =
       allWines.find(
@@ -624,6 +675,7 @@ const order = {
 };
 
 orders.push(order);
+  await saveOrder(order);
 
 res.json({
   success: true,
