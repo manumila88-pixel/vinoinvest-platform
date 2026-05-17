@@ -184,7 +184,21 @@ function App() {
                         <span className="price-label">/ bottle</span>
                       </div>
                       <div className="wineCard-actions">
-                        <button className="btn-primary" onClick={() => buyWine(wine.id, wine.currentPrice)}>+ Add Position</button>
+                        {wine.platforms && (
+                          <div style={{marginBottom:12,width:"100%"}}>
+                            <p style={{fontSize:11,color:"#475569",marginBottom:6,textTransform:"uppercase"}}>Compare Prices</p>
+                            {wine.platforms.map(p => (
+                              <div key={p.name} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"5px 0",borderBottom:"1px solid #0f1923"}}>
+                                <span style={{fontSize:12,color:"#94a3b8"}}>{p.logo} {p.name}</span>
+                                <div style={{display:"flex",alignItems:"center",gap:6}}>
+                                  <span style={{fontSize:13,fontWeight:700}}>€ {p.price}</span>
+                                  <a href={p.url} target="_blank" rel="noopener noreferrer" style={{fontSize:11,padding:"2px 7px",background:"#c9a227",color:"black",borderRadius:5,fontWeight:700,textDecoration:"none"}}>Buy</a>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        <button className="btn-primary" onClick={() => buyWine(wine.id, wine.currentPrice)}>+ Add to Portfolio</button>
                         <button className={"btn-secondary " + (watchlist.includes(wine.id) ? "active" : "")} onClick={() => toggleWatchlist(wine)}>
                           {watchlist.includes(wine.id) ? "★" : "☆"}
                         </button>
