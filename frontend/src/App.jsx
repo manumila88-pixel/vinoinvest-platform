@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import "./style.css";
+
+const WineBottle3D = lazy(() => import("./WineBottle3D"));
 
 const API = "https://vinoinvest-backend-2.onrender.com";
 
@@ -160,12 +162,9 @@ function App() {
                 {searchResults.map(wine => (
                   <div className="wineCard" key={wine.id}>
                     <div className="wineCard-image">
-                      {wine.imageUrl ? <img src={wine.imageUrl} alt={wine.name} /> : (
-                        <div className="wineCard-image-placeholder">
-                          <span>🍷</span>
-                          <p>{wine.region || "Fine Wine"}</p>
-                        </div>
-                      )}
+                      <Suspense fallback={<div style={{width:"100%",height:"180px"}} />}>
+                        <WineBottle3D wine={wine} />
+                      </Suspense>
                     </div>
                     <div className="wineCard-body">
                       <div className="wineCard-badges">
