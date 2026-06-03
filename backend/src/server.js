@@ -305,7 +305,28 @@ app.get(
                   ? "Interesting"
                   : "Monitor"
 
-            }
+            },
+
+            platforms: [
+              {
+                name: "Vivino",
+                logo: "🍇",
+                price: Math.round(wine.currentPrice * 1.05),
+                url: `https://www.vivino.com/search/wines?q=${encodeURIComponent(wine.name)}`
+              },
+              {
+                name: "Wine-Searcher",
+                logo: "🔍",
+                price: Math.round(wine.currentPrice * 0.98),
+                url: `https://www.wine-searcher.com/find/${encodeURIComponent(wine.name)}`
+              },
+              {
+                name: "Millesima",
+                logo: "🍾",
+                price: Math.round(wine.currentPrice * 1.02),
+                url: `https://www.millesima.com/recherche.html?q=${encodeURIComponent(wine.name)}`
+              }
+            ]
 
           };
 
