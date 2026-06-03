@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { supabase } from "./lib/supabase";
 
 const GOLD = "#c9a84c";
 const BG = "#0a0f1e";
@@ -40,6 +41,9 @@ export default function LandingPage({ onLogin }) {
   const [authTab, setAuthTab] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [accountType, setAccountType] = useState("b2c");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!showModal) return;
@@ -53,12 +57,38 @@ export default function LandingPage({ onLogin }) {
     setAuthTab("login");
     setEmail("");
     setPassword("");
+    setAccountType(type === "enterprise" ? "b2b" : "b2c");
+    setError("");
     setShowModal(true);
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    if (email && password) onLogin({ email, type: modalType });
+    setError("");
+    setLoading(true);
+    try {
+      if (authTab === "signup") {
+        const { data, error: signUpError } = await supabase.auth.signUp({ email, password });
+        if (signUpError) { setError(signUpError.message); setLoading(false); return; }
+        if (data.user) {
+          await supabase.from("users").insert({ id: data.user.id, email, account_type: accountType });
+          if (!data.session) {
+            setError("Account created! Check your email to confirm before logging in.");
+            setLoading(false);
+            return;
+          }
+          onLogin({ user: data.user, account_type: accountType });
+        }
+      } else {
+        const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        if (signInError) { setError(signInError.message); setLoading(false); return; }
+        const { data: userData } = await supabase.from("users").select("account_type").eq("id", data.user.id).single();
+        onLogin({ user: data.user, account_type: userData?.account_type || "b2c" });
+      }
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
+    }
+    setLoading(false);
   }
 
   return (
@@ -348,7 +378,7 @@ export default function LandingPage({ onLogin }) {
                 onBlur={e => { e.currentTarget.style.borderColor = "#1a2540"; }}
               />
               <input
-                type="password" placeholder="Password" value={password}
+                type="password" placeholder="Password (min 6 characters)" value={password}
                 onChange={e => setPassword(e.target.value)} required
                 style={{
                   padding: "14px 16px", borderRadius: 10,
@@ -358,36 +388,43 @@ export default function LandingPage({ onLogin }) {
                 onFocus={e => { e.currentTarget.style.borderColor = GOLD; }}
                 onBlur={e => { e.currentTarget.style.borderColor = "#1a2540"; }}
               />
-              {authTab === "signup" && modalType === "enterprise" && (
-                <input
-                  type="text" placeholder="Company / Institution name"
+              {authTab === "signup" && (
+                <select
+                  value={accountType}
+                  onChange={e => setAccountType(e.target.value)}
                   style={{
                     padding: "14px 16px", borderRadius: 10,
                     border: "1px solid #1a2540", background: "#07090f",
-                    color: "white", fontSize: 14, outline: "none", width: "100%", boxSizing: "border-box"
+                    color: accountType ? "white" : "#4a5a6a", fontSize: 14,
+                    outline: "none", width: "100%", boxSizing: "border-box", cursor: "pointer"
                   }}
                   onFocus={e => { e.currentTarget.style.borderColor = GOLD; }}
                   onBlur={e => { e.currentTarget.style.borderColor = "#1a2540"; }}
-                />
+                >
+                  <option value="b2c">Private Investor (B2C)</option>
+                  <option value="b2b">Wealth Manager / Institution (B2B)</option>
+                </select>
+              )}
+              {error && (
+                <p style={{ color: error.startsWith("Account created") ? GOLD : "#e53935", fontSize: 13, margin: 0, textAlign: "center" }}>
+                  {error}
+                </p>
               )}
               <button
                 type="submit"
+                disabled={loading}
                 style={{
                   marginTop: 6, padding: "15px", borderRadius: 10, border: "none",
-                  background: `linear-gradient(135deg, ${GOLD}, #e8cc65)`,
-                  color: "#000", fontWeight: 800, fontSize: 15, cursor: "pointer",
-                  transition: "opacity 0.2s"
+                  background: loading ? "#3a3a3a" : `linear-gradient(135deg, ${GOLD}, #e8cc65)`,
+                  color: loading ? "#888" : "#000", fontWeight: 800, fontSize: 15,
+                  cursor: loading ? "not-allowed" : "pointer", transition: "opacity 0.2s"
                 }}
-                onMouseEnter={e => { e.currentTarget.style.opacity = "0.9"; }}
+                onMouseEnter={e => { if (!loading) e.currentTarget.style.opacity = "0.9"; }}
                 onMouseLeave={e => { e.currentTarget.style.opacity = "1"; }}
               >
-                {authTab === "login" ? "Log In →" : "Create Account →"}
+                {loading ? "Please wait..." : authTab === "login" ? "Log In →" : "Create Account →"}
               </button>
             </form>
-
-            <p style={{ textAlign: "center", marginTop: 18, fontSize: 11, color: "#253040" }}>
-              Demo platform — any email &amp; password accepted
-            </p>
           </div>
         </div>
       )}

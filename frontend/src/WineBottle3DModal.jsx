@@ -1,25 +1,125 @@
-import { useEffect, useRef } from "react";
-import * as THREE from "three";
+import { useEffect, useRef, useState } from "react";
 
-function getBottleInfo(wine) {
-  const text = (wine.variety || wine.name || "").toLowerCase();
-  if (text.includes("champagne") || text.includes("prosecco") || text.includes("sparkling") || text.includes("cava"))
-    return { color: 0x2d5a3d, label: "Bollicine" };
-  if (text.includes("ros"))
-    return { color: 0x6b2d45, label: "Rosé" };
-  if (
-    text.includes("white") || text.includes("bianco") || text.includes("blanc") ||
-    text.includes("chardonnay") || text.includes("riesling") || text.includes("pinot grigio") ||
-    text.includes("sauvignon") || text.includes("moscato") || text.includes("viognier") ||
-    text.includes("pinot gris") || text.includes("albari") || text.includes("gewurz")
-  ) return { color: 0x4a6e28, label: "Bianco" };
-  return { color: 0x1b3d22, label: "Rosso" };
+function getGlassColor(wine) {
+  const t = [wine.variety, wine.name, wine.region].filter(Boolean).join(" ").toLowerCase();
+  if (t.includes("champagne") || t.includes("prosecco") || t.includes("cava") || t.includes("spumante") || t.includes("crémant") || t.includes("cremant")) return "#3e5c18";
+  if (t.includes("chardonnay") || t.includes("sauvignon") || t.includes("riesling") || t.includes("pinot grigio") || t.includes("pinot gris") || t.includes("viognier") || t.includes("moscato") || t.includes("gewurz") || t.includes("albari") || t.includes("white") || t.includes("bianco") || t.includes("blanc") || t.includes("soave") || t.includes("vermentino") || t.includes("gavi")) return "#4f7a22";
+  if (t.includes("ros")) return "#5a2035";
+  if (t.includes("barolo") || t.includes("amarone") || t.includes("brunello") || t.includes("monfortino") || t.includes("masseto") || t.includes("conterno")) return "#080f09";
+  if (t.includes("cabernet") || t.includes("merlot") || t.includes("pinot noir") || t.includes("chianti") || t.includes("sassicaia") || t.includes("ornellaia") || t.includes("bordeaux") || t.includes("pomerol") || t.includes("saint-emilion")) return "#0d2015";
+  return "#1b3d22";
+}
+
+function getWineType(wine) {
+  const t = [wine.variety, wine.name, wine.region].filter(Boolean).join(" ").toLowerCase();
+  if (t.includes("champagne") || t.includes("prosecco") || t.includes("cava") || t.includes("spumante")) return "Bollicine";
+  if (t.includes("ros")) return "Rosé";
+  if (t.includes("chardonnay") || t.includes("sauvignon") || t.includes("riesling") || t.includes("pinot grigio") || t.includes("bianco") || t.includes("blanc") || t.includes("white")) return "Bianco";
+  return "Rosso";
+}
+
+function cleanName(name) {
+  return (name || "").replace(/\s+\d{4}$/, "").trim();
+}
+
+function truncate(str, max) {
+  if (!str) return "";
+  return str.length > max ? str.slice(0, max - 1) + "…" : str;
+}
+
+// Split long name into two lines at a word boundary near the middle
+function splitName(name, max = 16) {
+  const clean = cleanName(name);
+  if (clean.length <= max) return [clean, ""];
+  const mid = Math.floor(clean.length / 2);
+  let split = clean.lastIndexOf(" ", mid);
+  if (split < 4) split = clean.indexOf(" ", mid);
+  if (split < 0) return [clean.slice(0, max) + "…", ""];
+  return [clean.slice(0, split), truncate(clean.slice(split + 1), max)];
+}
+
+const BODY = "M12,192 L68,192 L70,190 L70,92 C70,75 52,68 50,65 L50,22 C50,12 46,8 40,8 C34,8 30,12 30,22 L30,65 C28,68 10,75 10,92 L10,190 L12,192 Z";
+
+function BottleSvg({ wine, width, height, uid }) {
+  const color = getGlassColor(wine);
+  const gid = `bg${uid}`;
+  const cid = `cg${uid}`;
+  const [line1, line2] = splitName(wine.name, 16);
+  const producer = truncate(wine.producer, 15);
+  const vintage = wine.vintage ? String(wine.vintage) : "";
+  const region = truncate(wine.region, 14);
+
+  return (
+    <svg width={width} height={height} viewBox="0 0 80 200" style={{ display: "block" }}>
+      <defs>
+        <linearGradient id={gid} x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stopColor="rgba(0,0,0,0.55)" />
+          <stop offset="22%"  stopColor="rgba(255,255,255,0.06)" />
+          <stop offset="42%"  stopColor="rgba(255,255,255,0.22)" />
+          <stop offset="62%"  stopColor="rgba(0,0,0,0.04)" />
+          <stop offset="100%" stopColor="rgba(0,0,0,0.48)" />
+        </linearGradient>
+        <linearGradient id={cid} x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stopColor="rgba(0,0,0,0.38)" />
+          <stop offset="45%"  stopColor="rgba(255,220,80,0.45)" />
+          <stop offset="100%" stopColor="rgba(0,0,0,0.38)" />
+        </linearGradient>
+      </defs>
+
+      <path d={BODY} fill={color} />
+      <path d={BODY} fill={`url(#${gid})`} />
+
+      {/* Label — ivory, gold border, serif text */}
+      <rect x="11" y="96" width="58" height="80" rx="2" fill="#f7f2e8" />
+      {/* Outer gold border */}
+      <rect x="11" y="96" width="58" height="80" rx="2" fill="none" stroke="#c9a22799" strokeWidth="0.9" />
+      {/* Inner decorative lines */}
+      <line x1="15" y1="102" x2="65" y2="102" stroke="#c9a22766" strokeWidth="0.7" />
+      <line x1="15" y1="172" x2="65" y2="172" stroke="#c9a22766" strokeWidth="0.7" />
+
+      {/* Wine name — line 1 */}
+      <text x="40" y="117" textAnchor="middle" fontSize="6.2" fontFamily="Georgia,'Times New Roman',serif" fill="#1a1205" fontWeight="bold">{line1}</text>
+      {/* Wine name — line 2 (if needed) */}
+      {line2 && (
+        <text x="40" y="127" textAnchor="middle" fontSize="6.2" fontFamily="Georgia,'Times New Roman',serif" fill="#1a1205" fontWeight="bold">{line2}</text>
+      )}
+
+      {/* Producer italic */}
+      {producer && (
+        <text x="40" y={line2 ? "140" : "134"} textAnchor="middle" fontSize="4.8" fontFamily="Georgia,'Times New Roman',serif" fill="#4a3a10" fontStyle="italic">{producer}</text>
+      )}
+
+      {/* Region */}
+      {region && (
+        <text x="40" y={line2 ? "150" : "144"} textAnchor="middle" fontSize="4.2" fontFamily="Georgia,'Times New Roman',serif" fill="#6a5020" letterSpacing="0.5">{region}</text>
+      )}
+
+      <line x1="24" y1={line2 ? "157" : "152"} x2="56" y2={line2 ? "157" : "152"} stroke="#c9a22766" strokeWidth="0.6" />
+
+      {/* Vintage — prominent */}
+      {vintage && (
+        <text x="40" y={line2 ? "168" : "164"} textAnchor="middle" fontSize="7" fontFamily="Georgia,'Times New Roman',serif" fill="#8a6010" fontWeight="bold" letterSpacing="1.5">{vintage}</text>
+      )}
+
+      {/* Capsule */}
+      <rect x="28" y="10" width="24" height="22" rx="3" fill="#c9a227" />
+      <rect x="28" y="10" width="24" height="22" rx="3" fill={`url(#${cid})`} />
+
+      {/* Edge highlight */}
+      <path d="M10,190 L10,92 C10,75 28,68 30,65" stroke="rgba(255,255,255,0.12)" strokeWidth="1.5" fill="none" />
+
+      {/* Punt shadow at base */}
+      <ellipse cx="40" cy="192" rx="13" ry="2.5" fill="rgba(0,0,0,0.35)" />
+    </svg>
+  );
 }
 
 export default function WineBottle3DModal({ wine, onClose }) {
-  const mountRef = useRef(null);
+  const bottleRef = useRef(null);
+  const wrapperRef = useRef(null);
+  const stateRef = useRef({ angle: 20, isDragging: false, lastX: 0, vel: 0 });
+  const [useImage, setUseImage] = useState(!!wine.imageUrl);
 
-  // Close on Escape
   useEffect(() => {
     const onKey = (e) => { if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", onKey);
@@ -27,207 +127,67 @@ export default function WineBottle3DModal({ wine, onClose }) {
   }, [onClose]);
 
   useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
+    const bottle = bottleRef.current;
+    const wrapper = wrapperRef.current;
+    if (!bottle || !wrapper) return;
 
-    const W = container.offsetWidth || 520;
-    const H = 420;
+    const s = stateRef.current;
+    let animId;
 
-    // Scene
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x060e1c);
-    scene.fog = new THREE.FogExp2(0x060e1c, 0.06);
-
-    const camera = new THREE.PerspectiveCamera(34, W / H, 0.1, 100);
-    camera.position.set(0, 0.1, 5.6);
-    camera.lookAt(0, 0, 0);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(W, H);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    container.appendChild(renderer.domElement);
-
-    // Lighting
-    scene.add(new THREE.AmbientLight(0xffffff, 0.35));
-
-    const key = new THREE.DirectionalLight(0xffffff, 1.1);
-    key.position.set(3, 5, 5);
-    key.castShadow = true;
-    key.shadow.mapSize.set(1024, 1024);
-    scene.add(key);
-
-    const fill = new THREE.DirectionalLight(0x3355bb, 0.35);
-    fill.position.set(-4, 2, 3);
-    scene.add(fill);
-
-    const rim = new THREE.DirectionalLight(0xc9a227, 0.6);
-    rim.position.set(0, 5, -4);
-    scene.add(rim);
-
-    const pt1 = new THREE.PointLight(0xc9a227, 0.5, 7);
-    pt1.position.set(1.5, 1.5, 2.5);
-    scene.add(pt1);
-
-    const pt2 = new THREE.PointLight(0x6688ff, 0.3, 6);
-    pt2.position.set(-1.5, 0.5, 2);
-    scene.add(pt2);
-
-    // Ground plane
-    const groundGeo = new THREE.PlaneGeometry(10, 10);
-    const groundMat = new THREE.MeshPhongMaterial({ color: 0x090f1e, shininess: 20 });
-    const ground = new THREE.Mesh(groundGeo, groundMat);
-    ground.rotation.x = -Math.PI / 2;
-    ground.position.y = -1.15;
-    ground.receiveShadow = true;
-    scene.add(ground);
-
-    // Reflection disk under bottle
-    const reflGeo = new THREE.CircleGeometry(0.5, 48);
-    const reflMat = new THREE.MeshPhongMaterial({
-      color: 0x1a2a44,
-      transparent: true,
-      opacity: 0.5,
-      shininess: 80,
-    });
-    const refl = new THREE.Mesh(reflGeo, reflMat);
-    refl.rotation.x = -Math.PI / 2;
-    refl.position.y = -1.14;
-    scene.add(refl);
-
-    // Bottle profile (Bordeaux)
-    const pts = [
-      new THREE.Vector2(0.000, 0.000),
-      new THREE.Vector2(0.235, 0.000),
-      new THREE.Vector2(0.255, 0.025),
-      new THREE.Vector2(0.275, 0.120),
-      new THREE.Vector2(0.293, 0.350),
-      new THREE.Vector2(0.300, 0.650),
-      new THREE.Vector2(0.298, 0.850),
-      new THREE.Vector2(0.272, 0.980),
-      new THREE.Vector2(0.190, 1.110),
-      new THREE.Vector2(0.105, 1.240),
-      new THREE.Vector2(0.093, 1.500),
-      new THREE.Vector2(0.092, 1.680),
-      new THREE.Vector2(0.105, 1.710),
-      new THREE.Vector2(0.107, 1.740),
-      new THREE.Vector2(0.093, 1.760),
-    ];
-
-    const { color } = getBottleInfo(wine);
-
-    const bottleGeo = new THREE.LatheGeometry(pts, 64);
-    const bottleMat = new THREE.MeshPhongMaterial({
-      color,
-      transparent: true,
-      opacity: 0.83,
-      shininess: 160,
-      specular: new THREE.Color(0x99bbff),
-      side: THREE.DoubleSide,
-    });
-    const bottle = new THREE.Mesh(bottleGeo, bottleMat);
-    bottle.position.y = -0.88;
-    bottle.castShadow = true;
-    scene.add(bottle);
-
-    // Base disk
-    const baseGeo = new THREE.CircleGeometry(0.235, 48);
-    const baseMat = new THREE.MeshPhongMaterial({ color, shininess: 60 });
-    const base = new THREE.Mesh(baseGeo, baseMat);
-    base.rotation.x = -Math.PI / 2;
-    base.position.y = 0.001;
-    bottle.add(base);
-
-    // Gold capsule
-    const capGeo = new THREE.CylinderGeometry(0.107, 0.107, 0.14, 48);
-    const capMat = new THREE.MeshPhongMaterial({
-      color: 0xc9a227,
-      shininess: 130,
-      specular: new THREE.Color(0xffffaa),
-    });
-    const cap = new THREE.Mesh(capGeo, capMat);
-    cap.position.y = 1.71;
-    cap.castShadow = true;
-    bottle.add(cap);
-
-    // Label
-    const labelGeo = new THREE.CylinderGeometry(
-      0.302, 0.302, 0.52,
-      64, 1, true,
-      -Math.PI * 0.42, Math.PI * 0.84
-    );
-    const labelMat = new THREE.MeshPhongMaterial({
-      color: 0xf5f0de,
-      shininess: 8,
-      side: THREE.FrontSide,
-    });
-    const label = new THREE.Mesh(labelGeo, labelMat);
-    label.position.y = 0.42;
-    bottle.add(label);
-
-    // Mouse / touch drag rotation
-    let isDragging = false;
-    let autoRotate = true;
-    let lastX = 0;
-    let velX = 0;
-
-    const onDown = (x) => { isDragging = true; autoRotate = false; lastX = x; velX = 0; };
-    const onMove = (x) => {
-      if (!isDragging) return;
-      const dx = x - lastX;
-      bottle.rotation.y += dx * 0.011;
-      velX = dx;
-      lastX = x;
+    const tick = () => {
+      if (!s.isDragging) {
+        if (Math.abs(s.vel) > 0.08) {
+          s.angle += s.vel * 0.55;
+          s.vel *= 0.90;
+        } else {
+          s.vel = 0;
+          s.angle += 0.35;
+        }
+      }
+      bottle.style.transform = `rotateY(${s.angle}deg)`;
+      animId = requestAnimationFrame(tick);
     };
-    const onUp = () => { isDragging = false; };
+    animId = requestAnimationFrame(tick);
 
-    const onMouseDown = (e) => onDown(e.clientX);
-    const onMouseMove = (e) => onMove(e.clientX);
-    const onMouseUp = () => onUp();
-    const onTouchStart = (e) => onDown(e.touches[0].clientX);
-    const onTouchMove = (e) => { e.preventDefault(); onMove(e.touches[0].clientX); };
-    const onTouchEnd = () => onUp();
+    const onMouseDown = (e) => {
+      s.isDragging = true; s.lastX = e.clientX; s.vel = 0;
+      wrapper.style.cursor = "grabbing";
+    };
+    const onMouseMove = (e) => {
+      if (!s.isDragging) return;
+      const dx = e.clientX - s.lastX;
+      s.angle += dx * 0.65; s.vel = dx; s.lastX = e.clientX;
+    };
+    const onMouseUp = () => { s.isDragging = false; wrapper.style.cursor = "grab"; };
+    const onTouchStart = (e) => { s.isDragging = true; s.lastX = e.touches[0].clientX; s.vel = 0; };
+    const onTouchMove = (e) => {
+      e.preventDefault();
+      const dx = e.touches[0].clientX - s.lastX;
+      s.angle += dx * 0.65; s.vel = dx; s.lastX = e.touches[0].clientX;
+    };
+    const onTouchEnd = () => { s.isDragging = false; };
 
-    renderer.domElement.addEventListener("mousedown", onMouseDown);
+    wrapper.addEventListener("mousedown", onMouseDown);
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("mouseup", onMouseUp);
-    renderer.domElement.addEventListener("touchstart", onTouchStart, { passive: true });
-    renderer.domElement.addEventListener("touchmove", onTouchMove, { passive: false });
-    renderer.domElement.addEventListener("touchend", onTouchEnd);
-
-    // Animation
-    let animId;
-    const animate = () => {
-      animId = requestAnimationFrame(animate);
-      if (autoRotate) {
-        bottle.rotation.y += 0.006;
-      } else if (!isDragging && Math.abs(velX) > 0.01) {
-        // Momentum decay after drag
-        bottle.rotation.y += velX * 0.011;
-        velX *= 0.92;
-      }
-      renderer.render(scene, camera);
-    };
-    animate();
+    wrapper.addEventListener("touchstart", onTouchStart, { passive: true });
+    wrapper.addEventListener("touchmove", onTouchMove, { passive: false });
+    wrapper.addEventListener("touchend", onTouchEnd);
 
     return () => {
       cancelAnimationFrame(animId);
-      renderer.domElement.removeEventListener("mousedown", onMouseDown);
+      wrapper.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
-      renderer.domElement.removeEventListener("touchstart", onTouchStart);
-      renderer.domElement.removeEventListener("touchmove", onTouchMove);
-      renderer.domElement.removeEventListener("touchend", onTouchEnd);
-      if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
-      renderer.dispose();
-      [bottleGeo, bottleMat, baseGeo, baseMat, capGeo, capMat,
-        labelGeo, labelMat, groundGeo, groundMat, reflGeo, reflMat].forEach(o => o.dispose());
+      wrapper.removeEventListener("touchstart", onTouchStart);
+      wrapper.removeEventListener("touchmove", onTouchMove);
+      wrapper.removeEventListener("touchend", onTouchEnd);
     };
-  }, [wine.id]);
+  }, []);
 
-  const { label: wineType } = getBottleInfo(wine);
+  const wineType = getWineType(wine);
   const aiScore = wine.analysis?.aiScore ?? wine.investmentScore ?? "—";
+  const uid = `m${String(wine.id).replace(/\W/g, "")}`;
 
   return (
     <div className="bottle-overlay" onClick={onClose}>
@@ -235,9 +195,35 @@ export default function WineBottle3DModal({ wine, onClose }) {
         <button className="bottle-modal-close" onClick={onClose}>×</button>
 
         <div
-          ref={mountRef}
-          style={{ width: "100%", height: "420px", cursor: "grab", userSelect: "none" }}
-        />
+          ref={wrapperRef}
+          style={{
+            width: "100%", height: "380px",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            background: "linear-gradient(180deg, #060e1c 0%, #0a1628 100%)",
+            perspective: "600px",
+            cursor: "grab",
+            borderRadius: "12px 12px 0 0",
+            userSelect: "none",
+            overflow: "hidden",
+          }}
+        >
+          <div ref={bottleRef}>
+            {useImage ? (
+              <img
+                src={wine.imageUrl}
+                alt=""
+                style={{
+                  height: "340px", width: "auto", objectFit: "contain",
+                  filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.8)) drop-shadow(0 0 16px rgba(201,162,39,0.18))",
+                  display: "block",
+                }}
+                onError={() => setUseImage(false)}
+              />
+            ) : (
+              <BottleSvg wine={wine} width={140} height={350} uid={uid} />
+            )}
+          </div>
+        </div>
 
         <div className="bottle-modal-info">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
@@ -251,12 +237,8 @@ export default function WineBottle3DModal({ wine, onClose }) {
           <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
             <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#0c1a2e", color: "#60a5fa", border: "1px solid #1e3a5f" }}>{wineType}</span>
             <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#1a1207", color: "#c9a227", border: "1px solid #5a400d" }}>AI Score {aiScore}</span>
-            {wine.risk && (
-              <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#0d1f0d", color: "#4ade80", border: "1px solid #166534" }}>{wine.risk}</span>
-            )}
-            {wine.marketTrend && (
-              <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#131a0d", color: "#86efac", border: "1px solid #166534" }}>{wine.marketTrend}</span>
-            )}
+            {wine.risk && <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#0d1f0d", color: "#4ade80", border: "1px solid #166534" }}>{wine.risk}</span>}
+            {wine.marketTrend && <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#131a0d", color: "#86efac", border: "1px solid #166534" }}>{wine.marketTrend}</span>}
           </div>
 
           <p style={{ fontSize: 10, color: "#334155", marginTop: 14, textAlign: "center", letterSpacing: "0.05em", textTransform: "uppercase" }}>

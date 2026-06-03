@@ -1,42 +1,18 @@
-import React, { useEffect, useState, lazy, Suspense } from "react";
+import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import LandingPage from "./LandingPage";
+import { supabase } from "./lib/supabase";
+import WineBottle3D from "./WineBottle3D";
+import WineBottle3DModal from "./WineBottle3DModal";
 import "./style.css";
-
-const WineBottle3D = lazy(() => import("./WineBottle3D"));
-const WineBottle3DModal = lazy(() => import("./WineBottle3DModal"));
-
-function BottlePlaceholder({ wine }) {
-  return (
-    <div className="wineCard-image-placeholder">
-      <svg width="38" height="104" viewBox="0 0 38 104" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="13" y="0" width="12" height="5" rx="2" fill="#1e3a5f"/>
-        <rect x="11" y="5" width="16" height="9" rx="2" fill="#1e3a5f"/>
-        <path d="M7 14 C5 20 4 26 4 34 L4 84 C4 95 11 100 19 100 C27 100 34 95 34 84 L34 34 C34 26 33 20 31 14 Z" fill="#0b1a2e" stroke="#1e3a5f" strokeWidth="1.5"/>
-        <rect x="4" y="52" width="30" height="24" rx="1" fill="#0f2235" opacity="0.7"/>
-        <line x1="4" y1="52" x2="34" y2="52" stroke="#1e3a5f" strokeWidth="1"/>
-        <line x1="4" y1="76" x2="34" y2="76" stroke="#1e3a5f" strokeWidth="1"/>
-      </svg>
-      <p className="placeholder-label">{wine?.region || "Fine Wine"}</p>
-    </div>
-  );
-}
-
-class Bottle3DErrorBoundary extends React.Component {
-  state = { error: false };
-  static getDerivedStateFromError() { return { error: true }; }
-  render() {
-    if (this.state.error) return <BottlePlaceholder wine={this.props.wine} />;
-    return this.props.children;
-  }
-}
 
 const API = "https://vinoinvest-backend-2.onrender.com";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState("");
+  const [accountType, setAccountType] = useState("b2c");
   const [tab, setTab] = useState("dashboard");
   const [modalWine, setModalWine] = useState(null);
   const [wines, setWines] = useState([]);
@@ -50,6 +26,25 @@ function App() {
   const [budget, setBudget] = useState(10000);
   const [risk, setRisk] = useState("medio");
   const [years, setYears] = useState(5);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === "INITIAL_SESSION" && session) {
+        const { data: userData } = await supabase.from("users").select("account_type").eq("id", session.user.id).single();
+        const type = userData?.account_type || "b2c";
+        setUserEmail(session.user.email);
+        setAccountType(type);
+        setIsLoggedIn(true);
+        localStorage.setItem("vino_user", JSON.stringify({ email: session.user.email, account_type: type }));
+      } else if (event === "SIGNED_OUT") {
+        setIsLoggedIn(false);
+        setUserEmail("");
+        setAccountType("b2c");
+        localStorage.removeItem("vino_user");
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => { if (isLoggedIn) loadData(); }, [isLoggedIn]);
 
@@ -155,9 +150,11 @@ function App() {
   if (!isLoggedIn) {
     return (
       <LandingPage
-        onLogin={({ email }) => {
-          setUserEmail(email);
+        onLogin={({ user, account_type }) => {
+          setUserEmail(user.email);
+          setAccountType(account_type);
           setIsLoggedIn(true);
+          localStorage.setItem("vino_user", JSON.stringify({ email: user.email, account_type }));
         }}
       />
     );
@@ -170,8 +167,9 @@ function App() {
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <div className="badge">global wine intelligence</div>
           {userEmail && <span style={{ fontSize: 13, color: "#475569" }}>{userEmail}</span>}
+          {accountType && <span style={{ fontSize: 11, color: "#c9a227", border: "1px solid #c9a22744", borderRadius: 4, padding: "2px 7px", textTransform: "uppercase" }}>{accountType}</span>}
           <button
-            onClick={() => { setIsLoggedIn(false); setUserEmail(""); }}
+            onClick={async () => { await supabase.auth.signOut(); }}
             style={{ padding: "6px 16px", border: "1px solid #1e293b", borderRadius: 8, background: "transparent", color: "#64748b", fontSize: 13, cursor: "pointer" }}
           >
             Sign Out
@@ -212,11 +210,7 @@ function App() {
                 {searchResults.map(wine => (
                   <div className="wineCard" key={wine.id}>
                     <div className="wineCard-image" onClick={() => setModalWine(wine)}>
-                      <Bottle3DErrorBoundary wine={wine}>
-                        <Suspense fallback={<BottlePlaceholder wine={wine} />}>
-                          <WineBottle3D wine={wine} />
-                        </Suspense>
-                      </Bottle3DErrorBoundary>
+                      <WineBottle3D wine={wine} />
                       <span className="bottle-hint">3D</span>
                     </div>
                     <div className="wineCard-body">
@@ -394,9 +388,7 @@ function App() {
       </main>
 
       {modalWine && (
-        <Suspense fallback={null}>
-          <WineBottle3DModal wine={modalWine} onClose={() => setModalWine(null)} />
-        </Suspense>
+        <WineBottle3DModal wine={modalWine} onClose={() => setModalWine(null)} />
       )}
     </div>
   );

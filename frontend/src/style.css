@@ -69,4 +69,5 @@ body { background: #020617; color: white; font-family: Inter, Arial, sans-serif;
 .bottle-modal-close { position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 50%; background: rgba(30,41,59,0.9); border: 1px solid #334155; color: #94a3b8; font-size: 20px; line-height: 32px; text-align: center; cursor: pointer; z-index: 10; transition: 0.18s; }
 .bottle-modal-close:hover { background: #334155; color: white; border-color: #475569; }
 .bottle-modal-info { padding: 18px 22px 22px; border-top: 1px solid #1e293b; }
+@keyframes cssBottleSpin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
 @media (max-width: 768px) { .sidebar { width: 70px; } .sidebar button { font-size: 0; padding: 0; justify-content: center; align-items: center; display: flex; } .content { padding: 16px; } .hero h1 { font-size: 28px; } .statsGrid { grid-template-columns: repeat(2, 1fr); } .marketGrid { grid-template-columns: 1fr; } }
