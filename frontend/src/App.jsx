@@ -4,11 +4,13 @@ import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianG
 import "./style.css";
 
 const WineBottle3D = lazy(() => import("./WineBottle3D"));
+const WineBottle3DModal = lazy(() => import("./WineBottle3DModal"));
 
 const API = "https://vinoinvest-backend-2.onrender.com";
 
 function App() {
   const [tab, setTab] = useState("dashboard");
+  const [modalWine, setModalWine] = useState(null);
   const [wines, setWines] = useState([]);
   const [orders, setOrders] = useState([]);
   const [watchlist, setWatchlist] = useState([]);
@@ -161,10 +163,11 @@ function App() {
               <section className="marketGrid">
                 {searchResults.map(wine => (
                   <div className="wineCard" key={wine.id}>
-                    <div className="wineCard-image">
+                    <div className="wineCard-image" onClick={() => setModalWine(wine)}>
                       <Suspense fallback={<div style={{width:"100%",height:"180px"}} />}>
                         <WineBottle3D wine={wine} />
                       </Suspense>
+                      <span className="bottle-hint">3D</span>
                     </div>
                     <div className="wineCard-body">
                       <div className="wineCard-badges">
@@ -339,6 +342,12 @@ function App() {
           )}
         </section>
       </main>
+
+      {modalWine && (
+        <Suspense fallback={null}>
+          <WineBottle3DModal wine={modalWine} onClose={() => setModalWine(null)} />
+        </Suspense>
+      )}
     </div>
   );
 }
