@@ -39,6 +39,8 @@ export default function WineBottle3D({ wine }) {
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(W, H);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // Let click events pass through the canvas to the parent div
+    renderer.domElement.style.pointerEvents = "none";
     container.appendChild(renderer.domElement);
 
     // Lights
