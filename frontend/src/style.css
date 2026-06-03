@@ -65,6 +65,7 @@ body { background: #020617; color: white; font-family: Inter, Arial, sans-serif;
 @keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
 .bottle-modal { background: #0b1220; border: 1px solid #1f2937; border-radius: 24px; width: min(92vw, 560px); overflow: hidden; position: relative; animation: modalIn 0.22s cubic-bezier(0.34,1.56,0.64,1); }
 @keyframes modalIn { from { opacity: 0; transform: scale(0.92) translateY(12px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+@keyframes landingModalIn { from { opacity: 0; transform: scale(0.93) translateY(16px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 .bottle-modal-close { position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 50%; background: rgba(30,41,59,0.9); border: 1px solid #334155; color: #94a3b8; font-size: 20px; line-height: 32px; text-align: center; cursor: pointer; z-index: 10; transition: 0.18s; }
 .bottle-modal-close:hover { background: #334155; color: white; border-color: #475569; }
 .bottle-modal-info { padding: 18px 22px 22px; border-top: 1px solid #1e293b; }

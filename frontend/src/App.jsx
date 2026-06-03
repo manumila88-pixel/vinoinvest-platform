@@ -1,6 +1,7 @@
 import React, { useEffect, useState, lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
+import LandingPage from "./LandingPage";
 import "./style.css";
 
 const WineBottle3D = lazy(() => import("./WineBottle3D"));
@@ -34,6 +35,8 @@ class Bottle3DErrorBoundary extends React.Component {
 const API = "https://vinoinvest-backend-2.onrender.com";
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
   const [tab, setTab] = useState("dashboard");
   const [modalWine, setModalWine] = useState(null);
   const [wines, setWines] = useState([]);
@@ -48,7 +51,7 @@ function App() {
   const [risk, setRisk] = useState("medio");
   const [years, setYears] = useState(5);
 
-  useEffect(() => { loadData(); }, []);
+  useEffect(() => { if (isLoggedIn) loadData(); }, [isLoggedIn]);
 
   async function loadData() {
     try {
@@ -149,11 +152,31 @@ function App() {
     { date: "May 26", value: Math.round(portfolioValue * 1.000) }
   ];
 
+  if (!isLoggedIn) {
+    return (
+      <LandingPage
+        onLogin={({ email }) => {
+          setUserEmail(email);
+          setIsLoggedIn(true);
+        }}
+      />
+    );
+  }
+
   return (
     <div className="app">
       <header className="header">
         <div className="logo">🍷 Vino<span>Invest</span></div>
-        <div className="badge">global wine intelligence</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <div className="badge">global wine intelligence</div>
+          {userEmail && <span style={{ fontSize: 13, color: "#475569" }}>{userEmail}</span>}
+          <button
+            onClick={() => { setIsLoggedIn(false); setUserEmail(""); }}
+            style={{ padding: "6px 16px", border: "1px solid #1e293b", borderRadius: 8, background: "transparent", color: "#64748b", fontSize: 13, cursor: "pointer" }}
+          >
+            Sign Out
+          </button>
+        </div>
       </header>
       <main className="main">
         <aside className="sidebar">
