@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import LandingPage from "./LandingPage";
 import { supabase } from "./lib/supabase";
 import WineBottle3D from "./WineBottle3D";
 import WineBottle3DModal from "./WineBottle3DModal";
+import Pricing from "./pages/Pricing";
 import "./style.css";
 
 const API = "https://vinoinvest-backend-2.onrender.com";
 
 function App() {
+  const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [accountType, setAccountType] = useState("b2c");
@@ -183,6 +186,7 @@ function App() {
           <button className={tab === "analysis" ? "active" : ""} onClick={() => setTab("analysis")}>Analysis</button>
           <button className={tab === "myportfolio" ? "active" : ""} onClick={() => setTab("myportfolio")}>My Portfolio</button>
           <button className={tab === "portfolio" ? "active" : ""} onClick={() => setTab("portfolio")}>Portfolio AI</button>
+          <button onClick={() => navigate("/pricing")} style={{ marginTop: "auto" }}>Prezzi</button>
         </aside>
         <section className="content">
           {tab === "dashboard" && (
@@ -394,4 +398,11 @@ function App() {
   );
 }
 
-createRoot(document.getElementById("root")).render(<App />);
+createRoot(document.getElementById("root")).render(
+  <BrowserRouter>
+    <Routes>
+      <Route path="/pricing" element={<Pricing />} />
+      <Route path="*" element={<App />} />
+    </Routes>
+  </BrowserRouter>
+);

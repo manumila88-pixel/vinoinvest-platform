@@ -1,6 +1,8 @@
+import "dotenv/config";
 import express from "express";
 import pg from "pg";
 import cors from "cors";
+import paymentsRouter from "./routes/payments.js";
 
 import fs from "fs";
 import path from "path";
@@ -9,7 +11,10 @@ import { fileURLToPath } from "url";
 const app = express();
 
 app.use(cors());
+// Stripe webhook needs raw body — must be registered before express.json()
+app.use("/api/payments/stripe/webhook", express.raw({ type: "application/json" }));
 app.use(express.json());
+app.use("/api/payments", paymentsRouter);
 
 const __filename =
   fileURLToPath(import.meta.url);
