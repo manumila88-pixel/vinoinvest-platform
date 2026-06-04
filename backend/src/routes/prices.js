@@ -26,10 +26,11 @@ router.get("/:wineId", async (req, res) => {
   }
 });
 
-// GET /api/prices/:wineId/history — storico ultimi 12 mesi
+// GET /api/prices/:wineId/history?currentPrice=X — storico ultimi 12 mesi
 router.get("/:wineId/history", async (req, res) => {
   try {
-    const history = await getPriceHistory(req.params.wineId);
+    const currentPrice = req.query.currentPrice ? parseFloat(req.query.currentPrice) : null;
+    const history = await getPriceHistory(req.params.wineId, currentPrice);
     res.json({ wineId: req.params.wineId, history });
   } catch (err) {
     console.error("GET /api/prices/:wineId/history error:", err.message);

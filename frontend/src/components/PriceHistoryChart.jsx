@@ -23,13 +23,14 @@ const TooltipContent = ({ active, payload, label }) => {
   );
 };
 
-export default function PriceHistoryChart({ wineId, height = 200 }) {
+export default function PriceHistoryChart({ wineId, currentPrice = null, height = 200 }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!wineId) { setLoading(false); return; }
-    fetch(`${API}/api/prices/${encodeURIComponent(wineId)}/history`)
+    const qs = currentPrice ? `?currentPrice=${currentPrice}` : "";
+    fetch(`${API}/api/prices/${encodeURIComponent(wineId)}/history${qs}`)
       .then(r => r.ok ? r.json() : null)
       .then(d => {
         const points = d?.history || [];
@@ -55,7 +56,7 @@ export default function PriceHistoryChart({ wineId, height = 200 }) {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [wineId]);
+  }, [wineId, currentPrice]);
 
   if (loading) {
     return (

@@ -202,7 +202,46 @@ export async function getPrices(wineId, wineName, vintage, criticScore = 90) {
   return { ...entry, from_cache: false };
 }
 
-export async function getPriceHistory(wineId) {
+async function generateAndSeedHistory(wineId, currentPrice) {
+  const db = getPool();
+  const records = [];
+  const now = new Date();
+  let price = currentPrice * 0.85; // start 12 months ago at 85% of current
+
+  for (let monthsAgo = 11; monthsAgo >= 0; monthsAgo--) {
+    for (const day of [5, 15, 25]) {
+      const date = new Date(now);
+      date.setMonth(date.getMonth() - monthsAgo);
+      date.setDate(day);
+      const noise = 1 + (Math.random() - 0.5) * 0.10; // ±5%
+      records.push({
+        price: Math.round(price * noise * 100) / 100,
+        currency: "EUR",
+        source: "estimated",
+        recorded_at: date.toISOString(),
+      });
+    }
+    price = price * (1 + 0.01 + Math.random() * 0.02); // +1–3% monthly trend
+  }
+
+  if (db) {
+    try {
+      for (const rec of records) {
+        await db.query(
+          `INSERT INTO price_history (wine_id, price, currency, source, recorded_at)
+           VALUES ($1,$2,$3,$4,$5)`,
+          [wineId, rec.price, rec.currency, rec.source, rec.recorded_at]
+        );
+      }
+    } catch (e) {
+      console.warn("[priceService] Failed to persist estimated history:", e.message);
+    }
+  }
+
+  return records;
+}
+
+export async function getPriceHistory(wineId, currentPrice = null) {
   await ensureTables();
   const db = getPool();
   if (!db) return [];
@@ -220,7 +259,22 @@ export async function getPriceHistory(wineId) {
        ORDER BY recorded_at`,
       [pattern]
     );
-    return rows;
+
+    if (rows.length > 0) return rows;
+
+    // No history found — resolve currentPrice from cache or param, then generate
+    let basePrice = currentPrice;
+    if (!basePrice) {
+      const { rows: cached } = await db.query(
+        `SELECT price_avg FROM price_cache WHERE wine_id LIKE $1 LIMIT 1`,
+        [pattern]
+      );
+      basePrice = cached[0] ? Number(cached[0].price_avg) : null;
+    }
+
+    if (!basePrice) return [];
+
+    return generateAndSeedHistory(wineId, basePrice);
   } catch {
     return [];
   }

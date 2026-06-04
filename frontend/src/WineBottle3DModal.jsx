@@ -136,7 +136,7 @@ export default function WineBottle3DModal({ wine, onClose }) {
             <p style={{ fontSize: 10, color: "#475569", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>
               Storico Prezzi · 12 mesi
             </p>
-            <PriceHistoryChart wineId={wine.id} height={180} />
+            <PriceHistoryChart wineId={wine.id} currentPrice={wine.currentPrice} height={180} />
           </div>
 
           <p style={{ fontSize: 10, color: "#334155", marginTop: 14, textAlign: "center", letterSpacing: "0.05em", textTransform: "uppercase" }}>
