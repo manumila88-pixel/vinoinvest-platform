@@ -70,4 +70,5 @@ body { background: #020617; color: white; font-family: Inter, Arial, sans-serif;
 .bottle-modal-close:hover { background: #334155; color: white; border-color: #475569; }
 .bottle-modal-info { padding: 18px 22px 22px; border-top: 1px solid #1e293b; }
 @keyframes cssBottleSpin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @media (max-width: 768px) { .sidebar { width: 70px; } .sidebar button { font-size: 0; padding: 0; justify-content: center; align-items: center; display: flex; } .content { padding: 16px; } .hero h1 { font-size: 28px; } .statsGrid { grid-template-columns: repeat(2, 1fr); } .marketGrid { grid-template-columns: 1fr; } }

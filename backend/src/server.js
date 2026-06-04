@@ -3,6 +3,8 @@ import express from "express";
 import pg from "pg";
 import cors from "cors";
 import paymentsRouter from "./routes/payments.js";
+import pricesRouter from "./routes/prices.js";
+import "./jobs/priceUpdater.js";
 
 import fs from "fs";
 import path from "path";
@@ -15,6 +17,7 @@ app.use(cors());
 app.use("/api/payments/stripe/webhook", express.raw({ type: "application/json" }));
 app.use(express.json());
 app.use("/api/payments", paymentsRouter);
+app.use("/api/prices", pricesRouter);
 
 const __filename =
   fileURLToPath(import.meta.url);
