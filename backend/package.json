@@ -10,7 +10,6 @@
     "@paypal/checkout-server-sdk": "^1.0.3",
     "axios": "^1.17.0",
     "cheerio": "^1.2.0",
-    "coinbase-commerce-node": "^1.0.4",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "express": "^4.21.2",

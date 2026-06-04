@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
@@ -11,7 +11,7 @@ import Pricing from "./pages/Pricing";
 import WinePriceCompare from "./components/WinePriceCompare";
 import "./style.css";
 
-const API = "https://vinoinvest-backend-2.onrender.com";
+const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
 function PortfolioSparkline({ wineId, purchasePrice, currentPrice }) {
   const sparkData = useMemo(() => {
@@ -42,8 +42,17 @@ function App() {
   const [wines, setWines] = useState([]);
   const [orders, setOrders] = useState([]);
   const [watchlist, setWatchlist] = useState([]);
-  const [search, setSearch] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  const [marketWines, setMarketWines] = useState([]);
+  const [marketPage, setMarketPage] = useState(1);
+  const [marketSearch, setMarketSearch] = useState("");
+  const [marketLoading, setMarketLoading] = useState(false);
+  const [marketHasMore, setMarketHasMore] = useState(true);
+  const marketSentinelRef = useRef(null);
+  const mLoadingRef = useRef(false);
+  const mHasMoreRef = useRef(true);
+  const mPageRef = useRef(1);
+  const mSearchRef = useRef("");
+  const mDebounceRef = useRef(null);
   const [portfolio, setPortfolio] = useState(null);
   const [chartData, setChartData] = useState([]);
   const [selectedWine, setSelectedWine] = useState(null);
@@ -74,24 +83,65 @@ function App() {
 
   async function loadData() {
     try {
-      const winesRes = await fetch(`${API}/api/market/wines`);
-      const winesData = await winesRes.json();
-      setWines(winesData);
-      const ordersRes = await fetch(`${API}/api/orders`);
+      const [winesRes, ordersRes] = await Promise.all([
+        fetch(`${API}/api/market/wines`),
+        fetch(`${API}/api/orders`),
+      ]);
+      setWines(await winesRes.json());
       const ordersData = await ordersRes.json();
       setOrders(Array.isArray(ordersData) ? ordersData : []);
     } catch (error) { console.error(error); }
   }
 
-  async function searchWine(value) {
-    setSearch(value);
-    if (!value.trim()) { setSearchResults([]); return; }
+  async function loadMarketWines(search, page, append) {
+    if (mLoadingRef.current) return;
+    mLoadingRef.current = true;
+    setMarketLoading(true);
     try {
-      const res = await fetch(`${API}/api/global-search?q=${value}`);
+      const params = new URLSearchParams({ page, limit: 20 });
+      if (search) params.set("search", search);
+      const res = await fetch(`${API}/api/wines?${params}`);
       const data = await res.json();
-      setSearchResults(data.results || []);
-    } catch (error) { console.error(error); setSearchResults([]); }
+      setMarketWines(prev => append ? [...prev, ...data.results] : data.results);
+      setMarketPage(data.page);
+      mPageRef.current = data.page;
+      setMarketHasMore(data.hasMore);
+      mHasMoreRef.current = data.hasMore;
+    } catch (e) {
+      console.error(e);
+    } finally {
+      mLoadingRef.current = false;
+      setMarketLoading(false);
+    }
   }
+
+  function handleMarketSearch(value) {
+    setMarketSearch(value);
+    mSearchRef.current = value;
+    clearTimeout(mDebounceRef.current);
+    mDebounceRef.current = setTimeout(() => {
+      mHasMoreRef.current = true;
+      loadMarketWines(value, 1, false);
+    }, 400);
+  }
+
+  useEffect(() => {
+    if (tab === "market" && marketWines.length === 0 && !mLoadingRef.current) {
+      loadMarketWines("", 1, false);
+    }
+  }, [tab]);
+
+  useEffect(() => {
+    const sentinel = marketSentinelRef.current;
+    if (!sentinel) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !mLoadingRef.current && mHasMoreRef.current) {
+        loadMarketWines(mSearchRef.current, mPageRef.current + 1, true);
+      }
+    }, { rootMargin: "300px" });
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [tab, marketWines]);
 
   async function loadChart(wineId) {
     try {
@@ -139,16 +189,17 @@ function App() {
   const totalMarket = wines.reduce((sum, wine) => sum + Number(wine.currentPrice || 0), 0);
 
   const holdings = orders.map(order => {
-    const wine = wines.find(w => w.id === (order.wine_id || order.wineId));
-    if (!wine) return null;
+    const wineId = order.wine_id || order.wineId;
+    const wine = wines.find(w => w.id === wineId);
     const quantity = Number(order.quantity || 1);
     const purchasePrice = Number(order.purchasePrice || 0);
-    const currentPrice = Number(order.currentMarketPrice) || Number(wine.currentPrice || 0);
+    const currentPrice = Number(order.currentMarketPrice) || Number(wine?.currentPrice || 0);
+    if (!purchasePrice && !currentPrice) return null;
     const invested = purchasePrice * quantity;
     const currentValue = currentPrice * quantity;
     const profit = currentValue - invested;
     const roi = invested > 0 ? ((profit / invested) * 100).toFixed(2) : 0;
-    return { id: wine.id, name: wine.name, quantity, purchasePrice, currentPrice, invested, currentValue, profit, roi };
+    return { id: wineId, name: order.wineName || wine?.name || wineId, quantity, purchasePrice, currentPrice, invested, currentValue, profit, roi };
   }).filter(Boolean);
 
   const portfolioValue = holdings.reduce((sum, item) => sum + item.currentValue, 0);
@@ -230,9 +281,14 @@ function App() {
           )}
           {tab === "market" && (
             <>
-              <input className="searchInput" placeholder="Search any wine worldwide..." value={search} onChange={e => searchWine(e.target.value)} />
+              <input
+                className="searchInput"
+                placeholder="Search any wine worldwide..."
+                value={marketSearch}
+                onChange={e => handleMarketSearch(e.target.value)}
+              />
               <section className="marketGrid">
-                {searchResults.map(wine => (
+                {marketWines.map(wine => (
                   <div className="wineCard" key={wine.id}>
                     <div className="wineCard-image" onClick={() => setModalWine(wine)}>
                       <WineBottle3D wine={wine} />
@@ -246,8 +302,8 @@ function App() {
                       <h2>{wine.name}</h2>
                       <p className="wineCard-producer">{wine.producer} · {wine.vintage || ""}</p>
                       <div className="wineCard-score">
-                        <span className="score-label">{wine.analysis && wine.analysis.aiScore ? wine.analysis.aiScore : wine.investmentScore || "—"}</span>
-                        <div className="score-bar"><div className="score-fill" style={{width: (wine.analysis && wine.analysis.aiScore ? wine.analysis.aiScore : wine.investmentScore || 75) + "%"}}></div></div>
+                        <span className="score-label">{wine.investmentScore || "—"}</span>
+                        <div className="score-bar"><div className="score-fill" style={{width: (wine.investmentScore || 75) + "%"}}></div></div>
                         <span style={{fontSize:11,color:"#475569"}}>AI Score</span>
                       </div>
                       <div className="wineCard-price">
@@ -270,6 +326,17 @@ function App() {
                   </div>
                 ))}
               </section>
+              {marketLoading && (
+                <div style={{ textAlign: "center", padding: "20px", color: "#475569", fontSize: 13 }}>
+                  Caricamento vini...
+                </div>
+              )}
+              {!marketLoading && marketWines.length === 0 && (
+                <div style={{ textAlign: "center", padding: "40px", color: "#475569", fontSize: 14 }}>
+                  Nessun vino trovato.
+                </div>
+              )}
+              <div ref={marketSentinelRef} style={{ height: 1 }} />
             </>
           )}
           {tab === "analysis" && (

@@ -146,16 +146,20 @@ async function getOrders() {
   if (!pool) return [];
   try {
     const r = await pool.query("SELECT * FROM orders ORDER BY created_at DESC");
-    return r.rows.map(row => ({
-      id: row.id,
-      wineId: row.wine_id,
-      wine_id: row.wine_id,
-      quantity: row.quantity,
-      purchasePrice: Number(row.purchase_price),
-      currentMarketPrice: Number(row.current_market_price),
-      purchaseDate: row.purchase_date,
-      createdAt: row.created_at
-    }));
+    return r.rows.map(row => {
+      const w = allWines.find(x => x.id === row.wine_id);
+      return {
+        id: row.id,
+        wineId: row.wine_id,
+        wine_id: row.wine_id,
+        wineName: w?.name || row.wine_id,
+        quantity: row.quantity,
+        purchasePrice: Number(row.purchase_price),
+        currentMarketPrice: Number(row.current_market_price),
+        purchaseDate: row.purchase_date,
+        createdAt: row.created_at
+      };
+    });
   } catch(e) { console.error(e); return []; }
 }
 
@@ -215,11 +219,37 @@ app.get("/", (req, res) => {
 app.get(
   "/api/market/wines",
   (req, res) => {
-
-    res.json(allWines);
-
+    res.json([...wines, ...externalWines]);
   }
 );
+
+app.get("/api/wines", (req, res) => {
+  const search = (req.query.search || "").toString().trim();
+  const page = Math.max(1, parseInt(req.query.page) || 1);
+  const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 20));
+
+  let filtered;
+  if (search) {
+    const q = normalize(search);
+    filtered = allWines.filter(w =>
+      normalize(`${w.name} ${w.producer} ${w.region} ${w.country} ${w.vintage || ""}`).includes(q)
+    );
+  } else {
+    filtered = allWines;
+  }
+
+  const total = filtered.length;
+  const offset = (page - 1) * limit;
+  const slice = filtered.slice(offset, offset + limit);
+
+  res.json({
+    results: slice,
+    total,
+    page,
+    totalPages: Math.ceil(total / limit),
+    hasMore: offset + slice.length < total,
+  });
+});
 
 app.get(
   "/api/global-search",
@@ -696,6 +726,7 @@ const order = {
   id: Date.now(),
   wineId: req.body.wineId,
   wine_id: req.body.wineId,
+  wineName: wine.name,
   quantity: Number(req.body.quantity) || 1,
   purchasePrice,
   currentMarketPrice,
