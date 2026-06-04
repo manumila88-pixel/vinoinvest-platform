@@ -112,7 +112,7 @@ export default function WineBottle3DModal({ wine, onClose }) {
             overflow: "hidden",
             background: "linear-gradient(180deg, #060e1c 0%, #0a1628 100%)",
           }}>
-            <Bottle3D wine={wine} height={380} interactive={true} />
+            <Bottle3D key={wine.id} wine={wine} height={380} interactive={true} />
           </div>
         )}
 

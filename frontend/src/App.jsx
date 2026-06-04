@@ -296,8 +296,10 @@ function App() {
                 {marketWines.map(wine => (
                   <div className="wineCard" key={wine.id}>
                     <div className="wineCard-image" onClick={() => setModalWine(wine)}>
-                      <WineBottle3D wine={wine} />
-                      <span className="bottle-hint">3D</span>
+                      {wine.imageUrl
+                        ? <img src={wine.imageUrl} alt={wine.name} style={{height:"100%",width:"auto",objectFit:"contain",maxHeight:160}} onError={e=>{e.target.style.display="none"}} />
+                        : <div style={{fontSize:48,textAlign:"center",paddingTop:40}}>🍷</div>
+                      }
                     </div>
                     <div className="wineCard-body">
                       <div className="wineCard-badges">
