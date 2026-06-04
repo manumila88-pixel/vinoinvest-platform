@@ -207,13 +207,18 @@ export async function getPriceHistory(wineId) {
   const db = getPool();
   if (!db) return [];
   try {
+    // Extract producer prefix (everything before the last hyphen+year segment)
+    // e.g. "lafite-2018" → "lafite", "romanee-conti-2018" → "romanee-conti"
+    const producer = wineId.replace(/-\d{4}$/, "");
+    const pattern = producer + "%";
+
     const { rows } = await db.query(
       `SELECT price, currency, source, recorded_at
        FROM price_history
-       WHERE wine_id = $1
+       WHERE wine_id LIKE $1
          AND recorded_at > NOW() - INTERVAL '12 months'
        ORDER BY recorded_at`,
-      [wineId]
+      [pattern]
     );
     return rows;
   } catch {
