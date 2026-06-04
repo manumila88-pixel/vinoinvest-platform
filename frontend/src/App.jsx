@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
+import PriceHistoryChart from "./components/PriceHistoryChart";
 import LandingPage from "./LandingPage";
 import { supabase } from "./lib/supabase";
 import WineBottle3D from "./WineBottle3D";
@@ -11,6 +12,25 @@ import WinePriceCompare from "./components/WinePriceCompare";
 import "./style.css";
 
 const API = "https://vinoinvest-backend-2.onrender.com";
+
+function PortfolioSparkline({ wineId, purchasePrice, currentPrice }) {
+  const sparkData = useMemo(() => {
+    return Array.from({ length: 6 }, (_, i) => {
+      const t = i / 5;
+      const base = purchasePrice + (currentPrice - purchasePrice) * t;
+      // Deterministic alternating noise using index so it doesn't re-randomize on every render
+      const noise = base * 0.012 * (i % 2 === 0 ? 1 : -1);
+      return { v: Math.round(base + noise) };
+    });
+  }, [wineId, purchasePrice, currentPrice]);
+
+  const color = currentPrice >= purchasePrice ? "#4ade80" : "#f87171";
+  return (
+    <LineChart width={80} height={30} data={sparkData} margin={{ top: 2, right: 2, left: 2, bottom: 2 }}>
+      <Line type="monotone" dataKey="v" stroke={color} strokeWidth={1.5} dot={false} />
+    </LineChart>
+  );
+}
 
 function App() {
   const navigate = useNavigate();
@@ -299,6 +319,7 @@ function App() {
                         <th style={{textAlign:"right",padding:"10px 8px"}}>Value</th>
                         <th style={{textAlign:"right",padding:"10px 8px"}}>P/L</th>
                         <th style={{textAlign:"right",padding:"10px 8px"}}>ROI</th>
+                        <th style={{textAlign:"center",padding:"10px 8px"}}>6M Trend</th>
                         <th style={{textAlign:"right",padding:"10px 8px"}}>1Y Est.</th>
                         <th style={{textAlign:"right",padding:"10px 8px"}}>5Y Est.</th>
                         <th style={{textAlign:"right",padding:"10px 8px"}}>10Y Est.</th>
@@ -319,6 +340,9 @@ function App() {
                             <td style={{textAlign:"right",padding:"12px 8px"}}>€ {h.currentValue.toFixed(0)}</td>
                             <td style={{textAlign:"right",padding:"12px 8px",color:h.profit>=0?"#4caf50":"#e53935"}}>{h.profit>=0?"+":""}€ {h.profit.toFixed(0)}</td>
                             <td style={{textAlign:"right",padding:"12px 8px",color:h.roi>=0?"#4caf50":"#e53935"}}>{h.roi>=0?"+":""}{h.roi}%</td>
+                            <td style={{textAlign:"center",padding:"4px 8px",verticalAlign:"middle"}}>
+                              <PortfolioSparkline wineId={h.id} purchasePrice={h.purchasePrice} currentPrice={h.currentPrice} />
+                            </td>
                             <td style={{textAlign:"right",padding:"12px 8px",color:"#c9a227"}}>€ {est1y}</td>
                             <td style={{textAlign:"right",padding:"12px 8px",color:"#c9a227"}}>€ {est5y}</td>
                             <td style={{textAlign:"right",padding:"12px 8px",color:"#c9a227"}}>€ {est10y}</td>

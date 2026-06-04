@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Bottle3D from "./components/Bottle3D";
+import PriceHistoryChart from "./components/PriceHistoryChart";
 
 function getWineType(wine) {
   const t = [wine.variety, wine.name, wine.region].filter(Boolean).join(" ").toLowerCase();
@@ -73,7 +74,7 @@ export default function WineBottle3DModal({ wine, onClose }) {
 
   return (
     <div className="bottle-overlay" onClick={onClose}>
-      <div className="bottle-modal" onClick={e => e.stopPropagation()}>
+      <div className="bottle-modal" style={{ overflowY: "auto", maxHeight: "92vh" }} onClick={e => e.stopPropagation()}>
         <button className="bottle-modal-close" onClick={onClose}>×</button>
 
         {useImage ? (
@@ -129,6 +130,13 @@ export default function WineBottle3DModal({ wine, onClose }) {
             <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#1a1207", color: "#c9a227", border: "1px solid #5a400d" }}>AI Score {aiScore}</span>
             {wine.risk && <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#0d1f0d", color: "#4ade80", border: "1px solid #166534" }}>{wine.risk}</span>}
             {wine.marketTrend && <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#131a0d", color: "#86efac", border: "1px solid #166534" }}>{wine.marketTrend}</span>}
+          </div>
+
+          <div style={{ marginTop: 16, borderTop: "1px solid #1e293b", paddingTop: 14 }}>
+            <p style={{ fontSize: 10, color: "#475569", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+              Storico Prezzi · 12 mesi
+            </p>
+            <PriceHistoryChart wineId={wine.id} height={180} />
           </div>
 
           <p style={{ fontSize: 10, color: "#334155", marginTop: 14, textAlign: "center", letterSpacing: "0.05em", textTransform: "uppercase" }}>
