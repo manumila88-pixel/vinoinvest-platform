@@ -143,11 +143,16 @@ function App() {
     return () => observer.disconnect();
   }, [tab, marketWines]);
 
-  async function loadChart(wineId) {
+  async function loadChart(wineId, currentPrice) {
     try {
-      const res = await fetch(`${API}/api/price-history/${wineId}`);
+      const res = await fetch(`${API}/api/prices/${encodeURIComponent(wineId)}/history?currentPrice=${currentPrice || 100}`);
       const data = await res.json();
-      setChartData(data.points.map(item => ({ date: item.date.slice(0, 4), price: item.price })));
+      const byMonth = {};
+      (data.history || []).forEach(item => {
+        const month = item.recorded_at.slice(0, 7);
+        byMonth[month] = Number(item.price);
+      });
+      setChartData(Object.entries(byMonth).map(([date, price]) => ({ date, price })));
     } catch (error) { console.error(error); }
   }
 
@@ -182,7 +187,7 @@ function App() {
     } else {
       setWatchlist([...watchlist, wineId]);
       setSelectedWine(wine);
-      loadChart(wineId);
+      loadChart(wineId, wine.currentPrice);
     }
   }
 
