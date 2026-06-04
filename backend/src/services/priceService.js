@@ -272,7 +272,7 @@ export async function getPriceHistory(wineId, currentPrice = null) {
       basePrice = cached[0] ? Number(cached[0].price_avg) : null;
     }
 
-    if (!basePrice) return [];
+    if (!basePrice) basePrice = 100; // fallback price
 
     return generateAndSeedHistory(wineId, basePrice);
   } catch {
