@@ -76,21 +76,20 @@ export default function PaymentModal({ plan, userEmail, onClose }) {
     }
   }
 
-  // ── Coinbase Commerce ──────────────────────────────────────────────────────
+  // ── NOWPayments ────────────────────────────────────────────────────────────
   async function handleCrypto() {
     setLoading(true); setError("");
     try {
-      const resp = await fetch(`${BACKEND}/api/payments/coinbase/create-charge`, {
+      const resp = await fetch(`${BACKEND}/api/payments/crypto/create-invoice`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: plan.price, plan: plan.id, email: userEmail }),
       });
       const data = await resp.json();
-      if (data.hosted_url) {
-        window.open(data.hosted_url, "_blank");
-        onClose();
+      if (data.invoice_url) {
+        window.location.href = data.invoice_url;
       } else {
-        setError(data.error || "Errore Coinbase Commerce.");
+        setError(data.error || "Errore NOWPayments.");
       }
     } catch (e) {
       setError("Impossibile connettersi al server.");
@@ -187,8 +186,8 @@ export default function PaymentModal({ plan, userEmail, onClose }) {
 
           {tab === "crypto" && (
             <div style={{ color: "#94a3b8", fontSize: 13, lineHeight: 1.7, marginBottom: 20 }}>
-              Paga con <strong style={{ color: "#1652f0" }}>Bitcoin, Ethereum, USDC</strong> o altra crypto tramite Coinbase Commerce.<br />
-              Si aprirà una nuova scheda con la pagina di pagamento.
+              Paga con <strong style={{ color: "#f7931a" }}>Bitcoin, Ethereum, USDT, USDC</strong> o altra crypto tramite <strong style={{ color: "white" }}>NOWPayments</strong>.<br />
+              Sarai reindirizzato alla pagina di pagamento sicura.
             </div>
           )}
 

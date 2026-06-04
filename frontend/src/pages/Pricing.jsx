@@ -6,13 +6,13 @@ const BACKEND = import.meta.env.VITE_BACKEND_URL || "http://localhost:3001";
 
 const PLANS = [
   {
-    id: "starter",
-    name: "Starter",
+    id: "basic",
+    name: "Basic",
     audience: "B2C",
-    priceMonthly: 19,
-    priceAnnual: 15,
-    stripePriceMonthly: "price_STARTER_MONTHLY",
-    stripePriceAnnual: "price_STARTER_ANNUAL",
+    priceMonthly: 9,
+    priceAnnual: 86,
+    stripePriceMonthly: "price_1Tec4l15Hu1SBgIFa0PwZQvq",
+    stripePriceAnnual: "price_1TecAi15Hu1SBgIFmZfb4ZLU",
     color: "#c9a227",
     features: [
       "Accesso al mercato vini",
@@ -27,14 +27,14 @@ const PLANS = [
     id: "pro",
     name: "Pro",
     audience: "B2C",
-    priceMonthly: 49,
-    priceAnnual: 39,
-    stripePriceMonthly: "price_PRO_MONTHLY",
-    stripePriceAnnual: "price_PRO_ANNUAL",
+    priceMonthly: 29,
+    priceAnnual: 278,
+    stripePriceMonthly: "price_1Tec9R15Hu1SBgIFH99EfNSL",
+    stripePriceAnnual: "price_1TecAi15Hu1SBgIFmZfb4ZLU",
     color: "#c9a227",
     badge: "Più popolare",
     features: [
-      "Tutto incluso in Starter",
+      "Tutto incluso in Basic",
       "Portfolio illimitato",
       "Segnali AI avanzati (Strong Buy/Sell)",
       "Comparazione marketplace live",
@@ -46,13 +46,13 @@ const PLANS = [
     highlighted: true,
   },
   {
-    id: "enterprise",
-    name: "Enterprise",
+    id: "professional",
+    name: "Professional",
     audience: "B2B",
-    priceMonthly: 299,
-    priceAnnual: 249,
-    stripePriceMonthly: "price_ENTERPRISE_MONTHLY",
-    stripePriceAnnual: "price_ENTERPRISE_ANNUAL",
+    priceMonthly: 500,
+    priceAnnual: 4800,
+    stripePriceMonthly: "price_1TecCB15Hu1SBgIFRF1Rtv17",
+    stripePriceAnnual: "price_1TecFh15Hu1SBgIFzQyMNKob",
     color: "#60a5fa",
     features: [
       "Tutto incluso in Pro",
@@ -63,6 +63,25 @@ const PLANS = [
       "Integrazione Liv-ex / Wine-Searcher",
       "Account manager dedicato",
       "SLA garantito 99.9%",
+    ],
+    cta: "Attiva Professional",
+  },
+  {
+    id: "enterprise",
+    name: "Enterprise",
+    audience: "B2B",
+    priceMonthly: 2000,
+    priceAnnual: 19200,
+    stripePriceMonthly: "price_1TecDn15Hu1SBgIFxnz20ADN",
+    stripePriceAnnual: "price_1TecFh15Hu1SBgIFzQyMNKob",
+    color: "#60a5fa",
+    features: [
+      "Tutto incluso in Professional",
+      "Onboarding dedicato",
+      "Integrazioni custom su richiesta",
+      "Accesso dati raw via data warehouse",
+      "Contratti personalizzati",
+      "Supporto 24/7 con SLA premium",
     ],
     cta: "Contatta vendite",
   },
@@ -81,7 +100,7 @@ export default function Pricing() {
 
   function openPlan(plan) {
     if (plan.id === "enterprise") {
-      window.open("mailto:sales@vinoinvest.com?subject=Enterprise%20Plan", "_blank");
+      window.open("mailto:sales@vinoinvest.com?subject=Enterprise%20Plan%20VinoInvest", "_blank");
       return;
     }
     setSelected(plan);
@@ -135,7 +154,7 @@ export default function Pricing() {
       )}
 
       {/* Plan cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20, maxWidth: 1100, margin: "0 auto" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 20, maxWidth: 1200, margin: "0 auto" }}>
         {PLANS.map(plan => {
           const price = annual ? plan.priceAnnual : plan.priceMonthly;
           const priceId = annual ? plan.stripePriceAnnual : plan.stripePriceMonthly;
@@ -166,9 +185,13 @@ export default function Pricing() {
               </div>
 
               <div style={{ marginBottom: 28 }}>
-                <span style={{ fontSize: 44, fontWeight: 900 }}>€{price}</span>
-                <span style={{ color: "#64748b", fontSize: 14 }}>/mese</span>
-                {annual && <div style={{ fontSize: 11, color: "#4ade80", marginTop: 4 }}>Fatturato annualmente (€{price * 12}/anno)</div>}
+                <span style={{ fontSize: 44, fontWeight: 900 }}>€{price.toLocaleString("it-IT")}</span>
+                <span style={{ color: "#64748b", fontSize: 14 }}>/{annual ? "anno" : "mese"}</span>
+                {annual && (
+                  <div style={{ fontSize: 11, color: "#4ade80", marginTop: 4 }}>
+                    ≈ €{Math.round(price / 12).toLocaleString("it-IT")}/mese
+                  </div>
+                )}
               </div>
 
               <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 10, marginBottom: 32, flex: 1 }}>

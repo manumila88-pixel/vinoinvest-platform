@@ -1,13 +1,9 @@
 import express from "express";
 import Stripe from "stripe";
-import coinbase from "coinbase-commerce-node";
 
 const router = express.Router();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", { apiVersion: "2023-10-16" });
-
-const { Client, resources } = coinbase;
-const { Charge } = resources;
 
 // ── Stripe: create checkout session ────────────────────────────────────────
 router.post("/stripe/create-checkout", async (req, res) => {
@@ -105,23 +101,29 @@ router.post("/paypal/capture-order", async (req, res) => {
   }
 });
 
-// ── Coinbase Commerce: create charge ────────────────────────────────────────
-router.post("/coinbase/create-charge", async (req, res) => {
+// ── NOWPayments: create invoice ─────────────────────────────────────────────
+router.post("/crypto/create-invoice", async (req, res) => {
   try {
-    Client.init(process.env.COINBASE_COMMERCE_API_KEY || "");
     const { amount, plan, email } = req.body;
-    const charge = await Charge.create({
-      name: `VinoInvest ${plan}`,
-      description: `Abbonamento ${plan} — VinoInvest`,
-      local_price: { amount: String(amount), currency: "EUR" },
-      pricing_type: "fixed_price",
-      metadata: { plan, email },
-      redirect_url: `${process.env.FRONTEND_URL}/pricing?success=1&plan=${plan}`,
-      cancel_url: `${process.env.FRONTEND_URL}/pricing?cancelled=1`,
+    const resp = await fetch("https://api.nowpayments.io/v1/invoice", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.NOWPAYMENTS_API_KEY || "",
+      },
+      body: JSON.stringify({
+        price_amount: amount,
+        price_currency: "EUR",
+        order_description: `Abbonamento ${plan} — VinoInvest`,
+        success_url: `${process.env.FRONTEND_URL}/pricing?success=1&plan=${plan}`,
+        cancel_url: `${process.env.FRONTEND_URL}/pricing?cancelled=1`,
+      }),
     });
-    res.json({ hosted_url: charge.hosted_url, id: charge.id });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.message || "NOWPayments error");
+    res.json({ invoice_url: data.invoice_url, id: data.id });
   } catch (err) {
-    console.error("Coinbase charge error:", err.message);
+    console.error("NOWPayments invoice error:", err.message);
     res.status(500).json({ error: err.message });
   }
 });
