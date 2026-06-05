@@ -237,7 +237,15 @@ async function saveOrder(order) {
   } catch(e) { console.error(e); }
 }
 
+// In-memory cache — populated from DB on first GET and after each POST
 let orders = [];
+let ordersLoaded = false;
+
+async function loadOrdersFromDB() {
+  if (ordersLoaded) return;
+  orders = await getOrders();
+  ordersLoaded = true;
+}
 
 function getMarketMultiplier(wine) {
   const vintage = wine.vintage || 2018;
@@ -266,6 +274,11 @@ function normalize(text) {
     );
 
 }
+
+// Health endpoint for keep-alive pings (Render free tier)
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", ts: Date.now() });
+});
 
 app.get("/", (req, res) => {
 
@@ -747,14 +760,10 @@ app.post(
   }
 );
 
-app.get(
-  "/api/orders",
-  (req, res) => {
-
-    res.json(orders);
-
-  }
-);
+app.get("/api/orders", async (req, res) => {
+  await loadOrdersFromDB();
+  res.json(orders);
+});
 
 app.post(
   "/api/orders",
