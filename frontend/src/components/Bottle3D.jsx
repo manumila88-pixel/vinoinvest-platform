@@ -7,11 +7,7 @@ function getBottleColor(wine) {
   return "#1b3d22";
 }
 
-/**
- * Bottle3D — CSS/SVG wine bottle (replaces the WebGL version).
- * Drop-in replacement: same props (wine, height, interactive) but zero WebGL contexts.
- */
-export default function Bottle3D({ wine, height = 300 }) {
+export default function Bottle3D({ wine, height = 300, interactive = false }) {
   const color = getBottleColor(wine);
   const rawName = (wine.name || "").replace(/\s+\d{4}$/, "");
   const words = rawName.split(" ");
@@ -29,9 +25,14 @@ export default function Bottle3D({ wine, height = 300 }) {
       alignItems: "center",
       justifyContent: "center",
       background: "linear-gradient(180deg, #060e1c 0%, #0a1628 100%)",
-      perspective: "600px",
+      perspective: interactive ? "600px" : "none",
     }}>
-      <div style={{ animation: "cssBottleSpin 9s linear infinite" }}>
+      <div style={interactive ? {
+        animation: "cssBottleSpin 9s linear infinite",
+        backfaceVisibility: "hidden",
+        WebkitBackfaceVisibility: "hidden",
+        transformStyle: "preserve-3d",
+      } : {}}>
         <svg
           width={svgW}
           height={svgH}

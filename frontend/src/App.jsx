@@ -58,6 +58,8 @@ function App() {
   const [selectedWine, setSelectedWine] = useState(null);
   const [aiScores, setAiScores] = useState({});
   const fetchedAIRef = useRef(new Set());
+  const [alerts, setAlerts] = useState([]);
+  const [alertInputs, setAlertInputs] = useState({});
   const [budget, setBudget] = useState(10000);
   const [risk, setRisk] = useState("medio");
   const [years, setYears] = useState(5);
@@ -158,7 +160,7 @@ function App() {
       const data = await res.json();
       const byMonth = {};
       (data.history || []).forEach(item => {
-        const month = item.recorded_at.slice(0, 7);
+        const month = new Date(item.recorded_at).toISOString().slice(0, 7);
         byMonth[month] = Number(item.price);
       });
       setChartData(Object.entries(byMonth).map(([date, price]) => ({ date, price })));
@@ -207,6 +209,50 @@ function App() {
     if (marketWines.length === 0) return;
     marketWines.forEach(wine => fetchAIScore(wine));
   }, [marketWines]);
+
+  function getUserId() {
+    const stored = localStorage.getItem("vino_user");
+    if (stored) {
+      try { return JSON.parse(stored).email || "anonymous"; } catch {}
+    }
+    let id = localStorage.getItem("vino_device_id");
+    if (!id) { id = "device_" + Math.random().toString(36).slice(2); localStorage.setItem("vino_device_id", id); }
+    return id;
+  }
+
+  async function loadAlerts() {
+    const uid = getUserId();
+    try {
+      const res = await fetch(`${API}/api/alerts/${encodeURIComponent(uid)}`);
+      if (res.ok) setAlerts(await res.json());
+    } catch {}
+  }
+
+  async function createAlert(wine) {
+    const target = parseFloat(alertInputs[wine.id]);
+    if (!target || target <= 0) return;
+    const uid = getUserId();
+    try {
+      const res = await fetch(`${API}/api/alerts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: uid, wineId: wine.id, wineName: wine.name, targetPrice: target, direction: "below" }),
+      });
+      if (res.ok) {
+        setAlertInputs(prev => ({ ...prev, [wine.id]: "" }));
+        await loadAlerts();
+      }
+    } catch {}
+  }
+
+  async function deleteAlert(alertId) {
+    try {
+      await fetch(`${API}/api/alerts/${alertId}`, { method: "DELETE" });
+      setAlerts(prev => prev.filter(a => a.id !== alertId));
+    } catch {}
+  }
+
+  useEffect(() => { loadAlerts(); }, []);
 
   async function buyWine(wineId, purchasePrice) {
     await fetch(`${API}/api/orders`, {
@@ -358,6 +404,28 @@ function App() {
                       <div className="wineCard-price">
                         <span className="price-main">€ {wine.currentPrice}</span>
                         <span className="price-label">/ bottle</span>
+                      </div>
+                      <div style={{ marginBottom: 10 }}>
+                        {alerts.filter(a => a.wine_id === wine.id && a.active).map(a => (
+                          <div key={a.id} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "#60a5fa", marginBottom: 4 }}>
+                            <span>🔔 Alert ≤ €{Number(a.target_price).toFixed(0)}</span>
+                            <button onClick={() => deleteAlert(a.id)} style={{ background: "none", border: "none", color: "#f87171", cursor: "pointer", fontSize: 13, padding: 0 }}>×</button>
+                          </div>
+                        ))}
+                        <div style={{ display: "flex", gap: 4 }}>
+                          <input
+                            type="number"
+                            placeholder={`Alert < €${wine.currentPrice}`}
+                            value={alertInputs[wine.id] || ""}
+                            onChange={e => setAlertInputs(prev => ({ ...prev, [wine.id]: e.target.value }))}
+                            style={{ flex: 1, padding: "5px 8px", borderRadius: 8, border: "1px solid #1e293b", background: "#0b1220", color: "#94a3b8", fontSize: 11, outline: "none", minWidth: 0 }}
+                            onKeyDown={e => e.key === "Enter" && createAlert(wine)}
+                          />
+                          <button
+                            onClick={() => createAlert(wine)}
+                            style={{ padding: "5px 9px", borderRadius: 8, border: "1px solid #1e3a5f", background: "#0c1a2e", color: "#60a5fa", fontSize: 11, cursor: "pointer", whiteSpace: "nowrap" }}
+                          >🔔</button>
+                        </div>
                       </div>
                       <div className="wineCard-actions">
                         <WinePriceCompare

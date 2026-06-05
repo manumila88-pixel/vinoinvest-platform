@@ -6,6 +6,7 @@ import paymentsRouter from "./routes/payments.js";
 import pricesRouter from "./routes/prices.js";
 import authRouter from "./routes/auth.js";
 import aiScoreRouter from "./routes/aiScore.js";
+import alertsRouter from "./routes/alerts.js";
 import "./jobs/priceUpdater.js";
 
 import fs from "fs";
@@ -22,6 +23,7 @@ app.use("/api/payments", paymentsRouter);
 app.use("/api/prices", pricesRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/ai-score", aiScoreRouter);
+app.use("/api/alerts", alertsRouter);
 
 const __filename =
   fileURLToPath(import.meta.url);

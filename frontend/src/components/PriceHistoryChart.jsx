@@ -25,7 +25,7 @@ export default function PriceHistoryChart({ wineId, currentPrice = null, height 
         const points = d?.history || [];
         const byMonth = {};
         points.forEach(p => {
-          const month = p.recorded_at.slice(0, 7);
+          const month = new Date(p.recorded_at).toISOString().slice(0, 7);
           if (!byMonth[month]) byMonth[month] = [];
           byMonth[month].push(Number(p.price));
         });
