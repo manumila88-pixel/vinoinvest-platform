@@ -169,6 +169,7 @@ function App() {
   const [risk, setRisk] = useState("medio");
   const [years, setYears] = useState(5);
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const [backendWaking, setBackendWaking] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const analysisChartRef = useRef(null);
   const [analysisChartW, setAnalysisChartW] = useState(600);
@@ -193,6 +194,21 @@ function App() {
     window.addEventListener("online", go);
     window.addEventListener("offline", off);
     return () => { window.removeEventListener("online", go); window.removeEventListener("offline", off); };
+  }, []);
+
+  // ── Backend wakeup ping (Render free tier cold start) ────────────────────
+  useEffect(() => {
+    const start = Date.now();
+    setBackendWaking(true);
+    fetch(`${API}/api/health`, { signal: AbortSignal.timeout(8000) })
+      .then(() => setBackendWaking(false))
+      .catch(() => {
+        // Server may be sleeping — keep banner visible, retry once after 6s
+        setTimeout(() => {
+          fetch(`${API}/api/health`, { signal: AbortSignal.timeout(15000) })
+            .finally(() => setBackendWaking(false));
+        }, 6000);
+      });
   }, []);
 
   // ── Chart responsive widths ──────────────────────────────────────────────
@@ -354,6 +370,7 @@ function App() {
 
   // ── Chart ────────────────────────────────────────────────────────────────
   async function loadChart(wineId, currentPrice) {
+    setChartData([]);
     try {
       const res = await fetch(`${API}/api/prices/${encodeURIComponent(wineId)}/history?currentPrice=${currentPrice || 100}`);
       const data = await res.json();
@@ -557,6 +574,11 @@ function App() {
   return (
     <div className="app">
       {/* ── Offline banner ───────────────────────────────────────────────── */}
+      {backendWaking && (
+        <div style={{ background: "#1c1400", color: "#C9A227", padding: "8px 20px", fontSize: 12, fontWeight: 600, textAlign: "center", zIndex: 999, borderBottom: "1px solid rgba(201,162,39,0.2)" }}>
+          ⚡ Server in avvio... potrebbero volerci alcuni secondi
+        </div>
+      )}
       {isOffline && (
         <div style={{ background: "#7f1d1d", color: "#fca5a5", padding: "8px 20px", fontSize: 13, fontWeight: 600, textAlign: "center", zIndex: 999 }}>
           ⚠️ Connessione assente — alcune funzionalità non sono disponibili
@@ -894,7 +916,27 @@ function App() {
           {/* ── My Portfolio ──────────────────────────────────────────────── */}
           {tab === "myportfolio" && (
             <section className="ordersPanel">
-              <h2>My Portfolio</h2>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 22, flexWrap: "wrap", gap: 10 }}>
+                <h2 style={{ margin: 0 }}>My Portfolio</h2>
+                {holdings.length > 0 && (
+                  <button
+                    className="btn-primary"
+                    style={{ width: "auto", padding: "9px 18px", fontSize: 12 }}
+                    onClick={() => {
+                      const rows = [
+                        ["Wine", "Bottles", "Buy Price (€)", "Current Price (€)", "Invested (€)", "Value (€)", "Profit/Loss (€)", "ROI (%)"],
+                        ...holdings.map(h => [h.name, h.quantity, h.purchasePrice, h.currentPrice, h.invested.toFixed(2), h.currentValue.toFixed(2), h.profit.toFixed(2), h.roi]),
+                        ["TOTAL", "", "", "", totalInvested.toFixed(2), portfolioValue.toFixed(2), totalProfit.toFixed(2), portfolioROI],
+                      ];
+                      const csv = rows.map(r => r.map(c => `"${c}"`).join(",")).join("\n");
+                      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a"); a.href = url; a.download = "vinoinvest_portfolio.csv"; a.click();
+                      URL.revokeObjectURL(url);
+                    }}
+                  >Export CSV</button>
+                )}
+              </div>
               {holdings.length === 0 && <p style={{ color: "#3a5a7a" }}>No positions yet. Go to Market and add a position.</p>}
               {holdings.length > 0 && (
                 <>
@@ -956,6 +998,55 @@ function App() {
                     </LineChart>
                   </div>
                   <p style={{ marginTop: 14, fontSize: 11, color: "#1e3050" }}>* Estimated values based on 8% average annual growth (wine market historical average)</p>
+
+                  {/* ── Diversification breakdown ─────────────────────────── */}
+                  <div style={{ marginTop: 36 }}>
+                    <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 17, marginBottom: 16, color: "#C9A227" }}>Diversification</h3>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                      {/* By type */}
+                      <div style={{ background: "rgba(11,18,32,0.8)", border: "1px solid rgba(31,41,55,0.7)", borderRadius: 14, padding: 18 }}>
+                        <p style={{ fontSize: 11, color: "#3a5a7a", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12, fontWeight: 700 }}>By Type</p>
+                        {Object.entries(
+                          holdings.reduce((acc, h) => {
+                            const type = wines.find(w => w.id === h.id)?.type || "Other";
+                            acc[type] = (acc[type] || 0) + h.currentValue;
+                            return acc;
+                          }, {})
+                        ).sort(([,a],[,b]) => b - a).map(([type, val]) => {
+                          const pct = portfolioValue > 0 ? ((val / portfolioValue) * 100).toFixed(1) : 0;
+                          return (
+                            <div key={type} style={{ marginBottom: 8 }}>
+                              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                                <span style={{ fontSize: 12, color: "#94a3b8" }}>{type}</span>
+                                <span style={{ fontSize: 12, color: "#C9A227", fontWeight: 700 }}>{pct}%</span>
+                              </div>
+                              <div style={{ height: 4, background: "rgba(30,41,59,0.8)", borderRadius: 2 }}>
+                                <div style={{ height: "100%", width: `${pct}%`, background: "linear-gradient(90deg,#C9A227,#e0b82d)", borderRadius: 2 }} />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      {/* By position size */}
+                      <div style={{ background: "rgba(11,18,32,0.8)", border: "1px solid rgba(31,41,55,0.7)", borderRadius: 14, padding: 18 }}>
+                        <p style={{ fontSize: 11, color: "#3a5a7a", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12, fontWeight: 700 }}>By Wine</p>
+                        {[...holdings].sort((a, b) => b.currentValue - a.currentValue).slice(0, 5).map(h => {
+                          const pct = portfolioValue > 0 ? ((h.currentValue / portfolioValue) * 100).toFixed(1) : 0;
+                          return (
+                            <div key={h.id} style={{ marginBottom: 8 }}>
+                              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                                <span style={{ fontSize: 11, color: "#94a3b8", maxWidth: "70%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h.name}</span>
+                                <span style={{ fontSize: 12, color: "#60a5fa", fontWeight: 700 }}>{pct}%</span>
+                              </div>
+                              <div style={{ height: 4, background: "rgba(30,41,59,0.8)", borderRadius: 2 }}>
+                                <div style={{ height: "100%", width: `${pct}%`, background: "linear-gradient(90deg,#60a5fa,#38bdf8)", borderRadius: 2 }} />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
                 </>
               )}
             </section>
