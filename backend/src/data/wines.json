@@ -1,7 +1,7 @@
 [
   {
     "id": "lafite-2018",
-    "name": "Ch\u00e2teau Lafite Rothschild 2018",
+    "name": "Château Lafite Rothschild 2018",
     "producer": "Lafite Rothschild",
     "region": "Bordeaux",
     "country": "France",
@@ -17,7 +17,7 @@
   },
   {
     "id": "mouton-2018",
-    "name": "Ch\u00e2teau Mouton Rothschild 2018",
+    "name": "Château Mouton Rothschild 2018",
     "producer": "Mouton Rothschild",
     "region": "Bordeaux",
     "country": "France",
@@ -33,8 +33,8 @@
   },
   {
     "id": "margaux-2015",
-    "name": "Ch\u00e2teau Margaux 2015",
-    "producer": "Ch\u00e2teau Margaux",
+    "name": "Château Margaux 2015",
+    "producer": "Château Margaux",
     "region": "Bordeaux",
     "country": "France",
     "vintage": 2015,
@@ -49,7 +49,7 @@
   },
   {
     "id": "hautbrion-2016",
-    "name": "Ch\u00e2teau Haut-Brion 2016",
+    "name": "Château Haut-Brion 2016",
     "producer": "Haut-Brion",
     "region": "Bordeaux",
     "country": "France",
@@ -60,7 +60,8 @@
     "risk": "Basso",
     "liquidity": "Alta",
     "marketTrend": "Stable",
-    "source": "liv-ex"
+    "source": "liv-ex",
+    "imageUrl": "https://images.vivino.com/thumbs/QiSMlgS9WFc-xr2ajtGf0A_pb_x600.png"
   },
   {
     "id": "sassicaia-2016",
@@ -91,7 +92,8 @@
     "risk": "Medio",
     "liquidity": "Alta",
     "marketTrend": "Stable",
-    "source": "wine-searcher"
+    "source": "wine-searcher",
+    "imageUrl": "https://images.vivino.com/thumbs/5X9j0q1s5MsIEBexaGbp_w_pb_x600.png"
   },
   {
     "id": "masseto-2018",
@@ -106,7 +108,8 @@
     "risk": "Medio",
     "liquidity": "Alta",
     "marketTrend": "Bullish",
-    "source": "wine-searcher"
+    "source": "wine-searcher",
+    "imageUrl": "https://images.vivino.com/thumbs/0UGVVJTc-RqRGHJfWDGAGg_pb_x600.png"
   },
   {
     "id": "monfortino-2016",
@@ -126,7 +129,7 @@
   },
   {
     "id": "gaja-sori-2015",
-    "name": "Gaja Sor\u00ec San Lorenzo 2015",
+    "name": "Gaja Sorì San Lorenzo 2015",
     "producer": "Gaja",
     "region": "Piemonte",
     "country": "Italy",
@@ -137,12 +140,13 @@
     "risk": "Medio",
     "liquidity": "Media",
     "marketTrend": "Stable",
-    "source": "wine-searcher"
+    "source": "wine-searcher",
+    "imageUrl": "https://images.vivino.com/thumbs/WJ-BVqrCCiApNJBnXOiALg_pb_x600.png"
   },
   {
     "id": "domp-p2-2004",
-    "name": "Dom P\u00e9rignon P2 2004",
-    "producer": "Dom P\u00e9rignon",
+    "name": "Dom Pérignon P2 2004",
+    "producer": "Dom Pérignon",
     "region": "Champagne",
     "country": "France",
     "vintage": 2004,

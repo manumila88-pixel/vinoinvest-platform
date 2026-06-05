@@ -1,6 +1,8 @@
 import "dotenv/config";
 import express from "express";
 import compression from "compression";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import pg from "pg";
 import cors from "cors";
 import paymentsRouter from "./routes/payments.js";
@@ -11,6 +13,8 @@ import alertsRouter from "./routes/alerts.js";
 import notificationsRouter from "./routes/notifications.js";
 import dashboardRouter from "./routes/dashboard.js";
 import ratesRouter from "./routes/rates.js";
+import newsRouter from "./routes/news.js";
+import aiMarketRouter from "./routes/aiMarket.js";
 import "./jobs/priceUpdater.js";
 import "./jobs/alertsChecker.js";
 
@@ -20,19 +24,55 @@ import { fileURLToPath } from "url";
 
 const app = express();
 
+// Security headers
+app.use(helmet({
+  crossOriginEmbedderPolicy: false,
+  contentSecurityPolicy: false,
+}));
 app.use(compression());
-app.use(cors());
+
+// CORS — only allow known origins
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "http://localhost:5173",
+  "https://vinoinvest-platform.vercel.app",
+].filter(Boolean);
+app.use(cors({
+  origin: (origin, cb) => {
+    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    cb(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+}));
+
+// Global rate limit: 200 req / 15 min per IP
+app.use(rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many requests, please try again later." },
+}));
+
+// Stricter limit for AI endpoints (Claude API has costs)
+const aiRateLimit = rateLimit({
+  windowMs: 60 * 1000,
+  max: 20,
+  message: { error: "AI score rate limit exceeded." },
+});
+
 // Stripe webhook needs raw body — must be registered before express.json()
 app.use("/api/payments/stripe/webhook", express.raw({ type: "application/json" }));
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
 app.use("/api/payments", paymentsRouter);
 app.use("/api/prices", pricesRouter);
 app.use("/api/auth", authRouter);
-app.use("/api/ai-score", aiScoreRouter);
+app.use("/api/ai-score", aiRateLimit, aiScoreRouter);
 app.use("/api/alerts", alertsRouter);
 app.use("/api/notifications", notificationsRouter);
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/rates", ratesRouter);
+app.use("/api/news", newsRouter);
 
 const __filename =
   fileURLToPath(import.meta.url);
@@ -143,17 +183,26 @@ const pool = process.env.DATABASE_URL ? new Pool({
 
 async function initDB() {
   if (!pool) return;
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS orders (
-      id BIGINT PRIMARY KEY,
-      wine_id TEXT,
-      quantity INTEGER,
-      purchase_price NUMERIC,
-      current_market_price NUMERIC,
-      purchase_date TEXT,
-      created_at TEXT
-    )
-  `);
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS orders (
+        id BIGINT PRIMARY KEY,
+        wine_id TEXT,
+        quantity INTEGER,
+        purchase_price NUMERIC,
+        current_market_price NUMERIC,
+        purchase_date TEXT,
+        created_at TEXT
+      )
+    `);
+    // Performance indexes
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_orders_created ON orders(created_at DESC)`);
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_orders_wine ON orders(wine_id)`);
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_price_history_wine ON price_history(wine_id, recorded_at DESC) WHERE EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name='price_history')`).catch(() => {});
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_ai_scores_expires ON ai_scores(expires_at) WHERE EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name='ai_scores')`).catch(() => {});
+  } catch (e) {
+    console.warn("[initDB]", e.message);
+  }
 }
 initDB();
 
@@ -759,6 +808,26 @@ res.json({
 
   }
 );
+
+// ── Trending: top 5 wines by simulated 24h price change ─────────────────────
+app.get("/api/trending", (req, res) => {
+  const seed = Math.floor(Date.now() / (1000 * 3600 * 4)); // changes every 4h
+  const seededRandom = (wineId, offset = 0) => {
+    const x = Math.sin(seed + wineId.charCodeAt(0) + offset) * 10000;
+    return x - Math.floor(x);
+  };
+  const trending = allWines
+    .filter(w => w.currentPrice > 0)
+    .map(w => {
+      const r = seededRandom(w.id || w.name || "x");
+      const change = ((r - 0.42) * 18).toFixed(2);
+      return { ...w, change: Number(change), absChange: Math.abs(Number(change)) };
+    })
+    .sort((a, b) => b.absChange - a.absChange)
+    .slice(0, 5)
+    .map(({ absChange: _, ...w }) => w);
+  res.json({ wines: trending, updated: new Date().toISOString() });
+});
 
 const PORT =
   process.env.PORT || 3000;

@@ -1,8 +1,11 @@
-import React, { useEffect, useState, useMemo, useRef } from "react";
+import React, { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
+import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ComposedChart } from "recharts";
 import PriceHistoryChart from "./components/PriceHistoryChart";
+import ErrorBoundary from "./components/ErrorBoundary";
+import { ToastProvider, useToast } from "./components/Toast";
+import { fetchWithRetry } from "./lib/fetchWithRetry";
 import LandingPage from "./LandingPage";
 import { supabase } from "./lib/supabase";
 import WineBottle3D from "./WineBottle3D";
@@ -14,12 +17,109 @@ import "./style.css";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
+// ── Skeleton Card ────────────────────────────────────────────────────────────
+function SkeletonCard() {
+  return (
+    <div className="wineCard" style={{ pointerEvents: "none" }}>
+      <div className="skeleton skeleton-image" />
+      <div className="wineCard-body">
+        <div className="skeleton skeleton-badge" />
+        <div className="skeleton skeleton-title" />
+        <div className="skeleton skeleton-subtitle" />
+        <div className="skeleton skeleton-price" />
+        <div className="skeleton skeleton-btn" />
+      </div>
+    </div>
+  );
+}
+
+// ── News Card ────────────────────────────────────────────────────────────────
+function NewsCard({ article }) {
+  const timeAgo = (dateStr) => {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const h = Math.floor(diff / 3600000);
+    if (h < 1) return "Just now";
+    if (h < 24) return `${h}h ago`;
+    return `${Math.floor(h / 24)}d ago`;
+  };
+
+  const categoryColors = {
+    market: { bg: "rgba(12,26,46,0.8)", color: "#60a5fa", border: "rgba(30,58,95,0.5)" },
+    investment: { bg: "rgba(5,30,5,0.8)", color: "#4ade80", border: "rgba(22,101,52,0.5)" },
+    critic: { bg: "rgba(30,10,0,0.8)", color: "#fb923c", border: "rgba(154,52,18,0.5)" },
+    auction: { bg: "rgba(20,5,30,0.8)", color: "#c084fc", border: "rgba(88,28,135,0.5)" },
+    technology: { bg: "rgba(5,20,30,0.8)", color: "#38bdf8", border: "rgba(14,116,144,0.5)" },
+  };
+  const cat = categoryColors[article.category] || categoryColors.market;
+
+  return (
+    <div className="news-card fade-up">
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 7 }}>
+        <div className="news-source">{article.source?.name || "Wine Intelligence"}</div>
+        <span style={{ fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 4, background: cat.bg, color: cat.color, border: `1px solid ${cat.border}`, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+          {article.category || "market"}
+        </span>
+      </div>
+      <h3>{article.title}</h3>
+      {article.description && <p>{article.description}</p>}
+      <div className="news-meta">
+        <span>{timeAgo(article.publishedAt)}</span>
+        {article.url && article.url !== "#" ? (
+          <a href={article.url} target="_blank" rel="noopener noreferrer">Read more →</a>
+        ) : (
+          <span style={{ color: "#1e3050" }}>—</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Market Watch ─────────────────────────────────────────────────────────────
+const LIVEX_INDICES = [
+  { name: "Liv-ex 100", base: 358.2 },
+  { name: "Fine Wine 50", base: 512.6 },
+  { name: "Burgundy 150", base: 1248.4 },
+  { name: "Bordeaux 500", base: 287.9 },
+  { name: "Italy 100",   base: 445.3 },
+  { name: "Champagne",   base: 196.8 },
+];
+
+function MarketWatch() {
+  const indices = useMemo(() => {
+    const seed = Math.floor(Date.now() / (1000 * 3600 * 4));
+    return LIVEX_INDICES.map((idx, i) => {
+      const x = Math.sin(seed + i * 7.3) * 10000;
+      const r = x - Math.floor(x);
+      const changePct = ((r - 0.44) * 5).toFixed(2);
+      const value = (idx.base * (1 + Number(changePct) / 100)).toFixed(1);
+      return { ...idx, value: Number(value), changePct: Number(changePct) };
+    });
+  }, []);
+
+  return (
+    <div className="market-watch">
+      <h3>Market Watch · Simulated Liv-ex Indices</h3>
+      <div className="market-indices">
+        {indices.map(idx => (
+          <div key={idx.name} className="market-index">
+            <div className="market-index-name">{idx.name}</div>
+            <div className="market-index-value">{idx.value.toLocaleString()}</div>
+            <div className={`market-index-change ${idx.changePct >= 0 ? "up" : "down"}`}>
+              {idx.changePct >= 0 ? "▲" : "▼"} {Math.abs(idx.changePct)}%
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Portfolio Sparkline ───────────────────────────────────────────────────────
 function PortfolioSparkline({ wineId, purchasePrice, currentPrice }) {
   const sparkData = useMemo(() => {
     return Array.from({ length: 6 }, (_, i) => {
       const t = i / 5;
       const base = purchasePrice + (currentPrice - purchasePrice) * t;
-      // Deterministic alternating noise using index so it doesn't re-randomize on every render
       const noise = base * 0.012 * (i % 2 === 0 ? 1 : -1);
       return { v: Math.round(base + noise) };
     });
@@ -33,8 +133,10 @@ function PortfolioSparkline({ wineId, purchasePrice, currentPrice }) {
   );
 }
 
+// ── App ───────────────────────────────────────────────────────────────────────
 function App() {
   const navigate = useNavigate();
+  const toast = useToast();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [accountType, setAccountType] = useState("b2c");
@@ -59,25 +161,59 @@ function App() {
   const [selectedWine, setSelectedWine] = useState(null);
   const [aiScores, setAiScores] = useState({});
   const fetchedAIRef = useRef(new Set());
+  const aiQueueRef = useRef([]);
+  const aiBusyRef = useRef(false);
   const [alerts, setAlerts] = useState([]);
   const [alertInputs, setAlertInputs] = useState({});
   const [notifications, setNotifications] = useState([]);
   const [budget, setBudget] = useState(10000);
   const [risk, setRisk] = useState("medio");
   const [years, setYears] = useState(5);
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const analysisChartRef = useRef(null);
+  const [analysisChartW, setAnalysisChartW] = useState(600);
+  const portfolioChartRef = useRef(null);
+  const [portfolioChartW, setPortfolioChartW] = useState(600);
 
+  // ── Premium features state ───────────────────────────────────────────────
+  const [news, setNews] = useState([]);
+  const [newsLoading, setNewsLoading] = useState(false);
+  const [newsFilter, setNewsFilter] = useState("all");
+  const [trending, setTrending] = useState([]);
+  const [heroSearch, setHeroSearch] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const heroSearchRef = useRef(null);
+  const suggestDebounceRef = useRef(null);
+
+  // ── Offline detection ────────────────────────────────────────────────────
+  useEffect(() => {
+    const go = () => setIsOffline(false);
+    const off = () => setIsOffline(true);
+    window.addEventListener("online", go);
+    window.addEventListener("offline", off);
+    return () => { window.removeEventListener("online", go); window.removeEventListener("offline", off); };
+  }, []);
+
+  // ── Chart responsive widths ──────────────────────────────────────────────
+  useEffect(() => {
+    const obs = new ResizeObserver(entries => {
+      for (const e of entries) {
+        if (e.target === analysisChartRef.current) setAnalysisChartW(e.contentRect.width || 600);
+        if (e.target === portfolioChartRef.current) setPortfolioChartW(e.contentRect.width || 600);
+      }
+    });
+    if (analysisChartRef.current) obs.observe(analysisChartRef.current);
+    if (portfolioChartRef.current) obs.observe(portfolioChartRef.current);
+    return () => obs.disconnect();
+  }, [tab]);
+
+  // ── Auth ─────────────────────────────────────────────────────────────────
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "INITIAL_SESSION" && session) {
-        const { data: userData } = await supabase.from("users").select("account_type").eq("id", session.user.id).single();
-        const type = userData?.account_type || "b2c";
-        setUserEmail(session.user.email);
-        setAccountType(type);
-        setIsLoggedIn(true);
-        localStorage.setItem("vino_user", JSON.stringify({ email: session.user.email, account_type: type }));
-      } else if (event === "SIGNED_IN" && session) {
-        const { data: userData } = await supabase.from("users").select("account_type").eq("id", session.user.id).single();
-        const type = userData?.account_type || "b2c";
+      if ((event === "INITIAL_SESSION" || event === "SIGNED_IN") && session) {
+        const { data: ud } = await supabase.from("users").select("account_type").eq("id", session.user.id).single();
+        const type = ud?.account_type || "b2c";
         setUserEmail(session.user.email);
         setAccountType(type);
         setIsLoggedIn(true);
@@ -92,7 +228,7 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => { if (isLoggedIn) loadData(); }, [isLoggedIn]);
+  useEffect(() => { if (isLoggedIn) { loadData(); loadTrending(); } }, [isLoggedIn]);
 
   async function loadData() {
     try {
@@ -101,9 +237,9 @@ function App() {
         fetch(`${API}/api/orders`),
       ]);
       setWines(await winesRes.json());
-      const ordersData = await ordersRes.json();
-      setOrders(Array.isArray(ordersData) ? ordersData : []);
-    } catch (error) { console.error(error); }
+      const od = await ordersRes.json();
+      setOrders(Array.isArray(od) ? od : []);
+    } catch (e) { console.error(e); }
   }
 
   async function loadMarketWines(search, page, append) {
@@ -120,12 +256,8 @@ function App() {
       mPageRef.current = data.page;
       setMarketHasMore(data.hasMore);
       mHasMoreRef.current = data.hasMore;
-    } catch (e) {
-      console.error(e);
-    } finally {
-      mLoadingRef.current = false;
-      setMarketLoading(false);
-    }
+    } catch (e) { console.error(e); }
+    finally { mLoadingRef.current = false; setMarketLoading(false); }
   }
 
   function handleMarketSearch(value) {
@@ -147,15 +279,80 @@ function App() {
   useEffect(() => {
     const sentinel = marketSentinelRef.current;
     if (!sentinel) return;
-    const observer = new IntersectionObserver(([entry]) => {
+    const obs = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting && !mLoadingRef.current && mHasMoreRef.current) {
         loadMarketWines(mSearchRef.current, mPageRef.current + 1, true);
       }
-    }, { rootMargin: "300px" });
-    observer.observe(sentinel);
-    return () => observer.disconnect();
+    }, { rootMargin: "400px" });
+    obs.observe(sentinel);
+    return () => obs.disconnect();
   }, [tab, marketWines]);
 
+  // ── Hero search with autocomplete ────────────────────────────────────────
+  function handleHeroSearch(value) {
+    setHeroSearch(value);
+    clearTimeout(suggestDebounceRef.current);
+    if (!value.trim()) { setSuggestions([]); setShowSuggestions(false); return; }
+    suggestDebounceRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch(`${API}/api/wines?search=${encodeURIComponent(value)}&limit=6`);
+        const data = await res.json();
+        setSuggestions(data.results || []);
+        setShowSuggestions(true);
+      } catch {}
+    }, 300);
+  }
+
+  function selectSuggestion(wine) {
+    setHeroSearch("");
+    setSuggestions([]);
+    setShowSuggestions(false);
+    setMarketSearch(wine.name);
+    mSearchRef.current = wine.name;
+    setTab("market");
+    setTimeout(() => loadMarketWines(wine.name, 1, false), 100);
+  }
+
+  useEffect(() => {
+    function clickOutside(e) {
+      if (heroSearchRef.current && !heroSearchRef.current.contains(e.target)) {
+        setShowSuggestions(false);
+      }
+    }
+    document.addEventListener("mousedown", clickOutside);
+    return () => document.removeEventListener("mousedown", clickOutside);
+  }, []);
+
+  // ── News ─────────────────────────────────────────────────────────────────
+  async function loadNews(country = "all") {
+    setNewsLoading(true);
+    try {
+      const res = await fetch(`${API}/api/news?country=${country}`);
+      const data = await res.json();
+      setNews(data.articles || []);
+    } catch { setNews([]); }
+    setNewsLoading(false);
+  }
+
+  useEffect(() => {
+    if (tab === "news" && news.length === 0) loadNews(newsFilter);
+  }, [tab]);
+
+  function handleNewsFilter(country) {
+    setNewsFilter(country);
+    loadNews(country);
+  }
+
+  // ── Trending ─────────────────────────────────────────────────────────────
+  async function loadTrending() {
+    try {
+      const res = await fetch(`${API}/api/trending`);
+      const data = await res.json();
+      setTrending(data.wines || []);
+    } catch {}
+  }
+
+  // ── Chart ────────────────────────────────────────────────────────────────
   async function loadChart(wineId, currentPrice) {
     try {
       const res = await fetch(`${API}/api/prices/${encodeURIComponent(wineId)}/history?currentPrice=${currentPrice || 100}`);
@@ -166,7 +363,7 @@ function App() {
         byMonth[month] = Number(item.price);
       });
       setChartData(Object.entries(byMonth).map(([date, price]) => ({ date, price })));
-    } catch (error) { console.error(error); }
+    } catch (e) { console.error(e); }
   }
 
   async function generatePortfolio() {
@@ -174,49 +371,49 @@ function App() {
       const res = await fetch(`${API}/api/portfolio-builder`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ budget, risk, horizonYears: years })
+        body: JSON.stringify({ budget, risk, horizonYears: years }),
       });
-      const data = await res.json();
-      setPortfolio(data);
-    } catch (error) { console.error(error); }
+      setPortfolio(await res.json());
+    } catch (e) { console.error(e); }
   }
 
-  async function fetchAIScore(wine) {
+  // AI Score: throttled queue — max 1 call per 200ms, prevents API flooding
+  async function processAIQueue() {
+    if (aiBusyRef.current) return;
+    aiBusyRef.current = true;
+    while (aiQueueRef.current.length > 0) {
+      const wine = aiQueueRef.current.shift();
+      try {
+        const res = await fetchWithRetry(`${API}/api/ai-score`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: wine.id, name: wine.name, producer: wine.producer, vintage: wine.vintage, region: wine.region, country: wine.country, criticScore: wine.criticScore || wine.investmentScore, marketTrend: wine.marketTrend, risk: wine.risk, currentPrice: wine.currentPrice }),
+        }, 1);
+        if (res.ok) {
+          const data = await res.json();
+          setAiScores(prev => ({ ...prev, [wine.id]: data }));
+        }
+      } catch {}
+      await new Promise(r => setTimeout(r, 200));
+    }
+    aiBusyRef.current = false;
+  }
+
+  function queueAIScore(wine) {
     if (fetchedAIRef.current.has(wine.id)) return;
     fetchedAIRef.current.add(wine.id);
-    try {
-      const res = await fetch(`${API}/api/ai-score`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: wine.id,
-          name: wine.name,
-          producer: wine.producer,
-          vintage: wine.vintage,
-          region: wine.region,
-          country: wine.country,
-          criticScore: wine.criticScore || wine.investmentScore,
-          marketTrend: wine.marketTrend,
-          risk: wine.risk,
-          currentPrice: wine.currentPrice,
-        }),
-      });
-      if (!res.ok) return;
-      const data = await res.json();
-      setAiScores(prev => ({ ...prev, [wine.id]: data }));
-    } catch {}
+    aiQueueRef.current.push(wine);
+    processAIQueue();
   }
 
   useEffect(() => {
     if (marketWines.length === 0) return;
-    marketWines.forEach(wine => fetchAIScore(wine));
+    marketWines.forEach(wine => queueAIScore(wine));
   }, [marketWines]);
 
   function getUserId() {
     const stored = localStorage.getItem("vino_user");
-    if (stored) {
-      try { return JSON.parse(stored).email || "anonymous"; } catch {}
-    }
+    if (stored) { try { return JSON.parse(stored).email || "anonymous"; } catch {} }
     let id = localStorage.getItem("vino_device_id");
     if (!id) { id = "device_" + Math.random().toString(36).slice(2); localStorage.setItem("vino_device_id", id); }
     return id;
@@ -240,10 +437,7 @@ function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: uid, wineId: wine.id, wineName: wine.name, targetPrice: target, direction: "below" }),
       });
-      if (res.ok) {
-        setAlertInputs(prev => ({ ...prev, [wine.id]: "" }));
-        await loadAlerts();
-      }
+      if (res.ok) { setAlertInputs(prev => ({ ...prev, [wine.id]: "" })); await loadAlerts(); }
     } catch {}
   }
 
@@ -273,13 +467,21 @@ function App() {
   useEffect(() => { loadAlerts(); loadNotifications(); }, []);
 
   async function buyWine(wineId, purchasePrice) {
-    await fetch(`${API}/api/orders`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ wineId, quantity: 1, purchasePrice })
-    });
-    loadData();
-    alert("Position added");
+    try {
+      const res = await fetchWithRetry(`${API}/api/orders`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ wineId, quantity: 1, purchasePrice }),
+      });
+      if (res.ok) {
+        toast("Posizione aggiunta al portfolio", "success");
+        loadData();
+      } else {
+        toast("Errore nell'aggiungere la posizione", "error");
+      }
+    } catch {
+      toast("Errore di rete", "error");
+    }
   }
 
   async function toggleWatchlist(wine) {
@@ -293,6 +495,22 @@ function App() {
       setSelectedWine(wine);
       loadChart(wineId, wine.currentPrice);
     }
+  }
+
+  // ── 3D tilt handlers ─────────────────────────────────────────────────────
+  function onCardTilt(e) {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const cx = rect.width / 2, cy = rect.height / 2;
+    const rx = ((cy - y) / cy) * 7;
+    const ry = ((x - cx) / cx) * 7;
+    card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
+  }
+
+  function onCardTiltReset(e) {
+    e.currentTarget.style.transform = "";
   }
 
   const totalMarket = wines.reduce((sum, wine) => sum + Number(wine.currentPrice || 0), 0);
@@ -316,20 +534,10 @@ function App() {
   const totalProfit = portfolioValue - totalInvested;
   const portfolioROI = totalInvested > 0 ? ((totalProfit / totalInvested) * 100).toFixed(2) : 0;
 
-  const growthData = [
-    { date: "Jun 25", value: Math.round(portfolioValue * 0.912) },
-    { date: "Jul 25", value: Math.round(portfolioValue * 0.920) },
-    { date: "Aug 25", value: Math.round(portfolioValue * 0.928) },
-    { date: "Sep 25", value: Math.round(portfolioValue * 0.936) },
-    { date: "Oct 25", value: Math.round(portfolioValue * 0.944) },
-    { date: "Nov 25", value: Math.round(portfolioValue * 0.952) },
-    { date: "Dec 25", value: Math.round(portfolioValue * 0.960) },
-    { date: "Jan 26", value: Math.round(portfolioValue * 0.968) },
-    { date: "Feb 26", value: Math.round(portfolioValue * 0.976) },
-    { date: "Mar 26", value: Math.round(portfolioValue * 0.984) },
-    { date: "Apr 26", value: Math.round(portfolioValue * 0.992) },
-    { date: "May 26", value: Math.round(portfolioValue * 1.000) }
-  ];
+  const growthData = Array.from({ length: 12 }, (_, i) => ({
+    date: new Date(2025, 5 + i, 1).toLocaleDateString("en-US", { month: "short", year: "2-digit" }),
+    value: Math.round(portfolioValue * (0.912 + i * 0.0073)),
+  }));
 
   if (!isLoggedIn) {
     return (
@@ -344,69 +552,174 @@ function App() {
     );
   }
 
+  const unreadCount = notifications.filter(n => !n.read).length;
+
   return (
     <div className="app">
+      {/* ── Offline banner ───────────────────────────────────────────────── */}
+      {isOffline && (
+        <div style={{ background: "#7f1d1d", color: "#fca5a5", padding: "8px 20px", fontSize: 13, fontWeight: 600, textAlign: "center", zIndex: 999 }}>
+          ⚠️ Connessione assente — alcune funzionalità non sono disponibili
+        </div>
+      )}
+      {/* ── Glassmorphism Header ─────────────────────────────────────────── */}
       <header className="header">
         <div className="logo">🍷 Vino<span>Invest</span></div>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div className="badge">global wine intelligence</div>
-          {userEmail && <span style={{ fontSize: 13, color: "#475569" }}>{userEmail}</span>}
-          {accountType && <span style={{ fontSize: 11, color: "#c9a227", border: "1px solid #c9a22744", borderRadius: 4, padding: "2px 7px", textTransform: "uppercase" }}>{accountType}</span>}
+          {userEmail && <span style={{ fontSize: 12, color: "#3a5a7a" }}>{userEmail}</span>}
+          {accountType && (
+            <span style={{ fontSize: 10, color: "#C9A227", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 4, padding: "2px 7px", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.08em" }}>
+              {accountType}
+            </span>
+          )}
           <div style={{ position: "relative" }}>
             <button
               onClick={() => { setTab("notifications"); markAllRead(); }}
-              style={{ padding: "6px 10px", border: "1px solid #1e293b", borderRadius: 8, background: "transparent", color: "#64748b", fontSize: 16, cursor: "pointer", position: "relative" }}
-              title="Notifiche"
+              style={{ padding: "6px 10px", border: "1px solid rgba(30,41,59,0.7)", borderRadius: 8, background: "transparent", color: "#4a6a8a", fontSize: 15, cursor: "pointer", position: "relative", transition: "border-color 0.2s" }}
             >🔔
-              {notifications.filter(n => !n.read).length > 0 && (
-                <span style={{ position: "absolute", top: -4, right: -4, background: "#ef4444", color: "white", borderRadius: "50%", fontSize: 9, width: 16, height: 16, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>
-                  {notifications.filter(n => !n.read).length}
+              {unreadCount > 0 && (
+                <span style={{ position: "absolute", top: -4, right: -4, background: "#ef4444", color: "white", borderRadius: "50%", fontSize: 9, width: 15, height: 15, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800 }}>
+                  {unreadCount}
                 </span>
               )}
             </button>
           </div>
           <button
             onClick={async () => { await supabase.auth.signOut(); }}
-            style={{ padding: "6px 16px", border: "1px solid #1e293b", borderRadius: 8, background: "transparent", color: "#64748b", fontSize: 13, cursor: "pointer" }}
-          >
-            Sign Out
-          </button>
+            style={{ padding: "6px 14px", border: "1px solid rgba(30,41,59,0.7)", borderRadius: 8, background: "transparent", color: "#4a6a8a", fontSize: 12, cursor: "pointer", fontFamily: "'Inter', Arial, sans-serif", transition: "border-color 0.2s, color 0.2s" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(201,162,39,0.4)"; e.currentTarget.style.color = "#C9A227"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(30,41,59,0.7)"; e.currentTarget.style.color = "#4a6a8a"; }}
+          >Sign Out</button>
         </div>
       </header>
+
       <main className="main">
+        {/* ── Sidebar ─────────────────────────────────────────────────────── */}
         <aside className="sidebar">
-          <button className={tab === "dashboard" ? "active" : ""} onClick={() => setTab("dashboard")}>Dashboard</button>
-          <button className={tab === "market" ? "active" : ""} onClick={() => setTab("market")}>Market</button>
-          <button className={tab === "analysis" ? "active" : ""} onClick={() => setTab("analysis")}>Analysis</button>
-          <button className={tab === "myportfolio" ? "active" : ""} onClick={() => setTab("myportfolio")}>My Portfolio</button>
-          <button className={tab === "portfolio" ? "active" : ""} onClick={() => setTab("portfolio")}>Portfolio AI</button>
+          {[
+            { id: "dashboard",  label: "Dashboard" },
+            { id: "market",     label: "Market" },
+            { id: "news",       label: "Wine News" },
+            { id: "analysis",   label: "Analysis" },
+            { id: "myportfolio",label: "My Portfolio" },
+            { id: "portfolio",  label: "Portfolio AI" },
+          ].map(({ id, label }) => (
+            <button key={id} className={tab === id ? "active" : ""} onClick={() => setTab(id)}>{label}</button>
+          ))}
           {accountType === "cantina" && (
             <button className={tab === "b2b" ? "active" : ""} onClick={() => setTab("b2b")}>B2B Dashboard</button>
           )}
-          <button className={tab === "notifications" ? "active" : ""} onClick={() => { setTab("notifications"); markAllRead(); }} style={{ position: "relative" }}>
-            🔔 Notifiche{notifications.filter(n => !n.read).length > 0 && ` (${notifications.filter(n => !n.read).length})`}
+          <button
+            className={tab === "notifications" ? "active" : ""}
+            onClick={() => { setTab("notifications"); markAllRead(); }}
+            style={{ position: "relative" }}
+          >
+            🔔 Alerts{unreadCount > 0 ? ` (${unreadCount})` : ""}
           </button>
-          <button onClick={() => navigate("/pricing")} style={{ marginTop: "auto" }}>Prezzi</button>
+          <button onClick={() => navigate("/pricing")} style={{ marginTop: "auto" }}>Pricing</button>
         </aside>
+
+        {/* ── Content ─────────────────────────────────────────────────────── */}
         <section className="content">
+          <ErrorBoundary>
+          {/* ── Dashboard ─────────────────────────────────────────────────── */}
           {tab === "dashboard" && (
             <>
               <section className="hero">
-                <div className="heroText">
-                  <h1>Global Wine Investment Platform</h1>
-                  <p>AI portfolio builder, wine intelligence, analytics and worldwide search.</p>
+                <h1>Global Wine Investment Platform</h1>
+                <p>AI portfolio builder, wine intelligence, analytics and worldwide search.</p>
+
+                {/* Universal Search */}
+                <div ref={heroSearchRef} className="hero-search-wrapper">
+                  <input
+                    className="hero-search-input"
+                    placeholder="Search wines, producers, regions, vintages..."
+                    value={heroSearch}
+                    onChange={e => handleHeroSearch(e.target.value)}
+                    onFocus={() => heroSearch && setShowSuggestions(true)}
+                  />
+                  <span className="hero-search-icon">🔍</span>
+                  {showSuggestions && suggestions.length > 0 && (
+                    <div className="search-suggestions">
+                      {suggestions.map(w => (
+                        <div key={w.id} className="suggestion-item" onClick={() => selectSuggestion(w)}>
+                          <span className="suggestion-name">{w.name}</span>
+                          <span className="suggestion-detail">{w.producer} · {w.vintage}</span>
+                          <span className="suggestion-type">{w.region ? w.region.split(",")[0] : "Wine"}</span>
+                          <span className="suggestion-price">€{w.currentPrice}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </section>
+
               <section className="statsGrid">
-                <div className="statCard"><small>Global Market</small><h2>€ {totalMarket.toFixed(0)}</h2></div>
-                <div className="statCard"><small>Portfolio Value</small><h2>€ {portfolioValue.toFixed(0)}</h2></div>
-                <div className="statCard"><small>Invested</small><h2>€ {totalInvested.toFixed(0)}</h2></div>
-                <div className="statCard"><small>Profit / Loss</small><h2>€ {totalProfit.toFixed(0)}</h2></div>
-                <div className="statCard"><small>ROI</small><h2>{portfolioROI}%</h2></div>
-                <div className="statCard"><small>Watchlist</small><h2>{watchlist.length}</h2></div>
+                {[
+                  { label: "Global Market", value: `€ ${totalMarket.toFixed(0)}` },
+                  { label: "Portfolio Value", value: `€ ${portfolioValue.toFixed(0)}` },
+                  { label: "Invested", value: `€ ${totalInvested.toFixed(0)}` },
+                  { label: "Profit / Loss", value: `€ ${totalProfit.toFixed(0)}` },
+                  { label: "ROI", value: `${portfolioROI}%` },
+                  { label: "Watchlist", value: watchlist.length },
+                ].map((s, i) => (
+                  <div key={i} className="statCard fade-up">
+                    <small>{s.label}</small>
+                    <h2>{s.value}</h2>
+                  </div>
+                ))}
               </section>
+
+              {/* Two-column: Trending + Market Watch */}
+              <div className="dashboard-cols">
+                {/* Trending Wines */}
+                <div>
+                  <div className="section-header">
+                    <div>
+                      <div className="section-title">Trending Wines</div>
+                      <div className="section-sub">Top movers in the last 24h</div>
+                    </div>
+                    <button
+                      onClick={loadTrending}
+                      style={{ fontSize: 11, color: "#C9A227", background: "none", border: "1px solid rgba(201,162,39,0.25)", borderRadius: 6, padding: "4px 10px", cursor: "pointer", fontFamily: "'Inter', Arial, sans-serif" }}
+                    >Refresh</button>
+                  </div>
+                  <div className="trending-list">
+                    {trending.length === 0
+                      ? Array.from({ length: 5 }).map((_, i) => (
+                          <div key={i} className="trending-item" style={{ minHeight: 52 }}>
+                            <div className="skeleton" style={{ width: "100%", height: 20, borderRadius: 6 }} />
+                          </div>
+                        ))
+                      : trending.map((w, i) => (
+                          <div
+                            key={w.id || i}
+                            className="trending-item"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => { setMarketSearch(w.name); mSearchRef.current = w.name; setTab("market"); setTimeout(() => loadMarketWines(w.name, 1, false), 100); }}
+                          >
+                            <span className="trending-rank">{i + 1}</span>
+                            <div className="trending-info">
+                              <div className="trending-name">{w.name}</div>
+                              <div className="trending-region">{w.producer} · {w.region}</div>
+                            </div>
+                            <span className={`trending-change ${w.change >= 0 ? "up" : "down"}`}>
+                              {w.change >= 0 ? "+" : ""}{w.change}%
+                            </span>
+                          </div>
+                        ))
+                    }
+                  </div>
+                </div>
+
+                {/* Market Watch */}
+                <MarketWatch />
+              </div>
             </>
           )}
+
+          {/* ── Market ──────────────────────────────────────────────────────── */}
           {tab === "market" && (
             <>
               <input
@@ -416,191 +729,245 @@ function App() {
                 onChange={e => handleMarketSearch(e.target.value)}
               />
               <section className="marketGrid">
-                {marketWines.map(wine => (
-                  <div className="wineCard" key={wine.id}>
-                    <div className="wineCard-image" onClick={() => setModalWine({ ...wine, aiScoreData: aiScores[wine.id] })}>
-                      {wine.imageUrl
-                        ? <img src={wine.imageUrl} alt={wine.name} loading="lazy" style={{height:"100%",width:"auto",objectFit:"contain",maxHeight:160}} onError={e=>{e.target.style.display="none"}} />
-                        : <div style={{fontSize:48,textAlign:"center",paddingTop:40}}>🍷</div>
-                      }
-                    </div>
-                    <div className="wineCard-body">
-                      <div className="wineCard-badges">
-                        <span className={"badge-risk " + (wine.risk || "medio").toLowerCase()}>{wine.risk || "Medio"}</span>
-                        {wine.marketTrend && <span className="badge-trend">{wine.marketTrend}</span>}
-                      </div>
-                      <h2>{wine.name}</h2>
-                      <p className="wineCard-producer">{wine.producer} · {wine.vintage || ""}</p>
-                      <div className="wineCard-score">
-                        <span className="score-label">{aiScores[wine.id]?.score ?? wine.investmentScore ?? "—"}</span>
-                        <div className="score-bar"><div className="score-fill" style={{width: (aiScores[wine.id]?.score ?? wine.investmentScore ?? 75) + "%"}}></div></div>
-                        <span style={{fontSize:11,color: aiScores[wine.id]?.signal === "Strong Buy" ? "#4ade80" : aiScores[wine.id]?.signal ? "#c9a227" : "#475569"}}>
-                          {aiScores[wine.id]?.signal ?? "AI Score"}
-                        </span>
-                      </div>
-                      <div className="wineCard-price">
-                        <span className="price-main">€ {wine.currentPrice}</span>
-                        <span className="price-label">/ bottle</span>
-                      </div>
-                      <div style={{ marginBottom: 10 }}>
-                        {alerts.filter(a => a.wine_id === wine.id && a.active).map(a => (
-                          <div key={a.id} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "#60a5fa", marginBottom: 4 }}>
-                            <span>🔔 Alert ≤ €{Number(a.target_price).toFixed(0)}</span>
-                            <button onClick={() => deleteAlert(a.id)} style={{ background: "none", border: "none", color: "#f87171", cursor: "pointer", fontSize: 13, padding: 0 }}>×</button>
+                {marketLoading && marketWines.length === 0
+                  ? Array.from({ length: 12 }).map((_, i) => <SkeletonCard key={i} />)
+                  : marketWines.map(wine => (
+                      <div
+                        className="wineCard fade-up"
+                        key={wine.id}
+                        onMouseMove={onCardTilt}
+                        onMouseLeave={onCardTiltReset}
+                      >
+                        <div className="wineCard-image" onClick={() => setModalWine({ ...wine, aiScoreData: aiScores[wine.id] })}>
+                          {wine.imageUrl
+                            ? <img src={wine.imageUrl} alt={wine.name} loading="lazy" onError={e => { e.target.style.display = "none"; e.target.nextSibling && (e.target.nextSibling.style.display = "flex"); }} style={{ height: 160, width: "auto", objectFit: "contain", filter: "drop-shadow(0 8px 20px rgba(0,0,0,0.75))" }} />
+                            : null
+                          }
+                          {!wine.imageUrl && (
+                            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, opacity: 0.45 }}>
+                              <div style={{ fontSize: 52 }}>🍷</div>
+                              <div style={{ fontSize: 10, color: "#3a5a7a", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700 }}>{wine.variety || "Fine Wine"}</div>
+                            </div>
+                          )}
+                          <span className="bottle-hint">VIEW</span>
+                        </div>
+                        <div className="wineCard-body">
+                          <div className="wineCard-badges">
+                            <span className={`badge-risk ${(wine.risk || "medio").toLowerCase()}`}>{wine.risk || "Medio"}</span>
+                            {wine.marketTrend && <span className="badge-trend">{wine.marketTrend}</span>}
                           </div>
-                        ))}
-                        <div style={{ display: "flex", gap: 4 }}>
-                          <input
-                            type="number"
-                            placeholder={`Alert < €${wine.currentPrice}`}
-                            value={alertInputs[wine.id] || ""}
-                            onChange={e => setAlertInputs(prev => ({ ...prev, [wine.id]: e.target.value }))}
-                            style={{ flex: 1, padding: "5px 8px", borderRadius: 8, border: "1px solid #1e293b", background: "#0b1220", color: "#94a3b8", fontSize: 11, outline: "none", minWidth: 0 }}
-                            onKeyDown={e => e.key === "Enter" && createAlert(wine)}
-                          />
-                          <button
-                            onClick={() => createAlert(wine)}
-                            style={{ padding: "5px 9px", borderRadius: 8, border: "1px solid #1e3a5f", background: "#0c1a2e", color: "#60a5fa", fontSize: 11, cursor: "pointer", whiteSpace: "nowrap" }}
-                          >🔔</button>
+                          <h2>{wine.name}</h2>
+                          <p className="wineCard-producer">{wine.producer} · {wine.vintage || ""}</p>
+                          <div className="wineCard-score">
+                            <span className={`score-label${aiScores[wine.id] ? " pulsing" : ""}`}>
+                              {aiScores[wine.id]?.score ?? wine.investmentScore ?? "—"}
+                            </span>
+                            <div className="score-bar">
+                              <div className="score-fill" style={{ width: (aiScores[wine.id]?.score ?? wine.investmentScore ?? 75) + "%" }} />
+                            </div>
+                            <span style={{ fontSize: 10, color: aiScores[wine.id]?.signal === "Strong Buy" ? "#4ade80" : aiScores[wine.id]?.signal ? "#C9A227" : "#3a5a7a" }}>
+                              {aiScores[wine.id]?.signal ?? "AI Score"}
+                            </span>
+                          </div>
+                          <div className="wineCard-price">
+                            <span className="price-main">€ {wine.currentPrice}</span>
+                            <span className="price-label">/ bottle</span>
+                          </div>
+                          <div style={{ marginBottom: 9 }}>
+                            {alerts.filter(a => a.wine_id === wine.id && a.active).map(a => (
+                              <div key={a.id} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10, color: "#60a5fa", marginBottom: 3 }}>
+                                <span>🔔 Alert ≤ €{Number(a.target_price).toFixed(0)}</span>
+                                <button onClick={() => deleteAlert(a.id)} style={{ background: "none", border: "none", color: "#f87171", cursor: "pointer", fontSize: 12, padding: 0 }}>×</button>
+                              </div>
+                            ))}
+                            <div style={{ display: "flex", gap: 4 }}>
+                              <input
+                                type="number"
+                                placeholder={`Alert < €${wine.currentPrice}`}
+                                value={alertInputs[wine.id] || ""}
+                                onChange={e => setAlertInputs(prev => ({ ...prev, [wine.id]: e.target.value }))}
+                                style={{ flex: 1, padding: "5px 8px", borderRadius: 7, border: "1px solid rgba(30,41,59,0.7)", background: "#0b1220", color: "#94a3b8", fontSize: 11, outline: "none", minWidth: 0, fontFamily: "'Inter', Arial, sans-serif" }}
+                                onKeyDown={e => e.key === "Enter" && createAlert(wine)}
+                              />
+                              <button onClick={() => createAlert(wine)} style={{ padding: "5px 8px", borderRadius: 7, border: "1px solid rgba(30,58,95,0.6)", background: "#0c1a2e", color: "#60a5fa", fontSize: 11, cursor: "pointer" }}>🔔</button>
+                            </div>
+                          </div>
+                          <div className="wineCard-actions">
+                            <WinePriceCompare wineId={wine.id} wineName={wine.name} vintage={wine.vintage} criticScore={wine.criticScore || wine.investmentScore} />
+                            <button className="btn-primary" onClick={() => buyWine(wine.id, wine.currentPrice)}>+ Add to Portfolio</button>
+                            <button className={`btn-secondary ${watchlist.includes(wine.id) ? "active" : ""}`} onClick={() => toggleWatchlist(wine)}>
+                              {watchlist.includes(wine.id) ? "★" : "☆"}
+                            </button>
+                          </div>
                         </div>
                       </div>
-                      <div className="wineCard-actions">
-                        <WinePriceCompare
-                          wineId={wine.id}
-                          wineName={wine.name}
-                          vintage={wine.vintage}
-                          criticScore={wine.criticScore || wine.investmentScore}
-                        />
-                        <button className="btn-primary" onClick={() => buyWine(wine.id, wine.currentPrice)}>+ Add to Portfolio</button>
-                        <button className={"btn-secondary " + (watchlist.includes(wine.id) ? "active" : "")} onClick={() => toggleWatchlist(wine)}>
-                          {watchlist.includes(wine.id) ? "★" : "☆"}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                    ))
+                }
               </section>
-              {marketLoading && (
-                <div style={{ textAlign: "center", padding: "20px", color: "#475569", fontSize: 13 }}>
-                  Caricamento vini...
-                </div>
+              {marketLoading && marketWines.length > 0 && (
+                <div style={{ textAlign: "center", padding: "20px", color: "#3a5a7a", fontSize: 12 }}>Loading more wines…</div>
               )}
               {!marketLoading && marketWines.length === 0 && (
-                <div style={{ textAlign: "center", padding: "40px", color: "#475569", fontSize: 14 }}>
-                  Nessun vino trovato.
-                </div>
+                <div style={{ textAlign: "center", padding: "40px", color: "#3a5a7a", fontSize: 14 }}>No wines found.</div>
               )}
               <div ref={marketSentinelRef} style={{ height: 1 }} />
             </>
           )}
+
+          {/* ── Wine News ─────────────────────────────────────────────────── */}
+          {tab === "news" && (
+            <section>
+              <div className="hero" style={{ marginBottom: 20 }}>
+                <h1>Wine News</h1>
+                <p>Latest intelligence from global fine wine markets</p>
+              </div>
+              <div className="news-filters">
+                {[
+                  { key: "all", label: "All Markets" },
+                  { key: "IT",  label: "🇮🇹 Italy" },
+                  { key: "FR",  label: "🇫🇷 France" },
+                  { key: "US",  label: "🇺🇸 USA" },
+                  { key: "AU",  label: "🇦🇺 Australia" },
+                  { key: "ZA",  label: "🇿🇦 South Africa" },
+                ].map(f => (
+                  <button
+                    key={f.key}
+                    className={`news-filter-btn ${newsFilter === f.key ? "active" : ""}`}
+                    onClick={() => handleNewsFilter(f.key)}
+                  >{f.label}</button>
+                ))}
+              </div>
+              {newsLoading ? (
+                <div className="news-grid">
+                  {Array.from({ length: 9 }).map((_, i) => (
+                    <div key={i} style={{ background: "rgba(11,18,32,0.85)", border: "1px solid rgba(31,41,55,0.6)", borderRadius: 16, padding: 18, minHeight: 160 }}>
+                      <div className="skeleton" style={{ width: "40%", height: 10, marginBottom: 9 }} />
+                      <div className="skeleton" style={{ width: "90%", height: 14, marginBottom: 5 }} />
+                      <div className="skeleton" style={{ width: "75%", height: 14, marginBottom: 12 }} />
+                      <div className="skeleton" style={{ width: "100%", height: 11, marginBottom: 4 }} />
+                      <div className="skeleton" style={{ width: "100%", height: 11, marginBottom: 4 }} />
+                      <div className="skeleton" style={{ width: "60%", height: 11 }} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="news-grid">
+                  {news.map((article, i) => <NewsCard key={article.id || i} article={article} />)}
+                  {news.length === 0 && (
+                    <div style={{ color: "#3a5a7a", padding: 24, gridColumn: "1/-1", textAlign: "center" }}>No news available for this filter.</div>
+                  )}
+                </div>
+              )}
+            </section>
+          )}
+
+          {/* ── Analysis ──────────────────────────────────────────────────── */}
           {tab === "analysis" && (
             <section className="chartPanel">
               <h2>Watchlist Analysis</h2>
               {!selectedWine && <p>Add wines to watchlist from Market section.</p>}
               {selectedWine && (
-                <div style={{marginBottom:30}}>
-                  <h3 style={{fontSize:28,marginBottom:10}}>{selectedWine.name}</h3>
+                <div style={{ marginBottom: 28 }}>
+                  <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 26, marginBottom: 8 }}>{selectedWine.name}</h3>
                   <p>Current Price: € {selectedWine.currentPrice}</p>
                   <p>Investment Score: {selectedWine.investmentScore}</p>
                 </div>
               )}
-              <div className="chartBox">
-                <ResponsiveContainer width="100%" height={360}>
-                  <LineChart data={chartData}>
-                    <CartesianGrid stroke="#1f1f1f" />
-                    <XAxis dataKey="date" stroke="#888" />
-                    <YAxis stroke="#888" />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="price" stroke="#c9a227" strokeWidth={4} dot={true} />
-                  </LineChart>
-                </ResponsiveContainer>
+              <div className="chartBox" ref={analysisChartRef}>
+                <LineChart data={chartData} width={analysisChartW || 600} height={340}>
+                  <CartesianGrid stroke="#0f1a2e" />
+                  <XAxis dataKey="date" stroke="#3a5a7a" tick={{ fontSize: 11 }} />
+                  <YAxis stroke="#3a5a7a" tick={{ fontSize: 11 }} />
+                  <Tooltip contentStyle={{ background: "#0b1220", border: "1px solid rgba(201,162,39,0.2)", borderRadius: 8 }} />
+                  <Line type="monotone" dataKey="price" stroke="#C9A227" strokeWidth={3} dot={false} />
+                </LineChart>
               </div>
             </section>
           )}
+
+          {/* ── My Portfolio ──────────────────────────────────────────────── */}
           {tab === "myportfolio" && (
             <section className="ordersPanel">
-              <h2 style={{marginBottom:24}}>My Portfolio</h2>
-              {holdings.length === 0 && <p style={{color:"#888"}}>No positions yet. Go to Market and add a position.</p>}
+              <h2>My Portfolio</h2>
+              {holdings.length === 0 && <p style={{ color: "#3a5a7a" }}>No positions yet. Go to Market and add a position.</p>}
               {holdings.length > 0 && (
                 <>
-                  <div className="statsGrid" style={{marginBottom:32}}>
-                    <div className="statCard"><small>Portfolio Value</small><h2>€ {portfolioValue.toFixed(0)}</h2></div>
-                    <div className="statCard"><small>Total Invested</small><h2>€ {totalInvested.toFixed(0)}</h2></div>
-                    <div className="statCard"><small>Profit / Loss</small><h2 style={{color:totalProfit>=0?"#4caf50":"#e53935"}}>€ {totalProfit.toFixed(0)}</h2></div>
-                    <div className="statCard"><small>ROI</small><h2 style={{color:portfolioROI>=0?"#4caf50":"#e53935"}}>{portfolioROI}%</h2></div>
+                  <div className="statsGrid" style={{ marginBottom: 28 }}>
+                    {[
+                      { label: "Portfolio Value", value: `€ ${portfolioValue.toFixed(0)}` },
+                      { label: "Total Invested", value: `€ ${totalInvested.toFixed(0)}` },
+                      { label: "Profit / Loss", value: `€ ${totalProfit.toFixed(0)}`, color: totalProfit >= 0 ? "#4caf50" : "#e53935" },
+                      { label: "ROI", value: `${portfolioROI}%`, color: Number(portfolioROI) >= 0 ? "#4caf50" : "#e53935" },
+                    ].map((s, i) => (
+                      <div key={i} className="statCard">
+                        <small>{s.label}</small>
+                        <h2 style={s.color ? { color: s.color } : {}}>{s.value}</h2>
+                      </div>
+                    ))}
                   </div>
-                  <table style={{width:"100%",borderCollapse:"collapse",fontSize:14}}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
                     <thead>
-                      <tr style={{borderBottom:"1px solid #333",color:"#888"}}>
-                        <th style={{textAlign:"left",padding:"10px 8px"}}>Wine</th>
-                        <th style={{textAlign:"right",padding:"10px 8px"}}>Bottles</th>
-                        <th style={{textAlign:"right",padding:"10px 8px"}}>Buy Price</th>
-                        <th style={{textAlign:"right",padding:"10px 8px"}}>Current</th>
-                        <th style={{textAlign:"right",padding:"10px 8px"}}>Invested</th>
-                        <th style={{textAlign:"right",padding:"10px 8px"}}>Value</th>
-                        <th style={{textAlign:"right",padding:"10px 8px"}}>P/L</th>
-                        <th style={{textAlign:"right",padding:"10px 8px"}}>ROI</th>
-                        <th style={{textAlign:"center",padding:"10px 8px"}}>6M Trend</th>
-                        <th style={{textAlign:"right",padding:"10px 8px"}}>1Y Est.</th>
-                        <th style={{textAlign:"right",padding:"10px 8px"}}>5Y Est.</th>
-                        <th style={{textAlign:"right",padding:"10px 8px"}}>10Y Est.</th>
+                      <tr style={{ borderBottom: "1px solid #0f1a2e", color: "#3a5a7a" }}>
+                        {["Wine", "Bottles", "Buy Price", "Current", "Invested", "Value", "P/L", "ROI", "6M Trend", "1Y Est.", "5Y Est.", "10Y Est."].map(h => (
+                          <th key={h} style={{ textAlign: h === "Wine" ? "left" : "right", padding: "9px 8px", fontWeight: 600, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em" }}>{h}</th>
+                        ))}
                       </tr>
                     </thead>
                     <tbody>
-                      {holdings.map((h,i) => {
-                        const est1y = (h.currentValue*1.08).toFixed(0);
-                        const est5y = (h.currentValue*Math.pow(1.08,5)).toFixed(0);
-                        const est10y = (h.currentValue*Math.pow(1.08,10)).toFixed(0);
+                      {holdings.map((h, i) => {
+                        const est1y = (h.currentValue * 1.08).toFixed(0);
+                        const est5y = (h.currentValue * Math.pow(1.08, 5)).toFixed(0);
+                        const est10y = (h.currentValue * Math.pow(1.08, 10)).toFixed(0);
                         return (
-                          <tr key={h.id} style={{borderBottom:"1px solid #1a1a1a",background:i%2===0?"transparent":"#0d0d0d"}}>
-                            <td style={{padding:"12px 8px",fontWeight:500}}>{h.name}</td>
-                            <td style={{textAlign:"right",padding:"12px 8px"}}>{h.quantity}</td>
-                            <td style={{textAlign:"right",padding:"12px 8px"}}>€ {h.purchasePrice}</td>
-                            <td style={{textAlign:"right",padding:"12px 8px"}}>€ {h.currentPrice}</td>
-                            <td style={{textAlign:"right",padding:"12px 8px"}}>€ {h.invested.toFixed(0)}</td>
-                            <td style={{textAlign:"right",padding:"12px 8px"}}>€ {h.currentValue.toFixed(0)}</td>
-                            <td style={{textAlign:"right",padding:"12px 8px",color:h.profit>=0?"#4caf50":"#e53935"}}>{h.profit>=0?"+":""}€ {h.profit.toFixed(0)}</td>
-                            <td style={{textAlign:"right",padding:"12px 8px",color:h.roi>=0?"#4caf50":"#e53935"}}>{h.roi>=0?"+":""}{h.roi}%</td>
-                            <td style={{textAlign:"center",padding:"4px 8px",verticalAlign:"middle"}}>
+                          <tr key={h.id} style={{ borderBottom: "1px solid #0a1220", background: i % 2 === 0 ? "transparent" : "rgba(11,18,32,0.5)" }}>
+                            <td style={{ padding: "11px 8px", fontWeight: 600, fontFamily: "'Playfair Display', Georgia, serif" }}>{h.name}</td>
+                            <td style={{ textAlign: "right", padding: "11px 8px" }}>{h.quantity}</td>
+                            <td style={{ textAlign: "right", padding: "11px 8px" }}>€ {h.purchasePrice}</td>
+                            <td style={{ textAlign: "right", padding: "11px 8px" }}>€ {h.currentPrice}</td>
+                            <td style={{ textAlign: "right", padding: "11px 8px" }}>€ {h.invested.toFixed(0)}</td>
+                            <td style={{ textAlign: "right", padding: "11px 8px" }}>€ {h.currentValue.toFixed(0)}</td>
+                            <td style={{ textAlign: "right", padding: "11px 8px", color: h.profit >= 0 ? "#4caf50" : "#e53935" }}>{h.profit >= 0 ? "+" : ""}€ {h.profit.toFixed(0)}</td>
+                            <td style={{ textAlign: "right", padding: "11px 8px", color: h.roi >= 0 ? "#4caf50" : "#e53935" }}>{h.roi >= 0 ? "+" : ""}{h.roi}%</td>
+                            <td style={{ textAlign: "center", padding: "4px 8px", verticalAlign: "middle" }}>
                               <PortfolioSparkline wineId={h.id} purchasePrice={h.purchasePrice} currentPrice={h.currentPrice} />
                             </td>
-                            <td style={{textAlign:"right",padding:"12px 8px",color:"#c9a227"}}>€ {est1y}</td>
-                            <td style={{textAlign:"right",padding:"12px 8px",color:"#c9a227"}}>€ {est5y}</td>
-                            <td style={{textAlign:"right",padding:"12px 8px",color:"#c9a227"}}>€ {est10y}</td>
+                            <td style={{ textAlign: "right", padding: "11px 8px", color: "#C9A227" }}>€ {est1y}</td>
+                            <td style={{ textAlign: "right", padding: "11px 8px", color: "#C9A227" }}>€ {est5y}</td>
+                            <td style={{ textAlign: "right", padding: "11px 8px", color: "#C9A227" }}>€ {est10y}</td>
                           </tr>
                         );
                       })}
                     </tbody>
                   </table>
-                  <div style={{marginTop:40,marginBottom:20,width:"100%"}}>
-                    <h3 style={{fontSize:18,marginBottom:16,color:"#c9a227"}}>Portfolio Growth</h3>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <LineChart data={growthData}>
-                        <CartesianGrid stroke="#1a1a1a" />
-                        <XAxis dataKey="date" stroke="#555" tick={{fontSize:11}} />
-                        <YAxis stroke="#555" tick={{fontSize:11}} tickFormatter={v => "€"+v} />
-                        <Tooltip formatter={v => ["€"+v,"Portfolio"]} />
-                        <Line type="monotone" dataKey="value" stroke="#c9a227" strokeWidth={3} dot={false} />
-                      </LineChart>
-                    </ResponsiveContainer>
+                  <div style={{ marginTop: 36, marginBottom: 18 }} ref={portfolioChartRef}>
+                    <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 17, marginBottom: 14, color: "#C9A227" }}>Portfolio Growth</h3>
+                    <LineChart data={growthData} width={portfolioChartW || 600} height={280}>
+                      <CartesianGrid stroke="#0a1220" />
+                      <XAxis dataKey="date" stroke="#3a5a7a" tick={{ fontSize: 10 }} />
+                      <YAxis stroke="#3a5a7a" tick={{ fontSize: 10 }} tickFormatter={v => "€" + v} />
+                      <Tooltip contentStyle={{ background: "#0b1220", border: "1px solid rgba(201,162,39,0.2)", borderRadius: 8 }} formatter={v => ["€" + v, "Portfolio"]} />
+                      <Line type="monotone" dataKey="value" stroke="#C9A227" strokeWidth={2.5} dot={false} />
+                    </LineChart>
                   </div>
-                  <p style={{marginTop:16,fontSize:12,color:"#555"}}>* Estimated values based on 8% average annual growth (wine market historical average)</p>
+                  <p style={{ marginTop: 14, fontSize: 11, color: "#1e3050" }}>* Estimated values based on 8% average annual growth (wine market historical average)</p>
                 </>
               )}
             </section>
           )}
+
+          {/* ── Portfolio AI ───────────────────────────────────────────────── */}
           {tab === "portfolio" && (
             <section className="ordersPanel">
               <h2>AI Portfolio Builder</h2>
-              <div style={{display:"flex",gap:12,marginBottom:20,flexWrap:"wrap"}}>
-                <input type="number" value={budget} onChange={e => setBudget(Number(e.target.value))} className="searchInput" />
+              <div style={{ display: "flex", gap: 10, marginBottom: 18, flexWrap: "wrap" }}>
+                <input type="number" value={budget} onChange={e => setBudget(Number(e.target.value))} className="searchInput" placeholder="Budget (€)" />
                 <select value={risk} onChange={e => setRisk(e.target.value)} className="searchInput">
                   <option value="basso">Low Risk</option>
                   <option value="medio">Medium Risk</option>
                   <option value="alto">High Risk</option>
                 </select>
-                <input type="number" value={years} onChange={e => setYears(Number(e.target.value))} className="searchInput" />
-                <button onClick={generatePortfolio}>Generate Portfolio</button>
+                <input type="number" value={years} onChange={e => setYears(Number(e.target.value))} className="searchInput" placeholder="Years" />
+                <button className="btn-primary" style={{ width: "auto", padding: "12px 24px" }} onClick={generatePortfolio}>Generate Portfolio</button>
               </div>
               {portfolio && (
                 <>
@@ -609,15 +976,15 @@ function App() {
                     <div className="statCard"><small>Expected Profit</small><h2>€ {portfolio.expectedProfit}</h2></div>
                     <div className="statCard"><small>Expected Value</small><h2>€ {portfolio.expectedValue}</h2></div>
                   </div>
-                  <div style={{marginTop:30}}>
+                  <div style={{ marginTop: 28 }}>
                     {portfolio.allocation.map(item => (
-                      <div key={item.wineId} className="wineCard" style={{marginBottom:16}}>
-                        <div className="wineCard-body">
+                      <div key={item.wineId} className="wineCard" style={{ marginBottom: 14, flexDirection: "row", alignItems: "center", padding: 18 }}>
+                        <div className="wineCard-body" style={{ padding: 0 }}>
                           <h2>{item.wineName}</h2>
                           <p className="wineCard-producer">{item.region}</p>
-                          <p>Signal: {item.signal} · AI Score: {item.aiScore}</p>
-                          <p>Bottles: {item.estimatedBottles} · Allocation: € {item.allocatedAmount}</p>
-                          <p>Estimated Return: € {item.estimatedReturn}</p>
+                          <p style={{ fontSize: 12, color: "#3a5a7a" }}>Signal: <span style={{ color: "#C9A227" }}>{item.signal}</span> · AI Score: {item.aiScore}</p>
+                          <p style={{ fontSize: 12, color: "#3a5a7a" }}>Bottles: {item.estimatedBottles} · Allocation: <span style={{ color: "#e2e8f0" }}>€ {item.allocatedAmount}</span></p>
+                          <p style={{ fontSize: 12, color: "#3a5a7a" }}>Estimated Return: <span style={{ color: "#4ade80" }}>€ {item.estimatedReturn}</span></p>
                         </div>
                       </div>
                     ))}
@@ -626,31 +993,37 @@ function App() {
               )}
             </section>
           )}
+
           {tab === "b2b" && <DashboardB2B />}
+
+          {/* ── Notifications ─────────────────────────────────────────────── */}
           {tab === "notifications" && (
             <section>
-              <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 20 }}>Notifiche</h2>
+              <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 26, fontWeight: 800, marginBottom: 20 }}>Notifications</h2>
               {notifications.length === 0 ? (
-                <div style={{ color: "#334155", fontSize: 14, padding: 24, border: "1px dashed #1e293b", borderRadius: 12, textAlign: "center" }}>
-                  Nessuna notifica. Imposta un alert di prezzo nella sezione Market.
+                <div style={{ color: "#1e3050", fontSize: 13, padding: 24, border: "1px dashed rgba(30,41,59,0.5)", borderRadius: 12, textAlign: "center" }}>
+                  No notifications. Set a price alert in the Market section.
                 </div>
               ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
                   {notifications.map(n => (
-                    <div key={n.id} style={{ background: n.read ? "#0b1220" : "#0c1a2e", border: `1px solid ${n.read ? "#1f2937" : "#1e3a5f"}`, borderRadius: 12, padding: "14px 18px" }}>
+                    <div key={n.id} style={{ background: n.read ? "rgba(11,18,32,0.8)" : "rgba(12,26,46,0.8)", border: `1px solid ${n.read ? "rgba(31,41,55,0.5)" : "rgba(30,58,95,0.5)"}`, borderRadius: 12, padding: "13px 17px" }}>
                       <div style={{ fontSize: 13 }}>{n.message}</div>
-                      <div style={{ fontSize: 11, color: "#334155", marginTop: 4 }}>{new Date(n.created_at).toLocaleString("it-IT")}</div>
+                      <div style={{ fontSize: 10, color: "#1e3050", marginTop: 3 }}>{new Date(n.created_at).toLocaleString("it-IT")}</div>
                     </div>
                   ))}
                 </div>
               )}
             </section>
           )}
+          </ErrorBoundary>
         </section>
       </main>
 
       {modalWine && (
-        <WineBottle3DModal wine={modalWine} onClose={() => setModalWine(null)} />
+        <ErrorBoundary>
+          <WineBottle3DModal wine={modalWine} onClose={() => setModalWine(null)} />
+        </ErrorBoundary>
       )}
     </div>
   );
@@ -658,9 +1031,11 @@ function App() {
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <Routes>
-      <Route path="/pricing" element={<Pricing />} />
-      <Route path="*" element={<App />} />
-    </Routes>
+    <ToastProvider>
+      <Routes>
+        <Route path="/pricing" element={<Pricing />} />
+        <Route path="*" element={<App />} />
+      </Routes>
+    </ToastProvider>
   </BrowserRouter>
 );
