@@ -481,7 +481,25 @@ function App() {
     } catch {}
   }
 
-  useEffect(() => { loadAlerts(); loadNotifications(); }, []);
+  useEffect(() => {
+    loadAlerts();
+    loadNotifications();
+    // Poll notifications every 30s
+    const poll = setInterval(loadNotifications, 30000);
+    return () => clearInterval(poll);
+  }, []);
+
+  // Browser push notification when new unread arrives
+  const prevUnreadRef = useRef(0);
+  useEffect(() => {
+    const current = notifications.filter(n => !n.read).length;
+    if (current > prevUnreadRef.current && prevUnreadRef.current !== 0) {
+      if (Notification.permission === "granted") {
+        new Notification("VinoInvest", { body: `${current - prevUnreadRef.current} new price alert${current - prevUnreadRef.current > 1 ? "s" : ""}`, icon: "/favicon.ico" });
+      }
+    }
+    prevUnreadRef.current = current;
+  }, [notifications]);
 
   async function buyWine(wineId, purchasePrice) {
     try {
@@ -827,6 +845,14 @@ function App() {
                               {watchlist.includes(wine.id) ? "★" : "☆"}
                             </button>
                           </div>
+                          <a
+                            href={`https://www.wine-searcher.com/find/${encodeURIComponent(wine.name)}${wine.vintage ? `/${wine.vintage}` : ""}`}
+                            target="_blank"
+                            rel="noopener noreferrer sponsored"
+                            style={{ display: "block", textAlign: "center", fontSize: 10, color: "#3a5a7a", textDecoration: "none", padding: "6px 0 4px", borderTop: "1px solid rgba(30,41,59,0.4)", marginTop: 4, transition: "color 0.2s" }}
+                            onMouseEnter={e => e.currentTarget.style.color = "#C9A227"}
+                            onMouseLeave={e => e.currentTarget.style.color = "#3a5a7a"}
+                          >Buy on Wine-Searcher →</a>
                         </div>
                       </div>
                     ))

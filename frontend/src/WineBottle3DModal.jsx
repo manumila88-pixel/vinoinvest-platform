@@ -169,7 +169,31 @@ export default function WineBottle3DModal({ wine, onClose }) {
             <p style={{ fontSize: 10, color: "#475569", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>
               Storico Prezzi · 12 mesi
             </p>
-            <div style={{ width: "100%", minWidth: 200 }}><div style={{ width: "100%", minWidth: 200 }}><PriceHistoryChart wineId={wine.id} currentPrice={wine.currentPrice} height={180} /></div></div>
+            <div style={{ width: "100%", minWidth: 200 }}><PriceHistoryChart wineId={wine.id} currentPrice={wine.currentPrice} height={180} /></div>
+          </div>
+
+          {/* ── Affiliate buy links ─────────────────────────────────────── */}
+          <div style={{ marginTop: 16, borderTop: "1px solid #1e293b", paddingTop: 14, display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <a
+              href={`https://www.wine-searcher.com/find/${encodeURIComponent(wine.name)}${wine.vintage ? `/${wine.vintage}` : ""}`}
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              style={{ flex: 1, minWidth: 140, display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "10px 14px", background: "rgba(201,162,39,0.1)", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 10, color: "#C9A227", fontSize: 12, fontWeight: 700, textDecoration: "none", transition: "background 0.2s" }}
+              onMouseEnter={e => e.currentTarget.style.background = "rgba(201,162,39,0.18)"}
+              onMouseLeave={e => e.currentTarget.style.background = "rgba(201,162,39,0.1)"}
+            >
+              🔍 Trova su Wine-Searcher
+            </a>
+            <a
+              href={`https://www.vivino.com/search/wines?q=${encodeURIComponent(wine.name)}`}
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              style={{ flex: 1, minWidth: 140, display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "10px 14px", background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.25)", borderRadius: 10, color: "#60a5fa", fontSize: 12, fontWeight: 700, textDecoration: "none", transition: "background 0.2s" }}
+              onMouseEnter={e => e.currentTarget.style.background = "rgba(96,165,250,0.15)"}
+              onMouseLeave={e => e.currentTarget.style.background = "rgba(96,165,250,0.08)"}
+            >
+              🍇 Cerca su Vivino
+            </a>
           </div>
 
           <p style={{ fontSize: 10, color: "#334155", marginTop: 14, textAlign: "center", letterSpacing: "0.05em", textTransform: "uppercase" }}>

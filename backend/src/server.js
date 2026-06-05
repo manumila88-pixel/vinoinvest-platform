@@ -15,6 +15,8 @@ import dashboardRouter from "./routes/dashboard.js";
 import ratesRouter from "./routes/rates.js";
 import newsRouter from "./routes/news.js";
 import aiMarketRouter from "./routes/aiMarket.js";
+import aiPortfolioRouter from "./routes/aiPortfolio.js";
+import blogRouter from "./routes/blog.js";
 import "./jobs/priceUpdater.js";
 import "./jobs/alertsChecker.js";
 
@@ -73,6 +75,9 @@ app.use("/api/notifications", notificationsRouter);
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/rates", ratesRouter);
 app.use("/api/news", newsRouter);
+app.use("/api/ai", aiRateLimit, aiMarketRouter);
+app.use("/api/ai", aiRateLimit, aiPortfolioRouter);
+app.use("/api/blog", blogRouter);
 
 const __filename =
   fileURLToPath(import.meta.url);
