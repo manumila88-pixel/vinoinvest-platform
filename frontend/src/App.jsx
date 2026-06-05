@@ -69,6 +69,13 @@ function App() {
         setAccountType(type);
         setIsLoggedIn(true);
         localStorage.setItem("vino_user", JSON.stringify({ email: session.user.email, account_type: type }));
+      } else if (event === "SIGNED_IN" && session) {
+        const { data: userData } = await supabase.from("users").select("account_type").eq("id", session.user.id).single();
+        const type = userData?.account_type || "b2c";
+        setUserEmail(session.user.email);
+        setAccountType(type);
+        setIsLoggedIn(true);
+        localStorage.setItem("vino_user", JSON.stringify({ email: session.user.email, account_type: type }));
       } else if (event === "SIGNED_OUT") {
         setIsLoggedIn(false);
         setUserEmail("");
