@@ -8,6 +8,7 @@ import { supabase } from "./lib/supabase";
 import WineBottle3D from "./WineBottle3D";
 import WineBottle3DModal from "./WineBottle3DModal";
 import Pricing from "./pages/Pricing";
+import DashboardB2B from "./pages/Dashboard";
 import WinePriceCompare from "./components/WinePriceCompare";
 import "./style.css";
 
@@ -60,6 +61,7 @@ function App() {
   const fetchedAIRef = useRef(new Set());
   const [alerts, setAlerts] = useState([]);
   const [alertInputs, setAlertInputs] = useState({});
+  const [notifications, setNotifications] = useState([]);
   const [budget, setBudget] = useState(10000);
   const [risk, setRisk] = useState("medio");
   const [years, setYears] = useState(5);
@@ -252,7 +254,23 @@ function App() {
     } catch {}
   }
 
-  useEffect(() => { loadAlerts(); }, []);
+  async function loadNotifications() {
+    const uid = getUserId();
+    try {
+      const res = await fetch(`${API}/api/notifications/${encodeURIComponent(uid)}`);
+      if (res.ok) setNotifications(await res.json());
+    } catch {}
+  }
+
+  async function markAllRead() {
+    const uid = getUserId();
+    try {
+      await fetch(`${API}/api/notifications/read-all/${encodeURIComponent(uid)}`, { method: "PUT" });
+      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    } catch {}
+  }
+
+  useEffect(() => { loadAlerts(); loadNotifications(); }, []);
 
   async function buyWine(wineId, purchasePrice) {
     await fetch(`${API}/api/orders`, {
@@ -330,10 +348,23 @@ function App() {
     <div className="app">
       <header className="header">
         <div className="logo">🍷 Vino<span>Invest</span></div>
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <div className="badge">global wine intelligence</div>
           {userEmail && <span style={{ fontSize: 13, color: "#475569" }}>{userEmail}</span>}
           {accountType && <span style={{ fontSize: 11, color: "#c9a227", border: "1px solid #c9a22744", borderRadius: 4, padding: "2px 7px", textTransform: "uppercase" }}>{accountType}</span>}
+          <div style={{ position: "relative" }}>
+            <button
+              onClick={() => { setTab("notifications"); markAllRead(); }}
+              style={{ padding: "6px 10px", border: "1px solid #1e293b", borderRadius: 8, background: "transparent", color: "#64748b", fontSize: 16, cursor: "pointer", position: "relative" }}
+              title="Notifiche"
+            >🔔
+              {notifications.filter(n => !n.read).length > 0 && (
+                <span style={{ position: "absolute", top: -4, right: -4, background: "#ef4444", color: "white", borderRadius: "50%", fontSize: 9, width: 16, height: 16, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>
+                  {notifications.filter(n => !n.read).length}
+                </span>
+              )}
+            </button>
+          </div>
           <button
             onClick={async () => { await supabase.auth.signOut(); }}
             style={{ padding: "6px 16px", border: "1px solid #1e293b", borderRadius: 8, background: "transparent", color: "#64748b", fontSize: 13, cursor: "pointer" }}
@@ -349,6 +380,12 @@ function App() {
           <button className={tab === "analysis" ? "active" : ""} onClick={() => setTab("analysis")}>Analysis</button>
           <button className={tab === "myportfolio" ? "active" : ""} onClick={() => setTab("myportfolio")}>My Portfolio</button>
           <button className={tab === "portfolio" ? "active" : ""} onClick={() => setTab("portfolio")}>Portfolio AI</button>
+          {accountType === "cantina" && (
+            <button className={tab === "b2b" ? "active" : ""} onClick={() => setTab("b2b")}>B2B Dashboard</button>
+          )}
+          <button className={tab === "notifications" ? "active" : ""} onClick={() => { setTab("notifications"); markAllRead(); }} style={{ position: "relative" }}>
+            🔔 Notifiche{notifications.filter(n => !n.read).length > 0 && ` (${notifications.filter(n => !n.read).length})`}
+          </button>
           <button onClick={() => navigate("/pricing")} style={{ marginTop: "auto" }}>Prezzi</button>
         </aside>
         <section className="content">
@@ -383,7 +420,7 @@ function App() {
                   <div className="wineCard" key={wine.id}>
                     <div className="wineCard-image" onClick={() => setModalWine({ ...wine, aiScoreData: aiScores[wine.id] })}>
                       {wine.imageUrl
-                        ? <img src={wine.imageUrl} alt={wine.name} style={{height:"100%",width:"auto",objectFit:"contain",maxHeight:160}} onError={e=>{e.target.style.display="none"}} />
+                        ? <img src={wine.imageUrl} alt={wine.name} loading="lazy" style={{height:"100%",width:"auto",objectFit:"contain",maxHeight:160}} onError={e=>{e.target.style.display="none"}} />
                         : <div style={{fontSize:48,textAlign:"center",paddingTop:40}}>🍷</div>
                       }
                     </div>
@@ -586,6 +623,26 @@ function App() {
                     ))}
                   </div>
                 </>
+              )}
+            </section>
+          )}
+          {tab === "b2b" && <DashboardB2B />}
+          {tab === "notifications" && (
+            <section>
+              <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 20 }}>Notifiche</h2>
+              {notifications.length === 0 ? (
+                <div style={{ color: "#334155", fontSize: 14, padding: 24, border: "1px dashed #1e293b", borderRadius: 12, textAlign: "center" }}>
+                  Nessuna notifica. Imposta un alert di prezzo nella sezione Market.
+                </div>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {notifications.map(n => (
+                    <div key={n.id} style={{ background: n.read ? "#0b1220" : "#0c1a2e", border: `1px solid ${n.read ? "#1f2937" : "#1e3a5f"}`, borderRadius: 12, padding: "14px 18px" }}>
+                      <div style={{ fontSize: 13 }}>{n.message}</div>
+                      <div style={{ fontSize: 11, color: "#334155", marginTop: 4 }}>{new Date(n.created_at).toLocaleString("it-IT")}</div>
+                    </div>
+                  ))}
+                </div>
               )}
             </section>
           )}

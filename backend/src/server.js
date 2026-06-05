@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import compression from "compression";
 import pg from "pg";
 import cors from "cors";
 import paymentsRouter from "./routes/payments.js";
@@ -7,7 +8,11 @@ import pricesRouter from "./routes/prices.js";
 import authRouter from "./routes/auth.js";
 import aiScoreRouter from "./routes/aiScore.js";
 import alertsRouter from "./routes/alerts.js";
+import notificationsRouter from "./routes/notifications.js";
+import dashboardRouter from "./routes/dashboard.js";
+import ratesRouter from "./routes/rates.js";
 import "./jobs/priceUpdater.js";
+import "./jobs/alertsChecker.js";
 
 import fs from "fs";
 import path from "path";
@@ -15,6 +20,7 @@ import { fileURLToPath } from "url";
 
 const app = express();
 
+app.use(compression());
 app.use(cors());
 // Stripe webhook needs raw body — must be registered before express.json()
 app.use("/api/payments/stripe/webhook", express.raw({ type: "application/json" }));
@@ -24,6 +30,9 @@ app.use("/api/prices", pricesRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/ai-score", aiScoreRouter);
 app.use("/api/alerts", alertsRouter);
+app.use("/api/notifications", notificationsRouter);
+app.use("/api/dashboard", dashboardRouter);
+app.use("/api/rates", ratesRouter);
 
 const __filename =
   fileURLToPath(import.meta.url);

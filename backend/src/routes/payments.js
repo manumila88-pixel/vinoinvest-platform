@@ -37,8 +37,52 @@ router.post("/stripe/webhook", express.raw({ type: "application/json" }), async 
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
-    console.log("Subscription activated:", session.customer_email, session.metadata?.plan);
-    // TODO: upsert into Supabase subscriptions table
+    const email = session.customer_email;
+    const plan = session.metadata?.plan || "pro";
+    console.log("[stripe] checkout.session.completed:", email, plan);
+
+    try {
+      const { pool } = await import("../db/pool.js");
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS subscriptions (
+          user_email TEXT PRIMARY KEY,
+          plan TEXT NOT NULL,
+          stripe_customer_id TEXT,
+          stripe_session_id TEXT,
+          active BOOLEAN DEFAULT TRUE,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW()
+        )
+      `);
+      await pool.query(
+        `INSERT INTO subscriptions (user_email, plan, stripe_customer_id, stripe_session_id)
+         VALUES ($1,$2,$3,$4)
+         ON CONFLICT (user_email) DO UPDATE SET
+           plan = EXCLUDED.plan,
+           stripe_session_id = EXCLUDED.stripe_session_id,
+           active = true,
+           updated_at = NOW()`,
+        [email, plan, session.customer || null, session.id]
+      );
+      console.log("[stripe] Subscription saved:", email, plan);
+    } catch (e) {
+      console.error("[stripe] DB write failed:", e.message);
+    }
+  }
+
+  if (event.type === "customer.subscription.deleted") {
+    const sub = event.data.object;
+    try {
+      const { pool } = await import("../db/pool.js");
+      await pool.query(
+        `UPDATE subscriptions SET active = false, updated_at = NOW()
+         WHERE stripe_customer_id = $1`,
+        [sub.customer]
+      );
+      console.log("[stripe] Subscription deactivated:", sub.customer);
+    } catch (e) {
+      console.error("[stripe] Deactivate failed:", e.message);
+    }
   }
 
   res.json({ received: true });
