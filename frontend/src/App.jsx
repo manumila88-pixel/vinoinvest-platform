@@ -56,6 +56,8 @@ function App() {
   const [portfolio, setPortfolio] = useState(null);
   const [chartData, setChartData] = useState([]);
   const [selectedWine, setSelectedWine] = useState(null);
+  const [aiScores, setAiScores] = useState({});
+  const fetchedAIRef = useRef(new Set());
   const [budget, setBudget] = useState(10000);
   const [risk, setRisk] = useState("medio");
   const [years, setYears] = useState(5);
@@ -174,6 +176,37 @@ function App() {
       setPortfolio(data);
     } catch (error) { console.error(error); }
   }
+
+  async function fetchAIScore(wine) {
+    if (fetchedAIRef.current.has(wine.id)) return;
+    fetchedAIRef.current.add(wine.id);
+    try {
+      const res = await fetch(`${API}/api/ai-score`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: wine.id,
+          name: wine.name,
+          producer: wine.producer,
+          vintage: wine.vintage,
+          region: wine.region,
+          country: wine.country,
+          criticScore: wine.criticScore || wine.investmentScore,
+          marketTrend: wine.marketTrend,
+          risk: wine.risk,
+          currentPrice: wine.currentPrice,
+        }),
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      setAiScores(prev => ({ ...prev, [wine.id]: data }));
+    } catch {}
+  }
+
+  useEffect(() => {
+    if (marketWines.length === 0) return;
+    marketWines.forEach(wine => fetchAIScore(wine));
+  }, [marketWines]);
 
   async function buyWine(wineId, purchasePrice) {
     await fetch(`${API}/api/orders`, {
@@ -302,7 +335,7 @@ function App() {
               <section className="marketGrid">
                 {marketWines.map(wine => (
                   <div className="wineCard" key={wine.id}>
-                    <div className="wineCard-image" onClick={() => setModalWine(wine)}>
+                    <div className="wineCard-image" onClick={() => setModalWine({ ...wine, aiScoreData: aiScores[wine.id] })}>
                       {wine.imageUrl
                         ? <img src={wine.imageUrl} alt={wine.name} style={{height:"100%",width:"auto",objectFit:"contain",maxHeight:160}} onError={e=>{e.target.style.display="none"}} />
                         : <div style={{fontSize:48,textAlign:"center",paddingTop:40}}>🍷</div>
@@ -316,9 +349,11 @@ function App() {
                       <h2>{wine.name}</h2>
                       <p className="wineCard-producer">{wine.producer} · {wine.vintage || ""}</p>
                       <div className="wineCard-score">
-                        <span className="score-label">{wine.investmentScore || "—"}</span>
-                        <div className="score-bar"><div className="score-fill" style={{width: (wine.investmentScore || 75) + "%"}}></div></div>
-                        <span style={{fontSize:11,color:"#475569"}}>AI Score</span>
+                        <span className="score-label">{aiScores[wine.id]?.score ?? wine.investmentScore ?? "—"}</span>
+                        <div className="score-bar"><div className="score-fill" style={{width: (aiScores[wine.id]?.score ?? wine.investmentScore ?? 75) + "%"}}></div></div>
+                        <span style={{fontSize:11,color: aiScores[wine.id]?.signal === "Strong Buy" ? "#4ade80" : aiScores[wine.id]?.signal ? "#c9a227" : "#475569"}}>
+                          {aiScores[wine.id]?.signal ?? "AI Score"}
+                        </span>
                       </div>
                       <div className="wineCard-price">
                         <span className="price-main">€ {wine.currentPrice}</span>

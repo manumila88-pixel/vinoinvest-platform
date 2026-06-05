@@ -70,7 +70,8 @@ export default function WineBottle3DModal({ wine, onClose }) {
   }, [useImage]);
 
   const wineType = getWineType(wine);
-  const aiScore = wine.analysis?.aiScore ?? wine.investmentScore ?? "—";
+  const aiScore = wine.aiScoreData?.score ?? wine.analysis?.aiScore ?? wine.investmentScore ?? "—";
+  const aiSignal = wine.aiScoreData?.signal;
 
   return (
     <div className="bottle-overlay" onClick={onClose}>
@@ -128,9 +129,41 @@ export default function WineBottle3DModal({ wine, onClose }) {
           <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
             <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#0c1a2e", color: "#60a5fa", border: "1px solid #1e3a5f" }}>{wineType}</span>
             <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#1a1207", color: "#c9a227", border: "1px solid #5a400d" }}>AI Score {aiScore}</span>
+            {aiSignal && <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#0d1f0d", color: aiSignal === "Strong Buy" ? "#4ade80" : "#86efac", border: "1px solid #166534" }}>{aiSignal}</span>}
             {wine.risk && <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#0d1f0d", color: "#4ade80", border: "1px solid #166534" }}>{wine.risk}</span>}
             {wine.marketTrend && <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#131a0d", color: "#86efac", border: "1px solid #166534" }}>{wine.marketTrend}</span>}
           </div>
+
+          {wine.aiScoreData?.breakdown && (
+            <div style={{ marginTop: 14, padding: "12px 14px", background: "#0a1628", borderRadius: 10, border: "1px solid #1e293b" }}>
+              <p style={{ fontSize: 10, color: "#475569", marginBottom: 10, textTransform: "uppercase", letterSpacing: "0.08em" }}>AI Score Breakdown</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+                {[
+                  { key: "vintage", label: "Vintage" },
+                  { key: "producer", label: "Producer" },
+                  { key: "market", label: "Market" },
+                  { key: "critic", label: "Critic" },
+                  { key: "risk_adjusted", label: "Risk Adj." },
+                ].map(({ key, label }) => {
+                  const val = wine.aiScoreData.breakdown[key] ?? 0;
+                  return (
+                    <div key={key} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span style={{ fontSize: 10, color: "#64748b", width: 64, flexShrink: 0 }}>{label}</span>
+                      <div style={{ flex: 1, background: "#1e293b", borderRadius: 4, height: 5 }}>
+                        <div style={{ width: val + "%", height: "100%", background: "#c9a227", borderRadius: 4 }} />
+                      </div>
+                      <span style={{ fontSize: 10, color: "#c9a227", width: 24, textAlign: "right" }}>{val}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              {wine.aiScoreData.reasoning && (
+                <p style={{ fontSize: 11, color: "#64748b", marginTop: 10, lineHeight: 1.6, fontStyle: "italic" }}>
+                  {wine.aiScoreData.reasoning}
+                </p>
+              )}
+            </div>
+          )}
 
           <div style={{ marginTop: 16, borderTop: "1px solid #1e293b", paddingTop: 14 }}>
             <p style={{ fontSize: 10, color: "#475569", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>

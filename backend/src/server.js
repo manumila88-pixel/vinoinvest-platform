@@ -4,6 +4,8 @@ import pg from "pg";
 import cors from "cors";
 import paymentsRouter from "./routes/payments.js";
 import pricesRouter from "./routes/prices.js";
+import authRouter from "./routes/auth.js";
+import aiScoreRouter from "./routes/aiScore.js";
 import "./jobs/priceUpdater.js";
 
 import fs from "fs";
@@ -18,6 +20,8 @@ app.use("/api/payments/stripe/webhook", express.raw({ type: "application/json" }
 app.use(express.json());
 app.use("/api/payments", paymentsRouter);
 app.use("/api/prices", pricesRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/ai-score", aiScoreRouter);
 
 const __filename =
   fileURLToPath(import.meta.url);
