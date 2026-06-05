@@ -29,7 +29,8 @@ export default function PriceHistoryChart({ wineId, currentPrice = null, height 
 
   useEffect(() => {
     if (!wineId) { setLoading(false); return; }
-    const qs = currentPrice ? `?currentPrice=${currentPrice}` : "";
+    const price = currentPrice || 100;
+    const qs = `?currentPrice=${price}`;
     fetch(`${API}/api/prices/${encodeURIComponent(wineId)}/history${qs}`)
       .then(r => r.ok ? r.json() : null)
       .then(d => {
