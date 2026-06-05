@@ -2,10 +2,76 @@ import { useEffect, useState } from "react";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
+function printReport(data, rates) {
+  const win = window.open("", "_blank");
+  win.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>VinoInvest B2B Report</title>
+      <style>
+        body { font-family: Arial, sans-serif; color: #111; padding: 32px; }
+        h1 { font-size: 24px; margin-bottom: 4px; }
+        h2 { font-size: 16px; margin: 24px 0 8px; }
+        .meta { color: #555; font-size: 12px; margin-bottom: 24px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { background: #f1f5f9; text-align: left; padding: 8px; font-size: 11px; text-transform: uppercase; }
+        td { padding: 8px; border-bottom: 1px solid #e2e8f0; }
+        .stat { display: inline-block; margin-right: 32px; }
+        .stat-label { font-size: 11px; color: #64748b; text-transform: uppercase; }
+        .stat-value { font-size: 22px; font-weight: 700; }
+        @media print { @page { margin: 1cm; } }
+      </style>
+    </head>
+    <body>
+      <h1>VinoInvest — B2B Report</h1>
+      <div class="meta">Generato: ${new Date().toLocaleString("it-IT")} | Dati aggiornati ogni 6 ore</div>
+
+      <div>
+        <div class="stat"><div class="stat-label">Volume Scambi</div><div class="stat-value">€ ${(data?.totalVolume || 0).toLocaleString("it-IT")}</div></div>
+        <div class="stat"><div class="stat-label">Ordini Totali</div><div class="stat-value">${data?.totalOrders || 0}</div></div>
+        <div class="stat"><div class="stat-label">ROI Medio</div><div class="stat-value">${data?.avgRoi || 0}%</div></div>
+        <div class="stat"><div class="stat-label">Alert Attivi</div><div class="stat-value">${data?.activeAlerts || 0}</div></div>
+      </div>
+
+      <h2>Top Vini</h2>
+      <table>
+        <tr><th>#</th><th>Vino</th><th>Ordini</th><th>Volume</th><th>ROI Medio</th></tr>
+        ${(data?.topWines || []).map((w, i) => `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${w.wineName || w.wineId}</td>
+            <td>${w.orders}</td>
+            <td>€ ${w.volume.toLocaleString("it-IT")}</td>
+            <td style="color:${w.avgRoi >= 0 ? "green" : "red"}">${w.avgRoi >= 0 ? "+" : ""}${w.avgRoi}%</td>
+          </tr>
+        `).join("")}
+      </table>
+
+      ${rates ? `
+      <h2>Tassi di Cambio</h2>
+      <table>
+        <tr><th>Valuta</th><th>1 EUR =</th></tr>
+        ${Object.entries(rates.rates || {}).map(([cur, rate]) => `<tr><td>${cur}</td><td>${rate.toFixed(4)}</td></tr>`).join("")}
+      </table>` : ""}
+
+      <script>window.onload = () => { window.print(); }</script>
+    </body>
+    </html>
+  `);
+  win.document.close();
+}
+
 export default function DashboardB2B() {
   const [data, setData] = useState(null);
   const [rates, setRates] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("analytics");
+
+  // Wine management form state
+  const [wineForm, setWineForm] = useState({ name: "", producer: "", vintage: "", region: "", price: "", type: "Rosso" });
+  const [wineFormMsg, setWineFormMsg] = useState(null);
+  const [submittingWine, setSubmittingWine] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -27,61 +93,195 @@ export default function DashboardB2B() {
     </div>
   );
 
+  const TABS = [
+    { id: "analytics", label: "Analytics" },
+    { id: "wines", label: "Gestione Vini" },
+    { id: "clients", label: "Clienti" },
+  ];
+
   return (
     <div>
-      <h2 style={{ fontSize: 28, fontWeight: 800, marginBottom: 8 }}>Dashboard B2B</h2>
-      <p style={{ color: "#64748b", fontSize: 14, marginBottom: 28 }}>Analytics in tempo reale · aggiornati ogni 6 ore</p>
-
-      {rates && (
-        <div style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" }}>
-          {Object.entries(rates.rates || {}).map(([cur, rate]) => (
-            <span key={cur} style={{ padding: "4px 12px", borderRadius: 999, fontSize: 12, background: "#0c1a2e", color: "#60a5fa", border: "1px solid #1e3a5f" }}>
-              1 EUR = {rate.toFixed(4)} {cur}
-            </span>
-          ))}
-          {rates.updated && <span style={{ fontSize: 11, color: "#334155", alignSelf: "center" }}>aggiornato {new Date(rates.updated).toLocaleTimeString("it-IT")}</span>}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8, flexWrap: "wrap", gap: 12 }}>
+        <div>
+          <h2 style={{ fontSize: 28, fontWeight: 800, margin: 0 }}>Dashboard B2B</h2>
+          <p style={{ color: "#64748b", fontSize: 13, marginTop: 4 }}>Analytics · Gestione · Clienti</p>
         </div>
-      )}
-
-      <div className="statsGrid" style={{ marginBottom: 32 }}>
-        {data && [
-          card("Volume scambi", `€ ${(data.totalVolume || 0).toLocaleString("it-IT")}`),
-          card("Ordini totali", data.totalOrders || 0),
-          card("ROI medio", `${data.avgRoi || 0}%`),
-          card("Alert attivi", data.activeAlerts || 0, "prezzi monitorati"),
-        ]}
+        <button
+          onClick={() => printReport(data, rates)}
+          style={{ padding: "9px 18px", borderRadius: 10, border: "1px solid rgba(201,162,39,0.3)", background: "rgba(201,162,39,0.1)", color: "#C9A227", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
+        >Stampa / PDF</button>
       </div>
 
-      {data?.topWines?.length > 0 && (
+      {/* Sub-tabs */}
+      <div style={{ display: "flex", gap: 6, marginBottom: 24, borderBottom: "1px solid rgba(30,41,59,0.5)", paddingBottom: 0 }}>
+        {TABS.map(t => (
+          <button
+            key={t.id}
+            onClick={() => setActiveTab(t.id)}
+            style={{ padding: "8px 16px", borderRadius: "8px 8px 0 0", border: "none", background: activeTab === t.id ? "rgba(201,162,39,0.12)" : "transparent", color: activeTab === t.id ? "#C9A227" : "#64748b", fontSize: 13, fontWeight: activeTab === t.id ? 700 : 500, cursor: "pointer", borderBottom: activeTab === t.id ? "2px solid #C9A227" : "2px solid transparent" }}
+          >{t.label}</button>
+        ))}
+      </div>
+
+      {/* ── Analytics tab ─────────────────────────────────────────────── */}
+      {activeTab === "analytics" && (
         <>
-          <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 16 }}>Vini più scambiati</h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {data.topWines.map((w, i) => (
-              <div key={w.wineId} style={{
-                background: "#0b1220", border: "1px solid #1f2937", borderRadius: 14,
-                padding: "14px 18px", display: "flex", alignItems: "center", gap: 14,
-              }}>
-                <span style={{ fontSize: 18, fontWeight: 800, color: "#c9a227", minWidth: 28 }}>#{i + 1}</span>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 700, fontSize: 14 }}>{w.wineName || w.wineId}</div>
-                  <div style={{ fontSize: 11, color: "#475569", marginTop: 2 }}>
-                    {w.orders} ordini · Vol. €{w.volume.toLocaleString("it-IT")}
-                  </div>
-                </div>
-                <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: w.avgRoi >= 0 ? "#4ade80" : "#f87171" }}>
-                    {w.avgRoi >= 0 ? "+" : ""}{w.avgRoi}% ROI
-                  </div>
-                </div>
-              </div>
-            ))}
+          {rates && (
+            <div style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" }}>
+              {Object.entries(rates.rates || {}).map(([cur, rate]) => (
+                <span key={cur} style={{ padding: "4px 12px", borderRadius: 999, fontSize: 12, background: "#0c1a2e", color: "#60a5fa", border: "1px solid #1e3a5f" }}>
+                  1 EUR = {rate.toFixed(4)} {cur}
+                </span>
+              ))}
+              {rates.updated && <span style={{ fontSize: 11, color: "#334155", alignSelf: "center" }}>agg. {new Date(rates.updated).toLocaleTimeString("it-IT")}</span>}
+            </div>
+          )}
+
+          <div className="statsGrid" style={{ marginBottom: 32 }}>
+            {data && [
+              card("Volume scambi", `€ ${(data.totalVolume || 0).toLocaleString("it-IT")}`),
+              card("Ordini totali", data.totalOrders || 0),
+              card("ROI medio", `${data.avgRoi || 0}%`),
+              card("Alert attivi", data.activeAlerts || 0, "prezzi monitorati"),
+            ]}
           </div>
+
+          {data?.topWines?.length > 0 ? (
+            <>
+              <h3 style={{ fontSize: 17, fontWeight: 700, marginBottom: 14 }}>Vini più scambiati</h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {data.topWines.map((w, i) => (
+                  <div key={w.wineId} style={{ background: "#0b1220", border: "1px solid #1f2937", borderRadius: 14, padding: "14px 18px", display: "flex", alignItems: "center", gap: 14 }}>
+                    <span style={{ fontSize: 18, fontWeight: 800, color: "#c9a227", minWidth: 28 }}>#{i + 1}</span>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 700, fontSize: 14 }}>{w.wineName || w.wineId}</div>
+                      <div style={{ fontSize: 11, color: "#475569", marginTop: 2 }}>{w.orders} ordini · Vol. €{w.volume.toLocaleString("it-IT")}</div>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: w.avgRoi >= 0 ? "#4ade80" : "#f87171" }}>{w.avgRoi >= 0 ? "+" : ""}{w.avgRoi}% ROI</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div style={{ color: "#334155", fontSize: 14, marginTop: 24, padding: 24, border: "1px dashed #1e293b", borderRadius: 12, textAlign: "center" }}>
+              Nessun dato di trading ancora — gli ordini appariranno qui.
+            </div>
+          )}
         </>
       )}
 
-      {(!data?.topWines?.length) && (
-        <div style={{ color: "#334155", fontSize: 14, marginTop: 24, padding: 24, border: "1px dashed #1e293b", borderRadius: 12, textAlign: "center" }}>
-          Nessun dato di trading ancora — gli ordini appariranno qui.
+      {/* ── Wine management tab ────────────────────────────────────────── */}
+      {activeTab === "wines" && (
+        <div>
+          <h3 style={{ fontSize: 17, fontWeight: 700, marginBottom: 16 }}>Aggiungi / Modifica Vino</h3>
+          <div style={{ background: "rgba(11,18,32,0.85)", border: "1px solid rgba(31,41,55,0.7)", borderRadius: 16, padding: 24, maxWidth: 560 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
+              {[
+                { key: "name", label: "Nome vino", placeholder: "Château Lafite Rothschild 2020" },
+                { key: "producer", label: "Produttore", placeholder: "Lafite Rothschild" },
+                { key: "vintage", label: "Annata", placeholder: "2020" },
+                { key: "region", label: "Regione", placeholder: "Bordeaux" },
+                { key: "price", label: "Prezzo (€)", placeholder: "850" },
+              ].map(({ key, label, placeholder }) => (
+                <div key={key}>
+                  <label style={{ fontSize: 11, color: "#64748b", display: "block", marginBottom: 5, textTransform: "uppercase", letterSpacing: "0.08em" }}>{label}</label>
+                  <input
+                    value={wineForm[key]}
+                    onChange={e => setWineForm(p => ({ ...p, [key]: e.target.value }))}
+                    placeholder={placeholder}
+                    className="searchInput"
+                    style={{ margin: 0, width: "100%" }}
+                  />
+                </div>
+              ))}
+              <div>
+                <label style={{ fontSize: 11, color: "#64748b", display: "block", marginBottom: 5, textTransform: "uppercase", letterSpacing: "0.08em" }}>Tipo</label>
+                <select value={wineForm.type} onChange={e => setWineForm(p => ({ ...p, type: e.target.value }))} className="searchInput" style={{ margin: 0, width: "100%" }}>
+                  {["Rosso", "Bianco", "Rosé", "Bollicine"].map(t => <option key={t}>{t}</option>)}
+                </select>
+              </div>
+            </div>
+            <button
+              className="btn-primary"
+              style={{ width: "100%", padding: "12px" }}
+              disabled={submittingWine}
+              onClick={async () => {
+                if (!wineForm.name || !wineForm.price) return setWineFormMsg({ type: "error", text: "Nome e prezzo obbligatori" });
+                setSubmittingWine(true);
+                try {
+                  const res = await fetch(`${API}/api/wines`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      name: wineForm.name,
+                      producer: wineForm.producer,
+                      vintage: Number(wineForm.vintage) || null,
+                      region: wineForm.region,
+                      current_price: Number(wineForm.price),
+                      type: wineForm.type,
+                    }),
+                  });
+                  if (res.ok) {
+                    setWineFormMsg({ type: "success", text: "Vino aggiunto con successo!" });
+                    setWineForm({ name: "", producer: "", vintage: "", region: "", price: "", type: "Rosso" });
+                  } else {
+                    setWineFormMsg({ type: "error", text: "Errore: " + res.status });
+                  }
+                } catch (e) {
+                  setWineFormMsg({ type: "error", text: "Errore di rete" });
+                }
+                setSubmittingWine(false);
+              }}
+            >{submittingWine ? "Salvataggio..." : "Aggiungi vino"}</button>
+            {wineFormMsg && (
+              <div style={{ marginTop: 10, padding: "8px 12px", borderRadius: 8, fontSize: 13, background: wineFormMsg.type === "success" ? "rgba(5,46,22,0.5)" : "rgba(69,10,10,0.5)", color: wineFormMsg.type === "success" ? "#4ade80" : "#f87171" }}>
+                {wineFormMsg.text}
+              </div>
+            )}
+          </div>
+
+          <p style={{ marginTop: 16, fontSize: 12, color: "#334155" }}>
+            Per gestire i vini nel database, usa l'endpoint <code style={{ color: "#60a5fa" }}>POST /api/wines</code>. Il form aggiunge a wines.json tramite API.
+          </p>
+        </div>
+      )}
+
+      {/* ── Clients tab ───────────────────────────────────────────────── */}
+      {activeTab === "clients" && (
+        <div>
+          <h3 style={{ fontSize: 17, fontWeight: 700, marginBottom: 16 }}>Lista Clienti</h3>
+          {data?.topWines?.length ? (
+            <div>
+              <p style={{ fontSize: 13, color: "#64748b", marginBottom: 16 }}>
+                Clienti derivati dagli ordini nel database. Dati aggregati per privacy.
+              </p>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                <thead>
+                  <tr style={{ borderBottom: "1px solid #1e293b", color: "#3a5a7a" }}>
+                    {["Vino più ordinato", "Ordini totali", "Volume (€)", "ROI medio"].map(h => (
+                      <th key={h} style={{ padding: "9px 12px", fontWeight: 600, fontSize: 11, textTransform: "uppercase", textAlign: "left" }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.topWines.map((w, i) => (
+                    <tr key={w.wineId} style={{ borderBottom: "1px solid #0a1220", background: i % 2 ? "rgba(11,18,32,0.5)" : "transparent" }}>
+                      <td style={{ padding: "11px 12px", fontWeight: 600 }}>{w.wineName || w.wineId}</td>
+                      <td style={{ padding: "11px 12px", color: "#94a3b8" }}>{w.orders}</td>
+                      <td style={{ padding: "11px 12px", color: "#C9A227" }}>€ {w.volume.toLocaleString("it-IT")}</td>
+                      <td style={{ padding: "11px 12px", color: w.avgRoi >= 0 ? "#4ade80" : "#f87171" }}>{w.avgRoi >= 0 ? "+" : ""}{w.avgRoi}%</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div style={{ color: "#334155", fontSize: 14, padding: 24, border: "1px dashed #1e293b", borderRadius: 12, textAlign: "center" }}>
+              Nessun cliente ancora — i dati appariranno quando arrivano i primi ordini.
+            </div>
+          )}
         </div>
       )}
     </div>

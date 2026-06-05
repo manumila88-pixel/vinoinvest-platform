@@ -33,6 +33,106 @@ function SkeletonCard() {
 }
 
 // ── News Card ────────────────────────────────────────────────────────────────
+// ── AI Portfolio Analysis Component ─────────────────────────────────────────
+function AIPortfolioAnalysis({ holdings, totalValue, totalInvested, userId }) {
+  const [analysis, setAnalysis] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  async function runAnalysis() {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API}/api/ai/portfolio-analysis`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, holdings, totalValue, totalInvested }),
+      });
+      const data = await res.json();
+      setAnalysis(data);
+    } catch (e) { console.error(e); }
+    setLoading(false);
+  }
+
+  const signalColor = { "Strong Buy": "#4ade80", "Buy": "#86efac", "Hold": "#C9A227", "Reduce": "#fb923c", "Sell": "#f87171" };
+
+  return (
+    <div style={{ marginBottom: 32, background: "rgba(11,18,32,0.85)", border: "1px solid rgba(31,41,55,0.7)", borderRadius: 18, padding: 24 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 10 }}>
+        <div>
+          <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 18, fontWeight: 700, margin: 0 }}>AI Analysis del tuo Portfolio</h3>
+          <p style={{ fontSize: 12, color: "#3a5a7a", marginTop: 3 }}>Analisi Claude AI basata sulle tue posizioni reali</p>
+        </div>
+        <button className="btn-primary" style={{ width: "auto", padding: "9px 18px", fontSize: 12 }} onClick={runAnalysis} disabled={loading}>
+          {loading ? "Analisi in corso..." : analysis ? "Aggiorna" : "Analizza Portfolio"}
+        </button>
+      </div>
+
+      {!analysis && !loading && (
+        <div style={{ fontSize: 13, color: "#3a5a7a", textAlign: "center", padding: 16, border: "1px dashed rgba(30,41,59,0.5)", borderRadius: 10 }}>
+          Clicca "Analizza Portfolio" per ricevere raccomandazioni AI personalizzate su {holdings.length} vini.
+        </div>
+      )}
+
+      {loading && (
+        <div style={{ display: "flex", alignItems: "center", gap: 10, color: "#3a5a7a", padding: 16 }}>
+          <span style={{ width: 14, height: 14, borderRadius: "50%", border: "2px solid #3a5a7a", borderTopColor: "#C9A227", display: "inline-block", animation: "spin 0.8s linear infinite" }} />
+          L'AI sta analizzando il tuo portfolio...
+        </div>
+      )}
+
+      {analysis && (
+        <div>
+          {/* Summary row */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px,1fr))", gap: 10, marginBottom: 18 }}>
+            {[
+              { label: "Segnale", value: analysis.overallSignal, color: signalColor[analysis.overallSignal] || "#C9A227" },
+              { label: "Risk Score", value: `${analysis.riskScore}/10`, color: analysis.riskScore > 6 ? "#f87171" : "#4ade80" },
+              { label: "Diversificazione", value: `${analysis.diversificationScore}/10`, color: "#60a5fa" },
+              { label: "Outlook", value: analysis.marketOutlook, color: analysis.marketOutlook === "Bullish" ? "#4ade80" : analysis.marketOutlook === "Bearish" ? "#f87171" : "#C9A227" },
+            ].map(s => (
+              <div key={s.label} style={{ background: "rgba(5,10,20,0.6)", borderRadius: 12, padding: "12px 14px", border: "1px solid rgba(30,41,59,0.6)" }}>
+                <div style={{ fontSize: 10, color: "#3a5a7a", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 5 }}>{s.label}</div>
+                <div style={{ fontSize: 16, fontWeight: 800, color: s.color }}>{s.value}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Summary text */}
+          <p style={{ fontSize: 13, color: "#94a3b8", marginBottom: 16, lineHeight: 1.65 }}>{analysis.summary}</p>
+
+          {/* Recommendations */}
+          {analysis.recommendations?.length > 0 && (
+            <div style={{ marginBottom: 16 }}>
+              <p style={{ fontSize: 11, color: "#3a5a7a", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>Raccomandazioni</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+                {analysis.recommendations.slice(0, 5).map(r => (
+                  <div key={r.wineId} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", background: "rgba(5,10,20,0.5)", borderRadius: 10, border: "1px solid rgba(30,41,59,0.5)" }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 5, background: r.action === "Sell" ? "rgba(69,10,10,0.6)" : r.action === "Buy More" ? "rgba(5,46,22,0.6)" : "rgba(12,26,46,0.6)", color: r.action === "Sell" ? "#f87171" : r.action === "Buy More" ? "#4ade80" : "#C9A227", whiteSpace: "nowrap" }}>{r.action}</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 12, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{holdings.find(h => h.id === r.wineId)?.name || r.wineId}</div>
+                      <div style={{ fontSize: 11, color: "#64748b" }}>{r.reason}</div>
+                    </div>
+                    {r.urgency === "High" && <span style={{ fontSize: 10, color: "#fb923c", fontWeight: 700 }}>URGENTE</span>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Concerns */}
+          {analysis.concerns?.length > 0 && (
+            <div style={{ marginTop: 12, padding: "10px 14px", background: "rgba(69,10,10,0.2)", borderRadius: 10, border: "1px solid rgba(153,27,27,0.3)" }}>
+              <p style={{ fontSize: 11, color: "#f87171", fontWeight: 700, marginBottom: 6 }}>Rischi identificati</p>
+              {analysis.concerns.map((c, i) => <p key={i} style={{ fontSize: 12, color: "#94a3b8" }}>• {c}</p>)}
+            </div>
+          )}
+
+          {analysis.fallback && <p style={{ fontSize: 10, color: "#1e3050", marginTop: 10 }}>* Analisi algoritmica (ANTHROPIC_API_KEY non configurato sul server)</p>}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function NewsCard({ article }) {
   const timeAgo = (dateStr) => {
     const diff = Date.now() - new Date(dateStr).getTime();
@@ -180,6 +280,9 @@ function App() {
   const [news, setNews] = useState([]);
   const [newsLoading, setNewsLoading] = useState(false);
   const [newsFilter, setNewsFilter] = useState("all");
+  const [blogPosts, setBlogPosts] = useState([]);
+  const [blogLoading, setBlogLoading] = useState(false);
+  const [selectedPost, setSelectedPost] = useState(null);
   const [trending, setTrending] = useState([]);
   const [heroSearch, setHeroSearch] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -352,7 +455,18 @@ function App() {
 
   useEffect(() => {
     if (tab === "news" && news.length === 0) loadNews(newsFilter);
+    if (tab === "blog" && blogPosts.length === 0) loadBlogPosts();
   }, [tab]);
+
+  async function loadBlogPosts() {
+    setBlogLoading(true);
+    try {
+      const res = await fetch(`${API}/api/blog`);
+      const data = await res.json();
+      setBlogPosts(data.posts || []);
+    } catch { setBlogPosts([]); }
+    setBlogLoading(false);
+  }
 
   function handleNewsFilter(country) {
     setNewsFilter(country);
@@ -647,6 +761,7 @@ function App() {
             { id: "dashboard",  label: "Dashboard" },
             { id: "market",     label: "Market" },
             { id: "news",       label: "Wine News" },
+            { id: "blog",       label: "Blog AI" },
             { id: "analysis",   label: "Analysis" },
             { id: "myportfolio",label: "My Portfolio" },
             { id: "portfolio",  label: "Portfolio AI" },
@@ -915,6 +1030,74 @@ function App() {
             </section>
           )}
 
+          {/* ── Blog AI ───────────────────────────────────────────────────── */}
+          {tab === "blog" && (
+            <section>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24, flexWrap: "wrap", gap: 10 }}>
+                <div>
+                  <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 28, fontWeight: 800, margin: 0 }}>Wine Investment Blog</h2>
+                  <p style={{ fontSize: 13, color: "#64748b", marginTop: 4 }}>Articoli generati dall'AI · aggiornati ogni 24h</p>
+                </div>
+                {selectedPost && (
+                  <button onClick={() => setSelectedPost(null)} style={{ padding: "8px 16px", borderRadius: 8, border: "1px solid rgba(30,41,59,0.6)", background: "transparent", color: "#64748b", fontSize: 12, cursor: "pointer" }}>← Tutti gli articoli</button>
+                )}
+              </div>
+
+              {blogLoading && (
+                <div style={{ display: "flex", alignItems: "center", gap: 10, color: "#3a5a7a", padding: 24 }}>
+                  <span style={{ width: 14, height: 14, borderRadius: "50%", border: "2px solid #3a5a7a", borderTopColor: "#C9A227", display: "inline-block", animation: "spin 0.8s linear infinite" }} />
+                  Generazione articoli AI in corso...
+                </div>
+              )}
+
+              {selectedPost ? (
+                /* ── Full post view ─── */
+                <article style={{ maxWidth: 720 }}>
+                  <div style={{ fontSize: 11, color: "#C9A227", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>{selectedPost.category} · {selectedPost.readTime} di lettura</div>
+                  <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 28, fontWeight: 800, lineHeight: 1.25, marginBottom: 12 }}>{selectedPost.title}</h1>
+                  <div style={{ fontSize: 12, color: "#64748b", marginBottom: 24 }}>
+                    {selectedPost.author} · {new Date(selectedPost.publishedAt).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
+                  </div>
+                  <div style={{ borderLeft: "3px solid #C9A227", paddingLeft: 16, marginBottom: 24, color: "#94a3b8", fontSize: 14, fontStyle: "italic" }}>{selectedPost.excerpt}</div>
+                  {(selectedPost.content || "").split("\n\n").map((para, i) => (
+                    <p key={i} style={{ fontSize: 15, lineHeight: 1.8, color: "#cbd5e1", marginBottom: 18 }}>{para}</p>
+                  ))}
+                  <div style={{ marginTop: 32, padding: "16px 20px", background: "rgba(201,162,39,0.06)", border: "1px solid rgba(201,162,39,0.2)", borderRadius: 12 }}>
+                    <p style={{ fontSize: 13, color: "#C9A227", fontWeight: 700, marginBottom: 6 }}>Inizia a investire</p>
+                    <p style={{ fontSize: 12, color: "#64748b", marginBottom: 12 }}>Usa l'AI Score di VinoInvest per trovare le migliori opportunità di investimento.</p>
+                    <button className="btn-primary" style={{ width: "auto", padding: "10px 20px" }} onClick={() => { setSelectedPost(null); setTab("market"); }}>Esplora il Mercato →</button>
+                  </div>
+                </article>
+              ) : (
+                /* ── Post grid ─── */
+                <div className="news-grid">
+                  {blogPosts.map(post => (
+                    <div
+                      key={post.id}
+                      className="news-card fade-up"
+                      onClick={() => setSelectedPost(post)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 7 }}>
+                        <span style={{ fontSize: 10, fontWeight: 700, color: "#C9A227", textTransform: "uppercase", letterSpacing: "0.1em" }}>{post.category}</span>
+                        <span style={{ fontSize: 10, color: "#3a5a7a" }}>{post.readTime}</span>
+                      </div>
+                      <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 16, fontWeight: 700, lineHeight: 1.4, marginBottom: 10, color: "#e2e8f0" }}>{post.title}</h3>
+                      <p style={{ fontSize: 13, color: "#64748b", lineHeight: 1.6, marginBottom: 14, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{post.excerpt}</p>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 11, color: "#3a5a7a" }}>
+                        <span>{post.author}</span>
+                        <span style={{ color: "#C9A227", fontWeight: 600 }}>Leggi →</span>
+                      </div>
+                    </div>
+                  ))}
+                  {!blogLoading && blogPosts.length === 0 && (
+                    <div style={{ color: "#3a5a7a", padding: 24, gridColumn: "1/-1", textAlign: "center" }}>Nessun articolo disponibile.</div>
+                  )}
+                </div>
+              )}
+            </section>
+          )}
+
           {/* ── Analysis ──────────────────────────────────────────────────── */}
           {tab === "analysis" && (
             <section className="chartPanel">
@@ -1081,15 +1264,19 @@ function App() {
           {/* ── Portfolio AI ───────────────────────────────────────────────── */}
           {tab === "portfolio" && (
             <section className="ordersPanel">
-              <h2>AI Portfolio Builder</h2>
+              {/* ── AI Analysis of existing portfolio ─────────────────────── */}
+              {holdings.length > 0 && <AIPortfolioAnalysis holdings={holdings} totalValue={portfolioValue} totalInvested={totalInvested} userId={userEmail} />}
+
+              <h2 style={{ marginTop: holdings.length > 0 ? 36 : 0 }}>AI Portfolio Builder</h2>
+              <p style={{ color: "#64748b", fontSize: 13, marginBottom: 18 }}>Genera un portfolio ottimizzato dall'AI in base al tuo budget, rischio e orizzonte temporale.</p>
               <div style={{ display: "flex", gap: 10, marginBottom: 18, flexWrap: "wrap" }}>
-                <input type="number" value={budget} onChange={e => setBudget(Number(e.target.value))} className="searchInput" placeholder="Budget (€)" />
-                <select value={risk} onChange={e => setRisk(e.target.value)} className="searchInput">
+                <input type="number" value={budget} onChange={e => setBudget(Number(e.target.value))} className="searchInput" placeholder="Budget (€)" style={{ maxWidth: 160 }} />
+                <select value={risk} onChange={e => setRisk(e.target.value)} className="searchInput" style={{ maxWidth: 180 }}>
                   <option value="basso">Low Risk</option>
                   <option value="medio">Medium Risk</option>
                   <option value="alto">High Risk</option>
                 </select>
-                <input type="number" value={years} onChange={e => setYears(Number(e.target.value))} className="searchInput" placeholder="Years" />
+                <input type="number" value={years} onChange={e => setYears(Number(e.target.value))} className="searchInput" placeholder="Years" style={{ maxWidth: 120 }} />
                 <button className="btn-primary" style={{ width: "auto", padding: "12px 24px" }} onClick={generatePortfolio}>Generate Portfolio</button>
               </div>
               {portfolio && (
@@ -1122,17 +1309,50 @@ function App() {
           {/* ── Notifications ─────────────────────────────────────────────── */}
           {tab === "notifications" && (
             <section>
-              <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 26, fontWeight: 800, marginBottom: 20 }}>Notifications</h2>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, flexWrap: "wrap", gap: 10 }}>
+                <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 26, fontWeight: 800, margin: 0 }}>Notifications</h2>
+                <div style={{ display: "flex", gap: 8 }}>
+                  {Notification.permission !== "granted" && "Notification" in window && (
+                    <button
+                      onClick={async () => {
+                        const perm = await Notification.requestPermission();
+                        if (perm === "granted") toast.success("Push notifications enabled!");
+                      }}
+                      style={{ padding: "8px 14px", borderRadius: 8, border: "1px solid rgba(201,162,39,0.3)", background: "rgba(201,162,39,0.1)", color: "#C9A227", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
+                    >🔔 Enable Push</button>
+                  )}
+                  {notifications.length > 0 && (
+                    <button onClick={markAllRead} style={{ padding: "8px 14px", borderRadius: 8, border: "1px solid rgba(30,41,59,0.5)", background: "transparent", color: "#64748b", fontSize: 12, cursor: "pointer" }}>Mark all read</button>
+                  )}
+                </div>
+              </div>
               {notifications.length === 0 ? (
                 <div style={{ color: "#1e3050", fontSize: 13, padding: 24, border: "1px dashed rgba(30,41,59,0.5)", borderRadius: 12, textAlign: "center" }}>
-                  No notifications. Set a price alert in the Market section.
+                  No notifications yet. Set a price alert in the Market section.
                 </div>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
                   {notifications.map(n => (
-                    <div key={n.id} style={{ background: n.read ? "rgba(11,18,32,0.8)" : "rgba(12,26,46,0.8)", border: `1px solid ${n.read ? "rgba(31,41,55,0.5)" : "rgba(30,58,95,0.5)"}`, borderRadius: 12, padding: "13px 17px" }}>
-                      <div style={{ fontSize: 13 }}>{n.message}</div>
-                      <div style={{ fontSize: 10, color: "#1e3050", marginTop: 3 }}>{new Date(n.created_at).toLocaleString("it-IT")}</div>
+                    <div
+                      key={n.id}
+                      style={{ background: n.read ? "rgba(11,18,32,0.8)" : "rgba(12,26,46,0.9)", border: `1px solid ${n.read ? "rgba(31,41,55,0.5)" : "rgba(30,58,95,0.7)"}`, borderRadius: 12, padding: "13px 17px", display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      {!n.read && <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#60a5fa", flexShrink: 0 }} />}
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: 13 }}>{n.message}</div>
+                        <div style={{ fontSize: 10, color: "#1e3050", marginTop: 3 }}>{new Date(n.created_at).toLocaleString("it-IT")}</div>
+                      </div>
+                      {!n.read && (
+                        <button
+                          onClick={async () => {
+                            try {
+                              await fetch(`${API}/api/notifications/${n.id}/read`, { method: "PUT" });
+                              setNotifications(prev => prev.map(x => x.id === n.id ? { ...x, read: true } : x));
+                            } catch {}
+                          }}
+                          style={{ padding: "4px 10px", borderRadius: 6, border: "1px solid rgba(30,41,59,0.5)", background: "transparent", color: "#64748b", fontSize: 11, cursor: "pointer" }}
+                        >✓</button>
+                      )}
                     </div>
                   ))}
                 </div>

@@ -63,6 +63,14 @@ const aiRateLimit = rateLimit({
   message: { error: "AI score rate limit exceeded." },
 });
 
+// Cache-Control middleware for read-only endpoints
+function cacheFor(seconds) {
+  return (req, res, next) => {
+    res.set("Cache-Control", `public, max-age=${seconds}, stale-while-revalidate=${seconds * 2}`);
+    next();
+  };
+}
+
 // Stripe webhook needs raw body — must be registered before express.json()
 app.use("/api/payments/stripe/webhook", express.raw({ type: "application/json" }));
 app.use(express.json({ limit: "1mb" }));
@@ -73,11 +81,11 @@ app.use("/api/ai-score", aiRateLimit, aiScoreRouter);
 app.use("/api/alerts", alertsRouter);
 app.use("/api/notifications", notificationsRouter);
 app.use("/api/dashboard", dashboardRouter);
-app.use("/api/rates", ratesRouter);
-app.use("/api/news", newsRouter);
+app.use("/api/rates", cacheFor(300), ratesRouter);
+app.use("/api/news", cacheFor(1800), newsRouter);
 app.use("/api/ai", aiRateLimit, aiMarketRouter);
 app.use("/api/ai", aiRateLimit, aiPortfolioRouter);
-app.use("/api/blog", blogRouter);
+app.use("/api/blog", cacheFor(3600), blogRouter);
 
 const __filename =
   fileURLToPath(import.meta.url);
@@ -298,14 +306,11 @@ app.get("/", (req, res) => {
 
 });
 
-app.get(
-  "/api/market/wines",
-  (req, res) => {
-    res.json([...wines, ...externalWines]);
-  }
-);
+app.get("/api/market/wines", cacheFor(300), (req, res) => {
+  res.json([...wines, ...externalWines]);
+});
 
-app.get("/api/wines", (req, res) => {
+app.get("/api/wines", cacheFor(120), (req, res) => {
   const search = (req.query.search || "").toString().trim();
   const page = Math.max(1, parseInt(req.query.page) || 1);
   const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 20));
@@ -331,6 +336,17 @@ app.get("/api/wines", (req, res) => {
     totalPages: Math.ceil(total / limit),
     hasMore: offset + slice.length < total,
   });
+});
+
+// POST /api/wines — B2B wine management (adds to in-memory bigWines only in this process)
+app.post("/api/wines", (req, res) => {
+  const { name, producer, vintage, region, current_price, type } = req.body;
+  if (!name || !current_price) return res.status(400).json({ error: "name and current_price required" });
+  const id = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "") + (vintage ? `-${vintage}` : "");
+  const wine = { id, name, producer: producer || "", vintage: vintage || null, region: region || "", current_price: Number(current_price), investment_score: 70, risk: "Medio", market_trend: "Stable", type: type || "Rosso" };
+  bigWines.push(wine);
+  allWines.push(wine);
+  res.status(201).json({ success: true, wine });
 });
 
 app.get(
