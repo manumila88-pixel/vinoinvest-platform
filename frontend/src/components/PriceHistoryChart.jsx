@@ -10,10 +10,13 @@ export default function PriceHistoryChart({ wineId, currentPrice = null, height 
   const containerRef = useRef(null);
 
   useEffect(() => {
-    if (containerRef.current) {
-      const w = containerRef.current.offsetWidth;
-      if (w > 50) setWidth(w - 10);
-    }
+    if (!containerRef.current) return;
+    const ro = new ResizeObserver(entries => {
+      const w = entries[0]?.contentRect.width || 0;
+      if (w > 50) setWidth(Math.floor(w) - 10);
+    });
+    ro.observe(containerRef.current);
+    return () => ro.disconnect();
   }, []);
 
   useEffect(() => {

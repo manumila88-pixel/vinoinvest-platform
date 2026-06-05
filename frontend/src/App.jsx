@@ -8,7 +8,6 @@ import { ToastProvider, useToast } from "./components/Toast";
 import { fetchWithRetry } from "./lib/fetchWithRetry";
 import LandingPage from "./LandingPage";
 import { supabase } from "./lib/supabase";
-import WineBottle3D from "./WineBottle3D";
 import WineBottle3DModal from "./WineBottle3DModal";
 import Pricing from "./pages/Pricing";
 import DashboardB2B from "./pages/Dashboard";
@@ -170,6 +169,7 @@ function App() {
   const [risk, setRisk] = useState("medio");
   const [years, setYears] = useState(5);
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const analysisChartRef = useRef(null);
   const [analysisChartW, setAnalysisChartW] = useState(600);
   const portfolioChartRef = useRef(null);
@@ -564,7 +564,10 @@ function App() {
       )}
       {/* ── Glassmorphism Header ─────────────────────────────────────────── */}
       <header className="header">
-        <div className="logo">🍷 Vino<span>Invest</span></div>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <button className="hamburger" onClick={() => setSidebarOpen(o => !o)} aria-label="Menu">☰</button>
+          <div className="logo">🍷 Vino<span>Invest</span></div>
+        </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div className="badge">global wine intelligence</div>
           {userEmail && <span style={{ fontSize: 12, color: "#3a5a7a" }}>{userEmail}</span>}
@@ -595,8 +598,11 @@ function App() {
       </header>
 
       <main className="main">
+        {/* ── Mobile sidebar overlay ───────────────────────────────────────── */}
+        <div className={`sidebar-overlay ${sidebarOpen ? "open" : ""}`} onClick={() => setSidebarOpen(false)} />
+
         {/* ── Sidebar ─────────────────────────────────────────────────────── */}
-        <aside className="sidebar">
+        <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
           {[
             { id: "dashboard",  label: "Dashboard" },
             { id: "market",     label: "Market" },
@@ -605,19 +611,19 @@ function App() {
             { id: "myportfolio",label: "My Portfolio" },
             { id: "portfolio",  label: "Portfolio AI" },
           ].map(({ id, label }) => (
-            <button key={id} className={tab === id ? "active" : ""} onClick={() => setTab(id)}>{label}</button>
+            <button key={id} className={tab === id ? "active" : ""} onClick={() => { setTab(id); setSidebarOpen(false); }}>{label}</button>
           ))}
           {accountType === "cantina" && (
-            <button className={tab === "b2b" ? "active" : ""} onClick={() => setTab("b2b")}>B2B Dashboard</button>
+            <button className={tab === "b2b" ? "active" : ""} onClick={() => { setTab("b2b"); setSidebarOpen(false); }}>B2B Dashboard</button>
           )}
           <button
             className={tab === "notifications" ? "active" : ""}
-            onClick={() => { setTab("notifications"); markAllRead(); }}
+            onClick={() => { setTab("notifications"); markAllRead(); setSidebarOpen(false); }}
             style={{ position: "relative" }}
           >
             🔔 Alerts{unreadCount > 0 ? ` (${unreadCount})` : ""}
           </button>
-          <button onClick={() => navigate("/pricing")} style={{ marginTop: "auto" }}>Pricing</button>
+          <button onClick={() => { navigate("/pricing"); setSidebarOpen(false); }} style={{ marginTop: "auto" }}>Pricing</button>
         </aside>
 
         {/* ── Content ─────────────────────────────────────────────────────── */}
