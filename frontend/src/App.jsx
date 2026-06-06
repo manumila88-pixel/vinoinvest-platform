@@ -242,7 +242,7 @@ function PortfolioSparkline({ wineId, purchasePrice, currentPrice }) {
 function App() {
   const navigate = useNavigate();
   const toast = useToast();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [accountType, setAccountType] = useState("b2c");
@@ -455,7 +455,8 @@ function App() {
   async function loadNews(country = "all") {
     setNewsLoading(true);
     try {
-      const res = await fetch(`${API}/api/news?country=${country}`);
+      const lang = i18n.language?.slice(0, 2) || "en";
+      const res = await fetch(`${API}/api/news?country=${country}&lang=${lang}`);
       const data = await res.json();
       setNews(data.articles || []);
     } catch { setNews([]); }
@@ -463,14 +464,15 @@ function App() {
   }
 
   useEffect(() => {
-    if (tab === "news" && news.length === 0) loadNews(newsFilter);
-    if (tab === "blog" && blogPosts.length === 0) loadBlogPosts();
-  }, [tab]);
+    if (tab === "news") loadNews(newsFilter);
+    if (tab === "blog") loadBlogPosts();
+  }, [tab, i18n.language]);
 
   async function loadBlogPosts() {
     setBlogLoading(true);
     try {
-      const res = await fetch(`${API}/api/blog`);
+      const lang = i18n.language?.slice(0, 2) || "it";
+      const res = await fetch(`${API}/api/blog?lang=${lang}`);
       const data = await res.json();
       setBlogPosts(data.posts || []);
     } catch { setBlogPosts([]); }
