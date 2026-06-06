@@ -18,6 +18,8 @@ import WinePriceCompare from "./components/WinePriceCompare";
 import LangSelector from "./components/LangSelector";
 import AgentChat from "./components/AgentChat";
 import PurchaseModal from "./components/PurchaseModal";
+import WineCard from "./components/WineCard";
+import VirtualWineGrid from "./components/VirtualWineGrid";
 import "./style.css";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
@@ -283,6 +285,8 @@ function App() {
   const [analysisChartW, setAnalysisChartW] = useState(600);
   const portfolioChartRef = useRef(null);
   const [portfolioChartW, setPortfolioChartW] = useState(600);
+  const marketGridRef = useRef(null);
+  const [marketGridW, setMarketGridW] = useState(900);
 
   // ── Premium features state ───────────────────────────────────────────────
   const [news, setNews] = useState([]);
@@ -322,16 +326,18 @@ function App() {
       });
   }, []);
 
-  // ── Chart responsive widths ──────────────────────────────────────────────
+  // ── Chart + market grid responsive widths ───────────────────────────────
   useEffect(() => {
     const obs = new ResizeObserver(entries => {
       for (const e of entries) {
         if (e.target === analysisChartRef.current) setAnalysisChartW(e.contentRect.width || 600);
         if (e.target === portfolioChartRef.current) setPortfolioChartW(e.contentRect.width || 600);
+        if (e.target === marketGridRef.current) setMarketGridW(e.contentRect.width || 900);
       }
     });
     if (analysisChartRef.current) obs.observe(analysisChartRef.current);
     if (portfolioChartRef.current) obs.observe(portfolioChartRef.current);
+    if (marketGridRef.current) obs.observe(marketGridRef.current);
     return () => obs.disconnect();
   }, [tab]);
 
@@ -569,7 +575,7 @@ function App() {
     } catch {}
   }
 
-  async function createAlert(wine) {
+  const createAlert = useCallback(async (wine) => {
     const target = parseFloat(alertInputs[wine.id]);
     if (!target || target <= 0) return;
     const uid = getUserId();
@@ -581,14 +587,14 @@ function App() {
       });
       if (res.ok) { setAlertInputs(prev => ({ ...prev, [wine.id]: "" })); await loadAlerts(); }
     } catch {}
-  }
+  }, [alertInputs]);
 
-  async function deleteAlert(alertId) {
+  const deleteAlert = useCallback(async (alertId) => {
     try {
       await fetch(`${API}/api/alerts/${alertId}`, { method: "DELETE" });
       setAlerts(prev => prev.filter(a => a.id !== alertId));
     } catch {}
-  }
+  }, []);
 
   async function loadNotifications() {
     const uid = getUserId();
@@ -644,21 +650,33 @@ function App() {
     }
   }
 
-  async function toggleWatchlist(wine) {
+  const toggleWatchlist = useCallback((wine) => {
     const wineId = wine.id;
     if (watchlist.includes(wineId)) {
-      setWatchlist(watchlist.filter(id => id !== wineId));
+      setWatchlist(prev => prev.filter(id => id !== wineId));
       setSelectedWine(null);
       setChartData([]);
     } else {
-      setWatchlist([...watchlist, wineId]);
+      setWatchlist(prev => [...prev, wineId]);
       setSelectedWine(wine);
       loadChart(wineId, wine.currentPrice);
     }
-  }
+  }, [watchlist]);
+
+  const handleAlertInputChange = useCallback((wineId, value) => {
+    setAlertInputs(prev => ({ ...prev, [wineId]: value }));
+  }, []);
+
+  const handleImageClick = useCallback((wine) => {
+    setModalWine(wine);
+  }, []);
+
+  const handleAddToPortfolio = useCallback((wine) => {
+    setPurchaseWine(wine);
+  }, []);
 
   // ── 3D tilt handlers ─────────────────────────────────────────────────────
-  function onCardTilt(e) {
+  const onCardTilt = useCallback((e) => {
     const card = e.currentTarget;
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -667,11 +685,11 @@ function App() {
     const rx = ((cy - y) / cy) * 7;
     const ry = ((x - cx) / cx) * 7;
     card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
-  }
+  }, []);
 
-  function onCardTiltReset(e) {
+  const onCardTiltReset = useCallback((e) => {
     e.currentTarget.style.transform = "";
-  }
+  }, []);
 
   const totalMarket = useMemo(
     () => wines.reduce((sum, wine) => sum + Number(wine.currentPrice || 0), 0),
@@ -724,6 +742,22 @@ function App() {
   }
 
   const unreadCount = notifications.filter(n => !n.read).length;
+
+  // Stable props object for VirtualWineGrid — only re-creates when dependencies change
+  const cardProps = useMemo(() => ({
+    aiScores,
+    alerts,
+    alertInputs,
+    watchlist,
+    onImageClick: handleImageClick,
+    onAddToPortfolio: handleAddToPortfolio,
+    onToggleWatchlist: toggleWatchlist,
+    onCardTilt,
+    onCardTiltReset,
+    onCreateAlert: createAlert,
+    onAlertInputChange: handleAlertInputChange,
+    onDeleteAlert: deleteAlert,
+  }), [aiScores, alerts, alertInputs, watchlist, handleImageClick, handleAddToPortfolio, toggleWatchlist, onCardTilt, onCardTiltReset, createAlert, handleAlertInputChange, deleteAlert]);
 
   return (
     <div className="app">
@@ -912,107 +946,27 @@ function App() {
                 value={marketSearch}
                 onChange={e => handleMarketSearch(e.target.value)}
               />
-              <section className="marketGrid">
-                {marketLoading && marketWines.length === 0
-                  ? Array.from({ length: 12 }).map((_, i) => <SkeletonCard key={i} />)
-                  : marketWines.map(wine => (
-                      <div
-                        className="wineCard fade-up"
-                        key={wine.id}
-                        onMouseMove={onCardTilt}
-                        onMouseLeave={onCardTiltReset}
-                      >
-                        <div className="wineCard-image" onClick={() => setModalWine({ ...wine, aiScoreData: aiScores[wine.id] })}>
-                          {wine.imageUrl
-                            ? <img src={wine.imageUrl} alt={wine.name} loading="lazy" onError={e => { e.target.style.display = "none"; e.target.nextSibling && (e.target.nextSibling.style.display = "flex"); }} style={{ height: 160, width: "auto", objectFit: "contain", filter: "drop-shadow(0 8px 20px rgba(0,0,0,0.75))" }} />
-                            : null
-                          }
-                          {!wine.imageUrl && (
-                            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, opacity: 0.45 }}>
-                              <div style={{ fontSize: 52 }}>🍷</div>
-                              <div style={{ fontSize: 10, color: "#3a5a7a", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700 }}>{wine.variety || "Fine Wine"}</div>
-                            </div>
-                          )}
-                          <span className="bottle-hint">VIEW</span>
-                        </div>
-                        <div className="wineCard-body">
-                          <div className="wineCard-badges">
-                            <span className={`badge-risk ${(wine.risk || "medio").toLowerCase()}`}>{wine.risk || "Medio"}</span>
-                            {wine.marketTrend && <span className="badge-trend">{wine.marketTrend}</span>}
-                          </div>
-                          <h2>{wine.name}</h2>
-                          <p className="wineCard-producer">{wine.producer} · {wine.vintage || ""}</p>
-                          <div className="wineCard-score">
-                            <span className={`score-label${aiScores[wine.id] ? " pulsing" : ""}`}>
-                              {aiScores[wine.id]?.score ?? wine.investmentScore ?? "—"}
-                            </span>
-                            <div className="score-bar">
-                              <div className="score-fill" style={{ width: (aiScores[wine.id]?.score ?? wine.investmentScore ?? 75) + "%" }} />
-                            </div>
-                            <span style={{ fontSize: 10, color: aiScores[wine.id]?.signal === "Strong Buy" ? "#4ade80" : aiScores[wine.id]?.signal ? "#C9A227" : "#3a5a7a" }}>
-                              {aiScores[wine.id]?.signal ?? "AI Score"}
-                            </span>
-                          </div>
-                          <div className="wineCard-price">
-                            <span className="price-main">€ {wine.currentPrice}</span>
-                            <span className="price-label">/ bottle</span>
-                          </div>
-                          <div style={{ marginBottom: 9 }}>
-                            {alerts.filter(a => a.wine_id === wine.id && a.active).map(a => (
-                              <div key={a.id} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10, color: "#60a5fa", marginBottom: 3 }}>
-                                <span>🔔 Alert ≤ €{Number(a.target_price).toFixed(0)}</span>
-                                <button onClick={() => deleteAlert(a.id)} style={{ background: "none", border: "none", color: "#f87171", cursor: "pointer", fontSize: 12, padding: 0 }}>×</button>
-                              </div>
-                            ))}
-                            <div style={{ display: "flex", gap: 4 }}>
-                              <input
-                                type="number"
-                                placeholder={`Alert < €${wine.currentPrice}`}
-                                value={alertInputs[wine.id] || ""}
-                                onChange={e => setAlertInputs(prev => ({ ...prev, [wine.id]: e.target.value }))}
-                                style={{ flex: 1, padding: "5px 8px", borderRadius: 7, border: "1px solid rgba(30,41,59,0.7)", background: "#0b1220", color: "#94a3b8", fontSize: 11, outline: "none", minWidth: 0, fontFamily: "'Inter', Arial, sans-serif" }}
-                                onKeyDown={e => e.key === "Enter" && createAlert(wine)}
-                              />
-                              <button onClick={() => createAlert(wine)} style={{ padding: "5px 8px", borderRadius: 7, border: "1px solid rgba(30,58,95,0.6)", background: "#0c1a2e", color: "#60a5fa", fontSize: 11, cursor: "pointer" }}>🔔</button>
-                            </div>
-                          </div>
-                          <div className="wineCard-actions">
-                            <WinePriceCompare wineId={wine.id} wineName={wine.name} vintage={wine.vintage} criticScore={wine.criticScore || wine.investmentScore} />
-                            <button className="btn-primary" onClick={() => setPurchaseWine(wine)}>{t("market.addToPortfolio")}</button>
-                            <button className={`btn-secondary ${watchlist.includes(wine.id) ? "active" : ""}`} onClick={() => toggleWatchlist(wine)}>
-                              {watchlist.includes(wine.id) ? "★" : "☆"}
-                            </button>
-                          </div>
-                          <div style={{ display: "flex", borderTop: "1px solid rgba(30,41,59,0.4)", marginTop: 4 }}>
-                            <a
-                              href={`https://www.wine-searcher.com/find/${encodeURIComponent(wine.name)}${wine.vintage ? `/${wine.vintage}` : ""}`}
-                              target="_blank"
-                              rel="noopener noreferrer sponsored"
-                              style={{ flex: 1, textAlign: "center", fontSize: 10, color: "#3a5a7a", textDecoration: "none", padding: "6px 0 4px", transition: "color 0.2s", borderRight: "1px solid rgba(30,41,59,0.4)" }}
-                              onMouseEnter={e => e.currentTarget.style.color = "#C9A227"}
-                              onMouseLeave={e => e.currentTarget.style.color = "#3a5a7a"}
-                            >Wine-Searcher ↗</a>
-                            <a
-                              href={`https://www.vivino.com/search/wines?q=${encodeURIComponent(wine.name)}`}
-                              target="_blank"
-                              rel="noopener noreferrer sponsored"
-                              style={{ flex: 1, textAlign: "center", fontSize: 10, color: "#3a5a7a", textDecoration: "none", padding: "6px 0 4px", transition: "color 0.2s" }}
-                              onMouseEnter={e => e.currentTarget.style.color = "#aa4466"}
-                              onMouseLeave={e => e.currentTarget.style.color = "#3a5a7a"}
-                            >Vivino ↗</a>
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                }
-              </section>
-              {marketLoading && marketWines.length > 0 && (
-                <div style={{ textAlign: "center", padding: "20px", color: "#3a5a7a", fontSize: 12 }}>Loading more wines…</div>
-              )}
-              {!marketLoading && marketWines.length === 0 && (
-                <div style={{ textAlign: "center", padding: "40px", color: "#3a5a7a", fontSize: 14 }}>No wines found.</div>
-              )}
-              <div ref={marketSentinelRef} style={{ height: 1 }} />
+              <div ref={marketGridRef} style={{ width: "100%" }}>
+                {marketLoading && marketWines.length === 0 ? (
+                  <section className="marketGrid">
+                    {Array.from({ length: 12 }).map((_, i) => <SkeletonCard key={i} />)}
+                  </section>
+                ) : marketWines.length > 0 ? (
+                  <VirtualWineGrid
+                    wines={marketWines}
+                    containerWidth={marketGridW || 900}
+                    listHeight={Math.min(880, window.innerHeight - 160)}
+                    cardProps={cardProps}
+                    sentinelRef={marketSentinelRef}
+                  />
+                ) : null}
+                {marketLoading && marketWines.length > 0 && (
+                  <div style={{ textAlign: "center", padding: "20px", color: "#3a5a7a", fontSize: 12 }}>{t("market.loadingMore")}</div>
+                )}
+                {!marketLoading && marketWines.length === 0 && (
+                  <div style={{ textAlign: "center", padding: "40px", color: "#3a5a7a", fontSize: 14 }}>{t("market.noWines")}</div>
+                )}
+              </div>
             </>
           )}
 

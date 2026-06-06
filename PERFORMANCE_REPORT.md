@@ -1,118 +1,144 @@
 # VinoInvest — Performance Report
-
-> Measured: 2026-06-06 | Backend: vinoinvest-backend-2.onrender.com | Frontend: Vite 8.0.12
-
----
-
-## Response Times (cold start, production Render)
-
-| Endpoint | Time | Target | Status |
-|----------|------|--------|--------|
-| `GET /api/wines` | 645ms | <200ms (cached) | ⚠️ Cold |
-| `GET /api/prices/:id/history` | 275ms | <300ms | ✅ |
-| `GET /api/news` | 241ms | <500ms | ✅ |
-| `GET /api/blog` | 238ms | <1000ms | ✅ |
-| `GET /api/rates` | 404ms | <500ms | ✅ |
-| `GET /api/dashboard/analytics` | 496ms | <500ms | ✅ |
-
-> Note: Render free tier cold-starts after 15min idle. `/api/wines` target of <200ms is achievable after NodeCache warms up (subsequent requests served from memory).
+**Date:** 2026-06-06
 
 ---
 
-## Frontend Bundle Size
+## Frontend Performance
 
-| Asset | Raw | Gzip |
-|-------|-----|------|
-| index.html | 8.2 KB | 1.8 KB |
-| CSS | 17.9 KB | 4.3 KB |
-| supabase chunk | 200.9 KB | 51.5 KB |
-| main app chunk | 215.9 KB | 64.1 KB |
-| vendor chunk | 223.5 KB | 72.4 KB |
-| recharts chunk | 359.7 KB | 103.7 KB |
-| **Total JS** | **~1.0 MB** | **~292 KB** |
+### Bundle Chunks (production build)
+| Chunk | Raw | Gzip | Strategy |
+|-------|-----|------|---------|
+| `charts` | 360.67 kB | 103.88 kB | recharts + d3 isolated |
+| `vendor` | 219.10 kB | 70.39 kB | react + react-dom + react-router |
+| `supabase` | 201.05 kB | 51.57 kB | @supabase/supabase-js isolated |
+| `index` | 168.99 kB | 49.08 kB | app code |
+| `i18n` | 53.95 kB | 17.40 kB | i18next + react-i18next |
+| `virtual` | 8.58 kB | 3.27 kB | react-window v2 |
+| CSS | 17.93 kB | 4.33 kB | — |
+| **Total** | **~1.03 MB** | **~300 kB** | parallel chunk loading |
 
-✅ Gzip total ~292 KB — well under 800 KB target (browser receives gzip).
+Total gzip ~300 kB. Browser loads chunks in parallel; initial paint only needs `vendor` + `index` + CSS = ~185 kB gzip.
 
----
+### React Rendering Optimizations
 
-## Token Optimization — Before vs After
-
-| Metric | Before | After | Savings |
-|--------|--------|-------|---------|
-| Model for blog | claude-sonnet-4-6 | claude-haiku-4-5-20251001 | **25× cheaper** |
-| System prompt caching | None | `cache_control: ephemeral` | **~90% input tokens** |
-| Wine scoring | 1 call/wine | Batch 10/call | **10× fewer API calls** |
-| Token budget (agent) | Unlimited | 1000 max | Predictable cost |
-| Token budget (portfolio) | Unlimited | 3000 max | Cost capped |
-
-**Estimated cost per 1000 blog articles:** ~$0.60 (Haiku) vs $15.00 (Sonnet) — 25× reduction.
-
----
-
-## Caching Strategy
-
-| Data | TTL | Storage |
-|------|-----|---------|
-| `/api/wines` | 120s | NodeCache in-memory |
-| `/api/news` | 1800s | NodeCache + Cache-Control |
-| `/api/blog` | 3600s | NodeCache + Cache-Control + DB |
-| `/api/rates` | 300s | NodeCache + Cache-Control |
-| `/api/agent/opportunities` | 900s | NodeCache |
-| AI blog generation | 7 days (per slug) | PostgreSQL blog_posts |
-| Price history | On-demand | PostgreSQL + seeded fallback |
-
----
-
-## DB Connection Pool
-
+#### `WineCard` — `React.memo` with custom comparator
+```jsx
+// Re-renders ONLY when:
+// - wine object reference changes
+// - aiScore changes (new score fetched from API)
+// - alertInput changes (user types in price alert)
+// - inWatchlist changes
+// - alerts.length changes
+export default memo(WineCard, (prev, next) =>
+  prev.wine === next.wine &&
+  prev.aiScore === next.aiScore &&
+  prev.alertInput === next.alertInput &&
+  prev.inWatchlist === next.inWatchlist &&
+  prev.alerts.length === next.alerts.length
+);
 ```
-max connections: 10
-idle timeout: 30s
-connection timeout: 5s
+**Impact:** With 20 cards, a single AI score update previously caused 20 re-renders. Now: 1.
+
+#### `VirtualWineGrid` — react-window `List`
+- Renders only visible rows (overscan=2)
+- Each row = 3 WineCards at ROW_HEIGHT=464px
+- 20 wines = 7 rows total, only ~2-3 visible at viewport height=880px
+- Grows to 200+ wines without DOM bloat
+
+#### `useCallback` handlers (stable references)
+```
+onCardTilt             → [] (stable forever)
+onCardTiltReset        → [] (stable forever)
+toggleWatchlist        → [watchlist]
+createAlert            → [alertInputs]
+deleteAlert            → [] (stable forever)
+handleAlertInputChange → [] (stable forever)
+handleImageClick       → [] (stable forever)
+handleAddToPortfolio   → [] (stable forever)
 ```
 
-Indexes added:
-- `idx_orders_user` on `orders(user_id)`
-- `idx_orders_created` on `orders(created_at DESC)`
-- `idx_orders_wine` on `orders(wine_id)`
-- `idx_api_usage_created` on `api_usage(created_at DESC)`
-- `idx_api_usage_endpoint` on `api_usage(endpoint)`
+#### `useMemo` — `cardProps` object
+```jsx
+// Single stable reference passed to VirtualWineGrid
+// Only re-creates when any of its dependencies change
+const cardProps = useMemo(() => ({ aiScores, alerts, ... }), [...deps]);
+```
 
 ---
 
-## AI Agent Performance
+## Backend Performance
 
-| Task | Model | Max tokens | Est. cost/call |
-|------|-------|-----------|----------------|
-| Chat (simple Q&A) | Haiku | 1000 | $0.001 |
-| Portfolio analysis | Sonnet | 3000 | $0.009 |
-| Batch score 10 wines | Haiku | 1024 | $0.0008 |
-| Blog article | Haiku | 700 | $0.0006 |
-| Image agent | n/a | n/a | $0.00 |
+### Cache TTL Configuration
+| Endpoint | Before | After | Ratio |
+|----------|--------|-------|-------|
+| `GET /api/wines` | 120s | 300s | 2.5x |
+| `GET /api/market/wines` | 300s | 600s | 2x |
+| `GET /api/rates` | 300s | 21600s | 72x |
+| `GET /api/news` | 1800s | 1800s | unchanged |
+| `GET /api/blog` | 3600s | 7200s | 2x |
+| `GET /api/dashboard` | none | 300s | new |
+| `GET /api/trending` | none | 14400s | new (4h) |
 
-Monitoring: `GET /api/admin/costs` — daily/weekly/monthly breakdown + alert if >$5/day.
+### ETag Support
+All cached endpoints now return `ETag` header. Clients can send `If-None-Match` → server responds `304 Not Modified` with empty body.
+
+### PostgreSQL Indices Added
+```sql
+-- Orders
+CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
+
+-- Price history
+CREATE INDEX IF NOT EXISTS idx_price_history_recorded ON price_history(recorded_at DESC);
+
+-- Wines (DB table)
+CREATE INDEX IF NOT EXISTS idx_wines_name ON wines(name text_pattern_ops);
+CREATE INDEX IF NOT EXISTS idx_wines_investment_score ON wines(investment_score DESC);
+CREATE INDEX IF NOT EXISTS idx_wines_vintage ON wines(vintage);
+
+-- Price cache
+CREATE INDEX IF NOT EXISTS idx_price_cache_wine_vintage ON price_cache(wine_id, vintage);
+
+-- AI scores
+CREATE INDEX IF NOT EXISTS idx_ai_scores_wine ON ai_scores(wine_id);
+
+-- Alerts
+CREATE INDEX IF NOT EXISTS idx_alerts_user ON alerts(user_id);
+CREATE INDEX IF NOT EXISTS idx_alerts_wine_active ON alerts(wine_id) WHERE active = true;
+
+-- Users
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+```
+**Total new indices:** 10 (+ 5 pre-existing = 15 total)
 
 ---
 
-## Mobile Performance
+## Vite Build Optimizations
 
-- iOS zoom prevention: `font-size: 16px` on textarea inputs
-- Chart overflow: `overflow-x: auto` on chartPanel at 480px
-- Touch targets: `min-height: 44px` on all action buttons
-- Sidebar: CSS transform slide (no JS layout recalc)
-- Image loading: `loading="lazy"` on all wine card images
+### manualChunks Configuration
+```js
+manualChunks(id) {
+  if (id.includes("recharts") || id.includes("d3"))      return "charts";
+  if (id.includes("@supabase"))                          return "supabase";
+  if (id.includes("react-window"))                       return "virtual";  // NEW
+  if (id.includes("i18next") || id.includes("react-i18next")) return "i18n"; // NEW
+  if (id.includes("react") || id.includes("react-router")) return "vendor";
+}
+```
+
+Build target: `es2020` — smaller output for modern browsers.
 
 ---
 
-## Optimizations Added This Session
+## Estimated Performance Gains
 
-1. **NodeCache** — in-memory cache layer for all read endpoints
-2. **aiOptimizer.js** — model selection, compressed prompts, batch analysis, cost estimation
-3. **Prompt caching** — `cache_control: ephemeral` on system prompts
-4. **blogAgent.js** — cron Monday 06:00, DB-persisted, no regeneration of existing slugs
-5. **imageAgent.js** — nightly 02:00, Vivino CDN + Unsplash fallback
-6. **tokenTracker.js** — logs all API usage to `api_usage` table
-7. **Connection pool** — max 10 connections, timeout settings
-8. **DB indexes** — on api_usage, purchase_clicks
-9. **react-window** installed — ready for virtual list on 50k+ wine market
-10. **PurchaseModal** — affiliate links + external import without page reload
+| Metric | Before | After | Improvement |
+|--------|--------|-------|-------------|
+| Re-renders per AI score fetch (20 cards) | 20 | 1 | **-95%** |
+| DOM nodes for 100 wine cards | ~2000 | ~300 (virtual) | **-85%** |
+| Backend calls to `/api/rates` per hour | 12 | 0.17 | **-98.6%** |
+| Backend calls to `/api/trending` per hour | ∞ | 0.25 | **-99%** |
+| `charts` chunk | with app bundle | separate lazy | deferred |
+
+---
+
+*Build: 340ms | Test suite: 31/31 PASS*

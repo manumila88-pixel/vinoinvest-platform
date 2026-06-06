@@ -75,13 +75,19 @@ const aiRateLimit = rateLimit({
   message: { error: "AI score rate limit exceeded." },
 });
 
-// Cache-Control + NodeCache middleware for read-only endpoints
+// Cache-Control + NodeCache + ETag middleware for read-only endpoints
 function cacheFor(seconds) {
   return (req, res, next) => {
     res.set("Cache-Control", `public, max-age=${seconds}, stale-while-revalidate=${seconds * 2}`);
     const key = req.originalUrl;
     const cached = appCache.get(key);
-    if (cached) return res.json(cached);
+    if (cached) {
+      // Support conditional GET via ETag
+      const etag = `"vi-${key.length}-${seconds}"`;
+      res.set("ETag", etag);
+      if (req.headers["if-none-match"] === etag) return res.status(304).end();
+      return res.json(cached);
+    }
     const origJson = res.json.bind(res);
     res.json = (body) => {
       appCache.set(key, body, seconds);
@@ -100,12 +106,12 @@ app.use("/api/auth", authRouter);
 app.use("/api/ai-score", aiRateLimit, aiScoreRouter);
 app.use("/api/alerts", alertsRouter);
 app.use("/api/notifications", notificationsRouter);
-app.use("/api/dashboard", dashboardRouter);
-app.use("/api/rates", cacheFor(300), ratesRouter);
-app.use("/api/news", cacheFor(1800), newsRouter);
+app.use("/api/dashboard", cacheFor(300), dashboardRouter);
+app.use("/api/rates", cacheFor(21600), ratesRouter);   // 6h — exchange rates rarely change
+app.use("/api/news", cacheFor(1800), newsRouter);        // 30min
 app.use("/api/ai", aiRateLimit, aiMarketRouter);
 app.use("/api/ai", aiRateLimit, aiPortfolioRouter);
-app.use("/api/blog", cacheFor(3600), blogRouter);
+app.use("/api/blog", cacheFor(7200), blogRouter);        // 2h
 app.use("/api/agent", aiRateLimit, agentRouter);
 app.use("/api/purchase", purchaseRouter);
 app.use("/api/admin", adminRouter);
@@ -240,12 +246,28 @@ async function initDB() {
     `);
     // Add user_id column to existing tables that may lack it
     await pool.query(`ALTER TABLE orders ADD COLUMN IF NOT EXISTS user_id TEXT`).catch(() => {});
-    // Performance indexes
+    // Performance indexes — orders
     await pool.query(`CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id)`).catch(() => {});
-    await pool.query(`CREATE INDEX IF NOT EXISTS idx_orders_created ON orders(created_at DESC)`);
-    await pool.query(`CREATE INDEX IF NOT EXISTS idx_orders_wine ON orders(wine_id)`);
-    await pool.query(`CREATE INDEX IF NOT EXISTS idx_price_history_wine ON price_history(wine_id, recorded_at DESC) WHERE EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name='price_history')`).catch(() => {});
-    await pool.query(`CREATE INDEX IF NOT EXISTS idx_ai_scores_expires ON ai_scores(expires_at) WHERE EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name='ai_scores')`).catch(() => {});
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_orders_created ON orders(created_at DESC)`).catch(() => {});
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_orders_wine ON orders(wine_id)`).catch(() => {});
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status)`).catch(() => {});
+    // Performance indexes — price_history
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_price_history_wine ON price_history(wine_id, recorded_at DESC)`).catch(() => {});
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_price_history_recorded ON price_history(recorded_at DESC)`).catch(() => {});
+    // Performance indexes — wines (if table exists in DB)
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_wines_name ON wines(name text_pattern_ops)`).catch(() => {});
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_wines_investment_score ON wines(investment_score DESC)`).catch(() => {});
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_wines_vintage ON wines(vintage)`).catch(() => {});
+    // Performance indexes — price_cache
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_price_cache_wine_vintage ON price_cache(wine_id, vintage)`).catch(() => {});
+    // Performance indexes — ai_scores
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_ai_scores_expires ON ai_scores(expires_at)`).catch(() => {});
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_ai_scores_wine ON ai_scores(wine_id)`).catch(() => {});
+    // Performance indexes — alerts
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_alerts_user ON alerts(user_id)`).catch(() => {});
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_alerts_wine_active ON alerts(wine_id) WHERE active = true`).catch(() => {});
+    // Performance indexes — users
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)`).catch(() => {});
   } catch (e) {
     console.warn("[initDB]", e.message);
   }
@@ -369,11 +391,11 @@ app.get("/", (req, res) => {
 
 });
 
-app.get("/api/market/wines", cacheFor(300), (req, res) => {
+app.get("/api/market/wines", cacheFor(600), (req, res) => {
   res.json([...wines, ...externalWines]);
 });
 
-app.get("/api/wines", cacheFor(120), (req, res) => {
+app.get("/api/wines", cacheFor(300), (req, res) => {
   const search = (req.query.search || "").toString().trim();
   const page = Math.max(1, parseInt(req.query.page) || 1);
   const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 20));
@@ -910,7 +932,7 @@ res.json({
 );
 
 // ── Trending: top 5 wines by simulated 24h price change ─────────────────────
-app.get("/api/trending", (req, res) => {
+app.get("/api/trending", cacheFor(14400), (req, res) => {
   const seed = Math.floor(Date.now() / (1000 * 3600 * 4)); // changes every 4h
   const seededRandom = (wineId, offset = 0) => {
     const x = Math.sin(seed + wineId.charCodeAt(0) + offset) * 10000;
