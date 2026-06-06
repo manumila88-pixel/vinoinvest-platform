@@ -23,6 +23,7 @@ import blogRouter, { setBlogPool } from "./routes/blog.js";
 import agentRouter from "./routes/agent.js";
 import purchaseRouter, { setPurchasePool } from "./routes/purchase.js";
 import adminRouter, { setAdminPool } from "./routes/admin.js";
+import wineInfoRouter from "./routes/wineInfo.js";
 import { setTranslationPool } from "./services/translationService.js";
 import { startBlogAgent, setBlogPool as setBlogAgentPool } from "./agents/blogAgent.js";
 import { startImageAgent, setImagePool } from "./agents/imageAgent.js";
@@ -41,7 +42,24 @@ const app = express();
 // Security headers
 app.use(helmet({
   crossOriginEmbedderPolicy: false,
-  contentSecurityPolicy: false,
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      styleSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'"],
+      fontSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      frameSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  },
+  hsts: {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true,
+  },
 }));
 app.use(compression());
 
@@ -115,6 +133,7 @@ app.use("/api/blog", cacheFor(7200), blogRouter);        // 2h
 app.use("/api/agent", aiRateLimit, agentRouter);
 app.use("/api/purchase", purchaseRouter);
 app.use("/api/admin", requireAuth, adminRouter);
+app.use("/api/wine-info", cacheFor(86400), wineInfoRouter); // 24h cache
 
 const __filename =
   fileURLToPath(import.meta.url);

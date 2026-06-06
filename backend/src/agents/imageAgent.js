@@ -36,13 +36,33 @@ async function headCheck(url) {
   } catch (_) { return false; }
 }
 
+async function fetchOFFImage(wineName) {
+  const encoded = encodeURIComponent(wineName);
+  const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encoded}&search_simple=1&json=1&fields=product_name,image_front_url&page_size=1`;
+  const r = await fetch(url, {
+    headers: { "User-Agent": "VinoInvest/1.0" },
+    signal: AbortSignal.timeout(5000),
+  });
+  if (!r.ok) throw new Error(`OFF ${r.status}`);
+  const data = await r.json();
+  const img = data.products?.[0]?.image_front_url;
+  if (!img) throw new Error("no image");
+  return img;
+}
+
 async function findImage(wine) {
   // 1. Try Vivino CDN slug
   const slug = buildVivinoSlug(wine);
   const vivinoUrl = `https://images.vivino.com/thumbs/${slug}_pb_x300.png`;
   if (await headCheck(vivinoUrl)) return { url: vivinoUrl, source: "vivino" };
 
-  // 2. Fallback by wine type
+  // 2. Try Open Food Facts (free, no auth needed)
+  try {
+    const offUrl = await fetchOFFImage(wine.name);
+    if (offUrl) return { url: offUrl, source: "openfoodfacts" };
+  } catch (_) {}
+
+  // 3. Fallback by wine type (Unsplash)
   const typeKey = wineTypeKey(wine);
   return { url: UNSPLASH_FALLBACKS[typeKey] || UNSPLASH_FALLBACKS.default, source: "unsplash" };
 }
