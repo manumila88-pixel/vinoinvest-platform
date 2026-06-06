@@ -23,6 +23,7 @@ import blogRouter, { setBlogPool } from "./routes/blog.js";
 import agentRouter from "./routes/agent.js";
 import purchaseRouter, { setPurchasePool } from "./routes/purchase.js";
 import adminRouter, { setAdminPool } from "./routes/admin.js";
+import { setTranslationPool } from "./services/translationService.js";
 import { startBlogAgent, setBlogPool as setBlogAgentPool } from "./agents/blogAgent.js";
 import { startImageAgent, setImagePool } from "./agents/imageAgent.js";
 import "./jobs/priceUpdater.js";
@@ -257,6 +258,7 @@ initDB().then(() => {
     setPurchasePool(pool);
     setAdminPool(pool);
     setImagePool(pool);
+    setTranslationPool(pool);
     initUsageTable(pool);
   }
   // Start scheduled agents

@@ -1,5 +1,6 @@
 import express from "express";
 import Anthropic from "@anthropic-ai/sdk";
+import { translateObjects, translateText } from "../services/translationService.js";
 
 const router = express.Router();
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -129,14 +130,22 @@ async function generateAndCachePosts() {
   return posts.length > 0 ? posts : FALLBACK_POSTS;
 }
 
-// GET /api/blog?page=1&limit=10
+// GET /api/blog?page=1&limit=10&lang=fr
 router.get("/", async (req, res) => {
   const page = Math.max(1, parseInt(req.query.page) || 1);
   const limit = Math.min(50, parseInt(req.query.limit) || 10);
+  const targetLang = req.query.lang?.slice(0, 2);
 
   // Try DB first
   const dbResult = await getPostsFromDB(page, limit);
-  if (dbResult) return res.json(dbResult);
+  if (dbResult) {
+    if (targetLang && targetLang !== "it") {
+      try {
+        dbResult.posts = await translateObjects(dbResult.posts, ["title", "excerpt"], targetLang, "it");
+      } catch (e) { console.warn("[blog] Translation failed:", e.message); }
+    }
+    return res.json(dbResult);
+  }
 
   // Fallback to in-memory cache
   if (!blogCache || Date.now() - blogCacheTime > CACHE_TTL) {
@@ -145,7 +154,15 @@ router.get("/", async (req, res) => {
   }
 
   const start = (page - 1) * limit;
-  res.json({ posts: blogCache.slice(start, start + limit), total: blogCache.length, page, limit });
+  let posts = blogCache.slice(start, start + limit);
+
+  if (targetLang && targetLang !== "it") {
+    try {
+      posts = await translateObjects(posts, ["title", "excerpt"], targetLang, "it");
+    } catch (e) { console.warn("[blog] Translation failed:", e.message); }
+  }
+
+  res.json({ posts, total: blogCache.length, page, limit });
 });
 
 // GET /api/blog/:slug

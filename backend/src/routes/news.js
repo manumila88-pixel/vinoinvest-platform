@@ -1,4 +1,5 @@
 import express from "express";
+import { translateObjects } from "../services/translationService.js";
 
 const router = express.Router();
 
@@ -70,7 +71,7 @@ async function fetchFromNewsAPI(apiKey) {
 }
 
 router.get("/", async (req, res) => {
-  const { country = "all", category = "all" } = req.query;
+  const { country = "all", category = "all", lang } = req.query;
   const apiKey = process.env.NEWS_API_KEY;
 
   if (apiKey && (!cachedNews || Date.now() - cacheTime > TTL)) {
@@ -93,7 +94,18 @@ router.get("/", async (req, res) => {
     if (filtered.length > 0) articles = filtered;
   }
 
-  res.json({ articles: articles.slice(0, 20), total: articles.length, source: cachedNews ? "live" : "fallback" });
+  articles = articles.slice(0, 20);
+
+  const targetLang = lang?.slice(0, 2);
+  if (targetLang && targetLang !== "en") {
+    try {
+      articles = await translateObjects(articles, ["title", "description"], targetLang, "en");
+    } catch (e) {
+      console.warn("[news] Translation failed:", e.message);
+    }
+  }
+
+  res.json({ articles, total: articles.length, source: cachedNews ? "live" : "fallback" });
 });
 
 export default router;

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { runAgent } from "../agents/portfolioAgent.js";
+import { translateText } from "../services/translationService.js";
 
 const router = Router();
 
@@ -56,9 +57,9 @@ router.delete("/chat/:sessionId", (req, res) => {
   res.json({ cleared: true });
 });
 
-// GET /api/agent/opportunities?risk=medio&budget=500
+// GET /api/agent/opportunities?risk=medio&budget=500&lang=fr
 router.get("/opportunities", async (req, res) => {
-  const { risk = "medio", budget } = req.query;
+  const { risk = "medio", budget, lang } = req.query;
   const question = `Find the top wine investment opportunities${budget ? ` under €${budget}` : ""} with ${risk} risk. Use the get_top_opportunities tool and summarize the top 5 with brief reasoning for each.`;
 
   try {
@@ -68,7 +69,16 @@ router.get("/opportunities", async (req, res) => {
       allWines: req._allWines || [],
       API_URL: process.env.BACKEND_URL || "https://vinoinvest-backend-2.onrender.com",
     });
-    res.json({ response: result.response, toolsUsed: result.toolsUsed });
+
+    let response = result.response;
+    const targetLang = lang?.slice(0, 2);
+    if (targetLang && targetLang !== "en") {
+      try {
+        response = await translateText(response, targetLang, "en");
+      } catch (e) { console.warn("[agent] Translation failed:", e.message); }
+    }
+
+    res.json({ response, toolsUsed: result.toolsUsed });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
