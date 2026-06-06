@@ -287,6 +287,8 @@ function App() {
   const [portfolioChartW, setPortfolioChartW] = useState(600);
   const marketGridRef = useRef(null);
   const [marketGridW, setMarketGridW] = useState(900);
+  const [floatChatOpen, setFloatChatOpen] = useState(false);
+  const [floatUnread, setFloatUnread] = useState(0);
 
   // ── Premium features state ───────────────────────────────────────────────
   const [news, setNews] = useState([]);
@@ -301,6 +303,15 @@ function App() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const heroSearchRef = useRef(null);
   const suggestDebounceRef = useRef(null);
+  const [proactiveWines, setProactiveWines] = useState([]);
+  const [proactiveTrigger, setProactiveTrigger] = useState(null); // wine that triggered "similar"
+
+  // ── ESC key closes overlays ───────────────────────────────────────────────
+  useEffect(() => {
+    const handler = (e) => { if (e.key === "Escape") setFloatChatOpen(false); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
 
   // ── Offline detection ────────────────────────────────────────────────────
   useEffect(() => {
@@ -669,6 +680,11 @@ function App() {
 
   const handleImageClick = useCallback((wine) => {
     setModalWine(wine);
+    // Proactive: load similar wines in background
+    fetch(`${API}/api/agent/similar/${encodeURIComponent(wine.id)}`)
+      .then(r => r.ok ? r.json() : { wines: [] })
+      .then(d => { if (d.wines?.length) { setProactiveWines(d.wines); setProactiveTrigger(wine.name); } })
+      .catch(() => {});
   }, []);
 
   const handleAddToPortfolio = useCallback((wine) => {
@@ -967,6 +983,34 @@ function App() {
                   <div style={{ textAlign: "center", padding: "40px", color: "#3a5a7a", fontSize: 14 }}>{t("market.noWines")}</div>
                 )}
               </div>
+
+              {/* ── Proactive AI: "Simili a..." ─────────────────────────── */}
+              {proactiveWines.length > 0 && proactiveTrigger && (
+                <div style={{ marginTop: 24, padding: "16px 20px", background: "rgba(11,18,32,0.7)", border: "1px solid rgba(201,162,39,0.2)", borderRadius: 14 }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                    <div>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: "#C9A227" }}>🍷 L'AI suggerisce anche...</span>
+                      <span style={{ fontSize: 11, color: "#64748b", marginLeft: 8 }}>Simili a {proactiveTrigger}</span>
+                    </div>
+                    <button onClick={() => { setProactiveWines([]); setProactiveTrigger(null); }} style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 14 }}>✕</button>
+                  </div>
+                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                    {proactiveWines.slice(0, 4).map(w => (
+                      <div key={w.id} onClick={() => setModalWine(w)} style={{ flex: "1 1 180px", minWidth: 150, maxWidth: 220, padding: "10px 12px", background: "rgba(5,10,20,0.8)", border: "1px solid rgba(30,41,59,0.6)", borderRadius: 10, cursor: "pointer", transition: "border-color 0.2s" }}
+                        onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(201,162,39,0.4)"}
+                        onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(30,41,59,0.6)"}
+                      >
+                        <div style={{ fontSize: 11, fontWeight: 700, color: "#e2e8f0", marginBottom: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{w.name}</div>
+                        <div style={{ fontSize: 10, color: "#64748b" }}>{w.region} · {w.vintage || ""}</div>
+                        <div style={{ marginTop: 4, display: "flex", gap: 6, alignItems: "center" }}>
+                          <span style={{ fontSize: 12, color: "#C9A227", fontWeight: 700 }}>€{w.price}</span>
+                          {w.score && <span style={{ fontSize: 10, color: "#4ade80" }}>⭐{w.score}</span>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </>
           )}
 
@@ -1255,8 +1299,8 @@ function App() {
               <div style={{ marginBottom: 36 }}>
                 <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 22, fontWeight: 800, marginBottom: 4 }}>AI Wine Advisor</h2>
                 <p style={{ color: "#64748b", fontSize: 13, marginBottom: 16 }}>Chatta con il tuo consulente AI — analisi portafoglio, notizie mercato, opportunità.</p>
-                <div style={{ background: "rgba(11,18,32,0.85)", border: "1px solid rgba(30,41,59,0.7)", borderRadius: 16, padding: 20 }}>
-                  <AgentChat holdings={holdings} />
+                <div style={{ background: "rgba(11,18,32,0.85)", border: "1px solid rgba(30,41,59,0.7)", borderRadius: 16, overflow: "hidden" }}>
+                  <AgentChat holdings={holdings} onAddToPortfolio={handleAddToPortfolio} />
                 </div>
               </div>
 
@@ -1372,6 +1416,60 @@ function App() {
           onImport={() => { loadData(); setPurchaseWine(null); }}
         />
       )}
+
+      {/* ── Floating AI Chat Button ──────────────────────────────────────── */}
+      <button
+        onClick={() => { setFloatChatOpen(o => !o); setFloatUnread(0); }}
+        style={{
+          position: "fixed", bottom: 28, right: 28, zIndex: 9000,
+          width: 56, height: 56, borderRadius: "50%",
+          background: "linear-gradient(135deg,#9b1c4a,#C9A227)",
+          border: "none", cursor: "pointer", fontSize: 24,
+          boxShadow: "0 4px 24px rgba(201,162,39,0.4)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          transition: "transform 0.2s, box-shadow 0.2s",
+        }}
+        onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.12)"; e.currentTarget.style.boxShadow = "0 6px 32px rgba(201,162,39,0.6)"; }}
+        onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 4px 24px rgba(201,162,39,0.4)"; }}
+        title="AI Wine Advisor"
+      >
+        {floatChatOpen ? "✕" : "🍷"}
+        {floatUnread > 0 && !floatChatOpen && (
+          <span style={{ position: "absolute", top: -4, right: -4, background: "#ef4444", color: "#fff", borderRadius: "50%", fontSize: 10, width: 18, height: 18, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, border: "2px solid #020617" }}>
+            {floatUnread}
+          </span>
+        )}
+      </button>
+
+      {/* ── Floating Chat Overlay ────────────────────────────────────────── */}
+      {floatChatOpen && (
+        <>
+          <div
+            onClick={() => setFloatChatOpen(false)}
+            style={{ position: "fixed", inset: 0, zIndex: 8999, background: "transparent" }}
+          />
+          <div style={{
+            position: "fixed", bottom: 96, right: 28, zIndex: 9001,
+            width: "min(420px, calc(100vw - 32px))",
+            borderRadius: 18, overflow: "hidden",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,162,39,0.2)",
+            animation: "floatIn 0.2s ease-out",
+          }}>
+            <AgentChat
+              holdings={holdings}
+              onAddToPortfolio={handleAddToPortfolio}
+              compact={true}
+            />
+          </div>
+        </>
+      )}
+
+      <style>{`
+        @keyframes floatIn {
+          from { opacity: 0; transform: translateY(16px) scale(0.96); }
+          to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+      `}</style>
     </div>
   );
 }
