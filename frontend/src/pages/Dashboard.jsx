@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { authFetch } from "../lib/authFetch";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
@@ -211,7 +212,7 @@ export default function DashboardB2B() {
                 if (!wineForm.name || !wineForm.price) return setWineFormMsg({ type: "error", text: "Nome e prezzo obbligatori" });
                 setSubmittingWine(true);
                 try {
-                  const res = await fetch(`${API}/api/wines`, {
+                  const res = await authFetch(`${API}/api/wines`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({

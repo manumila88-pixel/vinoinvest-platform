@@ -3,7 +3,7 @@
 # Usage: ./test-all.sh [backend-url]
 # Default: tests against production backend
 
-set -euo pipefail
+set -uo pipefail
 
 API="${1:-https://vinoinvest-backend-2.onrender.com}"
 PASS=0; FAIL=0
@@ -12,9 +12,8 @@ check() {
   local label="$1"; shift
   local expected_status="${1}"; shift
   local url="$1"; shift
-  local extra_args=("$@")
 
-  local out; out=$(curl -s -o /dev/null -w "%{http_code}" "${extra_args[@]}" "$url" 2>/dev/null)
+  local out; out=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "$@" "$url" 2>/dev/null)
   if [[ "$out" == "$expected_status" ]]; then
     echo "  ✅  $label ($out)"
     ((PASS++))
@@ -26,7 +25,7 @@ check() {
 
 check_json() {
   local label="$1"; local url="$2"; local jq_filter="$3"
-  local out; out=$(curl -s "$url" 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print($jq_filter)" 2>/dev/null || echo "ERROR")
+  local out; out=$(curl -s --max-time 30 "$url" 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print($jq_filter)" 2>/dev/null || echo "ERROR")
   if [[ "$out" != "ERROR" && -n "$out" ]]; then
     echo "  ✅  $label → $out"
     ((PASS++))

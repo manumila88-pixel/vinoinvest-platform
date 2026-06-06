@@ -1,0 +1,72 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "market": "Mercato",
+    "news": "Notizie",
+    "blog": "Blog AI",
+    "analysis": "Analisi",
+    "portfolio": "Portfolio",
+    "portfolioAI": "Portfolio AI",
+    "b2b": "Dashboard B2B",
+    "alerts": "Alert",
+    "pricing": "Prezzi"
+  },
+  "hero": {
+    "title": "Global Wine Investment Platform",
+    "subtitle": "AI portfolio builder, wine intelligence, analytics e ricerca mondiale.",
+    "searchPlaceholder": "Cerca vini, produttori, regioni, annate..."
+  },
+  "stats": {
+    "globalMarket": "Mercato Globale",
+    "portfolioValue": "Valore Portfolio",
+    "invested": "Investito",
+    "profitLoss": "Profitto / Perdita",
+    "roi": "ROI",
+    "watchlist": "Watchlist"
+  },
+  "market": {
+    "searchPlaceholder": "Cerca qualsiasi vino nel mondo...",
+    "addToPortfolio": "+ Aggiungi al Portfolio",
+    "buyOn": "Acquista su Wine-Searcher →",
+    "noWines": "Nessun vino trovato.",
+    "loadingMore": "Caricamento altri vini…"
+  },
+  "portfolio": {
+    "title": "Il Mio Portfolio",
+    "exportCSV": "Esporta CSV",
+    "noPositions": "Nessuna posizione. Vai al Mercato e aggiungi una posizione.",
+    "growth": "Crescita Portfolio",
+    "diversification": "Diversificazione",
+    "byType": "Per Tipo",
+    "byWine": "Per Vino",
+    "estimatedNote": "* Valori stimati basati su crescita media storica 8%/anno"
+  },
+  "notifications": {
+    "title": "Notifiche",
+    "enablePush": "🔔 Abilita Push",
+    "markAllRead": "Segna tutto come letto",
+    "noNotifications": "Nessuna notifica. Imposta un alert di prezzo nella sezione Mercato.",
+    "pushEnabled": "Notifiche push abilitate!"
+  },
+  "auth": {
+    "signOut": "Esci",
+    "serverStarting": "⚡ Server in avvio... potrebbero volerci alcuni secondi",
+    "offline": "⚠️ Connessione assente — alcune funzionalità non sono disponibili"
+  },
+  "common": {
+    "loading": "Caricamento...",
+    "noData": "Dati non disponibili",
+    "refresh": "Aggiorna",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "close": "Chiudi",
+    "back": "Indietro",
+    "error": "Errore",
+    "success": "Successo"
+  },
+  "chart": {
+    "realData": "Dati reali",
+    "estimated": "Dati stimati",
+    "mixed": "Misti"
+  }
+}

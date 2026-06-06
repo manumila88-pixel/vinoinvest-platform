@@ -11,9 +11,11 @@ function extractToken(req) {
 }
 
 export async function requireAuth(req, res, next) {
+  // If Supabase not configured (local dev), skip auth check
+  if (!supabase) return next();
+
   const token = extractToken(req);
   if (!token) return res.status(401).json({ error: "Authentication required" });
-  if (!supabase) return res.status(500).json({ error: "Auth not configured" });
 
   try {
     const { data, error } = await supabase.auth.getUser(token);

@@ -1,0 +1,72 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "market": "Market",
+    "news": "Wine News",
+    "blog": "AI Blog",
+    "analysis": "Analysis",
+    "portfolio": "My Portfolio",
+    "portfolioAI": "Portfolio AI",
+    "b2b": "B2B Dashboard",
+    "alerts": "Alerts",
+    "pricing": "Pricing"
+  },
+  "hero": {
+    "title": "Global Wine Investment Platform",
+    "subtitle": "AI portfolio builder, wine intelligence, analytics and worldwide search.",
+    "searchPlaceholder": "Search wines, producers, regions, vintages..."
+  },
+  "stats": {
+    "globalMarket": "Global Market",
+    "portfolioValue": "Portfolio Value",
+    "invested": "Invested",
+    "profitLoss": "Profit / Loss",
+    "roi": "ROI",
+    "watchlist": "Watchlist"
+  },
+  "market": {
+    "searchPlaceholder": "Search any wine worldwide...",
+    "addToPortfolio": "+ Add to Portfolio",
+    "buyOn": "Buy on Wine-Searcher →",
+    "noWines": "No wines found.",
+    "loadingMore": "Loading more wines…"
+  },
+  "portfolio": {
+    "title": "My Portfolio",
+    "exportCSV": "Export CSV",
+    "noPositions": "No positions yet. Go to Market and add a position.",
+    "growth": "Portfolio Growth",
+    "diversification": "Diversification",
+    "byType": "By Type",
+    "byWine": "By Wine",
+    "estimatedNote": "* Estimated values based on 8% average annual growth (wine market historical average)"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "enablePush": "🔔 Enable Push",
+    "markAllRead": "Mark all read",
+    "noNotifications": "No notifications yet. Set a price alert in the Market section.",
+    "pushEnabled": "Push notifications enabled!"
+  },
+  "auth": {
+    "signOut": "Sign Out",
+    "serverStarting": "⚡ Server starting... this may take a few seconds",
+    "offline": "⚠️ No connection — some features are unavailable"
+  },
+  "common": {
+    "loading": "Loading...",
+    "noData": "No data available",
+    "refresh": "Refresh",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "back": "Back",
+    "error": "Error",
+    "success": "Success"
+  },
+  "chart": {
+    "realData": "Real data",
+    "estimated": "Estimated data",
+    "mixed": "Mixed"
+  }
+}

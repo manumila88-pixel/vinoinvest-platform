@@ -5,6 +5,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import pg from "pg";
 import cors from "cors";
+import { requireAuth, optionalAuth } from "./middleware/auth.js";
 import paymentsRouter from "./routes/payments.js";
 import pricesRouter from "./routes/prices.js";
 import authRouter from "./routes/auth.js";
@@ -17,6 +18,7 @@ import newsRouter from "./routes/news.js";
 import aiMarketRouter from "./routes/aiMarket.js";
 import aiPortfolioRouter from "./routes/aiPortfolio.js";
 import blogRouter from "./routes/blog.js";
+import agentRouter from "./routes/agent.js";
 import "./jobs/priceUpdater.js";
 import "./jobs/alertsChecker.js";
 
@@ -86,6 +88,7 @@ app.use("/api/news", cacheFor(1800), newsRouter);
 app.use("/api/ai", aiRateLimit, aiMarketRouter);
 app.use("/api/ai", aiRateLimit, aiPortfolioRouter);
 app.use("/api/blog", cacheFor(3600), blogRouter);
+app.use("/api/agent", aiRateLimit, agentRouter);
 
 const __filename =
   fileURLToPath(import.meta.url);
@@ -142,6 +145,9 @@ const allWines = [
   ...externalWines,
   ...bigWines
 ];
+
+// Inject allWines into agent requests so tools can search the catalog
+app.use("/api/agent", (req, _res, next) => { req._allWines = allWines; next(); });
 
 const marketplaceData = [
 
@@ -358,8 +364,8 @@ app.get("/api/wines", cacheFor(120), (req, res) => {
   });
 });
 
-// POST /api/wines — B2B wine management (adds to in-memory bigWines only in this process)
-app.post("/api/wines", (req, res) => {
+// POST /api/wines — B2B wine management (requires auth)
+app.post("/api/wines", requireAuth, (req, res) => {
   const { name, producer, vintage, region, current_price, type } = req.body;
   if (!name || !current_price) return res.status(400).json({ error: "name and current_price required" });
   const id = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "") + (vintage ? `-${vintage}` : "");
@@ -813,6 +819,7 @@ app.get("/api/orders", async (req, res) => {
 
 app.post(
   "/api/orders",
+  requireAuth,
   async (req, res) => {
 
     const wine =

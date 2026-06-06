@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useMemo, useRef, useCallback } from "react";
+import "./i18n";
+import { useTranslation } from "react-i18next";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ComposedChart } from "recharts";
@@ -6,12 +8,15 @@ import PriceHistoryChart from "./components/PriceHistoryChart";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ToastProvider, useToast } from "./components/Toast";
 import { fetchWithRetry } from "./lib/fetchWithRetry";
+import { authFetch } from "./lib/authFetch";
 import LandingPage from "./LandingPage";
 import { supabase } from "./lib/supabase";
 import WineBottle3DModal from "./WineBottle3DModal";
 import Pricing from "./pages/Pricing";
 import DashboardB2B from "./pages/Dashboard";
 import WinePriceCompare from "./components/WinePriceCompare";
+import LangSelector from "./components/LangSelector";
+import AgentChat from "./components/AgentChat";
 import "./style.css";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
@@ -236,6 +241,7 @@ function PortfolioSparkline({ wineId, purchasePrice, currentPrice }) {
 function App() {
   const navigate = useNavigate();
   const toast = useToast();
+  const { t } = useTranslation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [accountType, setAccountType] = useState("b2c");
@@ -618,7 +624,7 @@ function App() {
 
   async function buyWine(wineId, purchasePrice) {
     try {
-      const res = await fetchWithRetry(`${API}/api/orders`, {
+      const res = await authFetch(`${API}/api/orders`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ wineId, quantity: 1, purchasePrice, userId: getUserId() }),
@@ -720,12 +726,12 @@ function App() {
       {/* ── Offline banner ───────────────────────────────────────────────── */}
       {backendWaking && (
         <div style={{ background: "#1c1400", color: "#C9A227", padding: "8px 20px", fontSize: 12, fontWeight: 600, textAlign: "center", zIndex: 999, borderBottom: "1px solid rgba(201,162,39,0.2)" }}>
-          ⚡ Server in avvio... potrebbero volerci alcuni secondi
+          {t("auth.serverStarting")}
         </div>
       )}
       {isOffline && (
         <div style={{ background: "#7f1d1d", color: "#fca5a5", padding: "8px 20px", fontSize: 13, fontWeight: 600, textAlign: "center", zIndex: 999 }}>
-          ⚠️ Connessione assente — alcune funzionalità non sono disponibili
+          {t("auth.offline")}
         </div>
       )}
       {/* ── Glassmorphism Header ─────────────────────────────────────────── */}
@@ -736,6 +742,7 @@ function App() {
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div className="badge">global wine intelligence</div>
+          <LangSelector />
           {userEmail && <span style={{ fontSize: 12, color: "#3a5a7a" }}>{userEmail}</span>}
           {accountType && (
             <span style={{ fontSize: 10, color: "#C9A227", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 4, padding: "2px 7px", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.08em" }}>
@@ -759,7 +766,7 @@ function App() {
             style={{ padding: "6px 14px", border: "1px solid rgba(30,41,59,0.7)", borderRadius: 8, background: "transparent", color: "#4a6a8a", fontSize: 12, cursor: "pointer", fontFamily: "'Inter', Arial, sans-serif", transition: "border-color 0.2s, color 0.2s" }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(201,162,39,0.4)"; e.currentTarget.style.color = "#C9A227"; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(30,41,59,0.7)"; e.currentTarget.style.color = "#4a6a8a"; }}
-          >Sign Out</button>
+          >{t("auth.signOut")}</button>
         </div>
       </header>
 
@@ -771,26 +778,26 @@ function App() {
         <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
           {[
             { id: "dashboard",  label: "Dashboard" },
-            { id: "market",     label: "Market" },
-            { id: "news",       label: "Wine News" },
-            { id: "blog",       label: "Blog AI" },
-            { id: "analysis",   label: "Analysis" },
-            { id: "myportfolio",label: "My Portfolio" },
-            { id: "portfolio",  label: "Portfolio AI" },
+            { id: "market",     label: t("nav.market") },
+            { id: "news",       label: t("nav.news") },
+            { id: "blog",       label: t("nav.blog") },
+            { id: "analysis",   label: t("nav.analysis") },
+            { id: "myportfolio",label: t("nav.portfolio") },
+            { id: "portfolio",  label: t("nav.portfolioAI") },
           ].map(({ id, label }) => (
             <button key={id} className={tab === id ? "active" : ""} onClick={() => { setTab(id); setSidebarOpen(false); }}>{label}</button>
           ))}
           {accountType === "cantina" && (
-            <button className={tab === "b2b" ? "active" : ""} onClick={() => { setTab("b2b"); setSidebarOpen(false); }}>B2B Dashboard</button>
+            <button className={tab === "b2b" ? "active" : ""} onClick={() => { setTab("b2b"); setSidebarOpen(false); }}>{t("nav.b2b")}</button>
           )}
           <button
             className={tab === "notifications" ? "active" : ""}
             onClick={() => { setTab("notifications"); markAllRead(); setSidebarOpen(false); }}
             style={{ position: "relative" }}
           >
-            🔔 Alerts{unreadCount > 0 ? ` (${unreadCount})` : ""}
+            🔔 {t("nav.alerts")}{unreadCount > 0 ? ` (${unreadCount})` : ""}
           </button>
-          <button onClick={() => { navigate("/pricing"); setSidebarOpen(false); }} style={{ marginTop: "auto" }}>Pricing</button>
+          <button onClick={() => { navigate("/pricing"); setSidebarOpen(false); }} style={{ marginTop: "auto" }}>{t("nav.pricing")}</button>
         </aside>
 
         {/* ── Content ─────────────────────────────────────────────────────── */}
@@ -807,7 +814,7 @@ function App() {
                 <div ref={heroSearchRef} className="hero-search-wrapper">
                   <input
                     className="hero-search-input"
-                    placeholder="Search wines, producers, regions, vintages..."
+                    placeholder={t("hero.searchPlaceholder")}
                     value={heroSearch}
                     onChange={e => handleHeroSearch(e.target.value)}
                     onFocus={() => heroSearch && setShowSuggestions(true)}
@@ -830,12 +837,12 @@ function App() {
 
               <section className="statsGrid">
                 {[
-                  { label: "Global Market", value: `€ ${totalMarket.toFixed(0)}` },
-                  { label: "Portfolio Value", value: `€ ${portfolioValue.toFixed(0)}` },
-                  { label: "Invested", value: `€ ${totalInvested.toFixed(0)}` },
-                  { label: "Profit / Loss", value: `€ ${totalProfit.toFixed(0)}` },
-                  { label: "ROI", value: `${portfolioROI}%` },
-                  { label: "Watchlist", value: watchlist.length },
+                  { label: t("stats.globalMarket"), value: `€ ${totalMarket.toFixed(0)}` },
+                  { label: t("stats.portfolioValue"), value: `€ ${portfolioValue.toFixed(0)}` },
+                  { label: t("stats.invested"), value: `€ ${totalInvested.toFixed(0)}` },
+                  { label: t("stats.profitLoss"), value: `€ ${totalProfit.toFixed(0)}` },
+                  { label: t("stats.roi"), value: `${portfolioROI}%` },
+                  { label: t("stats.watchlist"), value: watchlist.length },
                 ].map((s, i) => (
                   <div key={i} className="statCard fade-up">
                     <small>{s.label}</small>
@@ -897,7 +904,7 @@ function App() {
             <>
               <input
                 className="searchInput"
-                placeholder="Search any wine worldwide..."
+                placeholder={t("market.searchPlaceholder")}
                 value={marketSearch}
                 onChange={e => handleMarketSearch(e.target.value)}
               />
@@ -967,7 +974,7 @@ function App() {
                           </div>
                           <div className="wineCard-actions">
                             <WinePriceCompare wineId={wine.id} wineName={wine.name} vintage={wine.vintage} criticScore={wine.criticScore || wine.investmentScore} />
-                            <button className="btn-primary" onClick={() => buyWine(wine.id, wine.currentPrice)}>+ Add to Portfolio</button>
+                            <button className="btn-primary" onClick={() => buyWine(wine.id, wine.currentPrice)}>{t("market.addToPortfolio")}</button>
                             <button className={`btn-secondary ${watchlist.includes(wine.id) ? "active" : ""}`} onClick={() => toggleWatchlist(wine)}>
                               {watchlist.includes(wine.id) ? "★" : "☆"}
                             </button>
@@ -979,7 +986,7 @@ function App() {
                             style={{ display: "block", textAlign: "center", fontSize: 10, color: "#3a5a7a", textDecoration: "none", padding: "6px 0 4px", borderTop: "1px solid rgba(30,41,59,0.4)", marginTop: 4, transition: "color 0.2s" }}
                             onMouseEnter={e => e.currentTarget.style.color = "#C9A227"}
                             onMouseLeave={e => e.currentTarget.style.color = "#3a5a7a"}
-                          >Buy on Wine-Searcher →</a>
+                          >{t("market.buyOn")}</a>
                         </div>
                       </div>
                     ))
@@ -1276,6 +1283,15 @@ function App() {
           {/* ── Portfolio AI ───────────────────────────────────────────────── */}
           {tab === "portfolio" && (
             <section className="ordersPanel">
+              {/* ── AI Chat Advisor ────────────────────────────────────────── */}
+              <div style={{ marginBottom: 36 }}>
+                <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 22, fontWeight: 800, marginBottom: 4 }}>AI Wine Advisor</h2>
+                <p style={{ color: "#64748b", fontSize: 13, marginBottom: 16 }}>Chatta con il tuo consulente AI — analisi portafoglio, notizie mercato, opportunità.</p>
+                <div style={{ background: "rgba(11,18,32,0.85)", border: "1px solid rgba(30,41,59,0.7)", borderRadius: 16, padding: 20 }}>
+                  <AgentChat holdings={holdings} />
+                </div>
+              </div>
+
               {/* ── AI Analysis of existing portfolio ─────────────────────── */}
               {holdings.length > 0 && <AIPortfolioAnalysis holdings={holdings} totalValue={portfolioValue} totalInvested={totalInvested} userId={userEmail} />}
 
@@ -1328,7 +1344,7 @@ function App() {
                     <button
                       onClick={async () => {
                         const perm = await Notification.requestPermission();
-                        if (perm === "granted") toast("Push notifications enabled!", "success");
+                        if (perm === "granted") toast(t("notifications.pushEnabled"), "success");
                       }}
                       style={{ padding: "8px 14px", borderRadius: 8, border: "1px solid rgba(201,162,39,0.3)", background: "rgba(201,162,39,0.1)", color: "#C9A227", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
                     >🔔 Enable Push</button>

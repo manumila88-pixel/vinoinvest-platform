@@ -927,6 +927,14 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
   .content { padding: 24px; }
 }
 
+@media (max-width: 480px) {
+  .statsGrid { grid-template-columns: 1fr; }
+  .header { padding: 0 12px; }
+  .wineCard { border-radius: 14px; }
+  .bottle-modal { width: 100vw; border-radius: 0; }
+  .hero h1 { font-size: 20px; }
+}
+
 @media (max-width: 768px) {
   /* Header */
   .header { padding: 0 16px; }
@@ -982,3 +990,13 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
   /* Orders table scroll */
   .ordersPanel { overflow-x: auto; }
 }
+
+/* ── RTL support (Arabic, Hebrew) ─────────────────── */
+[dir="rtl"] .sidebar { left: auto; right: 0; transform: translateX(100%); }
+[dir="rtl"] .sidebar.open { transform: translateX(0); box-shadow: -4px 0 30px rgba(0,0,0,0.5); }
+[dir="rtl"] .hero-search-icon { right: auto; left: 16px; }
+[dir="rtl"] .search-suggestions { left: auto; right: 0; }
+[dir="rtl"] .sidebar button { text-align: right; }
+[dir="rtl"] .wineCard-actions { flex-direction: row-reverse; }
+[dir="rtl"] .trending-rank { margin-left: 6px; margin-right: 0; }
+
