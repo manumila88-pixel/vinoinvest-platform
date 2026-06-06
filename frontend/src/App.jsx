@@ -17,6 +17,7 @@ import DashboardB2B from "./pages/Dashboard";
 import WinePriceCompare from "./components/WinePriceCompare";
 import LangSelector from "./components/LangSelector";
 import AgentChat from "./components/AgentChat";
+import PurchaseModal from "./components/PurchaseModal";
 import "./style.css";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
@@ -247,6 +248,7 @@ function App() {
   const [accountType, setAccountType] = useState("b2c");
   const [tab, setTab] = useState("dashboard");
   const [modalWine, setModalWine] = useState(null);
+  const [purchaseWine, setPurchaseWine] = useState(null);
   const [wines, setWines] = useState([]);
   const [orders, setOrders] = useState([]);
   const [watchlist, setWatchlist] = useState([]);
@@ -974,7 +976,7 @@ function App() {
                           </div>
                           <div className="wineCard-actions">
                             <WinePriceCompare wineId={wine.id} wineName={wine.name} vintage={wine.vintage} criticScore={wine.criticScore || wine.investmentScore} />
-                            <button className="btn-primary" onClick={() => buyWine(wine.id, wine.currentPrice)}>{t("market.addToPortfolio")}</button>
+                            <button className="btn-primary" onClick={() => setPurchaseWine(wine)}>{t("market.addToPortfolio")}</button>
                             <button className={`btn-secondary ${watchlist.includes(wine.id) ? "active" : ""}`} onClick={() => toggleWatchlist(wine)}>
                               {watchlist.includes(wine.id) ? "★" : "☆"}
                             </button>
@@ -1405,6 +1407,14 @@ function App() {
         <ErrorBoundary>
           <WineBottle3DModal wine={modalWine} onClose={() => setModalWine(null)} />
         </ErrorBoundary>
+      )}
+
+      {purchaseWine && (
+        <PurchaseModal
+          wine={purchaseWine}
+          onClose={() => setPurchaseWine(null)}
+          onImport={() => { loadData(); setPurchaseWine(null); }}
+        />
       )}
     </div>
   );

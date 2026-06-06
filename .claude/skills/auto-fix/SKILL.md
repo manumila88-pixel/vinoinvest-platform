@@ -3,6 +3,40 @@
 Rileva e corregge automaticamente errori comuni nel progetto VinoInvest.
 Esegui `npm run build` dopo ogni modifica e fixa eventuali errori prima di procedere.
 
+## Golden Rules
+
+1. **Never break existing functionality** — test with `bash test-all.sh` before committing (target: 31/31)
+2. **Never use Three.js** — SVG/CSS only
+3. **Never use ResponsiveContainer** — fixed pixel width on ComposedChart
+4. **Never mock data** — real DB + graceful fallback only
+5. **Use Haiku for simple tasks** — `claude-haiku-4-5-20251001` for blog/scoring/batch; Sonnet only for portfolio deep analysis
+6. **Apply cache_control on system prompts** — `{ type: "ephemeral" }` on any system prompt >100 tokens
+7. **Batch API calls** — batchAnalyzeWines() for up to 10 wines per call
+
+## Common Error Patterns
+
+| Error | Fix |
+|-------|-----|
+| `set -e` kills `((PASS++))` | Use `set -uo pipefail` (no `-e`) |
+| `toast.success is not a function` | Use `toast(msg, "success")` |
+| `ResponsiveContainer` renders 0px | Remove it, use fixed pixel width |
+| DB pool null | Check `DATABASE_URL` env var |
+| Anthropic 401 | Set `ANTHROPIC_API_KEY` on Render |
+| `Cannot find module` | Check ESM import paths have `.js` extension |
+
+## Commit Format
+
+```
+feat|fix|perf|chore(scope): description
+```
+
+## Pre-Push Checklist
+
+- [ ] `bash test-all.sh` → 31/31
+- [ ] `cd frontend && npm run build` → no errors
+- [ ] No API keys in git diff
+- [ ] Env vars documented in MISSING_FEATURES.md
+
 ## Trigger
 
 Invoca questa skill quando:

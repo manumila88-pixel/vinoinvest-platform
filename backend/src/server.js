@@ -3,9 +3,11 @@ import express from "express";
 import compression from "compression";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import NodeCache from "node-cache";
 import pg from "pg";
 import cors from "cors";
 import { requireAuth, optionalAuth } from "./middleware/auth.js";
+import { initUsageTable, trackUsage } from "./middleware/tokenTracker.js";
 import paymentsRouter from "./routes/payments.js";
 import pricesRouter from "./routes/prices.js";
 import authRouter from "./routes/auth.js";
@@ -17,10 +19,17 @@ import ratesRouter from "./routes/rates.js";
 import newsRouter from "./routes/news.js";
 import aiMarketRouter from "./routes/aiMarket.js";
 import aiPortfolioRouter from "./routes/aiPortfolio.js";
-import blogRouter from "./routes/blog.js";
+import blogRouter, { setBlogPool } from "./routes/blog.js";
 import agentRouter from "./routes/agent.js";
+import purchaseRouter, { setPurchasePool } from "./routes/purchase.js";
+import adminRouter, { setAdminPool } from "./routes/admin.js";
+import { startBlogAgent, setBlogPool as setBlogAgentPool } from "./agents/blogAgent.js";
+import { startImageAgent, setImagePool } from "./agents/imageAgent.js";
 import "./jobs/priceUpdater.js";
 import "./jobs/alertsChecker.js";
+
+// Global in-memory cache
+const appCache = new NodeCache({ stdTTL: 0, checkperiod: 120 });
 
 import fs from "fs";
 import path from "path";
@@ -65,10 +74,18 @@ const aiRateLimit = rateLimit({
   message: { error: "AI score rate limit exceeded." },
 });
 
-// Cache-Control middleware for read-only endpoints
+// Cache-Control + NodeCache middleware for read-only endpoints
 function cacheFor(seconds) {
   return (req, res, next) => {
     res.set("Cache-Control", `public, max-age=${seconds}, stale-while-revalidate=${seconds * 2}`);
+    const key = req.originalUrl;
+    const cached = appCache.get(key);
+    if (cached) return res.json(cached);
+    const origJson = res.json.bind(res);
+    res.json = (body) => {
+      appCache.set(key, body, seconds);
+      return origJson(body);
+    };
     next();
   };
 }
@@ -89,6 +106,8 @@ app.use("/api/ai", aiRateLimit, aiMarketRouter);
 app.use("/api/ai", aiRateLimit, aiPortfolioRouter);
 app.use("/api/blog", cacheFor(3600), blogRouter);
 app.use("/api/agent", aiRateLimit, agentRouter);
+app.use("/api/purchase", purchaseRouter);
+app.use("/api/admin", adminRouter);
 
 const __filename =
   fileURLToPath(import.meta.url);
@@ -197,7 +216,10 @@ const { Pool } = pg;
 
 const pool = process.env.DATABASE_URL ? new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+  ssl: { rejectUnauthorized: false },
+  max: 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 5000,
 }) : null;
 
 async function initDB() {
@@ -227,7 +249,20 @@ async function initDB() {
     console.warn("[initDB]", e.message);
   }
 }
-initDB();
+initDB().then(() => {
+  // Inject pool into all services that need it
+  if (pool) {
+    setBlogPool(pool);
+    setBlogAgentPool(pool);
+    setPurchasePool(pool);
+    setAdminPool(pool);
+    setImagePool(pool);
+    initUsageTable(pool);
+  }
+  // Start scheduled agents
+  startBlogAgent();
+  startImageAgent();
+});
 
 async function getOrders(userId) {
   if (!pool) return [];

@@ -17,6 +17,7 @@
     "react-dom": "latest",
     "react-i18next": "^17.0.8",
     "react-router-dom": "^7.17.0",
+    "react-window": "^2.2.7",
     "recharts": "^3.8.1",
     "vite": "latest"
   }
