@@ -979,14 +979,24 @@ function App() {
                               {watchlist.includes(wine.id) ? "★" : "☆"}
                             </button>
                           </div>
-                          <a
-                            href={`https://www.wine-searcher.com/find/${encodeURIComponent(wine.name)}${wine.vintage ? `/${wine.vintage}` : ""}`}
-                            target="_blank"
-                            rel="noopener noreferrer sponsored"
-                            style={{ display: "block", textAlign: "center", fontSize: 10, color: "#3a5a7a", textDecoration: "none", padding: "6px 0 4px", borderTop: "1px solid rgba(30,41,59,0.4)", marginTop: 4, transition: "color 0.2s" }}
-                            onMouseEnter={e => e.currentTarget.style.color = "#C9A227"}
-                            onMouseLeave={e => e.currentTarget.style.color = "#3a5a7a"}
-                          >{t("market.buyOn")}</a>
+                          <div style={{ display: "flex", borderTop: "1px solid rgba(30,41,59,0.4)", marginTop: 4 }}>
+                            <a
+                              href={`https://www.wine-searcher.com/find/${encodeURIComponent(wine.name)}${wine.vintage ? `/${wine.vintage}` : ""}`}
+                              target="_blank"
+                              rel="noopener noreferrer sponsored"
+                              style={{ flex: 1, textAlign: "center", fontSize: 10, color: "#3a5a7a", textDecoration: "none", padding: "6px 0 4px", transition: "color 0.2s", borderRight: "1px solid rgba(30,41,59,0.4)" }}
+                              onMouseEnter={e => e.currentTarget.style.color = "#C9A227"}
+                              onMouseLeave={e => e.currentTarget.style.color = "#3a5a7a"}
+                            >Wine-Searcher ↗</a>
+                            <a
+                              href={`https://www.vivino.com/search/wines?q=${encodeURIComponent(wine.name)}`}
+                              target="_blank"
+                              rel="noopener noreferrer sponsored"
+                              style={{ flex: 1, textAlign: "center", fontSize: 10, color: "#3a5a7a", textDecoration: "none", padding: "6px 0 4px", transition: "color 0.2s" }}
+                              onMouseEnter={e => e.currentTarget.style.color = "#aa4466"}
+                              onMouseLeave={e => e.currentTarget.style.color = "#3a5a7a"}
+                            >Vivino ↗</a>
+                          </div>
                         </div>
                       </div>
                     ))

@@ -163,7 +163,7 @@ export default function AgentChat({ holdings = [] }) {
             border: "1px solid rgba(30,41,59,0.8)",
             background: "rgba(11,18,32,0.9)",
             color: "#e2e8f0",
-            fontSize: 14,
+            fontSize: "max(14px, 16px)",
             resize: "none",
             outline: "none",
             fontFamily: "inherit",

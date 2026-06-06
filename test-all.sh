@@ -98,6 +98,21 @@ check "POST /api/ai/portfolio-analysis" 400 "$API/api/ai/portfolio-analysis" \
   -X POST -H "Content-Type: application/json" \
   -d '{"userId":"test","holdings":[]}'
 
+check "POST /api/agent/chat (no ANTHROPIC_API_KEY → 200)" 200 "$API/api/agent/chat" \
+  -X POST -H "Content-Type: application/json" \
+  -d '{"message":"Ciao","sessionId":"test-session","holdings":[]}'
+
+# ── Rate limiting ─────────────────────────────────────────
+echo "── Rate limiting ──"
+RATE_HDR=$(curl -s -I "$API/api/health" 2>/dev/null | grep -i "ratelimit-limit" || echo "")
+if [[ -n "$RATE_HDR" ]]; then
+  echo "  ✅  Rate limit headers present: $RATE_HDR"
+  ((PASS++))
+else
+  echo "  ❌  Rate limit headers missing"
+  ((FAIL++))
+fi
+
 # ── CORS headers ─────────────────────────────────────────
 echo "── CORS ──"
 CORS_HEADER=$(curl -s -I -H "Origin: https://vinoinvest-platform.vercel.app" "$API/api/health" 2>/dev/null | grep -i "access-control-allow-origin" || echo "")

@@ -931,8 +931,25 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
   .statsGrid { grid-template-columns: 1fr; }
   .header { padding: 0 12px; }
   .wineCard { border-radius: 14px; }
-  .bottle-modal { width: 100vw; border-radius: 0; }
+  .bottle-modal { width: 100vw; border-radius: 0; max-height: 100vh; overflow-y: auto; }
   .hero h1 { font-size: 20px; }
+  .hero { padding: 28px 14px 20px; }
+
+  /* Stack card actions vertically on very small screens */
+  .wineCard-actions { flex-direction: column; gap: 6px; }
+  .wineCard-actions .btn-primary,
+  .wineCard-actions .btn-secondary { width: 100%; min-height: 42px; }
+
+  /* Stats single col */
+  .market-indices { grid-template-columns: 1fr 1fr; }
+
+  /* Affiliate row stacks */
+  .wineCard .affiliate-row { flex-direction: column; }
+  .wineCard .affiliate-row a { border-right: none !important; border-bottom: 1px solid rgba(30,41,59,0.4); }
+  .wineCard .affiliate-row a:last-child { border-bottom: none; }
+
+  /* Chart width clamp */
+  .chartPanel { padding: 12px; overflow-x: auto; }
 }
 
 @media (max-width: 768px) {
@@ -989,6 +1006,19 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
 
   /* Orders table scroll */
   .ordersPanel { overflow-x: auto; }
+
+  /* Portfolio holdings table */
+  .holdingsTable { font-size: 12px; }
+  .holdingsTable td, .holdingsTable th { padding: 8px 6px; }
+
+  /* Pricing page */
+  .pricing-grid { grid-template-columns: 1fr !important; }
+
+  /* AgentChat textarea */
+  .agentChat-input { font-size: 16px; } /* Prevent iOS zoom on focus */
+
+  /* Notifications badges */
+  .nav-badge { font-size: 9px; min-width: 14px; height: 14px; }
 }
 
 /* ── RTL support (Arabic, Hebrew) ─────────────────── */
