@@ -744,22 +744,7 @@ function App() {
     });
   }, [portfolioValue]);
 
-  if (!isLoggedIn) {
-    return (
-      <LandingPage
-        onLogin={({ user, account_type }) => {
-          setUserEmail(user.email);
-          setAccountType(account_type);
-          setIsLoggedIn(true);
-          localStorage.setItem("vino_user", JSON.stringify({ email: user.email, account_type }));
-        }}
-      />
-    );
-  }
-
-  const unreadCount = notifications.filter(n => !n.read).length;
-
-  // Stable props object for VirtualWineGrid — only re-creates when dependencies change
+  // Stable props object for VirtualWineGrid — must be before the early return (hook rules)
   const cardProps = useMemo(() => ({
     aiScores,
     alerts,
@@ -774,6 +759,21 @@ function App() {
     onAlertInputChange: handleAlertInputChange,
     onDeleteAlert: deleteAlert,
   }), [aiScores, alerts, alertInputs, watchlist, handleImageClick, handleAddToPortfolio, toggleWatchlist, onCardTilt, onCardTiltReset, createAlert, handleAlertInputChange, deleteAlert]);
+
+  if (!isLoggedIn) {
+    return (
+      <LandingPage
+        onLogin={({ user, account_type }) => {
+          setUserEmail(user.email);
+          setAccountType(account_type);
+          setIsLoggedIn(true);
+          localStorage.setItem("vino_user", JSON.stringify({ email: user.email, account_type }));
+        }}
+      />
+    );
+  }
+
+  const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
     <div className="app">
