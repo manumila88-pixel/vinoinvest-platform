@@ -202,18 +202,33 @@ export async function getPrices(wineId, wineName, vintage, criticScore = 90) {
   return { ...entry, from_cache: false };
 }
 
-async function generateAndSeedHistory(wineId, currentPrice) {
+const TIMEFRAME_MONTHS = { "1w": 0.25, "1m": 1, "3m": 3, "6m": 6, "1y": 12, "3y": 36, "5y": 60, "10y": 120, "max": 9999 };
+
+function seededVal(seed, range) {
+  let h = seed;
+  h = ((h >> 16) ^ h) * 0x45d9f3b | 0;
+  h = ((h >> 16) ^ h) * 0x45d9f3b | 0;
+  h = (h >> 16) ^ h;
+  return ((h >>> 0) / 0xffffffff) * range;
+}
+
+async function generateAndSeedHistory(wineId, currentPrice, monthsBack = 12) {
   const db = getPool();
   const records = [];
   const now = new Date();
-  let price = currentPrice * 0.85; // start 12 months ago at 85% of current
+  const clampedMonths = Math.min(monthsBack, 120);
+  let price = currentPrice * Math.pow(0.985, clampedMonths); // reverse growth to get past price
 
-  for (let monthsAgo = 11; monthsAgo >= 0; monthsAgo--) {
-    for (const day of [5, 15, 25]) {
+  const monthsBetweenPoints = clampedMonths > 36 ? 3 : clampedMonths > 12 ? 2 : 1;
+  const daysPerPoint = [5, 15, 25];
+
+  for (let mo = clampedMonths; mo >= 0; mo -= monthsBetweenPoints) {
+    for (const day of (monthsBetweenPoints === 1 ? daysPerPoint : [15])) {
       const date = new Date(now);
-      date.setMonth(date.getMonth() - monthsAgo);
+      date.setMonth(date.getMonth() - mo);
       date.setDate(day);
-      const noise = 1 + (Math.random() - 0.5) * 0.10; // ±5%
+      const seed = (wineId + date.toISOString().slice(0, 7)).split("").reduce((a, c) => (a * 31 + c.charCodeAt(0)) | 0, 0);
+      const noise = 1 + (seededVal(seed, 0.10) - 0.05);
       records.push({
         price: Math.round(price * noise * 100) / 100,
         currency: "EUR",
@@ -221,7 +236,7 @@ async function generateAndSeedHistory(wineId, currentPrice) {
         recorded_at: date.toISOString(),
       });
     }
-    price = price * (1 + 0.01 + Math.random() * 0.02); // +1–3% monthly trend
+    price = price * (1 + 0.01 + seededVal((wineId + mo).split("").reduce((a, c) => a + c.charCodeAt(0), 0), 0.02));
   }
 
   if (db) {
@@ -229,9 +244,9 @@ async function generateAndSeedHistory(wineId, currentPrice) {
       for (const rec of records) {
         await db.query(
           `INSERT INTO price_history (wine_id, price, currency, source, recorded_at)
-           VALUES ($1,$2,$3,$4,$5)`,
+           VALUES ($1,$2,$3,$4,$5) ON CONFLICT DO NOTHING`,
           [wineId, rec.price, rec.currency, rec.source, rec.recorded_at]
-        );
+        ).catch(() => {});
       }
     } catch (e) {
       console.warn("[priceService] Failed to persist estimated history:", e.message);
@@ -241,28 +256,50 @@ async function generateAndSeedHistory(wineId, currentPrice) {
   return records;
 }
 
-export async function getPriceHistory(wineId, currentPrice = null) {
+export async function getPriceHistory(wineId, currentPrice = null, timeframe = "1y") {
   await ensureTables();
   const db = getPool();
-  if (!db) return [];
+
+  const monthsBack = TIMEFRAME_MONTHS[timeframe] ?? 12;
+  const interval = monthsBack >= 9999 ? "100 years" : `${Math.ceil(monthsBack)} months`;
+
+  // No DB — return synthetic data
+  if (!db) {
+    const basePrice = currentPrice || 100;
+    const synth = await generateAndSeedHistory(wineId, basePrice, Math.min(monthsBack, 120));
+    return { history: synth, source: "estimated", availability: Object.fromEntries(Object.keys(TIMEFRAME_MONTHS).map(k => [k, true])) };
+  }
+
   try {
-    // Extract producer prefix (everything before the last hyphen+year segment)
-    // e.g. "lafite-2018" → "lafite", "romanee-conti-2018" → "romanee-conti"
     const producer = wineId.replace(/-\d{4}$/, "");
     const pattern = producer + "%";
+
+    // Check what range is actually available
+    const { rows: rangeRows } = await db.query(
+      `SELECT MIN(recorded_at) AS oldest, MAX(recorded_at) AS newest, COUNT(*) AS cnt FROM price_history WHERE wine_id LIKE $1`,
+      [pattern]
+    );
+    const oldest = rangeRows[0]?.oldest ? new Date(rangeRows[0].oldest) : null;
+    const totalMonths = oldest ? Math.floor((Date.now() - oldest.getTime()) / (30 * 24 * 3600 * 1000)) : 0;
+
+    // Compute availability for each timeframe
+    const availability = {};
+    for (const [tf, mo] of Object.entries(TIMEFRAME_MONTHS)) {
+      availability[tf] = mo >= 9999 ? totalMonths > 0 : totalMonths >= mo * 0.7;
+    }
 
     const { rows } = await db.query(
       `SELECT price, currency, source, recorded_at
        FROM price_history
        WHERE wine_id LIKE $1
-         AND recorded_at > NOW() - INTERVAL '12 months'
+         AND recorded_at > NOW() - INTERVAL '${interval}'
        ORDER BY recorded_at`,
       [pattern]
     );
 
-    if (rows.length > 0) return rows;
+    if (rows.length > 0) return { history: rows, source: "db", availability };
 
-    // No history found — resolve currentPrice from cache or param, then generate
+    // No history — generate and seed
     let basePrice = currentPrice;
     if (!basePrice) {
       const { rows: cached } = await db.query(
@@ -271,12 +308,14 @@ export async function getPriceHistory(wineId, currentPrice = null) {
       );
       basePrice = cached[0] ? Number(cached[0].price_avg) : null;
     }
+    if (!basePrice) basePrice = 100;
 
-    if (!basePrice) basePrice = 100; // fallback price
-
-    return generateAndSeedHistory(wineId, basePrice);
-  } catch {
-    return [];
+    const synth = await generateAndSeedHistory(wineId, basePrice, Math.min(monthsBack, 120));
+    const synthAvail = Object.fromEntries(Object.keys(TIMEFRAME_MONTHS).map(k => [k, TIMEFRAME_MONTHS[k] <= 120]));
+    return { history: synth, source: "estimated", availability: synthAvail };
+  } catch (e) {
+    console.error("[priceService] getPriceHistory error:", e.message);
+    return { history: [], source: "error", availability: {} };
   }
 }
 

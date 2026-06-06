@@ -19,7 +19,7 @@ router.post("/portfolio-analysis", async (req, res) => {
     return res.json(fallbackAnalysis(holdings, totalValue, totalInvested));
   }
 
-  const cacheKey = `${userId}_${JSON.stringify(holdings.map(h => h.id + h.quantity))}`;
+  const cacheKey = `${userId}_${JSON.stringify([...holdings].sort((a,b) => a.id < b.id ? -1 : 1).map(h => h.id + h.quantity))}`;
   const cached = analysisCache.get(cacheKey);
   if (cached && Date.now() - cached.ts < CACHE_TTL) {
     return res.json({ ...cached.data, cached: true });

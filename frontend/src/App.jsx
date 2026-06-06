@@ -351,9 +351,10 @@ function App() {
 
   async function loadData() {
     try {
+      const uid = getUserId();
       const [winesRes, ordersRes] = await Promise.all([
         fetch(`${API}/api/market/wines`),
-        fetch(`${API}/api/orders`),
+        fetch(`${API}/api/orders?userId=${encodeURIComponent(uid)}`),
       ]);
       setWines(await winesRes.json());
       const od = await ordersRes.json();
@@ -486,7 +487,7 @@ function App() {
   async function loadChart(wineId, currentPrice) {
     setChartData([]);
     try {
-      const res = await fetch(`${API}/api/prices/${encodeURIComponent(wineId)}/history?currentPrice=${currentPrice || 100}`);
+      const res = await fetch(`${API}/api/prices/${encodeURIComponent(wineId)}/history?currentPrice=${currentPrice || 100}&timeframe=1y`);
       const data = await res.json();
       const byMonth = {};
       (data.history || []).forEach(item => {
@@ -596,12 +597,12 @@ function App() {
   }
 
   useEffect(() => {
+    if (!isLoggedIn) return;
     loadAlerts();
     loadNotifications();
-    // Poll notifications every 30s
     const poll = setInterval(loadNotifications, 30000);
     return () => clearInterval(poll);
-  }, []);
+  }, [isLoggedIn]);
 
   // Browser push notification when new unread arrives
   const prevUnreadRef = useRef(0);
@@ -620,7 +621,7 @@ function App() {
       const res = await fetchWithRetry(`${API}/api/orders`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ wineId, quantity: 1, purchasePrice }),
+        body: JSON.stringify({ wineId, quantity: 1, purchasePrice, userId: getUserId() }),
       });
       if (res.ok) {
         toast("Posizione aggiunta al portfolio", "success");
@@ -662,9 +663,12 @@ function App() {
     e.currentTarget.style.transform = "";
   }
 
-  const totalMarket = wines.reduce((sum, wine) => sum + Number(wine.currentPrice || 0), 0);
+  const totalMarket = useMemo(
+    () => wines.reduce((sum, wine) => sum + Number(wine.currentPrice || 0), 0),
+    [wines]
+  );
 
-  const holdings = orders.map(order => {
+  const holdings = useMemo(() => orders.map(order => {
     const wineId = order.wine_id || order.wineId;
     const wine = wines.find(w => w.id === wineId);
     const quantity = Number(order.quantity || 1);
@@ -676,17 +680,25 @@ function App() {
     const profit = currentValue - invested;
     const roi = invested > 0 ? ((profit / invested) * 100).toFixed(2) : 0;
     return { id: wineId, name: order.wineName || wine?.name || wineId, quantity, purchasePrice, currentPrice, invested, currentValue, profit, roi };
-  }).filter(Boolean);
+  }).filter(Boolean), [orders, wines]);
 
-  const portfolioValue = holdings.reduce((sum, item) => sum + item.currentValue, 0);
-  const totalInvested = holdings.reduce((sum, item) => sum + item.invested, 0);
+  const portfolioValue = useMemo(() => holdings.reduce((sum, item) => sum + item.currentValue, 0), [holdings]);
+  const totalInvested = useMemo(() => holdings.reduce((sum, item) => sum + item.invested, 0), [holdings]);
   const totalProfit = portfolioValue - totalInvested;
   const portfolioROI = totalInvested > 0 ? ((totalProfit / totalInvested) * 100).toFixed(2) : 0;
 
-  const growthData = Array.from({ length: 12 }, (_, i) => ({
-    date: new Date(2025, 5 + i, 1).toLocaleDateString("en-US", { month: "short", year: "2-digit" }),
-    value: Math.round(portfolioValue * (0.912 + i * 0.0073)),
-  }));
+  const growthData = useMemo(() => {
+    const startMonth = new Date();
+    startMonth.setMonth(startMonth.getMonth() - 11);
+    return Array.from({ length: 12 }, (_, i) => {
+      const d = new Date(startMonth);
+      d.setMonth(d.getMonth() + i);
+      return {
+        date: d.toLocaleDateString("en-US", { month: "short", year: "2-digit" }),
+        value: Math.round(portfolioValue * (0.912 + i * 0.0073)),
+      };
+    });
+  }, [portfolioValue]);
 
   if (!isLoggedIn) {
     return (
@@ -1316,7 +1328,7 @@ function App() {
                     <button
                       onClick={async () => {
                         const perm = await Notification.requestPermission();
-                        if (perm === "granted") toast.success("Push notifications enabled!");
+                        if (perm === "granted") toast("Push notifications enabled!", "success");
                       }}
                       style={{ padding: "8px 14px", borderRadius: 8, border: "1px solid rgba(201,162,39,0.3)", background: "rgba(201,162,39,0.1)", color: "#C9A227", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
                     >🔔 Enable Push</button>

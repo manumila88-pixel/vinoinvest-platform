@@ -82,6 +82,9 @@ Rispondi con JSON (no markdown):
       const jsonEnd = text.lastIndexOf("}") + 1;
       if (jsonStart >= 0) {
         const post = JSON.parse(text.slice(jsonStart, jsonEnd));
+        if (!post.slug && post.title) {
+          post.slug = post.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80);
+        }
         posts.push({
           ...post,
           id: i + 1,

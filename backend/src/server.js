@@ -200,6 +200,7 @@ async function initDB() {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS orders (
         id BIGINT PRIMARY KEY,
+        user_id TEXT,
         wine_id TEXT,
         quantity INTEGER,
         purchase_price NUMERIC,
@@ -208,7 +209,10 @@ async function initDB() {
         created_at TEXT
       )
     `);
+    // Add user_id column to existing tables that may lack it
+    await pool.query(`ALTER TABLE orders ADD COLUMN IF NOT EXISTS user_id TEXT`).catch(() => {});
     // Performance indexes
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id)`).catch(() => {});
     await pool.query(`CREATE INDEX IF NOT EXISTS idx_orders_created ON orders(created_at DESC)`);
     await pool.query(`CREATE INDEX IF NOT EXISTS idx_orders_wine ON orders(wine_id)`);
     await pool.query(`CREATE INDEX IF NOT EXISTS idx_price_history_wine ON price_history(wine_id, recorded_at DESC) WHERE EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name='price_history')`).catch(() => {});
@@ -219,14 +223,19 @@ async function initDB() {
 }
 initDB();
 
-async function getOrders() {
+async function getOrders(userId) {
   if (!pool) return [];
   try {
-    const r = await pool.query("SELECT * FROM orders ORDER BY created_at DESC");
+    const query = userId
+      ? "SELECT * FROM orders WHERE user_id = $1 OR user_id IS NULL ORDER BY created_at DESC"
+      : "SELECT * FROM orders ORDER BY created_at DESC";
+    const params = userId ? [userId] : [];
+    const r = await pool.query(query, params);
     return r.rows.map(row => {
       const w = allWines.find(x => x.id === row.wine_id);
       return {
         id: row.id,
+        userId: row.user_id,
         wineId: row.wine_id,
         wine_id: row.wine_id,
         wineName: w?.name || row.wine_id,
@@ -244,8 +253,8 @@ async function saveOrder(order) {
   if (!pool) return;
   try {
     await pool.query(
-      "INSERT INTO orders (id, wine_id, quantity, purchase_price, current_market_price, purchase_date, created_at) VALUES ($1,$2,$3,$4,$5,$6,$7) ON CONFLICT (id) DO NOTHING",
-      [order.id, order.wineId, order.quantity, order.purchasePrice, order.currentMarketPrice || 0, order.purchaseDate, order.createdAt]
+      "INSERT INTO orders (id, user_id, wine_id, quantity, purchase_price, current_market_price, purchase_date, created_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT (id) DO NOTHING",
+      [order.id, order.userId || null, order.wineId, order.quantity, order.purchasePrice, order.currentMarketPrice || 0, order.purchaseDate, order.createdAt]
     );
   } catch(e) { console.error(e); }
 }
@@ -254,10 +263,20 @@ async function saveOrder(order) {
 let orders = [];
 let ordersLoaded = false;
 
-async function loadOrdersFromDB() {
-  if (ordersLoaded) return;
+async function loadOrdersFromDB(userId) {
+  if (ordersLoaded && !userId) return;
+  if (userId) {
+    orders = await getOrders(userId);
+    return;
+  }
   orders = await getOrders();
   ordersLoaded = true;
+}
+
+function seededRandom(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
+  return ((h >>> 0) / 0xffffffff);
 }
 
 function getMarketMultiplier(wine) {
@@ -272,7 +291,8 @@ function getMarketMultiplier(wine) {
   else if (score >= 92) base += 0.05;
   if (region.includes("bordeaux") || region.includes("burgundy") || region.includes("borgogna")) base += 0.06;
   else if (region.includes("toscana") || region.includes("tuscany") || region.includes("piemonte")) base += 0.04;
-  const noise = (Math.random() - 0.3) * 0.04;
+  // Deterministic noise per wine (no Math.random — same wine always same multiplier)
+  const noise = (seededRandom(wine.id || wine.name || "") - 0.3) * 0.04;
   return Math.max(1.0, base + noise);
 }
 
@@ -782,6 +802,11 @@ app.post(
 );
 
 app.get("/api/orders", async (req, res) => {
+  const userId = req.query.userId || null;
+  if (userId) {
+    const userOrders = await getOrders(userId);
+    return res.json(userOrders);
+  }
   await loadOrdersFromDB();
   res.json(orders);
 });
@@ -818,6 +843,7 @@ const currentMarketPrice = Math.round(purchasePrice * multiplier);
 
 const order = {
   id: Date.now(),
+  userId: req.body.userId || null,
   wineId: req.body.wineId,
   wine_id: req.body.wineId,
   wineName: wine.name,
