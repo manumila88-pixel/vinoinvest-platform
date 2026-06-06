@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import i18n from "../i18n";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
@@ -53,7 +54,7 @@ export default function AgentChat({ holdings = [] }) {
       const res = await fetch(`${API}/api/agent/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: msg, sessionId, holdings: portfolioHoldings }),
+        body: JSON.stringify({ message: msg, sessionId, holdings: portfolioHoldings, lang: i18n.language?.slice(0, 2) || "it" }),
         signal: AbortSignal.timeout(60000),
       });
       const data = await res.json();

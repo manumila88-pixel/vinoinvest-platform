@@ -9,23 +9,21 @@ const conversations = new Map();
 
 // POST /api/agent/chat
 router.post("/chat", async (req, res) => {
-  const { message, sessionId, holdings = [], userId } = req.body;
+  const { message, sessionId, holdings = [], userId, lang } = req.body;
   if (!message?.trim()) return res.status(400).json({ error: "message required" });
 
   const sid = sessionId || userId || "anonymous";
   const history = conversations.get(sid) || [];
+  const allWines = req._allWines || [];
 
-  // Fetch all wines to give the agent context
-  let allWines = [];
-  try {
-    const API_URL = process.env.BACKEND_URL || "http://localhost:3001";
-    // Use internal DB access instead of self-fetch to avoid circular calls
-    allWines = req._allWines || [];
-  } catch (_) {}
+  // Prepend language hint to message if non-Italian — agent prompt already says
+  // "respond in the same language the user writes in", this makes it explicit
+  const langHint = lang && lang !== "it" ? ` [respond in language: ${lang}]` : "";
+  const enrichedMessage = message + langHint;
 
   try {
     const result = await runAgent({
-      message,
+      message: enrichedMessage,
       conversationHistory: history,
       holdings,
       allWines,
