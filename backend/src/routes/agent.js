@@ -1,104 +1,120 @@
 import { Router } from "express";
-import { runAgent } from "../agents/portfolioAgent.js";
+import { runAgent, executeTool } from "../agents/portfolioAgent.js";
 import { translateText } from "../services/translationService.js";
 
 const router = Router();
 
-// In-memory conversation histories per session (cleared on server restart)
+// In-memory conversation histories (cleared on server restart)
 const conversations = new Map();
+const MAX_SESSIONS = 1000;
 
 // POST /api/agent/chat
 router.post("/chat", async (req, res) => {
-  const { message, sessionId, holdings = [], userId, lang } = req.body;
+  const { message, sessionId, holdings = [], userId, lang, conversationHistory } = req.body;
   if (!message?.trim()) return res.status(400).json({ error: "message required" });
 
   const sid = sessionId || userId || "anonymous";
-  const history = conversations.get(sid) || [];
+  const history = conversationHistory || conversations.get(sid) || [];
   const allWines = req._allWines || [];
-
-  // Prepend language hint to message if non-Italian — agent prompt already says
-  // "respond in the same language the user writes in", this makes it explicit
-  const langHint = lang && lang !== "it" ? ` [respond in language: ${lang}]` : "";
-  const enrichedMessage = message + langHint;
+  const detectedLang = lang?.slice(0, 2) || "it";
 
   try {
     const result = await runAgent({
-      message: enrichedMessage,
+      message,
       conversationHistory: history,
       holdings,
       allWines,
       API_URL: process.env.BACKEND_URL || "https://vinoinvest-backend-2.onrender.com",
+      lang: detectedLang,
     });
 
     conversations.set(sid, result.conversationHistory);
 
-    // Clean up sessions older than 1h (simple eviction)
-    if (conversations.size > 1000) {
-      const oldest = [...conversations.keys()][0];
-      conversations.delete(oldest);
+    // Evict oldest sessions when limit reached
+    if (conversations.size > MAX_SESSIONS) {
+      conversations.delete([...conversations.keys()][0]);
     }
 
     res.json({
       response: result.response,
-      toolsUsed: result.toolsUsed,
+      suggestedWines: result.suggestedWines || [],
+      resourceLinks: result.resourceLinks || [],
+      toolsUsed: result.toolsUsed || [],
+      mode: result.mode || "algorithmic",
       sessionId: sid,
     });
   } catch (err) {
-    console.error("[agent/chat]", err.message);
-    res.status(500).json({ error: "Agent error: " + err.message });
+    console.error("[agent/chat] Error:", err.message);
+    // Never return 500 — always give useful fallback response
+    res.json({
+      response: detectedLang === "it"
+        ? "Mi dispiace, sto avendo difficoltà a elaborare la tua richiesta. Prova a riformulare la domanda o visita [wine-searcher.com](https://www.wine-searcher.com) per prezzi aggiornati."
+        : "Sorry, I had trouble processing your request. Try rephrasing or visit [wine-searcher.com](https://www.wine-searcher.com) for current prices.",
+      suggestedWines: [],
+      resourceLinks: [{ url: "https://www.wine-searcher.com", label: "wine-searcher.com" }],
+      toolsUsed: [],
+      mode: "fallback",
+      sessionId: sid,
+    });
   }
 });
 
-// DELETE /api/agent/chat/:sessionId — clear conversation history
+// DELETE /api/agent/chat/:sessionId
 router.delete("/chat/:sessionId", (req, res) => {
   conversations.delete(req.params.sessionId);
   res.json({ cleared: true });
 });
 
-// GET /api/agent/opportunities?risk=medio&budget=500&lang=fr
+// GET /api/agent/opportunities
 router.get("/opportunities", async (req, res) => {
-  const { risk = "medio", budget, lang } = req.query;
-  const question = `Find the top wine investment opportunities${budget ? ` under €${budget}` : ""} with ${risk} risk. Use the get_top_opportunities tool and summarize the top 5 with brief reasoning for each.`;
-
+  const { risk = "medio", budget, lang = "it" } = req.query;
+  const message = budget
+    ? `Trova le migliori opportunità di investimento entro €${budget} con rischio ${risk}`
+    : `Trova le top 5 opportunità di investimento in vino con rischio ${risk}`;
   try {
     const result = await runAgent({
-      message: question,
+      message,
       holdings: [],
       allWines: req._allWines || [],
       API_URL: process.env.BACKEND_URL || "https://vinoinvest-backend-2.onrender.com",
+      lang: lang.slice(0, 2),
     });
-
-    let response = result.response;
-    const targetLang = lang?.slice(0, 2);
-    if (targetLang && targetLang !== "en") {
-      try {
-        response = await translateText(response, targetLang, "en");
-      } catch (e) { console.warn("[agent] Translation failed:", e.message); }
-    }
-
-    res.json({ response, toolsUsed: result.toolsUsed });
+    res.json({ response: result.response, suggestedWines: result.suggestedWines || [], toolsUsed: result.toolsUsed });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.json({ response: "Nessuna opportunità disponibile al momento.", suggestedWines: [], toolsUsed: [] });
   }
 });
 
 // POST /api/agent/analyze-portfolio
 router.post("/analyze-portfolio", async (req, res) => {
-  const { holdings = [] } = req.body;
+  const { holdings = [], lang = "it" } = req.body;
   if (!holdings.length) return res.status(400).json({ error: "holdings required" });
-
-  const question = "Analyze my portfolio using calculate_portfolio_metrics, then give me 3 specific recommendations to improve it. Check market news for relevant context.";
-
   try {
     const result = await runAgent({
-      message: question,
+      message: "Analizza il mio portfolio e dammi 3 raccomandazioni specifiche per migliorarlo",
       holdings,
       allWines: req._allWines || [],
       API_URL: process.env.BACKEND_URL || "https://vinoinvest-backend-2.onrender.com",
+      lang: lang.slice(0, 2),
     });
-    res.json({ response: result.response, toolsUsed: result.toolsUsed });
+    res.json({ response: result.response, suggestedWines: result.suggestedWines || [], toolsUsed: result.toolsUsed });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.json({ response: "Impossibile analizzare il portfolio al momento.", suggestedWines: [], toolsUsed: [] });
+  }
+});
+
+// GET /api/agent/similar/:wineId — find similar wines
+router.get("/similar/:wineId", async (req, res) => {
+  const { lang = "it" } = req.query;
+  const allWines = req._allWines || [];
+  const wine = allWines.find(w => w.id === req.params.wineId);
+  if (!wine) return res.json({ wines: [] });
+  try {
+    const result = await executeTool("search_wines", { query: wine.region || wine.type || wine.name.split(" ")[0], limit: 6 }, { allWines, API_URL: process.env.BACKEND_URL || "https://vinoinvest-backend-2.onrender.com" });
+    const similar = (result.results || []).filter(w => w.id !== req.params.wineId).slice(0, 5);
+    res.json({ wines: similar, basedOn: wine.name });
+  } catch (err) {
+    res.json({ wines: [] });
   }
 });
 
