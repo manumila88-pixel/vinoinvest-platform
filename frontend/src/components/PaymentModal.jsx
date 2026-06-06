@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 
-const BACKEND = import.meta.env.VITE_BACKEND_URL || "http://localhost:3001";
+const BACKEND = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
 let stripePromise = null;
 function getStripe() {

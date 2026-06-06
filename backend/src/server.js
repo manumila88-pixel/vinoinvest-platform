@@ -114,7 +114,7 @@ app.use("/api/ai", aiRateLimit, aiPortfolioRouter);
 app.use("/api/blog", cacheFor(7200), blogRouter);        // 2h
 app.use("/api/agent", aiRateLimit, agentRouter);
 app.use("/api/purchase", purchaseRouter);
-app.use("/api/admin", adminRouter);
+app.use("/api/admin", requireAuth, adminRouter);
 
 const __filename =
   fileURLToPath(import.meta.url);
