@@ -1,0 +1,104 @@
+{
+  "// VinoInvest Agent System — settings.json": "",
+  "// Posizione: .claude/settings.json nella root del progetto": "",
+  "// Documentazione: docs/QUICK_REF.md": "",
+
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_MAX_SUBAGENTS": "10"
+  },
+
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(npm install *)",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git worktree *)",
+      "Bash(node *)",
+      "Bash(bash test-all.sh*)",
+      "Bash(curl *)",
+      "Bash(mkdir -p *)",
+      "Bash(chmod +x *)",
+      "Bash(grep *)",
+      "Bash(find . *)",
+      "Bash(cat *)",
+      "Bash(wc *)",
+      "Bash(ls *)",
+      "Bash(echo *)",
+      "Bash(python3 *)",
+      "Read(**)",
+      "Write(frontend/src/**)",
+      "Write(backend/src/**)",
+      "Write(backend/src/data/**)",
+      "Write(agents/**)",
+      "Write(scripts/**)",
+      "Write(docs/**)",
+      "Write(.claude/**)",
+      "Write(/tmp/**)",
+      "Write(CLAUDE.md)",
+      "Write(test-all.sh)",
+      "Write(vercel.json)",
+      "Write(frontend/index.html)",
+      "Write(frontend/vite.config.js)"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(sudo *)",
+      "Bash(kill *)",
+      "Write(backend/.env)",
+      "Write(frontend/.env)",
+      "Write(frontend/.env.local)",
+      "Write(.env.production)"
+    ]
+  },
+
+  "hooks": {
+    "PreToolCall": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/pre-write-check.js \"$CLAUDE_TOOL_INPUT_PATH\" 2>/dev/null || exit 0",
+            "description": "Blocca scrittura su file critici (.env, secrets)"
+          }
+        ]
+      }
+    ],
+    "PostToolCall": [
+      {
+        "matcher": "Write(frontend/src/**)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd frontend && npm run build --silent 2>/tmp/build-check.log && echo 'BUILD_OK' || (echo 'BUILD_FAILED — vedi /tmp/build-check.log' && cat /tmp/build-check.log | tail -20)",
+            "description": "Auto-check build dopo ogni modifica frontend"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"[$(date '+%Y-%m-%d %H:%M:%S')] Session ended\" >> /tmp/vinoinvest-agent-log.txt",
+            "description": "Log fine sessione"
+          }
+        ]
+      }
+    ]
+  },
+
+  "model": "claude-sonnet-4-6",
+
+  "context": {
+    "compactThreshold": 0.7,
+    "autoCompact": true
+  }
+}

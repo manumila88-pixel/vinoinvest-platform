@@ -1,0 +1,81 @@
+# VinoInvest — .claudeignore
+# Esclude file che non apportano valore al ragionamento degli agenti.
+# Documentazione: https://docs.anthropic.com/claude-code
+
+# Build & cache
+node_modules/
+dist/
+build/
+.next/
+.vite/
+coverage/
+.nyc_output/
+.turbo/
+*.tsbuildinfo
+
+# Log
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Env & secrets — MAI in contesto agente
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+
+# Asset binari — non leggibili
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.svg
+*.woff
+*.woff2
+*.ttf
+*.eot
+*.otf
+*.mp4
+*.webm
+*.wav
+*.mp3
+
+# Lock files — troppo lunghi, inutili per ragionamento
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Dati pesanti — non caricare in contesto
+*.sql
+*.csv
+*.json.gz
+*.zip
+*.tar.gz
+
+# File generati da agenti (output, non input)
+AUDIT.md
+FULL_AUDIT.md
+PERFORMANCE_REPORT.md
+RISK_REPORT.md
+LAUNCH_READY.md
+FRONTEND_DONE.md
+BACKEND_DONE.md
+DB_TEST_REPORT.md
+/tmp/
+
+# Vite generated
+frontend/dist/
+frontend/.vite/
