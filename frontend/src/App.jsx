@@ -20,6 +20,10 @@ import AgentChat from "./components/AgentChat";
 import PurchaseModal from "./components/PurchaseModal";
 import WineCard from "./components/WineCard";
 import VirtualWineGrid from "./components/VirtualWineGrid";
+import OnboardingModal, { isOnboardingCompleted, resetOnboarding } from "./components/OnboardingModal";
+import HelpBot from "./components/HelpBot";
+import GuidedTour, { isTourCompleted, resetTour } from "./components/GuidedTour";
+import InfoTooltip from "./components/InfoTooltip";
 import "./style.css";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
@@ -248,6 +252,9 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [accountType, setAccountType] = useState("b2c");
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showTour, setShowTour] = useState(false);
+  const [chatInitMsg, setChatInitMsg] = useState("");
   const [tab, setTab] = useState("dashboard");
   const [modalWine, setModalWine] = useState(null);
   const [purchaseWine, setPurchaseWine] = useState(null);
@@ -362,6 +369,7 @@ function App() {
         setAccountType(type);
         setIsLoggedIn(true);
         localStorage.setItem("vino_user", JSON.stringify({ email: session.user.email, account_type: type }));
+        if (!isOnboardingCompleted()) setTimeout(() => setShowOnboarding(true), 600);
       } else if (event === "SIGNED_OUT") {
         setIsLoggedIn(false);
         setUserEmail("");
@@ -768,6 +776,7 @@ function App() {
           setAccountType(account_type);
           setIsLoggedIn(true);
           localStorage.setItem("vino_user", JSON.stringify({ email: user.email, account_type }));
+          if (!isOnboardingCompleted()) setTimeout(() => setShowOnboarding(true), 600);
         }}
       />
     );
@@ -796,6 +805,20 @@ function App() {
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div className="badge">global wine intelligence</div>
+          <button
+            onClick={() => { resetOnboarding(); setShowOnboarding(true); }}
+            title="Riapri guida"
+            style={{ padding: "5px 10px", border: "1px solid rgba(201,162,39,0.25)", borderRadius: 8, background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "'Inter',Arial,sans-serif", transition: "all 0.2s" }}
+            onMouseEnter={e => { e.currentTarget.style.color = "#C9A227"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.5)"; }}
+            onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.25)"; }}
+          >📖 Guida</button>
+          <button
+            onClick={() => { resetTour(); setShowTour(true); }}
+            title="Fai il tour guidato"
+            style={{ padding: "5px 10px", border: "1px solid rgba(30,58,95,0.5)", borderRadius: 8, background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "'Inter',Arial,sans-serif", transition: "all 0.2s" }}
+            onMouseEnter={e => { e.currentTarget.style.color = "#60a5fa"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.4)"; }}
+            onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(30,58,95,0.5)"; }}
+          >🗺 Tour</button>
           <LangSelector />
           {userEmail && <span style={{ fontSize: 12, color: "#3a5a7a" }}>{userEmail}</span>}
           {accountType && (
@@ -1215,7 +1238,11 @@ function App() {
                             <td style={{ textAlign: "right", padding: "11px 8px" }}>€ {h.invested.toFixed(0)}</td>
                             <td style={{ textAlign: "right", padding: "11px 8px" }}>€ {h.currentValue.toFixed(0)}</td>
                             <td style={{ textAlign: "right", padding: "11px 8px", color: h.profit >= 0 ? "#4caf50" : "#e53935" }}>{h.profit >= 0 ? "+" : ""}€ {h.profit.toFixed(0)}</td>
-                            <td style={{ textAlign: "right", padding: "11px 8px", color: h.roi >= 0 ? "#4caf50" : "#e53935" }}>{h.roi >= 0 ? "+" : ""}{h.roi}%</td>
+                            <td style={{ textAlign: "right", padding: "11px 8px", color: h.roi >= 0 ? "#4caf50" : "#e53935" }}>
+                              <InfoTooltip tip={`ROI = (Valore attuale − Prezzo pagato) ÷ Prezzo pagato × 100\nP&L: ${h.profit >= 0 ? "+" : ""}€${h.profit.toFixed(0)}`} placement="top">
+                                <span style={{ cursor: "help" }}>{h.roi >= 0 ? "+" : ""}{h.roi}%</span>
+                              </InfoTooltip>
+                            </td>
                             <td style={{ textAlign: "center", padding: "4px 8px", verticalAlign: "middle" }}>
                               <PortfolioSparkline wineId={h.id} purchasePrice={h.purchasePrice} currentPrice={h.currentPrice} />
                             </td>
@@ -1417,6 +1444,15 @@ function App() {
         />
       )}
 
+      {/* ── HelpBot FAQ ─────────────────────────────────────────────────── */}
+      <HelpBot
+        onAskAI={(msg) => {
+          setChatInitMsg(msg);
+          setFloatChatOpen(true);
+          setFloatUnread(0);
+        }}
+      />
+
       {/* ── Floating AI Chat Button ──────────────────────────────────────── */}
       <button
         onClick={() => { setFloatChatOpen(o => !o); setFloatUnread(0); }}
@@ -1459,9 +1495,21 @@ function App() {
               holdings={holdings}
               onAddToPortfolio={handleAddToPortfolio}
               compact={true}
+              initialMessage={chatInitMsg}
+              onInitialMessageSent={() => setChatInitMsg("")}
             />
           </div>
         </>
+      )}
+
+      {/* ── Onboarding Modal ────────────────────────────────────────────── */}
+      {showOnboarding && (
+        <OnboardingModal onClose={() => setShowOnboarding(false)} />
+      )}
+
+      {/* ── Guided Tour ─────────────────────────────────────────────────── */}
+      {showTour && (
+        <GuidedTour onComplete={() => setShowTour(false)} />
       )}
 
       <style>{`

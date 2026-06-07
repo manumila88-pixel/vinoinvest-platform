@@ -88,7 +88,7 @@ function saveHistory(msgs) {
   } catch {}
 }
 
-export default function AgentChat({ holdings = [], onAddToPortfolio, compact = false }) {
+export default function AgentChat({ holdings = [], onAddToPortfolio, compact = false, initialMessage = "", onInitialMessageSent }) {
   const [messages, setMessages] = useState(() => {
     const stored = loadStoredHistory();
     if (stored?.length) return stored;
@@ -113,6 +113,15 @@ export default function AgentChat({ holdings = [], onAddToPortfolio, compact = f
   useEffect(() => {
     saveHistory(messages);
   }, [messages]);
+
+  // Auto-send initialMessage from HelpBot
+  useEffect(() => {
+    if (initialMessage?.trim()) {
+      sendMessage(initialMessage);
+      onInitialMessageSent?.();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialMessage]);
 
   const sendMessage = useCallback(async (text) => {
     const msg = (text || input).trim();

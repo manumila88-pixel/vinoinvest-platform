@@ -1,6 +1,16 @@
 import React, { memo, useState } from "react";
 import WinePriceCompare from "./WinePriceCompare";
 import { useTranslation } from "react-i18next";
+import InfoTooltip from "./InfoTooltip";
+
+const SIGNAL_TIPS = {
+  "Strong Buy": "Ottimo momento di acquisto. Momentum, fondamentali e trend tutti positivi.",
+  "Buy": "Buone prospettive nel medio-lungo termine. Fondamentali solidi.",
+  "Hold": "Mantieni senza aggiungere. Aspetta segnali più chiari.",
+  "Reduce": "Considera di ridurre l'esposizione. Alcuni indicatori in calo.",
+  "Sell": "I fondamentali suggeriscono di uscire dalla posizione.",
+};
+const AI_SCORE_TIP = "Punteggio 0-100: calcolato su rating critico, annata, produttore, trend e rischio. >80 = Strong Buy, 60-80 = Buy, 40-60 = Hold, <40 = Sell.";
 
 // Curated Unsplash images by wine type/region — no API key needed
 const TYPE_IMAGES = {
@@ -93,15 +103,19 @@ const WineCard = memo(function WineCard({
         <h2>{wine.name}</h2>
         <p className="wineCard-producer">{wine.producer} · {wine.vintage || ""}</p>
         <div className="wineCard-score">
-          <span className={`score-label${aiScore ? " pulsing" : ""}`}>
-            {aiScore?.score ?? wine.investmentScore ?? "—"}
-          </span>
+          <InfoTooltip tip={AI_SCORE_TIP} placement="top">
+            <span className={`score-label${aiScore ? " pulsing" : ""}`}>
+              {aiScore?.score ?? wine.investmentScore ?? "—"}
+            </span>
+          </InfoTooltip>
           <div className="score-bar">
             <div className="score-fill" style={{ width: (aiScore?.score ?? wine.investmentScore ?? 75) + "%" }} />
           </div>
-          <span style={{ fontSize: 10, color: aiScore?.signal === "Strong Buy" ? "#4ade80" : aiScore?.signal ? "#C9A227" : "#3a5a7a" }}>
-            {aiScore?.signal ?? "AI Score"}
-          </span>
+          <InfoTooltip tip={SIGNAL_TIPS[aiScore?.signal] || "Segnale AI basato su fondamentali, trend e momentum di mercato."} placement="top">
+            <span style={{ fontSize: 10, color: aiScore?.signal === "Strong Buy" ? "#4ade80" : aiScore?.signal ? "#C9A227" : "#3a5a7a", cursor: "help" }}>
+              {aiScore?.signal ?? "AI Score"}
+            </span>
+          </InfoTooltip>
         </div>
         <div className="wineCard-price">
           <span className="price-main">€ {wine.currentPrice}</span>
