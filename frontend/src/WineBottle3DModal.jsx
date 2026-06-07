@@ -11,7 +11,15 @@ function getWineType(wine) {
 }
 
 export default function WineBottle3DModal({ wine, onClose }) {
-  const [useImage, setUseImage] = useState(!!wine.imageUrl);
+  const placeholderImg = (() => {
+    const t = `${wine.type || ""} ${wine.variety || ""} ${wine.region || ""} ${wine.name || ""}`.toLowerCase();
+    if (/champagne|prosecco|cava|sparkling/.test(t)) return "https://images.unsplash.com/photo-1568213816046-0ee1c42bd559?w=400&q=80&fm=webp&fit=crop";
+    if (/ros[eé]|rosato/.test(t)) return "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400&q=80&fm=webp&fit=crop";
+    if (/bianco|chardonnay|sauvignon|blanc|white/.test(t)) return "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80&fm=webp&fit=crop";
+    return "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&q=80&fm=webp&fit=crop";
+  })();
+  const [imgSrc, setImgSrc] = useState(wine.imageUrl || placeholderImg);
+  const [useImage, setUseImage] = useState(true);
 
   // ESC to close
   useEffect(() => {
@@ -95,14 +103,17 @@ export default function WineBottle3DModal({ wine, onClose }) {
           >
             <div ref={bottleRef}>
               <img
-                src={wine.imageUrl}
+                src={imgSrc}
                 alt=""
                 style={{
                   height: "340px", width: "auto", objectFit: "contain",
                   filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.8)) drop-shadow(0 0 16px rgba(201,162,39,0.18))",
                   display: "block",
                 }}
-                onError={() => setUseImage(false)}
+                onError={() => {
+                  if (imgSrc !== placeholderImg) setImgSrc(placeholderImg);
+                  else setUseImage(false);
+                }}
               />
             </div>
           </div>

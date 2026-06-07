@@ -1,6 +1,62 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import WinePriceCompare from "./WinePriceCompare";
 import { useTranslation } from "react-i18next";
+
+// Curated Unsplash images by wine type/region — no API key needed
+const TYPE_IMAGES = {
+  champagne: "https://images.unsplash.com/photo-1568213816046-0ee1c42bd559?w=300&q=75&fm=webp&fit=crop",
+  sparkling: "https://images.unsplash.com/photo-1568213816046-0ee1c42bd559?w=300&q=75&fm=webp&fit=crop",
+  rose: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=300&q=75&fm=webp&fit=crop",
+  rosato: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=300&q=75&fm=webp&fit=crop",
+  bianco: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=75&fm=webp&fit=crop",
+  white: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=75&fm=webp&fit=crop",
+  chardonnay: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=75&fm=webp&fit=crop",
+  bordeaux: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=300&q=75&fm=webp&fit=crop",
+  burgundy: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=300&q=75&fm=webp&fit=crop",
+  borgogna: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=300&q=75&fm=webp&fit=crop",
+  barolo: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=300&q=75&fm=webp&fit=crop",
+  default: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=300&q=75&fm=webp&fit=crop",
+};
+
+function getPlaceholderImage(wine) {
+  const text = `${wine.type || ""} ${wine.variety || ""} ${wine.region || ""} ${wine.name || ""}`.toLowerCase();
+  if (/champagne|prosecco|cava|sparkling|bollicine/.test(text)) return TYPE_IMAGES.champagne;
+  if (/ros[eé]|rosato/.test(text)) return TYPE_IMAGES.rose;
+  if (/bianco|chardonnay|sauvignon|blanc|white|pinot\s*g/.test(text)) return TYPE_IMAGES.bianco;
+  if (/burgundy|borgogna|pinot\s*noir/.test(text)) return TYPE_IMAGES.burgundy;
+  if (/bordeaux|cab|merlot/.test(text)) return TYPE_IMAGES.bordeaux;
+  return TYPE_IMAGES.default;
+}
+
+function WineCardImage({ wine }) {
+  const [imgSrc, setImgSrc] = useState(wine.imageUrl || getPlaceholderImage(wine));
+  const [failed, setFailed] = useState(false);
+
+  if (failed) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, opacity: 0.55 }}>
+        <div style={{ fontSize: 52 }}>🍷</div>
+        <div style={{ fontSize: 10, color: "#3a5a7a", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700 }}>{wine.variety || "Fine Wine"}</div>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={imgSrc}
+      alt={wine.name}
+      loading="lazy"
+      onError={() => {
+        if (imgSrc !== getPlaceholderImage(wine)) {
+          setImgSrc(getPlaceholderImage(wine));
+        } else {
+          setFailed(true);
+        }
+      }}
+      style={{ height: 160, width: "auto", objectFit: "contain", filter: "drop-shadow(0 8px 20px rgba(0,0,0,0.75))" }}
+    />
+  );
+}
 
 const WineCard = memo(function WineCard({
   wine,
@@ -26,23 +82,7 @@ const WineCard = memo(function WineCard({
       onMouseLeave={onCardTiltReset}
     >
       <div className="wineCard-image" onClick={() => onImageClick({ ...wine, aiScoreData: aiScore })}>
-        {wine.imageUrl
-          ? (
-            <img
-              src={wine.imageUrl}
-              alt={wine.name}
-              loading="lazy"
-              onError={e => { e.target.style.display = "none"; }}
-              style={{ height: 160, width: "auto", objectFit: "contain", filter: "drop-shadow(0 8px 20px rgba(0,0,0,0.75))" }}
-            />
-          )
-          : (
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, opacity: 0.45 }}>
-              <div style={{ fontSize: 52 }}>🍷</div>
-              <div style={{ fontSize: 10, color: "#3a5a7a", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700 }}>{wine.variety || "Fine Wine"}</div>
-            </div>
-          )
-        }
+        <WineCardImage wine={wine} />
         <span className="bottle-hint">VIEW</span>
       </div>
       <div className="wineCard-body">

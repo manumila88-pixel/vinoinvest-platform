@@ -1,8 +1,23 @@
 import { Router } from "express";
+import { createRequire } from "module";
 import { runAgent, executeTool } from "../agents/portfolioAgent.js";
 import { translateText } from "../services/translationService.js";
 
 const router = Router();
+
+// Fallback wine catalog — used when req._allWines is not injected by server.js
+const _require = createRequire(import.meta.url);
+let _fallbackWines = null;
+function getFallbackWines() {
+  if (_fallbackWines) return _fallbackWines;
+  try {
+    const wines = _require("../data/wines.json");
+    const external = _require("../data/externalWines.json");
+    const big = _require("../data/bigWines.json");
+    _fallbackWines = [...wines, ...external, ...big];
+  } catch { _fallbackWines = []; }
+  return _fallbackWines;
+}
 
 // In-memory conversation histories (cleared on server restart)
 const conversations = new Map();
@@ -15,7 +30,7 @@ router.post("/chat", async (req, res) => {
 
   const sid = sessionId || userId || "anonymous";
   const history = conversationHistory || conversations.get(sid) || [];
-  const allWines = req._allWines || [];
+  const allWines = req._allWines?.length ? req._allWines : getFallbackWines();
   const detectedLang = lang?.slice(0, 2) || "it";
 
   try {
@@ -75,7 +90,7 @@ router.get("/opportunities", async (req, res) => {
     const result = await runAgent({
       message,
       holdings: [],
-      allWines: req._allWines || [],
+      allWines: req._allWines?.length ? req._allWines : getFallbackWines(),
       API_URL: process.env.BACKEND_URL || "https://vinoinvest-backend-2.onrender.com",
       lang: lang.slice(0, 2),
     });
@@ -93,7 +108,7 @@ router.post("/analyze-portfolio", async (req, res) => {
     const result = await runAgent({
       message: "Analizza il mio portfolio e dammi 3 raccomandazioni specifiche per migliorarlo",
       holdings,
-      allWines: req._allWines || [],
+      allWines: req._allWines?.length ? req._allWines : getFallbackWines(),
       API_URL: process.env.BACKEND_URL || "https://vinoinvest-backend-2.onrender.com",
       lang: lang.slice(0, 2),
     });
@@ -106,7 +121,7 @@ router.post("/analyze-portfolio", async (req, res) => {
 // GET /api/agent/similar/:wineId — find similar wines
 router.get("/similar/:wineId", async (req, res) => {
   const { lang = "it" } = req.query;
-  const allWines = req._allWines || [];
+  const allWines = req._allWines?.length ? req._allWines : getFallbackWines();
   const wine = allWines.find(w => w.id === req.params.wineId);
   if (!wine) return res.json({ wines: [] });
   try {

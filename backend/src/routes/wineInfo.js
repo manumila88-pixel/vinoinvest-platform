@@ -1,10 +1,12 @@
 import { Router } from "express";
+import { fetchCellarTrackerPrice, fetchCellarTrackerNotes } from "../connectors/cellarTracker.js";
 
 const router = Router();
 
 // In-memory cache: 24h TTL
 const wikiCache = new Map();
 const offCache = new Map();
+const ctCache = new Map();
 const WIKI_TTL = 24 * 60 * 60 * 1000;
 
 function slugify(str) {
@@ -88,6 +90,41 @@ router.get("/image", async (req, res) => {
     return res.json(result);
   } catch (_) {
     return res.json({ imageUrl: null, source: "not_found" });
+  }
+});
+
+// GET /api/wine-info/price?q=Château+Lafite+Rothschild&vintage=2018
+router.get("/price", async (req, res) => {
+  const query = (req.query.q || "").toString().trim();
+  const vintage = req.query.vintage ? parseInt(req.query.vintage) : null;
+  if (!query) return res.status(400).json({ error: "q required" });
+
+  const cacheKey = slugify(`${query}_${vintage || "any"}`);
+  const cached = ctCache.get(cacheKey);
+  if (cached && Date.now() - cached.ts < WIKI_TTL) {
+    return res.json({ ...cached.data, cached: true });
+  }
+
+  try {
+    const data = await fetchCellarTrackerPrice(query, vintage);
+    ctCache.set(cacheKey, { data, ts: Date.now() });
+    return res.json(data);
+  } catch (err) {
+    return res.json({ price_avg: null, source: "cellartracker", error: err.message });
+  }
+});
+
+// GET /api/wine-info/notes?q=Château+Lafite+Rothschild&vintage=2018
+router.get("/notes", async (req, res) => {
+  const query = (req.query.q || "").toString().trim();
+  const vintage = req.query.vintage ? parseInt(req.query.vintage) : null;
+  if (!query) return res.status(400).json({ error: "q required" });
+
+  try {
+    const data = await fetchCellarTrackerNotes(query, vintage);
+    return res.json(data);
+  } catch (err) {
+    return res.json({ notes: [], source: "cellartracker" });
   }
 });
 

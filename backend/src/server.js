@@ -29,6 +29,7 @@ import { startBlogAgent, setBlogPool as setBlogAgentPool } from "./agents/blogAg
 import { startImageAgent, setImagePool } from "./agents/imageAgent.js";
 import "./jobs/priceUpdater.js";
 import "./jobs/alertsChecker.js";
+import { proactiveResults, setAnalysisPool, setWinesRef } from "./jobs/portfolioAnalysisJob.js";
 
 // Global in-memory cache
 const appCache = new NodeCache({ stdTTL: 0, checkperiod: 120 });
@@ -194,6 +195,9 @@ const allWines = [
 // Inject allWines into agent requests so tools can search the catalog
 app.use("/api/agent", (req, _res, next) => { req._allWines = allWines; next(); });
 
+// Share wines reference with proactive analysis job
+setWinesRef(allWines);
+
 const marketplaceData = [
 
   {
@@ -302,6 +306,7 @@ initDB().then(() => {
     setTranslationPool(pool);
     initUsageTable(pool);
   }
+  if (pool) setAnalysisPool(pool);
   // Start scheduled agents
   startBlogAgent();
   startImageAgent();
@@ -968,6 +973,14 @@ app.get("/api/trending", cacheFor(14400), (req, res) => {
     .slice(0, 5)
     .map(({ absChange: _, ...w }) => w);
   res.json({ wines: trending, updated: new Date().toISOString() });
+});
+
+// GET /api/ai/proactive-analysis/:userId — fetch pre-computed proactive analysis
+app.get("/api/ai/proactive-analysis/:userId", (req, res) => {
+  const result = proactiveResults.get(req.params.userId);
+  if (!result) return res.json({ available: false });
+  const ageMin = Math.round((Date.now() - result.ts) / 60000);
+  res.json({ available: true, ageMinutes: ageMin, ...result });
 });
 
 const PORT =
