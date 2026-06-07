@@ -1,12 +1,44 @@
+/* ── CSS Variables — Dark (default) ───────────────── */
+:root, [data-theme="dark"] {
+  --bg-base: #020617;
+  --bg-card: rgba(11,18,32,0.85);
+  --bg-header: rgba(2,6,23,0.78);
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #475569;
+  --border-color: rgba(30,41,59,0.6);
+  --gold: #C9A227;
+  --gold-dim: rgba(201,162,39,0.15);
+  --input-bg: rgba(15,23,42,0.8);
+  --shadow: 0 1px 40px rgba(0,0,0,0.4);
+  --transition: color 0.3s, background 0.3s, border-color 0.3s;
+}
+
+[data-theme="light"] {
+  --bg-base: #F8F4EF;
+  --bg-card: rgba(255,253,249,0.95);
+  --bg-header: rgba(248,244,239,0.92);
+  --text-primary: #1a1a2e;
+  --text-secondary: #4a4a6a;
+  --text-muted: #6b6b8a;
+  --border-color: rgba(139,26,26,0.15);
+  --gold: #8B1A1A;
+  --gold-dim: rgba(139,26,26,0.08);
+  --input-bg: rgba(255,255,255,0.9);
+  --shadow: 0 1px 40px rgba(0,0,0,0.12);
+  --transition: color 0.3s, background 0.3s, border-color 0.3s;
+}
+
 /* ── Reset & Base ─────────────────────────────────── */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  background: #020617;
-  color: #e2e8f0;
+  background: var(--bg-base);
+  color: var(--text-primary);
   font-family: 'Inter', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: var(--transition);
 }
 
 h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
