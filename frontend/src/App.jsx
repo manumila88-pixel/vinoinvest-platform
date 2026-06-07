@@ -13,6 +13,7 @@ import LandingPage from "./LandingPage";
 import { supabase } from "./lib/supabase";
 import WineBottle3DModal from "./WineBottle3DModal";
 import Pricing from "./pages/Pricing";
+import B2BPage from "./pages/B2B";
 import DashboardB2B from "./pages/Dashboard";
 import WinePriceCompare from "./components/WinePriceCompare";
 import LangSelector from "./components/LangSelector";
@@ -369,7 +370,7 @@ function App() {
         setAccountType(type);
         setIsLoggedIn(true);
         localStorage.setItem("vino_user", JSON.stringify({ email: session.user.email, account_type: type }));
-        if (!isOnboardingCompleted()) setTimeout(() => setShowOnboarding(true), 600);
+        if (!isOnboardingCompleted(type)) setTimeout(() => setShowOnboarding(true), 600);
       } else if (event === "SIGNED_OUT") {
         setIsLoggedIn(false);
         setUserEmail("");
@@ -776,7 +777,7 @@ function App() {
           setAccountType(account_type);
           setIsLoggedIn(true);
           localStorage.setItem("vino_user", JSON.stringify({ email: user.email, account_type }));
-          if (!isOnboardingCompleted()) setTimeout(() => setShowOnboarding(true), 600);
+          if (!isOnboardingCompleted(account_type)) setTimeout(() => setShowOnboarding(true), 600);
         }}
       />
     );
@@ -1504,7 +1505,7 @@ function App() {
 
       {/* ── Onboarding Modal ────────────────────────────────────────────── */}
       {showOnboarding && (
-        <OnboardingModal onClose={() => setShowOnboarding(false)} />
+        <OnboardingModal onClose={() => setShowOnboarding(false)} accountType={accountType} />
       )}
 
       {/* ── Guided Tour ─────────────────────────────────────────────────── */}
@@ -1527,6 +1528,7 @@ createRoot(document.getElementById("root")).render(
     <ToastProvider>
       <Routes>
         <Route path="/pricing" element={<Pricing />} />
+        <Route path="/b2b" element={<B2BPage />} />
         <Route path="*" element={<App />} />
       </Routes>
     </ToastProvider>

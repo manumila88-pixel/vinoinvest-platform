@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Nuovo Vino Approvato — VinoInvest Cantine</title>
+</head>
+<body style="margin:0;padding:0;background:#020617;font-family:'Helvetica Neue',Arial,sans-serif;color:#e2e8f0;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#020617;padding:40px 20px;">
+    <tr>
+      <td>
+        <table width="600" cellpadding="0" cellspacing="0" align="center" style="max-width:600px;background:#060d1e;border:1px solid rgba(201,162,39,0.2);border-radius:16px;overflow:hidden;">
+          <!-- Header -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#7c1d2f,#C9A227);padding:28px 40px;text-align:center;">
+              <div style="font-size:32px;margin-bottom:8px;">🍾</div>
+              <h1 style="font-family:Georgia,serif;font-size:22px;font-weight:700;color:#fff;margin:0 0 4px;">Vino Pubblicato!</h1>
+              <p style="color:rgba(255,255,255,0.7);font-size:13px;margin:0;">Il tuo vino è ora visibile su VinoInvest</p>
+            </td>
+          </tr>
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px 40px;">
+              <p style="font-size:14px;color:#64748b;line-height:1.8;margin:0 0 20px;">
+                Ciao <strong style="color:#e2e8f0;">{{CANTINA_NAME}}</strong>, il vino che hai inserito è stato verificato e pubblicato sulla piattaforma.
+              </p>
+              <!-- Wine card -->
+              <div style="background:#0a1628;border:1px solid rgba(201,162,39,0.15);border-radius:14px;padding:20px;margin-bottom:24px;">
+                <div style="font-family:Georgia,serif;font-size:20px;font-weight:700;color:#e2e8f0;margin-bottom:4px;">{{WINE_NAME}}</div>
+                <div style="font-size:13px;color:#475569;margin-bottom:16px;">{{WINE_VINTAGE}} · {{WINE_TYPE}} · {{WINE_REGION}}</div>
+                <table width="100%" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="text-align:center;padding-right:8px;">
+                      <div style="background:#020617;border-radius:8px;padding:12px;">
+                        <div style="font-size:11px;color:#334155;margin-bottom:4px;">Prezzo Listino</div>
+                        <div style="font-size:18px;font-weight:700;color:#C9A227;">{{WINE_PRICE}}</div>
+                      </div>
+                    </td>
+                    <td style="text-align:center;padding-left:4px;padding-right:4px;">
+                      <div style="background:#020617;border-radius:8px;padding:12px;">
+                        <div style="font-size:11px;color:#334155;margin-bottom:4px;">AI Score</div>
+                        <div style="font-size:18px;font-weight:700;color:#C9A227;">{{AI_SCORE}}</div>
+                      </div>
+                    </td>
+                    <td style="text-align:center;padding-left:8px;">
+                      <div style="background:#020617;border-radius:8px;padding:12px;">
+                        <div style="font-size:11px;color:#334155;margin-bottom:4px;">Segnale</div>
+                        <div style="font-size:14px;font-weight:700;color:#4ade80;">{{AI_SIGNAL}}</div>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <!-- Next steps -->
+              <div style="font-size:12px;font-weight:700;color:#C9A227;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.05em;">Cosa fare adesso</div>
+              {{#each NEXT_STEPS}}
+              <div style="display:flex;align-items:flex-start;margin-bottom:10px;">
+                <span style="margin-right:10px;font-size:16px;line-height:1.5;">{{this.icon}}</span>
+                <span style="font-size:13px;color:#64748b;line-height:1.6;">{{this.text}}</span>
+              </div>
+              {{/each}}
+              <!-- CTA -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;">
+                <tr>
+                  <td align="center">
+                    <a href="{{DASHBOARD_URL}}" style="display:inline-block;padding:13px 32px;background:linear-gradient(135deg,#7c1d2f,#C9A227);color:#fff;text-decoration:none;border-radius:10px;font-size:14px;font-weight:700;">
+                      Vai alla Dashboard Cantina →
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="padding:20px 40px;border-top:1px solid rgba(201,162,39,0.1);background:#040810;">
+              <p style="font-size:11px;color:#1e293b;margin:0;">
+                VinoInvest · <a href="mailto:sales@vinoinvest.com" style="color:#334155;text-decoration:none;">sales@vinoinvest.com</a>
+                &nbsp;·&nbsp; <a href="{{UNSUBSCRIBE_URL}}" style="color:#1e293b;text-decoration:none;">Cancella iscrizione</a>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

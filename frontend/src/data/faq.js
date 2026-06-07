@@ -195,6 +195,154 @@ export const FAQ = [
     tags: ["cancellare", "eliminare", "account", "dati"],
   },
 
+  // ── B2B — Investitori istituzionali ──────────────────────────────────────
+  {
+    id: "b1", cat: "b2b",
+    q: "Quali sono i volumi minimi per investimento istituzionale?",
+    a: "Per wealth manager e family office consigliamo portafogli da €50.000+. Sotto questa soglia i costi di gestione erodono i rendimenti.",
+    tags: ["istituzionale", "minimo", "family office", "wealth manager", "volume"],
+  },
+  {
+    id: "b2", cat: "b2b",
+    q: "Come funziona la due diligence su un vino da investimento?",
+    a: "Verificare: autenticità (provenienza documentata), condizioni di stoccaggio (temperatura 12-14°C, umidità 70%), track record del produttore, liquidità del mercato secondario.",
+    tags: ["due diligence", "autenticità", "stoccaggio", "verifica"],
+  },
+  {
+    id: "b3", cat: "b2b",
+    q: "Quali sono i rischi principali per un investitore istituzionale?",
+    a: "Rischio liquidità (mercato secondario limitato), rischio autenticità (falsi), rischio stoccaggio, rischio reputazionale del produttore, cambio valuta per mercati esteri.",
+    tags: ["rischi", "istituzionale", "liquidità", "autenticità", "valuta"],
+  },
+  {
+    id: "b4", cat: "b2b",
+    q: "Come si costruisce un portafoglio vino diversificato per un family office?",
+    a: "Allocazione consigliata: 40% Bordeaux premier cru, 25% Borgogna grand cru, 15% Italia (Barolo/Brunello), 10% Champagne prestige, 10% emerging (Napa, Spagna). Orizzonte 7-10 anni.",
+    tags: ["portafoglio", "diversificato", "allocazione", "family office"],
+  },
+  {
+    id: "b5", cat: "b2b",
+    q: "Qual è la correlazione del vino con altri asset class?",
+    a: "Il fine wine ha correlazione bassa con equity (~0.1) e obbligazioni (~0.05). Eccellente diversificatore in periodi di volatilità. Durante crisi 2008 Liv-ex 100 perse solo 8% vs -40% S&P500.",
+    tags: ["correlazione", "asset class", "diversificazione", "equity", "obbligazioni"],
+  },
+  {
+    id: "b6", cat: "b2b",
+    q: "Come si calcola il NAV di un portafoglio vino?",
+    a: "NAV = somma (prezzo mercato corrente × quantità) per ogni posizione. VinoInvest aggiorna i prezzi continuamente. Export CSV disponibile per riconciliazione contabile.",
+    tags: ["NAV", "calcolo", "portafoglio", "contabile", "export"],
+  },
+
+  // ── B2B — Cantine e produttori ───────────────────────────────────────────
+  {
+    id: "c1", cat: "cantina",
+    q: "Come posso listare i miei vini su VinoInvest?",
+    a: "Registra un account cantina (account_type=cantina), accedi alla Dashboard B2B → Gestione Vini → Aggiungi vino. Il team verifica i dati entro 48h.",
+    tags: ["listare", "cantina", "dashboard", "aggiungere"],
+  },
+  {
+    id: "c2", cat: "cantina",
+    q: "Come funziona l'analytics per le cantine?",
+    a: "La dashboard B2B mostra: quanti utenti hanno visto i tuoi vini, click su 'Acquista', prezzo medio mercato vs tuo listino, ROI medio degli investitori sui tuoi vini.",
+    tags: ["analytics", "cantina", "dashboard", "statistiche"],
+  },
+  {
+    id: "c3", cat: "cantina",
+    q: "Posso aggiornare i prezzi in tempo reale?",
+    a: "Sì, dalla Dashboard B2B → Gestione Vini puoi aggiornare prezzo e disponibilità. Le modifiche sono visibili immediatamente su tutta la piattaforma.",
+    tags: ["prezzi", "aggiornare", "tempo reale", "cantina"],
+  },
+  {
+    id: "c4", cat: "cantina",
+    q: "Come posso contattare i miei investitori?",
+    a: "Dashboard B2B → Clienti mostra la lista degli investitori che hanno i tuoi vini nel portfolio. Puoi inviare loro comunicazioni tramite la piattaforma.",
+    tags: ["investitori", "contattare", "comunicazioni", "clienti"],
+  },
+  {
+    id: "c5", cat: "cantina",
+    q: "Quali dati analytics sono disponibili?",
+    a: "Volume di visualizzazioni settimanali, conversion rate (visualizzazioni → click acquisto), confronto prezzo mercato vs listino, trend interesse per annata e tipologia.",
+    tags: ["analytics", "dati", "conversion", "trend", "visualizzazioni"],
+  },
+
+  // ── B2B — Wealth manager ─────────────────────────────────────────────────
+  {
+    id: "w1", cat: "wealth",
+    q: "Come posso gestire i portfolio dei miei clienti?",
+    a: "Con account wealth_manager puoi creare portfolio separati per ogni cliente, monitorare performance aggregate, esportare report personalizzati in PDF.",
+    tags: ["wealth manager", "clienti", "portfolio", "report"],
+  },
+  {
+    id: "w2", cat: "wealth",
+    q: "È possibile integrare VinoInvest con altri sistemi di portfolio management?",
+    a: "Sì, offriamo API REST documentata e export CSV/Excel compatibile con Bloomberg, Advent Geneva, e i principali PMS.",
+    tags: ["integrazione", "API", "Bloomberg", "PMS", "CSV"],
+  },
+  {
+    id: "w3", cat: "wealth",
+    q: "Come funziona la reportistica per i clienti finali?",
+    a: "Dashboard B2B → Report genera PDF branded con: composizione portfolio, performance YTD, confronto benchmark, raccomandazioni AI, outlook mercato.",
+    tags: ["report", "PDF", "performance", "YTD", "clienti"],
+  },
+  {
+    id: "w4", cat: "wealth",
+    q: "Quali sono i prezzi per account B2B?",
+    a: "I piani B2B partono da €500/mese per fino a 10 clienti, €1.500/mese per fino a 50 clienti, enterprise su misura. Contatta sales@vinoinvest.com",
+    tags: ["prezzi", "piani", "B2B", "costo", "enterprise"],
+  },
+  {
+    id: "w5", cat: "wealth",
+    q: "Come gestisco il rischio valuta per clienti internazionali?",
+    a: "VinoInvest mostra prezzi in EUR, USD e GBP aggiornati in tempo reale. Per hedge valutario consigliamo di consultare il proprio desk FX.",
+    tags: ["valuta", "rischio", "internazionale", "EUR", "USD", "GBP"],
+  },
+
+  // ── B2B — Compliance e legale ────────────────────────────────────────────
+  {
+    id: "co1", cat: "compliance",
+    q: "VinoInvest è regolamentato?",
+    a: "VinoInvest è una piattaforma di analisi e intelligence, non un gestore patrimoniale. Non richiede licenza MiFID II. Gli acquisti avvengono su piattaforme terze regolamentate.",
+    tags: ["regolamentato", "MiFID", "compliance", "licenza"],
+  },
+  {
+    id: "co2", cat: "compliance",
+    q: "Come trattate i dati dei clienti (GDPR)?",
+    a: "Siamo conformi GDPR. I dati sono conservati in EU (Supabase EU region). Diritto alla cancellazione disponibile dalle impostazioni account. DPA disponibile per clienti B2B.",
+    tags: ["GDPR", "dati", "privacy", "EU", "DPA"],
+  },
+  {
+    id: "co3", cat: "compliance",
+    q: "È possibile ottenere un Data Processing Agreement?",
+    a: "Sì, per clienti B2B forniamo DPA standard EU. Contatta legal@vinoinvest.com con i vostri requisiti specifici.",
+    tags: ["DPA", "data processing", "agreement", "B2B", "legale"],
+  },
+  {
+    id: "co4", cat: "compliance",
+    q: "Come vengono verificati i prezzi?",
+    a: "I prezzi vengono da fonti multiple: dati storici di mercato, CellarTracker community, stime algoritmiche per regione. Badge 'Dati reali' vs 'Dati stimati' indicano la fonte.",
+    tags: ["prezzi", "verificati", "fonti", "CellarTracker", "badge"],
+  },
+
+  // ── B2B — Tecnico e integrazione ─────────────────────────────────────────
+  {
+    id: "t1", cat: "tecnico",
+    q: "Avete API pubblica?",
+    a: "Sì, API REST documentata disponibile su /api/v1/. Rate limit: 1000 req/giorno per piano free, illimitato per piani B2B. Documentazione Swagger in arrivo.",
+    tags: ["API", "pubblica", "REST", "rate limit", "Swagger"],
+  },
+  {
+    id: "t2", cat: "tecnico",
+    q: "Quali formati di export supportate?",
+    a: "CSV, Excel (XLSX), PDF per report. JSON via API. In sviluppo: integrazione diretta Bloomberg Terminal.",
+    tags: ["export", "CSV", "Excel", "PDF", "Bloomberg"],
+  },
+  {
+    id: "t3", cat: "tecnico",
+    q: "Qual è l'uptime garantito?",
+    a: "Target 99.5% uptime. Il sistema gira su Vercel (frontend) e Render (backend) con monitoring automatico. Status page in arrivo.",
+    tags: ["uptime", "SLA", "disponibilità", "Vercel", "Render"],
+  },
+
   // ── Sicurezza ─────────────────────────────────────────────────────────────
   {
     id: "s1", cat: "sicurezza",
@@ -231,6 +379,17 @@ export const CATEGORIES = [
   { id: "account",    label: "Account",         icon: "👤" },
   { id: "sicurezza",  label: "Sicurezza",       icon: "🔒" },
 ];
+
+export const B2B_CATEGORIES = [
+  { id: "all",        label: "Tutte",            icon: "🔍" },
+  { id: "b2b",        label: "Investitori",       icon: "🏦" },
+  { id: "cantina",    label: "Cantine",           icon: "🍾" },
+  { id: "wealth",     label: "Wealth Manager",    icon: "📊" },
+  { id: "compliance", label: "Compliance",        icon: "⚖️" },
+  { id: "tecnico",    label: "Tecnico",           icon: "🔧" },
+];
+
+export const B2B_CATS = new Set(["b2b","cantina","wealth","compliance","tecnico"]);
 
 // Fuzzy search: returns FAQ items sorted by relevance score
 export function searchFAQ(query) {

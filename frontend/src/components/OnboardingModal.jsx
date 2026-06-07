@@ -1,6 +1,188 @@
 import React, { useState, useEffect } from "react";
 
 const STORAGE_KEY = "vino_onboarding_v1";
+const STORAGE_KEY_B2B = "vino_onboarding_b2b_v1";
+
+const STEPS_B2B = [
+  {
+    icon: "🏦",
+    title: "Benvenuto su VinoInvest Pro",
+    subtitle: "La piattaforma professionale per investitori istituzionali",
+    content: (
+      <div>
+        <p style={{ marginBottom: 16, lineHeight: 1.7, fontSize: 13, color: "#94a3b8" }}>
+          Hai accesso alla suite professionale VinoInvest. Ecco cosa puoi fare:
+        </p>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          {[
+            { icon: "📊", label: "Dashboard Analytics", desc: "Dati di mercato istituzionali in real-time" },
+            { icon: "👥", label: "Multi-Portfolio", desc: "Portfolio separati per ogni cliente" },
+            { icon: "📄", label: "Report PDF", desc: "Branded, esportabili, pronti per i clienti" },
+            { icon: "🔌", label: "API & Export", desc: "CSV/Excel + REST API documentata" },
+          ].map(f => (
+            <div key={f.label} style={{
+              background: "rgba(59,130,246,0.06)", border: "1px solid rgba(59,130,246,0.15)",
+              borderRadius: 12, padding: "14px 16px",
+            }}>
+              <div style={{ fontSize: 22, marginBottom: 6 }}>{f.icon}</div>
+              <div style={{ fontWeight: 700, fontSize: 13, color: "#e2e8f0", marginBottom: 3 }}>{f.label}</div>
+              <div style={{ fontSize: 11, color: "#3a5a7a" }}>{f.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+  },
+  {
+    icon: "📊",
+    title: "Dashboard Analytics",
+    subtitle: "Monitora il mercato e i tuoi clienti da un unico pannello",
+    content: (
+      <div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 16 }}>
+          {[
+            { icon: "📈", text: "Andamento prezzi in tempo reale per regione e annata" },
+            { icon: "🔍", text: "Filtri avanzati: produttore, rating, rischio, liquidità" },
+            { icon: "⚖️", text: "Correlazione con equity, obbligazioni e materie prime" },
+            { icon: "🌍", text: "Prezzi in EUR, USD e GBP aggiornati continuamente" },
+          ].map((s, i) => (
+            <div key={i} style={{
+              display: "flex", alignItems: "center", gap: 12,
+              background: "rgba(8,15,30,0.6)", border: "1px solid rgba(59,130,246,0.12)",
+              borderRadius: 10, padding: "11px 14px",
+            }}>
+              <span style={{ fontSize: 18, flexShrink: 0 }}>{s.icon}</span>
+              <span style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.5 }}>{s.text}</span>
+            </div>
+          ))}
+        </div>
+        <div style={{ background: "rgba(59,130,246,0.06)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: 10, padding: "12px 16px", fontSize: 12, color: "#60a5fa" }}>
+          🏦 La tab "B2B Dashboard" nel menu principale ti dà accesso completo all'analytics professionale.
+        </div>
+      </div>
+    ),
+  },
+  {
+    icon: "👥",
+    title: "Gestione Portfolio Clienti",
+    subtitle: "Crea e monitora portfolio separati per ogni cliente",
+    content: (
+      <div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 16 }}>
+          {[
+            { step: "1", text: "Crea un portfolio per ogni cliente dalla Dashboard B2B" },
+            { step: "2", text: "Aggiungi posizioni: vino, quantità, prezzo di acquisto, data" },
+            { step: "3", text: "Monitora ROI, P&L e performance aggregate in tempo reale" },
+            { step: "4", text: "Ricevi alert automatici su prezzi e segnali di mercato" },
+          ].map(s => (
+            <div key={s.step} style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div style={{
+                width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
+                background: "linear-gradient(135deg,#1d4ed8,#2563eb)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 13, fontWeight: 800, color: "#fff",
+              }}>{s.step}</div>
+              <div style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.5 }}>{s.text}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+  },
+  {
+    icon: "📄",
+    title: "Export e Reportistica",
+    subtitle: "Report professionali pronti in un click",
+    content: (
+      <div>
+        <p style={{ marginBottom: 16, lineHeight: 1.7, fontSize: 13, color: "#94a3b8" }}>
+          Genera report brandizzati per i tuoi clienti finali:
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 16 }}>
+          {[
+            { icon: "📊", label: "PDF Report", desc: "Composizione, YTD, benchmark, outlook AI" },
+            { icon: "📋", label: "CSV / Excel", desc: "Compatibile con Bloomberg, Advent Geneva" },
+            { icon: "🤖", label: "AI Insights", desc: "Raccomandazioni AI per ogni posizione" },
+            { icon: "🔔", label: "Alert Settimanali", desc: "Email automatiche ai tuoi clienti" },
+          ].map(r => (
+            <div key={r.label} style={{
+              display: "flex", alignItems: "center", gap: 14,
+              background: "rgba(8,15,30,0.6)", border: "1px solid rgba(59,130,246,0.12)",
+              borderRadius: 10, padding: "11px 14px",
+            }}>
+              <span style={{ fontSize: 18, flexShrink: 0 }}>{r.icon}</span>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0" }}>{r.label}</div>
+                <div style={{ fontSize: 11, color: "#3a5a7a" }}>{r.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+  },
+  {
+    icon: "🔌",
+    title: "API & Integrazioni",
+    subtitle: "Connetti VinoInvest ai tuoi sistemi esistenti",
+    content: (
+      <div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 16 }}>
+          {[
+            { icon: "🔗", text: "REST API documentata — illimitata nel tuo piano" },
+            { icon: "📦", text: "Export CSV/XLSX compatibile con i principali PMS" },
+            { icon: "📡", text: "Webhook per alert real-time su variazioni di prezzo" },
+            { icon: "🔒", text: "API key sicura dalla Dashboard B2B → Integrazioni" },
+          ].map((s, i) => (
+            <div key={i} style={{
+              display: "flex", alignItems: "center", gap: 12,
+              background: "rgba(8,15,30,0.6)", border: "1px solid rgba(59,130,246,0.12)",
+              borderRadius: 10, padding: "11px 14px",
+            }}>
+              <span style={{ fontSize: 18, flexShrink: 0 }}>{s.icon}</span>
+              <span style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.5 }}>{s.text}</span>
+            </div>
+          ))}
+        </div>
+        <div style={{ background: "rgba(59,130,246,0.06)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: 10, padding: "12px 16px", fontSize: 12, color: "#60a5fa" }}>
+          💡 Per DPA, SLA personalizzati o integrazioni custom: <strong>sales@vinoinvest.com</strong>
+        </div>
+      </div>
+    ),
+  },
+  {
+    icon: "🎯",
+    title: "Support Dedicato",
+    subtitle: "Il tuo account manager è a disposizione",
+    content: (
+      <div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 16 }}>
+          {[
+            { icon: "✉️", label: "Email dedicata", desc: "sales@vinoinvest.com — risposta entro 4h" },
+            { icon: "⚖️", label: "Legal & Compliance", desc: "legal@vinoinvest.com per DPA e questioni legali" },
+            { icon: "❓", label: "FAQ B2B", desc: "Premi ? in basso → tab B2B/Pro per risposte immediate" },
+            { icon: "🌐", label: "Info & Piani", desc: "Visita /b2b per la documentazione completa" },
+          ].map(s => (
+            <div key={s.label} style={{
+              display: "flex", alignItems: "center", gap: 14,
+              background: "rgba(8,15,30,0.6)", border: "1px solid rgba(59,130,246,0.12)",
+              borderRadius: 10, padding: "11px 14px",
+            }}>
+              <span style={{ fontSize: 18, flexShrink: 0 }}>{s.icon}</span>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0" }}>{s.label}</div>
+                <div style={{ fontSize: 11, color: "#3a5a7a" }}>{s.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ background: "rgba(59,130,246,0.06)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: 10, padding: "12px 16px", fontSize: 12, color: "#60a5fa" }}>
+          🚀 Sei pronto! Il team ti contatterà presto per il setup iniziale.
+        </div>
+      </div>
+    ),
+  },
+];
 
 const STEPS = [
   {
@@ -164,26 +346,35 @@ const STEPS = [
   },
 ];
 
-export function isOnboardingCompleted() {
-  return localStorage.getItem(STORAGE_KEY) === "true";
+export function isOnboardingCompleted(accountType) {
+  const key = (accountType === "cantina" || accountType === "wealth_manager") ? STORAGE_KEY_B2B : STORAGE_KEY;
+  return localStorage.getItem(key) === "true";
 }
 
-export function resetOnboarding() {
-  localStorage.removeItem(STORAGE_KEY);
+export function resetOnboarding(accountType) {
+  const key = (accountType === "cantina" || accountType === "wealth_manager") ? STORAGE_KEY_B2B : STORAGE_KEY;
+  localStorage.removeItem(key);
 }
 
-export default function OnboardingModal({ onClose }) {
+export default function OnboardingModal({ onClose, accountType }) {
+  const isB2B = accountType === "cantina" || accountType === "wealth_manager";
+  const steps = isB2B ? STEPS_B2B : STEPS;
+  const storageKey = isB2B ? STORAGE_KEY_B2B : STORAGE_KEY;
   const [step, setStep] = useState(0);
-  const current = STEPS[step];
-  const isLast = step === STEPS.length - 1;
+  const current = steps[step];
+  const isLast = step === steps.length - 1;
+
+  const accentFrom = isB2B ? "#1d4ed8" : "#9b1c4a";
+  const accentTo = isB2B ? "#2563eb" : "#C9A227";
+  const borderColor = isB2B ? "rgba(59,130,246,0.25)" : "rgba(201,162,39,0.25)";
 
   function handleComplete() {
-    localStorage.setItem(STORAGE_KEY, "true");
+    localStorage.setItem(storageKey, "true");
     onClose();
   }
 
   function handleSkip() {
-    localStorage.setItem(STORAGE_KEY, "true");
+    localStorage.setItem(storageKey, "true");
     onClose();
   }
 
@@ -206,10 +397,10 @@ export default function OnboardingModal({ onClose }) {
         {/* Modal */}
         <div style={{
           width: "min(560px, 100%)",
-          background: "linear-gradient(160deg,#0c1524 0%,#080f1c 100%)",
-          border: "1px solid rgba(201,162,39,0.25)",
+          background: isB2B ? "linear-gradient(160deg,#060d1e 0%,#040810 100%)" : "linear-gradient(160deg,#0c1524 0%,#080f1c 100%)",
+          border: `1px solid ${borderColor}`,
           borderRadius: 24,
-          boxShadow: "0 24px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(201,162,39,0.1)",
+          boxShadow: `0 24px 80px rgba(0,0,0,0.8), 0 0 0 1px ${isB2B ? "rgba(59,130,246,0.08)" : "rgba(201,162,39,0.1)"}`,
           overflow: "hidden",
           animation: "onboardIn 0.25s ease-out",
         }}>
@@ -217,8 +408,8 @@ export default function OnboardingModal({ onClose }) {
           <div style={{ height: 3, background: "rgba(30,41,59,0.6)" }}>
             <div style={{
               height: "100%",
-              width: `${((step + 1) / STEPS.length) * 100}%`,
-              background: "linear-gradient(90deg,#9b1c4a,#C9A227)",
+              width: `${((step + 1) / steps.length) * 100}%`,
+              background: `linear-gradient(90deg,${accentFrom},${accentTo})`,
               transition: "width 0.35s ease",
             }} />
           </div>
@@ -246,13 +437,13 @@ export default function OnboardingModal({ onClose }) {
 
             {/* Step dots */}
             <div style={{ display: "flex", gap: 6, marginBottom: 24 }}>
-              {STEPS.map((_, i) => (
+              {steps.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setStep(i)}
                   style={{
                     width: i === step ? 20 : 8, height: 8, borderRadius: 4,
-                    background: i === step ? "#C9A227" : i < step ? "rgba(201,162,39,0.4)" : "rgba(30,41,59,0.6)",
+                    background: i === step ? accentTo : i < step ? `${accentTo}66` : "rgba(30,41,59,0.6)",
                     border: "none", cursor: "pointer", padding: 0,
                     transition: "all 0.3s ease",
                   }}
@@ -273,7 +464,7 @@ export default function OnboardingModal({ onClose }) {
             display: "flex", justifyContent: "space-between", alignItems: "center",
           }}>
             <div style={{ fontSize: 12, color: "#3a5a7a" }}>
-              {step + 1} di {STEPS.length}
+              {step + 1} di {steps.length}
             </div>
             <div style={{ display: "flex", gap: 10 }}>
               {step > 0 && (
@@ -295,13 +486,13 @@ export default function OnboardingModal({ onClose }) {
                   onClick={() => setStep(s => s + 1)}
                   style={{
                     padding: "9px 24px", borderRadius: 10, border: "none",
-                    background: "linear-gradient(135deg,#9b1c4a,#C9A227)",
+                    background: `linear-gradient(135deg,${accentFrom},${accentTo})`,
                     color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 700,
-                    boxShadow: "0 4px 16px rgba(201,162,39,0.3)",
+                    boxShadow: `0 4px 16px ${isB2B ? "rgba(37,99,235,0.3)" : "rgba(201,162,39,0.3)"}`,
                     transition: "transform 0.2s, box-shadow 0.2s",
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = "0 6px 24px rgba(201,162,39,0.45)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = "0 4px 16px rgba(201,162,39,0.3)"; }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = ""; }}
                 >
                   Avanti →
                 </button>
@@ -310,15 +501,15 @@ export default function OnboardingModal({ onClose }) {
                   onClick={handleComplete}
                   style={{
                     padding: "9px 28px", borderRadius: 10, border: "none",
-                    background: "linear-gradient(135deg,#4ade80,#16a34a)",
-                    color: "#000", cursor: "pointer", fontSize: 13, fontWeight: 800,
-                    boxShadow: "0 4px 16px rgba(74,222,128,0.3)",
+                    background: isB2B ? "linear-gradient(135deg,#1d4ed8,#2563eb)" : "linear-gradient(135deg,#4ade80,#16a34a)",
+                    color: isB2B ? "#fff" : "#000", cursor: "pointer", fontSize: 13, fontWeight: 800,
+                    boxShadow: isB2B ? "0 4px 16px rgba(37,99,235,0.35)" : "0 4px 16px rgba(74,222,128,0.3)",
                     transition: "transform 0.2s, box-shadow 0.2s",
                   }}
                   onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; }}
                   onMouseLeave={e => { e.currentTarget.style.transform = ""; }}
                 >
-                  🚀 Inizia!
+                  {isB2B ? "🏦 Inizia con Pro!" : "🚀 Inizia!"}
                 </button>
               )}
             </div>

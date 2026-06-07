@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Benvenuto su VinoInvest Pro</title>
+</head>
+<body style="margin:0;padding:0;background:#020617;font-family:'Helvetica Neue',Arial,sans-serif;color:#e2e8f0;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#020617;padding:40px 20px;">
+    <tr>
+      <td>
+        <table width="600" cellpadding="0" cellspacing="0" align="center" style="max-width:600px;background:#060d1e;border:1px solid rgba(59,130,246,0.2);border-radius:16px;overflow:hidden;">
+          <!-- Header -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#1d4ed8,#2563eb);padding:32px 40px;text-align:center;">
+              <div style="font-size:32px;margin-bottom:8px;">🍷</div>
+              <h1 style="font-family:Georgia,serif;font-size:28px;font-weight:700;color:#fff;margin:0 0 4px;">VinoInvest Pro</h1>
+              <p style="color:rgba(255,255,255,0.7);font-size:13px;margin:0;">Intelligence per Investitori Professionali</p>
+            </td>
+          </tr>
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px;">
+              <h2 style="font-size:22px;font-weight:700;color:#e2e8f0;margin:0 0 12px;">Benvenuto, {{NAME}}!</h2>
+              <p style="font-size:14px;color:#64748b;line-height:1.8;margin:0 0 28px;">
+                Il tuo account B2B su VinoInvest è attivo. Ecco come iniziare:
+              </p>
+              <!-- Steps -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                {{#each STEPS}}
+                <tr>
+                  <td style="padding:0 0 16px;">
+                    <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a1628;border:1px solid rgba(59,130,246,0.12);border-radius:12px;padding:16px;">
+                      <tr>
+                        <td width="36" valign="top" style="font-size:20px;padding-right:14px;">{{this.icon}}</td>
+                        <td>
+                          <div style="font-size:14px;font-weight:700;color:#e2e8f0;margin-bottom:4px;">{{this.title}}</div>
+                          <div style="font-size:13px;color:#475569;line-height:1.6;">{{this.desc}}</div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                {{/each}}
+              </table>
+              <!-- CTA -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:8px;">
+                <tr>
+                  <td align="center">
+                    <a href="{{PLATFORM_URL}}" style="display:inline-block;padding:14px 36px;background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;text-decoration:none;border-radius:10px;font-size:14px;font-weight:700;">
+                      Accedi alla Dashboard →
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <!-- Contact -->
+          <tr>
+            <td style="padding:24px 40px;border-top:1px solid rgba(59,130,246,0.1);background:#040810;">
+              <p style="font-size:12px;color:#334155;margin:0 0 8px;">Hai domande? Il nostro team è a disposizione:</p>
+              <p style="font-size:12px;color:#475569;margin:0;">
+                📧 <a href="mailto:sales@vinoinvest.com" style="color:#60a5fa;text-decoration:none;">sales@vinoinvest.com</a>
+                &nbsp;·&nbsp;
+                ⚖️ <a href="mailto:legal@vinoinvest.com" style="color:#60a5fa;text-decoration:none;">legal@vinoinvest.com</a>
+              </p>
+            </td>
+          </tr>
+        </table>
+        <p style="text-align:center;font-size:11px;color:#1e293b;margin-top:24px;">
+          © 2025 VinoInvest · GDPR Compliant · Dati conservati in EU<br>
+          <a href="{{UNSUBSCRIBE_URL}}" style="color:#1e293b;">Cancella iscrizione</a>
+        </p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
