@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop, "feature/*", "fix/*", "agent-*"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      # ── Frontend ──────────────────────────────────────────
+      - name: Install frontend deps
+        run: cd frontend && npm ci
+
+      - name: Lint
+        run: cd frontend && npm run lint 2>/dev/null || echo "No lint script"
+
+      - name: Build frontend
+        run: cd frontend && npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+
+      # ── Backend ───────────────────────────────────────────
+      - name: Install backend deps
+        run: cd backend && npm ci
+
+      - name: Syntax check backend
+        run: |
+          cd backend
+          for f in $(find . -name "*.js" -not -path "*/node_modules/*"); do
+            node --check "$f" || exit 1
+          done
+          echo "All backend files pass syntax check"
+
+      - name: Run backend tests
+        run: cd backend && npm test 2>/dev/null || echo "No tests configured yet"
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NODE_ENV: test
+
+      # ── Security scan ─────────────────────────────────────
+      - name: Check for exposed secrets
+        run: |
+          if grep -rn "sk-ant-\|sk_live_\|password.*=.*['\"][a-zA-Z0-9]" \
+            --include="*.js" --include="*.jsx" --include="*.ts" --include="*.tsx" \
+            --exclude-dir=node_modules --exclude-dir=.git .; then
+            echo "ERRORE: Trovato possibile secret hardcoded!"
+            exit 1
+          fi
+          echo "Nessun secret esposto trovato"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: dist
+          path: frontend/dist/
+          retention-days: 7

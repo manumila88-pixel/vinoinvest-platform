@@ -1,59 +1,85 @@
 {
-  "// VinoInvest Agent System — settings.json": "",
-  "// Posizione: .claude/settings.json nella root del progetto": "",
-  "// Documentazione: docs/QUICK_REF.md": "",
+  "//": "VinoInvest — Autonomous Agent Settings",
+
+  "model": "claude-sonnet-4-6",
 
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
-    "CLAUDE_CODE_MAX_SUBAGENTS": "10"
+    "CLAUDE_CODE_MAX_SUBAGENTS": "10",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "0"
   },
 
   "permissions": {
     "allow": [
       "Bash(npm run *)",
+      "Bash(npm ci)",
       "Bash(npm install *)",
-      "Bash(git status)",
-      "Bash(git diff *)",
-      "Bash(git log *)",
+      "Bash(npm test*)",
+      "Bash(node *)",
+      "Bash(node --check *)",
       "Bash(git add *)",
       "Bash(git commit *)",
       "Bash(git push *)",
+      "Bash(git checkout *)",
+      "Bash(git branch *)",
       "Bash(git worktree *)",
-      "Bash(node *)",
-      "Bash(bash test-all.sh*)",
-      "Bash(curl *)",
-      "Bash(mkdir -p *)",
-      "Bash(chmod +x *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git status)",
+      "Bash(git fetch *)",
+      "Bash(git pull *)",
+      "Bash(gh pr *)",
+      "Bash(gh issue *)",
+      "Bash(gh run *)",
+      "Bash(gh api *)",
+      "Bash(find * -name *)",
       "Bash(grep *)",
-      "Bash(find . *)",
       "Bash(cat *)",
+      "Bash(echo *)",
+      "Bash(mkdir *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(chmod +x *)",
+      "Bash(curl *)",
       "Bash(wc *)",
       "Bash(ls *)",
-      "Bash(echo *)",
       "Bash(python3 *)",
+      "Bash(bash test-all.sh*)",
       "Read(**)",
       "Write(frontend/src/**)",
       "Write(backend/src/**)",
-      "Write(backend/src/data/**)",
+      "Write(backend/src/emailTemplates/**)",
       "Write(agents/**)",
       "Write(scripts/**)",
       "Write(docs/**)",
       "Write(.claude/**)",
+      "Write(.github/**)",
       "Write(/tmp/**)",
       "Write(CLAUDE.md)",
       "Write(test-all.sh)",
-      "Write(vercel.json)",
+      "Write(install-autonomous.sh)",
       "Write(frontend/index.html)",
       "Write(frontend/vite.config.js)"
     ],
     "deny": [
       "Bash(rm -rf /)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf .git)",
       "Bash(sudo *)",
       "Bash(kill *)",
+      "Bash(git push --force)",
+      "Bash(git push origin main --force)",
+      "Bash(git reset --hard HEAD~*)",
+      "Bash(DROP TABLE *)",
+      "Bash(DELETE FROM * WHERE 1=1)",
+      "Write(.env)",
+      "Write(.env.*)",
       "Write(backend/.env)",
       "Write(frontend/.env)",
       "Write(frontend/.env.local)",
-      "Write(.env.production)"
+      "Write(.env.production)",
+      "Write(*.pem)",
+      "Write(*.key)"
     ]
   },
 
@@ -64,41 +90,73 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node scripts/pre-write-check.js \"$CLAUDE_TOOL_INPUT_PATH\" 2>/dev/null || exit 0",
-            "description": "Blocca scrittura su file critici (.env, secrets)"
+            "command": "node .claude/hooks/pre-write-guard.js \"$CLAUDE_TOOL_INPUT_PATH\" 2>/dev/null || exit 0",
+            "description": "Blocca scrittura su file critici"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/bash-safety.js \"$CLAUDE_TOOL_INPUT_COMMAND\" 2>/dev/null || exit 0",
+            "description": "Blocca comandi pericolosi"
           }
         ]
       }
     ],
+
     "PostToolCall": [
       {
         "matcher": "Write(frontend/src/**)",
         "hooks": [
           {
             "type": "command",
-            "command": "cd frontend && npm run build --silent 2>/tmp/build-check.log && echo 'BUILD_OK' || (echo 'BUILD_FAILED — vedi /tmp/build-check.log' && cat /tmp/build-check.log | tail -20)",
-            "description": "Auto-check build dopo ogni modifica frontend"
+            "command": "cd frontend && npm run build --silent 2>/tmp/build-check.log && echo 'BUILD_OK' || (echo 'BUILD_FAILED' && cat /tmp/build-check.log | tail -20)",
+            "description": "Build check automatico dopo ogni modifica frontend"
+          }
+        ]
+      },
+      {
+        "matcher": "Write(backend/src/**)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node --check \"$CLAUDE_TOOL_RESULT_PATH\" 2>/tmp/syntax.log && echo 'SYNTAX_OK' || (cat /tmp/syntax.log && echo 'SYNTAX_ERROR')",
+            "description": "Syntax check automatico backend"
           }
         ]
       }
     ],
+
+    "PostCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"[$(date '+%H:%M:%S')] Contesto compattato — sessione continua\" >> /tmp/agent-session.log",
+            "description": "Log post-compact"
+          }
+        ]
+      }
+    ],
+
     "Stop": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "echo \"[$(date '+%Y-%m-%d %H:%M:%S')] Session ended\" >> /tmp/vinoinvest-agent-log.txt",
-            "description": "Log fine sessione"
+            "command": "echo \"[$(date '+%Y-%m-%d %H:%M:%S')] Sessione terminata\" >> /tmp/vinoinvest-agent-log.txt && git diff --name-only HEAD 2>/dev/null | xargs -I{} echo 'File modificato: {}' >> /tmp/vinoinvest-agent-log.txt",
+            "description": "Log file modificati a fine sessione"
           }
         ]
       }
     ]
   },
 
-  "model": "claude-sonnet-4-6",
-
   "context": {
-    "compactThreshold": 0.7,
-    "autoCompact": true
+    "autoCompact": true,
+    "compactThreshold": 0.65
   }
 }

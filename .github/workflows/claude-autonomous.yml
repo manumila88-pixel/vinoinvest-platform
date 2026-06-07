@@ -1,0 +1,180 @@
+name: 🤖 Claude Autonomous Agent — Auto-Fix CI
+
+on:
+  # 1. Si attiva quando un test/build fallisce
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+  # 2. Si attiva su ogni PR (code review automatico)
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+  # 3. Si attiva ogni mattina alle 06:00 UTC (audit notturno)
+  schedule:
+    - cron: "0 6 * * *"
+
+  # 4. Risponde ai commenti @claude su PR/Issues
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  # ─────────────────────────────────────────────────
+  # JOB 1: Auto-fix quando CI fallisce
+  # ─────────────────────────────────────────────────
+  auto-fix-ci:
+    name: Auto-Fix CI Failure
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'failure'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Fix CI failures with Claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Il CI è fallito. Analizza i log e ripara il problema senza chiedere autorizzazioni.
+
+            ISTRUZIONI:
+            1. Leggi i log del workflow fallito
+            2. Identifica il tipo di errore (build, test, type error, missing import, ecc.)
+            3. Trova i file coinvolti
+            4. Applica la fix minimale necessaria
+            5. Verifica che la fix non rompa altro
+            6. Crea un commit con messaggio: "fix: [descrizione breve del problema]"
+            7. Apri una PR verso main se non esiste già
+
+            REGOLE VinoInvest:
+            - DB: ssl: { rejectUnauthorized: false } + ?sslmode=require
+            - Stripe: non modificare i 6 tier esistenti
+            - Non toccare .env o file di configurazione Vercel
+            - npm run build deve passare dopo la fix
+
+            Se il problema è ambiguo o richiede decisioni architetturali,
+            apri una GitHub Issue con diagnosi completa invece di fare una fix.
+          claude_args: >
+            --model claude-sonnet-4-6
+            --max-turns 25
+            --allowedTools "Edit,MultiEdit,Write,Read,Glob,Grep,LS,Bash(git:*),Bash(npm:*),Bash(node:*),Bash(gh:*)"
+
+  # ─────────────────────────────────────────────────
+  # JOB 2: Code review automatico su ogni PR
+  # ─────────────────────────────────────────────────
+  auto-review:
+    name: Auto Code Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Review PR with Claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Fai una code review completa di questa PR per il progetto VinoInvest.
+
+            CONTROLLA:
+            1. Bug e errori logici nel codice modificato
+            2. Vulnerabilità di sicurezza (SQL injection, XSS, secrets esposti)
+            3. Regressioni potenziali rispetto alle funzionalità esistenti
+            4. Violazioni delle convenzioni VinoInvest (SSL, Stripe tier, ecc.)
+            5. Performance: query N+1, render inutili, bundle size
+            6. TypeScript/JS errors e prop-types mancanti
+
+            FORMATO RISPOSTA:
+            - Usa inline comments sulle righe specifiche
+            - Priorità: 🔴 Critico (deve essere fixato) | 🟡 Importante | 🟢 Suggerimento
+            - Se tutto è OK, scrivi: "✅ Review completata — nessun problema critico"
+
+            NON bloccare PR per questioni stilistiche minori.
+          claude_args: >
+            --model claude-sonnet-4-6
+            --max-turns 15
+
+  # ─────────────────────────────────────────────────
+  # JOB 3: Health audit notturno (cron 06:00 UTC)
+  # ─────────────────────────────────────────────────
+  nightly-audit:
+    name: Nightly Health Audit
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run nightly audit
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Audit sanitario notturno di VinoInvest. Spawna 3 agenti in parallelo.
+
+            AGENT-FRONTEND (analizza src/):
+            - Cerca console.log non rimossi in produzione
+            - useEffect con dipendenze mancanti
+            - Componenti che si ri-renderano inutilmente (useMemo/useCallback mancanti)
+            - Import non utilizzati
+            - Bundle size: identifica i file più pesanti
+
+            AGENT-BACKEND (analizza backend/):
+            - Endpoint senza middleware di autenticazione
+            - Query SQL con possibile SQL injection
+            - Async functions senza try/catch
+            - Secrets o credenziali hardcoded (no .env)
+            - Rate limiting mancante su endpoint pubblici
+
+            AGENT-DB (analizza migrations/ e queries):
+            - Indici mancanti su colonne usate in JOIN o WHERE
+            - Query potenzialmente lente (no LIMIT su tabelle grandi)
+            - Migration senza rollback
+
+            DOPO L'AUDIT:
+            - Se trovi problemi critici 🔴: crea una GitHub Issue per ognuno
+            - Se trovi problemi importanti 🟡: crea una PR con fix automatica
+            - Se tutto è OK 🟢: posta un commento di summary sull'ultimo commit
+
+            Aggiungi sempre l'etichetta "autonomous-agent" alle issue/PR create.
+          claude_args: >
+            --model claude-sonnet-4-6
+            --max-turns 40
+            --allowedTools "Edit,MultiEdit,Write,Read,Glob,Grep,LS,Bash(git:*),Bash(npm:*),Bash(gh:*)"
+
+  # ─────────────────────────────────────────────────
+  # JOB 4: Risponde a @claude nei commenti
+  # ─────────────────────────────────────────────────
+  interactive:
+    name: Interactive @claude
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'issue_comment' ||
+      github.event_name == 'pull_request_review_comment'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_args: >
+            --model claude-sonnet-4-6
+            --max-turns 20
+            --allowedTools "Edit,MultiEdit,Write,Read,Glob,Grep,LS,Bash(git:*),Bash(npm:*),Bash(gh:*)"
