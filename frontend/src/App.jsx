@@ -26,6 +26,11 @@ import HelpBot from "./components/HelpBot";
 import GuidedTour, { isTourCompleted, resetTour } from "./components/GuidedTour";
 import InfoTooltip from "./components/InfoTooltip";
 import CookieBanner from "./components/CookieBanner";
+import CurrencySelector, { CurrencyProvider, usePrice } from "./components/CurrencySelector";
+import VintageScore from "./components/VintageScore";
+import InvestmentCalculator from "./components/InvestmentCalculator";
+import Learn from "./pages/Learn";
+import MarketIndex from "./pages/MarketIndex";
 import "./style.css";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
@@ -256,6 +261,7 @@ function App() {
   const [accountType, setAccountType] = useState("b2c");
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showTour, setShowTour] = useState(false);
+  const [showCalculator, setShowCalculator] = useState(false);
   const [chatInitMsg, setChatInitMsg] = useState("");
   const [tab, setTab] = useState("dashboard");
   const [modalWine, setModalWine] = useState(null);
@@ -821,6 +827,28 @@ function App() {
             onMouseEnter={e => { e.currentTarget.style.color = "#60a5fa"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.4)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(30,58,95,0.5)"; }}
           >🗺 Tour</button>
+          <button
+            onClick={() => setShowCalculator(true)}
+            title="Investment Calculator"
+            style={{ padding: "5px 10px", border: "1px solid rgba(96,165,250,0.25)", borderRadius: 8, background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "'Inter',Arial,sans-serif" }}
+            onMouseEnter={e => { e.currentTarget.style.color = "#60a5fa"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.5)"; }}
+            onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.25)"; }}
+          >🧮 Calc</button>
+          <button
+            onClick={() => navigate("/learn")}
+            title="Wine Investment Academy"
+            style={{ padding: "5px 10px", border: "1px solid rgba(74,222,128,0.25)", borderRadius: 8, background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "'Inter',Arial,sans-serif" }}
+            onMouseEnter={e => { e.currentTarget.style.color = "#4ade80"; e.currentTarget.style.borderColor = "rgba(74,222,128,0.5)"; }}
+            onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(74,222,128,0.25)"; }}
+          >🎓 Academy</button>
+          <button
+            onClick={() => navigate("/market-index")}
+            title="VinoInvest Index"
+            style={{ padding: "5px 10px", border: "1px solid rgba(201,162,39,0.25)", borderRadius: 8, background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "'Inter',Arial,sans-serif" }}
+            onMouseEnter={e => { e.currentTarget.style.color = "#C9A227"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.5)"; }}
+            onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.25)"; }}
+          >📊 Index</button>
+          <CurrencySelector />
           <LangSelector />
           {userEmail && <span style={{ fontSize: 12, color: "#3a5a7a" }}>{userEmail}</span>}
           {accountType && (
@@ -1514,6 +1542,9 @@ function App() {
         <GuidedTour onComplete={() => setShowTour(false)} />
       )}
 
+      {/* ── Investment Calculator ────────────────────────────────────────── */}
+      {showCalculator && <InvestmentCalculator onClose={() => setShowCalculator(false)} />}
+
       {/* ── Cookie Banner GDPR ──────────────────────────────────────────── */}
       <CookieBanner />
 
@@ -1543,14 +1574,25 @@ function App() {
   );
 }
 
+// Register Service Worker
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").catch(() => {});
+  });
+}
+
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <ToastProvider>
-      <Routes>
-        <Route path="/pricing" element={<Pricing />} />
-        <Route path="/b2b" element={<B2BPage />} />
-        <Route path="*" element={<App />} />
-      </Routes>
+      <CurrencyProvider>
+        <Routes>
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/b2b" element={<B2BPage />} />
+          <Route path="/learn" element={<Learn />} />
+          <Route path="/market-index" element={<MarketIndex />} />
+          <Route path="*" element={<App />} />
+        </Routes>
+      </CurrencyProvider>
     </ToastProvider>
   </BrowserRouter>
 );

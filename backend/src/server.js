@@ -24,12 +24,20 @@ import agentRouter from "./routes/agent.js";
 import purchaseRouter, { setPurchasePool } from "./routes/purchase.js";
 import adminRouter, { setAdminPool } from "./routes/admin.js";
 import wineInfoRouter from "./routes/wineInfo.js";
+import vintageRouter from "./routes/vintage.js";
+import currencyRouter from "./routes/currency.js";
+import gamificationRouter from "./routes/gamification.js";
+import marketRouter from "./routes/market.js";
 import { setTranslationPool } from "./services/translationService.js";
 import { startBlogAgent, setBlogPool as setBlogAgentPool } from "./agents/blogAgent.js";
 import { startImageAgent, setImagePool } from "./agents/imageAgent.js";
 import "./jobs/priceUpdater.js";
 import "./jobs/alertsChecker.js";
 import { proactiveResults, setAnalysisPool, setWinesRef } from "./jobs/portfolioAnalysisJob.js";
+import { setGamificationPool, initGamificationTable } from "./services/gamificationService.js";
+import { initTelegramBot } from "./bots/telegramBot.js";
+import { getVinoInvestIndex } from "./services/vinoInvestIndex.js";
+import { fetchRSSNews } from "./services/rssNewsService.js";
 
 // Global in-memory cache
 const appCache = new NodeCache({ stdTTL: 0, checkperiod: 120 });
@@ -135,6 +143,10 @@ app.use("/api/agent", aiRateLimit, agentRouter);
 app.use("/api/purchase", purchaseRouter);
 app.use("/api/admin", requireAuth, adminRouter);
 app.use("/api/wine-info", cacheFor(86400), wineInfoRouter); // 24h cache
+app.use("/api/vintage", cacheFor(86400 * 7), vintageRouter); // 7 days — historical doesn't change
+app.use("/api/currency", cacheFor(21600), currencyRouter);   // 6h — exchange rates
+app.use("/api/gamification", gamificationRouter);
+app.use("/api/market", cacheFor(86400), marketRouter);        // 24h — index + merchants
 
 const __filename =
   fileURLToPath(import.meta.url);
@@ -307,9 +319,16 @@ initDB().then(() => {
     initUsageTable(pool);
   }
   if (pool) setAnalysisPool(pool);
+  if (pool) { setGamificationPool(pool); initGamificationTable(); }
   // Start scheduled agents
   startBlogAgent();
   startImageAgent();
+
+  // Start Telegram bot (no-op if TELEGRAM_BOT_TOKEN not set)
+  setTimeout(() => {
+    try { initTelegramBot(allWines, getVinoInvestIndex, fetchRSSNews); }
+    catch (e) { console.warn("[telegramBot] init failed:", e.message); }
+  }, 3000);
 });
 
 async function getOrders(userId) {
