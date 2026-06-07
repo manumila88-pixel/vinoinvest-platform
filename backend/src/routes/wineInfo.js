@@ -1,35 +1,16 @@
 import { Router } from "express";
 import { fetchCellarTrackerPrice, fetchCellarTrackerNotes } from "../connectors/cellarTracker.js";
+import { getWikiSummary, getWikidataWine, getECBInflation, getAuctionIndexData } from "../services/freeDataService.js";
+import { getWineImage } from "../services/imageService.js";
 
 const router = Router();
 
-// In-memory cache: 24h TTL
-const wikiCache = new Map();
 const offCache = new Map();
 const ctCache = new Map();
-const WIKI_TTL = 24 * 60 * 60 * 1000;
+const TTL_24H = 24 * 60 * 60 * 1000;
 
 function slugify(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
-}
-
-// Wikipedia REST API — free, no auth needed
-async function fetchWikiSummary(query) {
-  const encoded = encodeURIComponent(query.replace(/ /g, "_"));
-  const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encoded}`;
-  const r = await fetch(url, {
-    headers: { "User-Agent": "VinoInvest/1.0 (manumila88@gmail.com)" },
-    signal: AbortSignal.timeout(5000),
-  });
-  if (!r.ok) throw new Error(`Wikipedia ${r.status}`);
-  const data = await r.json();
-  if (data.type === "disambiguation") throw new Error("disambiguation");
-  return {
-    title: data.title,
-    extract: data.extract,
-    thumbnail: data.thumbnail?.source || null,
-    url: data.content_urls?.desktop?.page || null,
-  };
 }
 
 // Open Food Facts — free, no auth needed
@@ -52,43 +33,47 @@ router.get("/wiki", async (req, res) => {
   const query = (req.query.q || "").toString().trim();
   if (!query || query.length < 2) return res.status(400).json({ error: "q required" });
 
-  const cacheKey = slugify(query);
-  const cached = wikiCache.get(cacheKey);
-  if (cached && Date.now() - cached.ts < WIKI_TTL) {
-    return res.json({ ...cached.data, cached: true });
+  try {
+    // Try full name, then producer-only (first 3 words), then single word
+    const attempts = [query, query.split(" ").slice(0, 3).join(" "), query.split(" ")[0]];
+    for (const attempt of attempts) {
+      const data = await getWikiSummary(attempt);
+      if (data?.extract) return res.json(data);
+    }
+    res.json({ title: query, extract: null, thumbnail: null, url: null, source: "not_found" });
+  } catch (err) {
+    res.json({ title: query, extract: null, source: "error", error: err.message });
   }
-
-  // Try exact query first, then simplified (first word = producer)
-  const attempts = [query, query.split(" ").slice(0, 3).join(" "), query.split(" ")[0]];
-
-  for (const attempt of attempts) {
-    try {
-      const data = await fetchWikiSummary(attempt);
-      wikiCache.set(cacheKey, { data, ts: Date.now() });
-      return res.json(data);
-    } catch (_) {}
-  }
-
-  res.json({ title: query, extract: null, thumbnail: null, url: null, source: "not_found" });
 });
 
-// GET /api/wine-info/image?q=Château+Lafite+Rothschild
+// GET /api/wine-info/image?q=Château+Lafite+Rothschild&id=123
 router.get("/image", async (req, res) => {
   const query = (req.query.q || "").toString().trim();
+  const id = req.query.id || null;
   if (!query) return res.status(400).json({ error: "q required" });
 
-  const cacheKey = slugify(query);
+  const cacheKey = slugify(id ? `id_${id}` : query);
   const cached = offCache.get(cacheKey);
-  if (cached && Date.now() - cached.ts < WIKI_TTL) {
+  if (cached && Date.now() - cached.ts < TTL_24H) {
     return res.json({ ...cached.data, cached: true });
   }
+
+  // Try imageService (multi-source) first, then OFF directly
+  try {
+    const imgUrl = await getWineImage(id, query);
+    if (imgUrl) {
+      const result = { imageUrl: imgUrl, source: "multi" };
+      offCache.set(cacheKey, { data: result, ts: Date.now() });
+      return res.json(result);
+    }
+  } catch { /* fallthrough */ }
 
   try {
     const imageUrl = await fetchOFFImage(query);
     const result = { imageUrl, source: "openfoodfacts" };
     offCache.set(cacheKey, { data: result, ts: Date.now() });
     return res.json(result);
-  } catch (_) {
+  } catch {
     return res.json({ imageUrl: null, source: "not_found" });
   }
 });
@@ -101,7 +86,7 @@ router.get("/price", async (req, res) => {
 
   const cacheKey = slugify(`${query}_${vintage || "any"}`);
   const cached = ctCache.get(cacheKey);
-  if (cached && Date.now() - cached.ts < WIKI_TTL) {
+  if (cached && Date.now() - cached.ts < TTL_24H) {
     return res.json({ ...cached.data, cached: true });
   }
 
@@ -123,9 +108,31 @@ router.get("/notes", async (req, res) => {
   try {
     const data = await fetchCellarTrackerNotes(query, vintage);
     return res.json(data);
-  } catch (err) {
+  } catch {
     return res.json({ notes: [], source: "cellartracker" });
   }
+});
+
+// GET /api/wine-info/wikidata?q=Barolo
+router.get("/wikidata", async (req, res) => {
+  const query = (req.query.q || "").toString().trim();
+  if (!query) return res.status(400).json({ error: "q required" });
+
+  const data = await getWikidataWine(query);
+  res.json(data || { region: null, grape: null, country: null, inception: null, source: "not_found" });
+});
+
+// GET /api/wine-info/inflation — ECB Euro Area HICP
+router.get("/inflation", async (_req, res) => {
+  const data = await getECBInflation();
+  if (!data) return res.status(503).json({ error: "ECB data unavailable" });
+  res.json(data);
+});
+
+// GET /api/wine-info/market-index — Auction/market index estimates
+router.get("/market-index", async (_req, res) => {
+  const data = await getAuctionIndexData();
+  res.json(data || { livex100_ytd: null, source: "unavailable" });
 });
 
 export default router;

@@ -983,6 +983,24 @@ app.get("/api/ai/proactive-analysis/:userId", (req, res) => {
   res.json({ available: true, ageMinutes: ageMin, ...result });
 });
 
+// GET /api/sitemap.xml — dynamic sitemap for SEO
+app.get("/api/sitemap.xml", (_req, res) => {
+  const base = "https://vinoinvest-platform.vercel.app";
+  const staticUrls = ["/", "/pricing", "/blog"].map(p =>
+    `<url><loc>${base}${p}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>`
+  );
+  const wineUrls = allWines.slice(0, 10000).map(w => {
+    const slug = (w.id || w.name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    return `<url><loc>${base}/wine/${slug}</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>`;
+  });
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${[...staticUrls, ...wineUrls].join("\n")}
+</urlset>`;
+  res.setHeader("Content-Type", "application/xml");
+  res.send(xml);
+});
+
 const PORT =
   process.env.PORT || 3000;
 

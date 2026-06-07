@@ -25,6 +25,7 @@ import OnboardingModal, { isOnboardingCompleted, resetOnboarding } from "./compo
 import HelpBot from "./components/HelpBot";
 import GuidedTour, { isTourCompleted, resetTour } from "./components/GuidedTour";
 import InfoTooltip from "./components/InfoTooltip";
+import CookieBanner from "./components/CookieBanner";
 import "./style.css";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
@@ -1512,6 +1513,25 @@ function App() {
       {showTour && (
         <GuidedTour onComplete={() => setShowTour(false)} />
       )}
+
+      {/* ── Cookie Banner GDPR ──────────────────────────────────────────── */}
+      <CookieBanner />
+
+      {/* ── Disclaimer Footer ───────────────────────────────────────────── */}
+      <footer style={{
+        borderTop: "1px solid rgba(30,41,59,0.4)", padding: "16px 24px",
+        textAlign: "center", fontSize: 10, color: "#475569",
+        lineHeight: 1.6, background: "rgba(2,6,23,0.8)",
+      }}>
+        VinoInvest fornisce dati e analisi a scopo informativo.{" "}
+        <strong style={{ color: "#64748b" }}>Non costituisce consulenza finanziaria.</strong>{" "}
+        I prezzi mostrati sono indicativi. Investire nel vino comporta rischi.
+        I rendimenti passati non garantiscono rendimenti futuri.{" "}
+        <span style={{ color: "#334155" }}>
+          © {new Date().getFullYear()} VinoInvest · Dati: CellarTracker, Wikipedia, Open Food Facts (licenza CC) ·{" "}
+          <a href="mailto:manumila88@gmail.com" style={{ color: "#475569", textDecoration: "none" }}>Contatti</a>
+        </span>
+      </footer>
 
       <style>{`
         @keyframes floatIn {

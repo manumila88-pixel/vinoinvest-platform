@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Crawl-delay: 2
 
-Sitemap: https://vinoinvest-platform.vercel.app/sitemap.xml
+Sitemap: https://vinoinvest-backend-2.onrender.com/api/sitemap.xml
