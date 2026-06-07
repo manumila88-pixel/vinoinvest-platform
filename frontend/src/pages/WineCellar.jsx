@@ -1,0 +1,358 @@
+import React, { useState, useEffect } from "react";
+import { supabase } from "../lib/supabase";
+
+const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
+const SHELF_COLS = 8;
+const SHELF_ROWS = 6;
+const TOTAL_SHELVES = 3;
+
+const SLOT_COLORS = {
+  optimal: "#4ade80",
+  young: "#60a5fa",
+  overdue: "#f87171",
+  empty: "rgba(30,41,59,0.4)",
+};
+
+function getSlotStatus(bottle) {
+  if (!bottle) return "empty";
+  const now = new Date();
+  if (!bottle.drink_from && !bottle.drink_until) return "optimal";
+  const from = bottle.drink_from ? new Date(bottle.drink_from) : null;
+  const until = bottle.drink_until ? new Date(bottle.drink_until) : null;
+  if (until && now > until) return "overdue";
+  if (from && now < from) return "young";
+  return "optimal";
+}
+
+export default function WineCellar() {
+  const [bottles, setBottles] = useState([]);
+  const [stats, setStats] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [activeShelf, setActiveShelf] = useState(1);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [selectedBottle, setSelectedBottle] = useState(null);
+  const [form, setForm] = useState({ wine_name: "", producer: "", vintage: "", quantity: 1, purchase_price: "", drink_from: "", drink_until: "", notes: "" });
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedWine, setSelectedWine] = useState(null);
+
+  useEffect(() => { loadCellar(); }, []);
+
+  async function loadCellar() {
+    setLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) { setLoading(false); return; }
+
+      const [bRes, sRes] = await Promise.all([
+        fetch(`${API}/api/cellar`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${API}/api/cellar/stats`, { headers: { Authorization: `Bearer ${token}` } }),
+      ]);
+      const bData = await bRes.json();
+      const sData = await sRes.json();
+      setBottles(bData.bottles || []);
+      setStats(sData);
+    } catch (e) { console.error(e); }
+    setLoading(false);
+  }
+
+  async function searchWines(q) {
+    if (q.length < 2) { setSearchResults([]); return; }
+    const res = await fetch(`${API}/api/wines?search=${encodeURIComponent(q)}&limit=5`);
+    const data = await res.json();
+    setSearchResults(data.wines || []);
+  }
+
+  async function addBottle(slot) {
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+    if (!token) return;
+
+    const body = {
+      wine_id: selectedWine?.id || null,
+      quantity: form.quantity || 1,
+      purchase_price: form.purchase_price || null,
+      shelf_number: activeShelf,
+      position: slot,
+      notes: form.notes || null,
+      drink_from: form.drink_from || null,
+      drink_until: form.drink_until || null,
+    };
+
+    await fetch(`${API}/api/cellar`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify(body),
+    });
+
+    setShowAddModal(false);
+    setSelectedWine(null);
+    setForm({ wine_name: "", producer: "", vintage: "", quantity: 1, purchase_price: "", drink_from: "", drink_until: "", notes: "" });
+    loadCellar();
+  }
+
+  async function removeBottle(id) {
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+    await fetch(`${API}/api/cellar/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
+    setSelectedBottle(null);
+    loadCellar();
+  }
+
+  function getBottleAtSlot(shelf, slot) {
+    return bottles.find(b => b.shelf_number === shelf && b.position === slot) || null;
+  }
+
+  const shelfBottles = bottles.filter(b => b.shelf_number === activeShelf);
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#020617", color: "#e2e8f0" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 24px" }}>
+        <a href="/" style={{ color: "#64748b", fontSize: 13, textDecoration: "none" }}>← Back</a>
+
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "24px 0 32px", flexWrap: "wrap", gap: 16 }}>
+          <div>
+            <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 32, marginBottom: 6 }}>🍾 Wine Cellar</h1>
+            <p style={{ color: "#64748b", fontSize: 14 }}>Manage your physical wine collection</p>
+          </div>
+          <button
+            onClick={() => { setShowAddModal(true); setSelectedSlot(null); }}
+            style={{ background: "#C9A227", color: "#020617", border: "none", borderRadius: 10, padding: "10px 20px", fontWeight: 700, cursor: "pointer", fontSize: 14 }}
+          >
+            + Add Bottle
+          </button>
+        </div>
+
+        {/* Stats */}
+        {!loading && (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 16, marginBottom: 32 }}>
+            {[
+              { label: "Total Bottles", value: stats.total_quantity || 0, color: "#C9A227" },
+              { label: "Unique Wines", value: stats.unique_wines || 0, color: "#818cf8" },
+              { label: "Value", value: stats.current_value ? `€${Math.round(stats.current_value).toLocaleString()}` : "–", color: "#4ade80" },
+              { label: "Optimal Window", value: stats.in_window || 0, icon: "🟢" },
+              { label: "Too Young", value: stats.too_young || 0, icon: "🔵" },
+              { label: "Past Peak", value: stats.past_peak || 0, icon: "🔴" },
+            ].map(s => (
+              <div key={s.label} style={{ background: "rgba(11,18,32,0.8)", border: "1px solid rgba(30,41,59,0.6)", borderRadius: 12, padding: "16px 18px" }}>
+                <div style={{ fontSize: 22, fontWeight: 800, color: s.color || "#e2e8f0" }}>{s.icon ? `${s.icon} ${s.value}` : s.value}</div>
+                <div style={{ fontSize: 11, color: "#64748b", marginTop: 4 }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Shelf selector */}
+        <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
+          {Array.from({ length: TOTAL_SHELVES }, (_, i) => i + 1).map(n => (
+            <button key={n} onClick={() => setActiveShelf(n)} style={{
+              background: activeShelf === n ? "#C9A227" : "rgba(30,41,59,0.5)",
+              color: activeShelf === n ? "#020617" : "#94a3b8",
+              border: "none", borderRadius: 8, padding: "8px 20px", fontWeight: 600, cursor: "pointer", fontSize: 13
+            }}>Shelf {n}</button>
+          ))}
+        </div>
+
+        {/* Legend */}
+        <div style={{ display: "flex", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
+          {[
+            { color: SLOT_COLORS.optimal, label: "Optimal window" },
+            { color: SLOT_COLORS.young, label: "Too young" },
+            { color: SLOT_COLORS.overdue, label: "Past peak" },
+            { color: SLOT_COLORS.empty, label: "Empty" },
+          ].map(l => (
+            <div key={l.label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#94a3b8" }}>
+              <span style={{ width: 12, height: 12, borderRadius: 3, background: l.color, display: "inline-block", flexShrink: 0 }} />
+              {l.label}
+            </div>
+          ))}
+        </div>
+
+        {/* Cellar Grid */}
+        <div style={{
+          background: "rgba(5,10,20,0.9)", border: "1px solid rgba(201,162,39,0.2)", borderRadius: 16,
+          padding: 20, marginBottom: 32,
+        }}>
+          <div style={{ display: "grid", gridTemplateColumns: `repeat(${SHELF_COLS}, 1fr)`, gap: 8 }}>
+            {Array.from({ length: SHELF_ROWS * SHELF_COLS }, (_, i) => {
+              const slotNum = i + 1;
+              const bottle = getBottleAtSlot(activeShelf, slotNum);
+              const status = getSlotStatus(bottle);
+              return (
+                <div
+                  key={slotNum}
+                  onClick={() => {
+                    if (bottle) { setSelectedBottle(bottle); }
+                    else { setSelectedSlot(slotNum); setShowAddModal(true); }
+                  }}
+                  title={bottle ? `${bottle.name || "Wine"} (${bottle.vintage || "?"})` : `Empty slot ${slotNum}`}
+                  style={{
+                    aspectRatio: "1/1.6",
+                    borderRadius: 6,
+                    background: bottle ? SLOT_COLORS[status] + "30" : SLOT_COLORS.empty,
+                    border: `2px solid ${bottle ? SLOT_COLORS[status] : "rgba(30,41,59,0.3)"}`,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: bottle ? "20px" : "12px",
+                    color: bottle ? SLOT_COLORS[status] : "#334155",
+                    transition: "transform 0.15s, opacity 0.15s",
+                    position: "relative",
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.transform = "scale(1.08)"}
+                  onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
+                >
+                  {bottle ? "🍷" : "+"}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Bottle list */}
+        {shelfBottles.length > 0 && (
+          <div>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, marginBottom: 16 }}>Shelf {activeShelf} — {shelfBottles.length} bottles</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {shelfBottles.map(b => (
+                <div key={b.id} style={{
+                  background: "rgba(11,18,32,0.8)", border: "1px solid rgba(30,41,59,0.5)", borderRadius: 12, padding: "14px 18px",
+                  display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap"
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <span style={{ fontSize: 24 }}>🍷</span>
+                    <div>
+                      <div style={{ fontWeight: 600 }}>{b.name || "Unknown Wine"}</div>
+                      <div style={{ fontSize: 12, color: "#64748b" }}>{b.producer} · {b.vintage} · Pos. {b.position}</div>
+                    </div>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+                    {b.drink_from && b.drink_until && (
+                      <span style={{ fontSize: 11, color: "#94a3b8" }}>
+                        {new Date(b.drink_from).getFullYear()}–{new Date(b.drink_until).getFullYear()}
+                      </span>
+                    )}
+                    <span style={{
+                      fontSize: 11, padding: "2px 8px", borderRadius: 4, fontWeight: 600,
+                      background: SLOT_COLORS[getSlotStatus(b)] + "20", color: SLOT_COLORS[getSlotStatus(b)]
+                    }}>
+                      {getSlotStatus(b) === "optimal" ? "In window" : getSlotStatus(b) === "young" ? "Too young" : "Past peak"}
+                    </span>
+                    <button onClick={() => removeBottle(b.id)} style={{ background: "rgba(239,68,68,0.1)", color: "#f87171", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 6, padding: "4px 10px", fontSize: 12, cursor: "pointer" }}>
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Add Modal */}
+        {showAddModal && (
+          <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", zIndex: 9000, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }} onClick={() => setShowAddModal(false)}>
+            <div style={{ background: "#0f172a", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 20, padding: 28, width: "100%", maxWidth: 440, maxHeight: "90vh", overflowY: "auto" }} onClick={e => e.stopPropagation()}>
+              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, marginBottom: 20 }}>Add to Cellar</h3>
+
+              <div style={{ marginBottom: 16 }}>
+                <label style={{ fontSize: 12, color: "#94a3b8", display: "block", marginBottom: 6 }}>Search wine database</label>
+                <input
+                  placeholder="Search by name..."
+                  onChange={e => searchWines(e.target.value)}
+                  style={{ width: "100%", padding: "10px 14px", background: "rgba(15,23,42,0.8)", border: "1px solid rgba(30,41,59,0.6)", borderRadius: 8, color: "#e2e8f0", fontSize: 14 }}
+                />
+                {searchResults.length > 0 && (
+                  <div style={{ marginTop: 4, background: "#0f172a", border: "1px solid rgba(30,41,59,0.6)", borderRadius: 8 }}>
+                    {searchResults.map(w => (
+                      <div key={w.id} onClick={() => { setSelectedWine(w); setSearchResults([]); }} style={{ padding: "8px 14px", cursor: "pointer", fontSize: 13, borderBottom: "1px solid rgba(30,41,59,0.3)" }}>
+                        <span style={{ fontWeight: 600 }}>{w.name}</span> <span style={{ color: "#64748b" }}>{w.vintage}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {selectedWine && <div style={{ fontSize: 12, color: "#4ade80", marginTop: 6 }}>✓ Selected: {selectedWine.name}</div>}
+              </div>
+
+              {[
+                { label: "Quantity", key: "quantity", type: "number", min: 1 },
+                { label: "Purchase Price (€)", key: "purchase_price", type: "number" },
+                { label: "Drink From", key: "drink_from", type: "date" },
+                { label: "Drink Until", key: "drink_until", type: "date" },
+              ].map(f => (
+                <div key={f.key} style={{ marginBottom: 14 }}>
+                  <label style={{ fontSize: 12, color: "#94a3b8", display: "block", marginBottom: 6 }}>{f.label}</label>
+                  <input
+                    type={f.type}
+                    min={f.min}
+                    value={form[f.key]}
+                    onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))}
+                    style={{ width: "100%", padding: "10px 14px", background: "rgba(15,23,42,0.8)", border: "1px solid rgba(30,41,59,0.6)", borderRadius: 8, color: "#e2e8f0", fontSize: 14 }}
+                  />
+                </div>
+              ))}
+
+              <div style={{ marginBottom: 20 }}>
+                <label style={{ fontSize: 12, color: "#94a3b8", display: "block", marginBottom: 6 }}>Notes</label>
+                <textarea
+                  value={form.notes}
+                  onChange={e => setForm(p => ({ ...p, notes: e.target.value }))}
+                  rows={3}
+                  style={{ width: "100%", padding: "10px 14px", background: "rgba(15,23,42,0.8)", border: "1px solid rgba(30,41,59,0.6)", borderRadius: 8, color: "#e2e8f0", fontSize: 14, resize: "none" }}
+                />
+              </div>
+
+              <div style={{ display: "flex", gap: 10 }}>
+                <button onClick={() => setShowAddModal(false)} style={{ flex: 1, padding: "10px", background: "rgba(30,41,59,0.5)", color: "#94a3b8", border: "1px solid rgba(30,41,59,0.6)", borderRadius: 8, cursor: "pointer" }}>Cancel</button>
+                <button
+                  onClick={() => addBottle(selectedSlot || Math.max(0, ...(shelfBottles.map(b => b.position) || [0])) + 1)}
+                  style={{ flex: 2, padding: "10px", background: "#C9A227", color: "#020617", border: "none", borderRadius: 8, fontWeight: 700, cursor: "pointer" }}
+                >
+                  Add to Cellar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Bottle detail */}
+        {selectedBottle && (
+          <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", zIndex: 9000, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }} onClick={() => setSelectedBottle(null)}>
+            <div style={{ background: "#0f172a", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 20, padding: 28, width: "100%", maxWidth: 360 }} onClick={e => e.stopPropagation()}>
+              <div style={{ fontSize: 40, textAlign: "center", marginBottom: 16 }}>🍷</div>
+              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, marginBottom: 4, textAlign: "center" }}>{selectedBottle.name}</h3>
+              <p style={{ color: "#64748b", fontSize: 13, textAlign: "center", marginBottom: 20 }}>{selectedBottle.producer} · {selectedBottle.vintage}</p>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
+                {[
+                  { label: "Shelf", value: selectedBottle.shelf_number },
+                  { label: "Position", value: selectedBottle.position },
+                  { label: "Quantity", value: selectedBottle.quantity },
+                  { label: "Paid", value: selectedBottle.purchase_price ? `€${selectedBottle.purchase_price}` : "–" },
+                  { label: "Drink from", value: selectedBottle.drink_from ? new Date(selectedBottle.drink_from).getFullYear() : "–" },
+                  { label: "Drink by", value: selectedBottle.drink_until ? new Date(selectedBottle.drink_until).getFullYear() : "–" },
+                ].map(f => (
+                  <div key={f.label} style={{ background: "rgba(30,41,59,0.3)", borderRadius: 8, padding: "10px 12px" }}>
+                    <div style={{ fontSize: 10, color: "#64748b", marginBottom: 2 }}>{f.label}</div>
+                    <div style={{ fontWeight: 600, fontSize: 14 }}>{f.value}</div>
+                  </div>
+                ))}
+              </div>
+
+              {selectedBottle.notes && (
+                <div style={{ background: "rgba(30,41,59,0.2)", borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 13, color: "#94a3b8" }}>
+                  {selectedBottle.notes}
+                </div>
+              )}
+
+              <button onClick={() => removeBottle(selectedBottle.id)} style={{ width: "100%", padding: 12, background: "rgba(239,68,68,0.1)", color: "#f87171", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 10, cursor: "pointer", fontWeight: 600 }}>
+                Remove from Cellar
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

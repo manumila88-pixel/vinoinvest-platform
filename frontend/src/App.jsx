@@ -31,6 +31,20 @@ import VintageScore from "./components/VintageScore";
 import InvestmentCalculator from "./components/InvestmentCalculator";
 import Learn from "./pages/Learn";
 import MarketIndex from "./pages/MarketIndex";
+import WineCellar from "./pages/WineCellar";
+import WineJournal from "./pages/WineJournal";
+import LabelScannerPage from "./pages/LabelScanner";
+import ReferralPage from "./pages/ReferralPage";
+import SharePortfolio from "./pages/SharePortfolio";
+import EnPrimeur from "./pages/EnPrimeur";
+import AuctionTracker from "./pages/AuctionTracker";
+import PressKit from "./pages/PressKit";
+import MarketSentiment from "./pages/MarketSentiment";
+import InvestmentGoals from "./pages/InvestmentGoals";
+import Transparency from "./pages/Transparency";
+import ThemeToggle from "./components/ThemeToggle";
+import VoiceInterface from "./components/VoiceInterface";
+import { getSavedTheme, applyTheme } from "./lib/theme";
 import "./style.css";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
@@ -252,6 +266,37 @@ function PortfolioSparkline({ wineId, purchasePrice, currentPrice }) {
 }
 
 // ── App ───────────────────────────────────────────────────────────────────────
+function PWAInstallBanner() {
+  const [deferredPrompt, setDeferredPrompt] = React.useState(null);
+  const [visible, setVisible] = React.useState(false);
+
+  React.useEffect(() => {
+    const handler = (e) => { e.preventDefault(); setDeferredPrompt(e); setVisible(true); };
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+
+  if (!visible) return null;
+
+  return (
+    <div style={{
+      position: "fixed", bottom: 100, left: 16, right: 16, zIndex: 8888,
+      background: "#0f172a", border: "1px solid rgba(201,162,39,0.4)", borderRadius: 14,
+      padding: "14px 18px", display: "flex", alignItems: "center", gap: 12,
+      boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+      maxWidth: 400, margin: "0 auto",
+    }}>
+      <span style={{ fontSize: 28 }}>📱</span>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontWeight: 700, fontSize: 13 }}>Install VinoInvest</div>
+        <div style={{ fontSize: 11, color: "#64748b" }}>Add to home screen for quick access</div>
+      </div>
+      <button onClick={async () => { deferredPrompt?.prompt(); setVisible(false); }} style={{ background: "#C9A227", color: "#020617", border: "none", borderRadius: 8, padding: "7px 14px", fontWeight: 700, cursor: "pointer", fontSize: 12 }}>Install</button>
+      <button onClick={() => setVisible(false)} style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 20, padding: 0 }}>×</button>
+    </div>
+  );
+}
+
 function App() {
   const navigate = useNavigate();
   const toast = useToast();
@@ -848,6 +893,8 @@ function App() {
             onMouseEnter={e => { e.currentTarget.style.color = "#C9A227"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.5)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.25)"; }}
           >📊 Index</button>
+          <ThemeToggle />
+          <a href="/scan" title="Scan wine label" style={{ padding: "6px 10px", border: "1px solid rgba(30,41,59,0.7)", borderRadius: 8, background: "transparent", color: "#4a6a8a", fontSize: 15, cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center" }}>📷</a>
           <CurrencySelector />
           <LangSelector />
           {userEmail && <span style={{ fontSize: 12, color: "#3a5a7a" }}>{userEmail}</span>}
@@ -1548,18 +1595,48 @@ function App() {
       {/* ── Cookie Banner GDPR ──────────────────────────────────────────── */}
       <CookieBanner />
 
-      {/* ── Disclaimer Footer ───────────────────────────────────────────── */}
+      {/* ── PWA Install Banner ──────────────────────────────────────────── */}
+      <PWAInstallBanner />
+
+      {/* ── Footer ──────────────────────────────────────────────────── */}
       <footer style={{
-        borderTop: "1px solid rgba(30,41,59,0.4)", padding: "16px 24px",
+        borderTop: "1px solid rgba(30,41,59,0.4)", padding: "20px 24px",
         textAlign: "center", fontSize: 10, color: "#475569",
-        lineHeight: 1.6, background: "rgba(2,6,23,0.8)",
+        lineHeight: 1.8, background: "rgba(2,6,23,0.8)",
       }}>
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "4px 12px", marginBottom: 8, fontSize: 11 }}>
+          {[
+            { label: "Cellar", href: "/cellar" }, { label: "Journal", href: "/journal" },
+            { label: "Goals", href: "/goals" }, { label: "En Primeur", href: "/en-primeur" },
+            { label: "Auctions", href: "/auctions" }, { label: "Sentiment", href: "/sentiment" },
+            { label: "Referral", href: "/referral" }, { label: "Press", href: "/press" },
+            { label: "Transparency", href: "/transparency" },
+          ].map(l => <a key={l.href} href={l.href} style={{ color: "#475569", textDecoration: "none" }}>{l.label}</a>)}
+        </div>
+        <div style={{ marginBottom: 6 }}>
+          Dati forniti da:{" "}
+          {[
+            { n: "Wine-Searcher", u: "https://www.wine-searcher.com" },
+            { n: "CellarTracker", u: "https://www.cellartracker.com" },
+            { n: "Decanter", u: "https://www.decanter.com" },
+            { n: "Liv-ex", u: "https://www.liv-ex.com" },
+            { n: "Open-Meteo", u: "https://open-meteo.com" },
+            { n: "Wikipedia", u: "https://www.wikipedia.org" },
+            { n: "ECB", u: "https://www.ecb.europa.eu" },
+          ].map((s, i) => (
+            <span key={s.n}>
+              {i > 0 && " · "}
+              <a href={s.u} target="_blank" rel="noopener noreferrer" style={{ color: "#475569", textDecoration: "none" }}>{s.n} ↗</a>
+            </span>
+          ))}
+        </div>
         VinoInvest fornisce dati e analisi a scopo informativo.{" "}
         <strong style={{ color: "#64748b" }}>Non costituisce consulenza finanziaria.</strong>{" "}
         I prezzi mostrati sono indicativi. Investire nel vino comporta rischi.
         I rendimenti passati non garantiscono rendimenti futuri.{" "}
         <span style={{ color: "#334155" }}>
-          © {new Date().getFullYear()} VinoInvest · Dati: CellarTracker, Wikipedia, Open Food Facts (licenza CC) ·{" "}
+          © {new Date().getFullYear()} VinoInvest ·{" "}
+          <a href="/transparency" style={{ color: "#475569", textDecoration: "none" }}>Trasparenza dati</a>{" · "}
           <a href="mailto:manumila88@gmail.com" style={{ color: "#475569", textDecoration: "none" }}>Contatti</a>
         </span>
       </footer>
@@ -1590,6 +1667,18 @@ createRoot(document.getElementById("root")).render(
           <Route path="/b2b" element={<B2BPage />} />
           <Route path="/learn" element={<Learn />} />
           <Route path="/market-index" element={<MarketIndex />} />
+          <Route path="/cellar" element={<WineCellar />} />
+          <Route path="/journal" element={<WineJournal />} />
+          <Route path="/scan" element={<LabelScannerPage />} />
+          <Route path="/referral" element={<ReferralPage />} />
+          <Route path="/share/:id" element={<SharePortfolio />} />
+          <Route path="/share" element={<SharePortfolio />} />
+          <Route path="/en-primeur" element={<EnPrimeur />} />
+          <Route path="/auctions" element={<AuctionTracker />} />
+          <Route path="/press" element={<PressKit />} />
+          <Route path="/sentiment" element={<MarketSentiment />} />
+          <Route path="/goals" element={<InvestmentGoals />} />
+          <Route path="/transparency" element={<Transparency />} />
           <Route path="*" element={<App />} />
         </Routes>
       </CurrencyProvider>

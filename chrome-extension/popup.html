@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VinoInvest</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { width: 320px; background: #020617; color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; }
+    .header { padding: 16px 18px; border-bottom: 1px solid rgba(201,162,39,0.2); display: flex; align-items: center; gap: 8px; }
+    .logo { font-size: 18px; font-weight: 900; }
+    .logo span { color: #C9A227; }
+    .body { padding: 16px 18px; }
+    .search-input { width: 100%; padding: 10px 14px; background: rgba(15,23,42,0.8); border: 1px solid rgba(30,41,59,0.6); border-radius: 8px; color: #e2e8f0; font-size: 13px; outline: none; margin-bottom: 10px; }
+    .search-btn { width: 100%; padding: 10px; background: #C9A227; color: #020617; border: none; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; }
+    .divider { border: none; border-top: 1px solid rgba(30,41,59,0.4); margin: 16px 0; }
+    .links { display: flex; flex-direction: column; gap: 8px; }
+    .link { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: rgba(11,18,32,0.8); border: 1px solid rgba(30,41,59,0.4); border-radius: 8px; text-decoration: none; color: #e2e8f0; font-size: 13px; cursor: pointer; }
+    .link:hover { border-color: rgba(201,162,39,0.3); }
+    .link span:first-child { font-size: 16px; }
+    .result { margin-top: 12px; padding: 12px; background: rgba(11,18,32,0.9); border: 1px solid rgba(201,162,39,0.2); border-radius: 10px; display: none; }
+    .score-num { font-size: 28px; font-weight: 900; color: #C9A227; }
+    .signal-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+    .footer { padding: 10px 18px; border-top: 1px solid rgba(30,41,59,0.3); font-size: 10px; color: #475569; text-align: center; }
+    a { color: #C9A227; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span style="font-size:20px">🍷</span>
+    <span class="logo">Vino<span>Invest</span></span>
+    <span style="font-size:10px;color:#64748b;margin-left:auto">v1.0</span>
+  </div>
+
+  <div class="body">
+    <input type="text" id="wine-search" class="search-input" placeholder="Search a wine...">
+    <button class="search-btn" id="search-btn">🔍 Get AI Score</button>
+
+    <div class="result" id="result">
+      <div id="wine-name" style="font-weight:700;font-size:14px;margin-bottom:8px;"></div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <div>
+          <div class="score-num" id="score-val">–</div>
+          <div style="font-size:10px;color:#64748b">AI Score</div>
+        </div>
+        <span class="signal-badge" id="signal-badge" style="background:rgba(201,162,39,0.15);color:#C9A227;border:1px solid rgba(201,162,39,0.3)">–</span>
+      </div>
+      <a id="view-link" href="#" target="_blank" style="display:block;text-align:center;padding:8px;background:#C9A227;color:#020617;border-radius:7px;font-weight:700;font-size:12px">View on VinoInvest →</a>
+      <div style="font-size:10px;color:#475569;margin-top:6px">Score: <a href="https://vinoinvest-platform.vercel.app/transparency" target="_blank">VinoInvest algorithm ↗</a></div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="links">
+      <a href="https://vinoinvest-platform.vercel.app" target="_blank" class="link"><span>🏠</span><span>Open VinoInvest</span></a>
+      <a href="https://vinoinvest-platform.vercel.app/?section=portfolio" target="_blank" class="link"><span>📊</span><span>My Portfolio</span></a>
+      <a href="https://vinoinvest-platform.vercel.app/cellar" target="_blank" class="link"><span>🍾</span><span>Wine Cellar</span></a>
+      <a href="https://vinoinvest-platform.vercel.app/?section=alerts" target="_blank" class="link"><span>🔔</span><span>Price Alerts</span></a>
+      <a href="https://vinoinvest-platform.vercel.app/market-index" target="_blank" class="link"><span>📈</span><span>Market Index</span></a>
+    </div>
+  </div>
+
+  <div class="footer">
+    Data: Wine-Searcher · Decanter · CellarTracker · Not financial advice
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

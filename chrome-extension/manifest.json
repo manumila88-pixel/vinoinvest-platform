@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "VinoInvest — Wine Intelligence",
+  "short_name": "VinoInvest",
+  "description": "AI Wine Score overlay on Wine-Searcher, Vivino, Tannico and other wine sites. See investment potential instantly.",
+  "version": "1.0.0",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.wine-searcher.com/*",
+    "https://www.vivino.com/*",
+    "https://www.tannico.it/*",
+    "https://www.millesima.com/*",
+    "https://www.idealwine.com/*",
+    "https://vinoinvest-backend-2.onrender.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.wine-searcher.com/*",
+        "https://www.vivino.com/*",
+        "https://www.tannico.it/*",
+        "https://www.millesima.com/*",
+        "https://www.idealwine.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "VinoInvest",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png"
+    }
+  }
+}
