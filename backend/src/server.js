@@ -38,6 +38,13 @@ import { setGamificationPool, initGamificationTable } from "./services/gamificat
 import { initTelegramBot } from "./bots/telegramBot.js";
 import { getVinoInvestIndex } from "./services/vinoInvestIndex.js";
 import { fetchRSSNews } from "./services/rssNewsService.js";
+import cellarRouter, { setCellarPool } from "./routes/cellar.js";
+import journalRouter, { setJournalPool } from "./routes/journal.js";
+import goalsRouter, { setGoalsPool } from "./routes/goals.js";
+import pairingRouter from "./routes/pairing.js";
+import referralRouter, { setReferralPool } from "./routes/referral.js";
+import labelRouter from "./routes/labelScan.js";
+import sourcesRouter from "./routes/sources.js";
 
 // Global in-memory cache
 const appCache = new NodeCache({ stdTTL: 0, checkperiod: 120 });
@@ -147,6 +154,13 @@ app.use("/api/vintage", cacheFor(86400 * 7), vintageRouter); // 7 days — histo
 app.use("/api/currency", cacheFor(21600), currencyRouter);   // 6h — exchange rates
 app.use("/api/gamification", gamificationRouter);
 app.use("/api/market", cacheFor(86400), marketRouter);        // 24h — index + merchants
+app.use("/api/cellar", cellarRouter);
+app.use("/api/journal", journalRouter);
+app.use("/api/goals", goalsRouter);
+app.use("/api/pairing", cacheFor(86400), pairingRouter);
+app.use("/api/referral", referralRouter);
+app.use("/api/label-scan", aiRateLimit, labelRouter);
+app.use("/api/sources", cacheFor(3600), sourcesRouter);
 
 const __filename =
   fileURLToPath(import.meta.url);
@@ -303,6 +317,149 @@ async function initDB() {
     await pool.query(`CREATE INDEX IF NOT EXISTS idx_alerts_wine_active ON alerts(wine_id) WHERE active = true`).catch(() => {});
     // Performance indexes — users
     await pool.query(`CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)`).catch(() => {});
+
+    // Wine Cellar
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS cellar_bottles (
+        id BIGSERIAL PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        wine_id TEXT,
+        quantity INTEGER DEFAULT 1,
+        purchase_price NUMERIC,
+        purchase_date DATE,
+        shelf_number INTEGER DEFAULT 1,
+        position INTEGER,
+        notes TEXT,
+        drink_from DATE,
+        drink_until DATE,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `).catch(() => {});
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_cellar_user ON cellar_bottles(user_id)`).catch(() => {});
+
+    // Wine Journal
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS journal_entries (
+        id BIGSERIAL PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        wine_id TEXT,
+        wine_name TEXT,
+        vintage TEXT,
+        rating INTEGER CHECK (rating BETWEEN 1 AND 5),
+        notes TEXT,
+        occasion TEXT,
+        companions TEXT,
+        tasted_at TIMESTAMP DEFAULT NOW(),
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `).catch(() => {});
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_journal_user ON journal_entries(user_id)`).catch(() => {});
+
+    // Investment Goals
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS investment_goals (
+        id BIGSERIAL PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        title TEXT,
+        target_amount NUMERIC NOT NULL,
+        target_date DATE NOT NULL,
+        monthly_budget NUMERIC,
+        monthly_needed NUMERIC,
+        current_progress NUMERIC DEFAULT 0,
+        strategy TEXT DEFAULT 'balanced',
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `).catch(() => {});
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_goals_user ON investment_goals(user_id)`).catch(() => {});
+
+    // Referral codes
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS referral_codes (
+        id BIGSERIAL PRIMARY KEY,
+        user_id TEXT UNIQUE NOT NULL,
+        code TEXT UNIQUE NOT NULL,
+        uses INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `).catch(() => {});
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_referral_code ON referral_codes(code)`).catch(() => {});
+
+    // Referral conversions
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS referral_conversions (
+        id BIGSERIAL PRIMARY KEY,
+        referrer_user_id TEXT NOT NULL,
+        referred_user_id TEXT NOT NULL,
+        converted_at TIMESTAMP DEFAULT NOW()
+      )
+    `).catch(() => {});
+
+    // Sources registry
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS sources (
+        id BIGSERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        url TEXT NOT NULL,
+        type TEXT,
+        reliability_score INTEGER DEFAULT 90,
+        last_checked TIMESTAMP DEFAULT NOW()
+      )
+    `).catch(() => {});
+
+    // Email events tracking
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS email_events (
+        id BIGSERIAL PRIMARY KEY,
+        user_id TEXT,
+        email_type TEXT,
+        sent_at TIMESTAMP DEFAULT NOW(),
+        opened_at TIMESTAMP,
+        clicked_at TIMESTAMP,
+        unsubscribed_at TIMESTAMP
+      )
+    `).catch(() => {});
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_email_events_user ON email_events(user_id)`).catch(() => {});
+
+    // Feedback
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS user_feedback (
+        id BIGSERIAL PRIMARY KEY,
+        user_id TEXT,
+        type TEXT,
+        content_id TEXT,
+        rating INTEGER,
+        comment TEXT,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `).catch(() => {});
+
+    // Seed sources if empty
+    await pool.query(`
+      INSERT INTO sources (name, url, type, reliability_score) VALUES
+        ('Wine-Searcher','https://www.wine-searcher.com','price',99),
+        ('Vivino','https://www.vivino.com','price',97),
+        ('Tannico','https://www.tannico.it','price',99),
+        ('Millesima','https://www.millesima.com','price',98),
+        ('Idealwine','https://www.idealwine.com','price',97),
+        ('CellarTracker','https://www.cellartracker.com','price_community',90),
+        ('Decanter','https://www.decanter.com','rating',99),
+        ('Wine Spectator','https://www.winespectator.com','rating',99),
+        ('James Suckling','https://www.jamessuckling.com','rating',97),
+        ('Robert Parker','https://www.robertparker.com','rating',99),
+        ('Vinous','https://vinous.com','rating',98),
+        ('Jancis Robinson','https://www.jancisrobinson.com','rating',99),
+        ('Gambero Rosso','https://www.gamberorosso.it','rating',97),
+        ('Decanter News','https://www.decanter.com/wine-news','news',99),
+        ('Wine Spectator News','https://www.winespectator.com/articles','news',99),
+        ('WineNews.it','https://www.winenews.it','news',95),
+        ('Drinks Business','https://www.thedrinksbusiness.com','news',97),
+        ('Open-Meteo','https://open-meteo.com','weather',98),
+        ('European Central Bank','https://www.ecb.europa.eu','financial',100),
+        ('Wikipedia','https://www.wikipedia.org','encyclopedia',85),
+        ('Liv-ex','https://www.liv-ex.com','market',100)
+      ON CONFLICT DO NOTHING
+    `).catch(() => {});
+
   } catch (e) {
     console.warn("[initDB]", e.message);
   }
@@ -320,6 +477,7 @@ initDB().then(() => {
   }
   if (pool) setAnalysisPool(pool);
   if (pool) { setGamificationPool(pool); initGamificationTable(); }
+  if (pool) { setCellarPool(pool); setJournalPool(pool); setGoalsPool(pool); setReferralPool(pool); }
   // Start scheduled agents
   startBlogAgent();
   startImageAgent();
