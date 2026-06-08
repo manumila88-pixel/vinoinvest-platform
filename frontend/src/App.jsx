@@ -60,6 +60,7 @@ const AboutPage = lazy(() => import("./pages/About"));
 const Regioni = lazy(() => import("./pages/Regioni"));
 const Produttori = lazy(() => import("./pages/Produttori"));
 const Annate = lazy(() => import("./pages/Annate"));
+const MarketProducers = lazy(() => import("./pages/MarketProducers"));
 import ThemeToggle from "./components/ThemeToggle";
 import VoiceInterface from "./components/VoiceInterface";
 import ExitIntentPopup from "./components/ExitIntentPopup";
@@ -491,6 +492,8 @@ function App() {
     try {
       const params = new URLSearchParams({ page, limit: 20 });
       if (search) params.set("search", search);
+      const seg = accountType && ["b2b", "wealth_manager", "cantina", "family_office"].includes(accountType) ? "b2b" : "";
+      if (seg) params.set("segment", seg);
       const res = await fetch(`${API}/api/wines?${params}`, { signal: mAbortRef.current.signal });
       const data = await res.json();
       setMarketWines(prev => append ? [...prev, ...data.results] : data.results);
@@ -1909,6 +1912,8 @@ createRoot(document.getElementById("root")).render(
           <Route path="/regioni" element={<Regioni />} />
           <Route path="/produttori" element={<Produttori />} />
           <Route path="/annate" element={<Annate />} />
+          <Route path="/market/producers" element={<MarketProducers />} />
+          <Route path="/market/producers/:name" element={<MarketProducers />} />
           <Route path="/landing" element={<LandingPage />} />
           <Route path="*" element={<App />} />
         </Routes>

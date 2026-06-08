@@ -50,6 +50,19 @@ router.post("/", async (req, res) => {
        VALUES ($1,$2,$3,$4,$5) RETURNING *`,
       [userId, wineId, wineName || wineId, parseFloat(targetPrice), direction]
     );
+
+    // Behavioral email trigger: watchlist_add (fire async, don't block response)
+    db.query(`SELECT email, first_name FROM users WHERE id = $1`, [userId])
+      .then(async ({ rows: u }) => {
+        if (u[0]?.email) {
+          const { triggerBehavioralEmail } = await import("../services/emailFlowService.js");
+          // 2h delay via setTimeout
+          setTimeout(() => {
+            triggerBehavioralEmail(userId, u[0].email, u[0].first_name, "watchlist_add", { wineName: wineName || wineId }).catch(() => {});
+          }, 2 * 60 * 60 * 1000);
+        }
+      }).catch(() => {});
+
     res.json({ success: true, alert: rows[0] });
   } catch (e) {
     console.error("[alerts] Create error:", e.message);

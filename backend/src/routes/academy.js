@@ -98,6 +98,16 @@ router.post("/certificate", async (req, res) => {
       "INSERT INTO academy_certificates (user_id, course_id, code, user_name) VALUES ($1, $2, $3, $4)",
       [userId, courseId, code, userName || "Studente"]
     );
+
+    // Behavioral email trigger: course_complete
+    pool.query(`SELECT email, first_name FROM users WHERE id = $1`, [userId])
+      .then(async ({ rows: u }) => {
+        if (u[0]?.email) {
+          const { triggerBehavioralEmail } = await import("../services/emailFlowService.js");
+          triggerBehavioralEmail(userId, u[0].email, u[0].first_name, "course_complete", { courseName: courseId }).catch(() => {});
+        }
+      }).catch(() => {});
+
     res.json({ code });
   } catch (e) {
     res.status(500).json({ error: e.message });
