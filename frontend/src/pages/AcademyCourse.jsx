@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { COURSES, PREMIUM_COURSES, BADGES, XP_RULES } from "../data/academyContent";
 import AuthModal from "../components/AuthModal";
@@ -29,6 +29,21 @@ export default function AcademyCourse() {
   const all = [...COURSES, ...PREMIUM_COURSES];
   const course = all.find(c => c.slug === slug);
   const [progress] = useState(loadProgress);
+  const [hasSubscription, setHasSubscription] = useState(null); // null = checking
+
+  const storedUser = getStoredUser();
+  const isAdmin = storedUser.email === ADMIN_EMAIL;
+
+  useEffect(() => {
+    if (!course?.price || !course?.planId || isAdmin) { setHasSubscription(true); return; }
+    const email = storedUser.email;
+    if (!email) { setHasSubscription(false); return; }
+    const level = ACADEMY_PLANS[course.planId] ? (course.planId === "ACADEMY_PRO" ? "professional" : "investor") : "investor";
+    fetch(`${BACKEND}/api/academy/access?email=${encodeURIComponent(email)}&courseLevel=${level}`)
+      .then(r => r.json())
+      .then(d => setHasSubscription(d.hasAccess))
+      .catch(() => setHasSubscription(false));
+  }, [course?.planId, isAdmin, storedUser.email]);
 
   if (!course) {
     return (
@@ -42,9 +57,7 @@ export default function AcademyCourse() {
     );
   }
 
-  const storedUser = getStoredUser();
-  const isAdmin = storedUser.email === ADMIN_EMAIL;
-  const isLocked = course.price && !course.free && !isAdmin;
+  const isLocked = course.price && !course.free && !isAdmin && hasSubscription === false;
   const lessons = course.lessons || [];
   const completedCount = lessons.filter(l => progress[l.id]?.done).length;
   const pct = lessons.length ? Math.round((completedCount / lessons.length) * 100) : 0;
@@ -91,20 +104,41 @@ export default function AcademyCourse() {
           </div>
         </div>
 
+        {/* Subscription checking spinner */}
+        {course.price && hasSubscription === null && (
+          <div style={{ textAlign: "center", padding: 32, color: "#64748b", fontSize: 14 }}>Verifica accesso...</div>
+        )}
+
         {/* Locked State */}
-        {isLocked ? (
+        {course.price && hasSubscription !== null && isLocked && (
           <LockedCourse course={course} />
-        ) : (
-          <LessonList lessons={lessons} progress={progress} courseSlug={slug} navigate={navigate} />
+        )}
+
+        {/* Unlocked — free course or subscribed */}
+        {(!course.price || hasSubscription === true || isAdmin) && (
+          <LessonList lessons={lessons} progress={progress} courseSlug={slug} navigate={navigate} courseId={course.id} />
         )}
       </div>
     </div>
   );
 }
 
-function LessonList({ lessons, progress, courseSlug, navigate }) {
+function LessonList({ lessons, progress, courseSlug, navigate, courseId }) {
+  // For premium courses (id >= 11) with module content, show module CTA
+  const hasPremiumModules = courseId >= 11;
   return (
     <div>
+      {hasPremiumModules && (
+        <div style={{ background: "rgba(201,162,39,0.07)", border: "1px solid rgba(201,162,39,0.15)", borderRadius: 14, padding: "18px 22px", marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 4 }}>20 Moduli Sequenziali Disponibili</div>
+            <div style={{ fontSize: 13, color: "#64748b" }}>Contenuto premium con slides, video, casi studio e quiz sblocco.</div>
+          </div>
+          <button onClick={() => navigate(`/academy/module/rs_01`)} style={{ background: "#C9A227", border: "none", borderRadius: 10, padding: "11px 20px", fontWeight: 800, color: "#0b1220", cursor: "pointer", fontSize: 14 }}>
+            Inizia i Moduli →
+          </button>
+        </div>
+      )}
       <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 16, color: "#94a3b8" }}>LEZIONI</div>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {lessons.map((lesson, idx) => {

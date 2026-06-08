@@ -3,7 +3,14 @@ import Stripe from "stripe";
 
 const router = express.Router();
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", { apiVersion: "2023-10-16" });
+const STRIPE_KEY = process.env.STRIPE_SECRET_KEY || "";
+const stripe = new Stripe(STRIPE_KEY, { apiVersion: "2023-10-16" });
+
+// Expose test mode status
+router.get("/stripe/mode", (req, res) => {
+  const isTest = STRIPE_KEY.startsWith("sk_test_") || !STRIPE_KEY;
+  res.json({ testMode: isTest, configured: !!STRIPE_KEY });
+});
 
 // ── Stripe: create checkout session ────────────────────────────────────────
 router.post("/stripe/create-checkout", async (req, res) => {
@@ -168,6 +175,26 @@ router.post("/crypto/create-invoice", async (req, res) => {
     res.json({ invoice_url: data.invoice_url, id: data.id });
   } catch (err) {
     console.error("NOWPayments invoice error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Alias used by AcademyCourse.jsx: POST /api/payments/create-checkout-session
+router.post("/create-checkout-session", async (req, res) => {
+  try {
+    const { priceId, email, successUrl, cancelUrl } = req.body;
+    if (!priceId) return res.status(400).json({ error: "priceId required" });
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "subscription",
+      customer_email: email,
+      line_items: [{ price: priceId, quantity: 1 }],
+      success_url: successUrl || `${process.env.FRONTEND_URL}/academy?subscribed=1`,
+      cancel_url: cancelUrl || `${process.env.FRONTEND_URL}/academy`,
+    });
+    res.json({ url: session.url });
+  } catch (err) {
+    console.error("[stripe] create-checkout-session:", err.message);
     res.status(500).json({ error: err.message });
   }
 });

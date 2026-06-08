@@ -1313,7 +1313,14 @@ function App() {
                   >Export CSV</button>
                 )}
               </div>
-              {holdings.length === 0 && <p style={{ color: "#3a5a7a" }}>No positions yet. Go to Market and add a position.</p>}
+              {holdings.length === 0 && (
+                <div style={{ textAlign: "center", padding: "40px 20px", color: "#3a5a7a" }}>
+                  <div style={{ fontSize: 40, marginBottom: 12 }}>📊</div>
+                  <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 8, color: "#64748b" }}>Nessuna posizione nel portfolio</div>
+                  <div style={{ fontSize: 13, marginBottom: 20, maxWidth: 360, margin: "0 auto 20px" }}>Vai al Market, apri un vino e clicca "Add to Portfolio" per iniziare a tracciare i tuoi investimenti reali.</div>
+                  <button onClick={() => setTab("market")} style={{ background: "#C9A227", border: "none", borderRadius: 10, padding: "11px 22px", fontWeight: 700, color: "#0b1220", cursor: "pointer", fontSize: 14 }}>Vai al Market →</button>
+                </div>
+              )}
               {holdings.length > 0 && (
                 <>
                   <div className="statsGrid" style={{ marginBottom: 28 }}>

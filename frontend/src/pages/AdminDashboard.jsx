@@ -26,6 +26,7 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
   const [users, setUsers] = useState([]);
   const [securityEvents, setSecurityEvents] = useState([]);
+  const [stripeMode, setStripeMode] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [grantEmail, setGrantEmail] = useState("");
@@ -46,14 +47,16 @@ export default function AdminDashboard() {
     setError(null);
     try {
       const headers = await getAuthHeader();
-      const [statsRes, usersRes, secRes] = await Promise.all([
+      const [statsRes, usersRes, secRes, stripeModeRes] = await Promise.all([
         fetch(`${API}/api/admin/stats`, { headers }),
         fetch(`${API}/api/admin/users`, { headers }),
         fetch(`${API}/api/admin/security-events`, { headers }),
+        fetch(`${API}/api/payments/stripe/mode`),
       ]);
       if (statsRes.ok) setStats(await statsRes.json());
       if (usersRes.ok) setUsers(await usersRes.json());
       if (secRes.ok) setSecurityEvents(await secRes.json());
+      if (stripeModeRes.ok) setStripeMode(await stripeModeRes.json());
     } catch (e) {
       setError(e.message);
     }
@@ -102,6 +105,15 @@ export default function AdminDashboard() {
 
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 16px" }}>
         {error && <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 12, padding: 16, marginBottom: 24, color: "#f87171" }}>Errore: {error}</div>}
+        {stripeMode?.testMode && (
+          <div style={{ background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.3)", borderRadius: 12, padding: "12px 16px", marginBottom: 20, display: "flex", alignItems: "center", gap: 10, fontSize: 13 }}>
+            <span style={{ fontSize: 18 }}>⚠️</span>
+            <div>
+              <strong style={{ color: "#fbbf24" }}>Stripe in modalità TEST</strong> — i pagamenti non sono reali.{" "}
+              <a href="https://dashboard.stripe.com/apikeys" target="_blank" rel="noopener noreferrer" style={{ color: "#fbbf24" }}>Aggiorna le chiavi live su Render →</a>
+            </div>
+          </div>
+        )}
 
         {/* Tabs */}
         <div style={{ display: "flex", gap: 4, marginBottom: 28, background: "rgba(255,255,255,0.04)", borderRadius: 12, padding: 4 }}>

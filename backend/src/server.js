@@ -503,7 +503,7 @@ async function getOrders(userId) {
   if (!pool) return [];
   try {
     const query = userId
-      ? "SELECT * FROM orders WHERE user_id = $1 OR user_id IS NULL ORDER BY created_at DESC"
+      ? "SELECT * FROM orders WHERE user_id = $1 ORDER BY created_at DESC"
       : "SELECT * FROM orders ORDER BY created_at DESC";
     const params = userId ? [userId] : [];
     const r = await pool.query(query, params);
@@ -1144,22 +1144,36 @@ res.json({
 
 // ── Trending: top 5 wines by simulated 24h price change ─────────────────────
 app.get("/api/trending", cacheFor(14400), (req, res) => {
-  const seed = Math.floor(Date.now() / (1000 * 3600 * 4)); // changes every 4h
-  const seededRandom = (wineId, offset = 0) => {
-    const x = Math.sin(seed + wineId.charCodeAt(0) + offset) * 10000;
-    return x - Math.floor(x);
-  };
+  const timeWindow = Math.floor(Date.now() / (1000 * 3600 * 4)); // changes every 4h
+  // Full-string hash for deterministic but unique per-wine variation
+  function hashStr(s, salt) {
+    let h = salt;
+    for (let i = 0; i < s.length; i++) h = (Math.imul(31, h) + s.charCodeAt(i)) | 0;
+    return ((h >>> 0) / 0xffffffff);
+  }
+  // Volatility by region/price (more expensive = lower daily vol)
+  function getRegionVol(w) {
+    const r = (w.region || "").toLowerCase();
+    const p = w.currentPrice || 100;
+    if (r.includes("borgogna") || r.includes("burgundy")) return p > 500 ? 6 : 9;
+    if (r.includes("bordeaux")) return p > 300 ? 5 : 8;
+    if (r.includes("champagne")) return 4;
+    if (r.includes("italia") || r.includes("toscana") || r.includes("piemonte")) return 7;
+    return 10;
+  }
   const trending = allWines
     .filter(w => w.currentPrice > 0)
     .map(w => {
-      const r = seededRandom(w.id || w.name || "x");
-      const change = ((r - 0.42) * 18).toFixed(2);
-      return { ...w, change: Number(change), absChange: Math.abs(Number(change)) };
+      const id = String(w.id || w.name || "x");
+      const r = hashStr(id, timeWindow);
+      const vol = getRegionVol(w);
+      const change = parseFloat(((r - 0.42) * vol * 2).toFixed(2));
+      return { ...w, change, absChange: Math.abs(change) };
     })
     .sort((a, b) => b.absChange - a.absChange)
     .slice(0, 5)
     .map(({ absChange: _, ...w }) => w);
-  res.json({ wines: trending, updated: new Date().toISOString() });
+  res.json({ wines: trending, updated: new Date().toISOString(), note: "Simulazione — variazioni giornaliere stimate" });
 });
 
 // GET /api/ai/proactive-analysis/:userId — fetch pre-computed proactive analysis
