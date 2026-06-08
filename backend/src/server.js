@@ -45,6 +45,8 @@ import pairingRouter from "./routes/pairing.js";
 import referralRouter, { setReferralPool } from "./routes/referral.js";
 import labelRouter from "./routes/labelScan.js";
 import sourcesRouter from "./routes/sources.js";
+import emailPrefRouter, { setEmailPrefPool } from "./routes/emailPreferences.js";
+import feedbackRouter, { setFeedbackPool } from "./routes/feedback.js";
 
 // Global in-memory cache
 const appCache = new NodeCache({ stdTTL: 0, checkperiod: 120 });
@@ -161,6 +163,9 @@ app.use("/api/pairing", cacheFor(86400), pairingRouter);
 app.use("/api/referral", referralRouter);
 app.use("/api/label-scan", aiRateLimit, labelRouter);
 app.use("/api/sources", cacheFor(3600), sourcesRouter);
+app.use("/api/email-preferences", emailPrefRouter);
+app.use("/api/unsubscribe", emailPrefRouter);
+app.use("/api/feedback", feedbackRouter);
 
 const __filename =
   fileURLToPath(import.meta.url);
@@ -478,6 +483,7 @@ initDB().then(() => {
   if (pool) setAnalysisPool(pool);
   if (pool) { setGamificationPool(pool); initGamificationTable(); }
   if (pool) { setCellarPool(pool); setJournalPool(pool); setGoalsPool(pool); setReferralPool(pool); }
+  if (pool) { setEmailPrefPool(pool); setFeedbackPool(pool); }
   // Start scheduled agents
   startBlogAgent();
   startImageAgent();

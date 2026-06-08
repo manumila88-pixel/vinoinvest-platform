@@ -42,6 +42,7 @@ import PressKit from "./pages/PressKit";
 import MarketSentiment from "./pages/MarketSentiment";
 import InvestmentGoals from "./pages/InvestmentGoals";
 import Transparency from "./pages/Transparency";
+import NotificationSettings from "./pages/NotificationSettings";
 import ThemeToggle from "./components/ThemeToggle";
 import VoiceInterface from "./components/VoiceInterface";
 import { getSavedTheme, applyTheme } from "./lib/theme";
@@ -1679,6 +1680,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="/sentiment" element={<MarketSentiment />} />
           <Route path="/goals" element={<InvestmentGoals />} />
           <Route path="/transparency" element={<Transparency />} />
+          <Route path="/settings/notifications" element={<NotificationSettings />} />
           <Route path="*" element={<App />} />
         </Routes>
       </CurrencyProvider>

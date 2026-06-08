@@ -84,7 +84,7 @@
   },
 
   "hooks": {
-    "PreToolCall": [
+    "PreToolUse": [
       {
         "matcher": "Write",
         "hooks": [
@@ -107,7 +107,7 @@
       }
     ],
 
-    "PostToolCall": [
+    "PostToolUse": [
       {
         "matcher": "Write(frontend/src/**)",
         "hooks": [

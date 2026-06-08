@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import Bottle3D from "./components/Bottle3D";
 import PriceHistoryChart from "./components/PriceHistoryChart";
+import SourceBadge from "./components/SourceBadge";
+
+const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
 function getWineType(wine) {
   const t = [wine.variety, wine.name, wine.region].filter(Boolean).join(" ").toLowerCase();
@@ -207,7 +210,18 @@ export default function WineBottle3DModal({ wine, onClose }) {
             </a>
           </div>
 
-          <p style={{ fontSize: 10, color: "#334155", marginTop: 14, textAlign: "center", letterSpacing: "0.05em", textTransform: "uppercase" }}>
+          {/* ── Food Pairings ───────────────────────────────────────────── */}
+          <FoodPairings wineId={wine.id} />
+
+          {/* ── Source attribution ──────────────────────────────────────── */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 14, flexWrap: "wrap" }}>
+            <span style={{ fontSize: 10, color: "#334155" }}>Data:</span>
+            <SourceBadge source="Wine-Searcher" url={`https://www.wine-searcher.com/find/${encodeURIComponent(wine.name)}`} confidence={99} compact />
+            <SourceBadge source="CellarTracker" url="https://www.cellartracker.com" confidence={90} compact />
+            <SourceBadge source="Decanter" url="https://www.decanter.com" confidence={99} compact />
+          </div>
+
+          <p style={{ fontSize: 10, color: "#334155", marginTop: 10, textAlign: "center", letterSpacing: "0.05em", textTransform: "uppercase" }}>
             {useImage ? "Trascina per ruotare" : "Trascina sulla bottiglia · "} ESC o clicca fuori per chiudere
           </p>
         </div>
