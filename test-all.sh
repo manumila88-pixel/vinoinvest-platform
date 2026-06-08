@@ -102,6 +102,14 @@ check "POST /api/agent/chat (no ANTHROPIC_API_KEY → 200)" 200 "$API/api/agent/
   -X POST -H "Content-Type: application/json" \
   -d '{"message":"Ciao","sessionId":"test-session","holdings":[]}'
 
+# ── Public stats & health detailed ─────────────────────────
+echo "── Stats & Health ──"
+check "GET /api/stats/public" 200 "$API/api/stats/public"
+check_json "stats.wines > 0" "$API/api/stats/public" "d['wines'] > 0"
+HEALTH_DETAIL=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "$API/api/health/detailed" 2>/dev/null)
+if [[ "$HEALTH_DETAIL" == "200" || "$HEALTH_DETAIL" == "503" ]]; then echo "  ✅  GET /api/health/detailed ($HEALTH_DETAIL)"; ((PASS++)); else echo "  ❌  GET /api/health/detailed — got $HEALTH_DETAIL"; ((FAIL++)); fi
+check "GET /api/email/subscribers (no auth → 401)" 401 "$API/api/email/subscribers"
+
 # ── Rate limiting ─────────────────────────────────────────
 echo "── Rate limiting ──"
 RATE_HDR=$(curl -s -I "$API/api/health" 2>/dev/null | grep -i "ratelimit-limit" || echo "")
