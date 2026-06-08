@@ -52,7 +52,7 @@ import feedbackRouter, { setFeedbackPool } from "./routes/feedback.js";
 import academyRouter from "./routes/academy.js";
 import subscriptionsRouter from "./routes/subscriptions.js";
 import { setNewsletterPool, setNewsletterWines, startNewsletterCron } from "./services/newsletterService.js";
-import { setCellarTrackerPool, startCellarTrackerCron } from "./services/cellarTrackerService.js";
+import { setRealPricePool, startRealPriceCron, runRealPriceFetch } from "./services/realPriceService.js";
 
 // Global in-memory cache
 const appCache = new NodeCache({ stdTTL: 0, checkperiod: 120 });
@@ -497,12 +497,14 @@ initDB().then(() => {
   if (pool) { setNewsletterPool(pool); }
   if (pool) { setAgentPool(pool); }
   if (pool) { setWelcomeEmailPool(pool); }
-  if (pool) { setCellarTrackerPool(pool); }
+  if (pool) { setRealPricePool(pool); }
   // Start scheduled agents
   startBlogAgent();
   startImageAgent();
   startNewsletterCron();
-  startCellarTrackerCron();
+  startRealPriceCron();
+  // Seed first 50 real prices 60s after startup
+  if (pool) setTimeout(() => runRealPriceFetch(50), 60000);
 
   // Start Telegram bot (no-op if TELEGRAM_BOT_TOKEN not set)
   setTimeout(() => {
@@ -647,6 +649,13 @@ app.get("/api/stats/public", cacheFor(3600), async (req, res) => {
   } catch {
     res.json({ wines: 50234, pricePoints: 1842000, users: 3847, aiAnalyses: 127 });
   }
+});
+
+// Admin: trigger real price fetch manually
+app.post("/api/admin/real-price/trigger", requireAdmin, async (req, res) => {
+  const limit = parseInt(req.body?.limit) || 50;
+  res.json({ ok: true, message: `Fetching real prices for top ${limit} wines...`, started_at: new Date().toISOString() });
+  runRealPriceFetch(limit).catch(e => console.error("[admin/real-price]", e.message));
 });
 
 // Admin: trigger weekly newsletter manually
