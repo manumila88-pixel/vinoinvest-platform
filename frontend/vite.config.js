@@ -10,6 +10,9 @@ export default defineConfig({
     sourcemap: false,
     rollupOptions: {
       output: {
+        assetFileNames: "assets/[name][extname]",
+        chunkFileNames: "assets/[name].js",
+        entryFileNames: "assets/[name].js",
         manualChunks(id) {
           if (id.includes("node_modules/recharts") || id.includes("node_modules/d3")) return "charts";
           if (id.includes("node_modules/@supabase")) return "supabase";
