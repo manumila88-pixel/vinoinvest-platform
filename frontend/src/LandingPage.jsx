@@ -259,6 +259,13 @@ export default function LandingPage({ onLogin }) {
         if (data.user) {
           await supabase.from("users").insert({ id: data.user.id, email, account_type: accountType });
           if (!data.session) { setError("Account created! Check your email to confirm."); setLoading(false); return; }
+          // Queue 5-email welcome sequence
+          const BACKEND = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
+          fetch(`${BACKEND}/api/email-preferences/subscribe`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, source: "signup", list: "welcome_sequence" }),
+          }).catch(() => {});
           onLogin({ user: data.user, account_type: accountType });
         }
       } else {

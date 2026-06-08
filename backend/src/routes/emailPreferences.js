@@ -1,5 +1,6 @@
 import express from "express";
 import { requireAuth } from "../middleware/auth.js";
+import { queueWelcomeSequence } from "../jobs/welcomeEmailJob.js";
 
 const router = express.Router();
 let pool;
@@ -90,6 +91,11 @@ router.post("/subscribe", async (req, res) => {
 
     // Also mark subscribed in users table if they already have an account
     await pool.query("UPDATE users SET email_subscribed = true WHERE email = $1", [email.toLowerCase().trim()]).catch(() => {});
+
+    // Queue 5-email welcome drip sequence for new registrations
+    if (source === "signup") {
+      queueWelcomeSequence(email.toLowerCase().trim(), null).catch(() => {});
+    }
 
     res.json({ ok: true });
   } catch (e) {

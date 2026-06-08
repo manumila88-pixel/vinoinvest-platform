@@ -33,7 +33,9 @@ import { startBlogAgent, setBlogPool as setBlogAgentPool } from "./agents/blogAg
 import { startImageAgent, setImagePool } from "./agents/imageAgent.js";
 import "./jobs/priceUpdater.js";
 import "./jobs/alertsChecker.js";
+import "./jobs/cellarTrackerCron.js";
 import { proactiveResults, setAnalysisPool, setWinesRef } from "./jobs/portfolioAnalysisJob.js";
+import { setWelcomeEmailPool, queueWelcomeSequence } from "./jobs/welcomeEmailJob.js";
 import { setGamificationPool, initGamificationTable } from "./services/gamificationService.js";
 import { initTelegramBot } from "./bots/telegramBot.js";
 import { getVinoInvestIndex } from "./services/vinoInvestIndex.js";
@@ -50,6 +52,7 @@ import feedbackRouter, { setFeedbackPool } from "./routes/feedback.js";
 import academyRouter from "./routes/academy.js";
 import subscriptionsRouter from "./routes/subscriptions.js";
 import { setNewsletterPool, setNewsletterWines, startNewsletterCron } from "./services/newsletterService.js";
+import { setCellarTrackerPool, startCellarTrackerCron } from "./services/cellarTrackerService.js";
 
 // Global in-memory cache
 const appCache = new NodeCache({ stdTTL: 0, checkperiod: 120 });
@@ -492,10 +495,13 @@ initDB().then(() => {
   if (pool) { setEmailPrefPool(pool); setFeedbackPool(pool); setAuthPool(pool); }
   if (pool) { setNewsletterPool(pool); }
   if (pool) { setAgentPool(pool); }
+  if (pool) { setWelcomeEmailPool(pool); }
+  if (pool) { setCellarTrackerPool(pool); }
   // Start scheduled agents
   startBlogAgent();
   startImageAgent();
   startNewsletterCron();
+  startCellarTrackerCron();
 
   // Start Telegram bot (no-op if TELEGRAM_BOT_TOKEN not set)
   setTimeout(() => {
@@ -640,6 +646,48 @@ app.post("/api/admin/newsletter/trigger", requireAdmin, async (req, res) => {
   const { runWeeklyNewsletter } = await import("./services/newsletterService.js");
   const result = await runWeeklyNewsletter();
   res.json(result);
+});
+
+// ── Email marketing endpoints (Resend) ──────────────────────────────────────
+// POST /api/email/welcome — triggered on new user registration
+app.post("/api/email/welcome", optionalAuth, async (req, res) => {
+  const { to, name } = req.body;
+  if (!to) return res.status(400).json({ error: "Email required" });
+  const { sendWelcomeEmail } = await import("./services/emailService.js").catch(() => ({ sendWelcomeEmail: null }));
+  if (!sendWelcomeEmail) return res.json({ ok: false, reason: "email_service_unavailable" });
+  const result = await sendWelcomeEmail({ email: to, first_name: name });
+  res.json(result);
+});
+
+// POST /api/email/price-alert — send price alert email
+app.post("/api/email/price-alert", requireAuth, async (req, res) => {
+  const { wineId, targetPrice, currentPrice } = req.body;
+  const userEmail = req.user?.email;
+  if (!wineId || !userEmail) return res.status(400).json({ error: "Missing fields" });
+  const wine = allWines.find(w => w.id === wineId || w.id === parseInt(wineId));
+  if (!wine) return res.status(404).json({ error: "Wine not found" });
+  const { sendPriceAlertEmail } = await import("./services/emailService.js").catch(() => ({ sendPriceAlertEmail: null }));
+  if (!sendPriceAlertEmail) return res.json({ ok: false, reason: "email_service_unavailable" });
+  const result = await sendPriceAlertEmail(
+    { email: userEmail, first_name: userEmail.split("@")[0] },
+    wine,
+    { target_price: targetPrice || wine.current_price },
+    parseFloat(currentPrice || wine.current_price)
+  );
+  res.json(result);
+});
+
+// GET /api/email/subscribers — admin: list newsletter subscribers
+app.get("/api/email/subscribers", requireAdmin, async (req, res) => {
+  if (!pool) return res.json({ subscribers: [] });
+  try {
+    const { rows } = await pool.query(
+      "SELECT email, source, list, subscribed_at FROM newsletter_subscribers ORDER BY subscribed_at DESC LIMIT 1000"
+    );
+    res.json({ subscribers: rows, total: rows.length });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
 app.get("/", (req, res) => {

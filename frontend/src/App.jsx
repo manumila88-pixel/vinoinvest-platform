@@ -1316,14 +1316,69 @@ function App() {
                   >Export CSV</button>
                 )}
               </div>
-              {holdings.length === 0 && (
-                <div style={{ textAlign: "center", padding: "40px 20px", color: "#3a5a7a" }}>
-                  <div style={{ fontSize: 40, marginBottom: 12 }}>📊</div>
-                  <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 8, color: "#64748b" }}>Nessuna posizione nel portfolio</div>
-                  <div style={{ fontSize: 13, marginBottom: 20, maxWidth: 360, margin: "0 auto 20px" }}>Vai al Market, apri un vino e clicca "Add to Portfolio" per iniziare a tracciare i tuoi investimenti reali.</div>
-                  <button onClick={() => setTab("market")} style={{ background: "#C9A227", border: "none", borderRadius: 10, padding: "11px 22px", fontWeight: 700, color: "#0b1220", cursor: "pointer", fontSize: 14 }}>Vai al Market →</button>
-                </div>
-              )}
+              {holdings.length === 0 && (() => {
+                const DEMO_HOLDINGS = [
+                  { id: "lafite-2019", name: "Château Lafite Rothschild 2019", purchasePrice: 780, currentPrice: 920, quantity: 3, invested: 2340, currentValue: 2760, profit: 420, roi: "+17.9" },
+                  { id: "barolo-giacomo-2018", name: "Barolo Giacomo Conterno 2018", purchasePrice: 210, currentPrice: 265, quantity: 6, invested: 1260, currentValue: 1590, profit: 330, roi: "+26.2" },
+                  { id: "dom-perignon-2015", name: "Dom Pérignon 2015", purchasePrice: 175, currentPrice: 195, quantity: 12, invested: 2100, currentValue: 2340, profit: 240, roi: "+11.4" },
+                ];
+                const demoValue = DEMO_HOLDINGS.reduce((s, h) => s + h.currentValue, 0);
+                const demoInvested = DEMO_HOLDINGS.reduce((s, h) => s + h.invested, 0);
+                const demoROI = (((demoValue - demoInvested) / demoInvested) * 100).toFixed(1);
+                return (
+                  <div>
+                    {/* DEMO banner */}
+                    <div style={{ background: "linear-gradient(135deg,rgba(201,162,39,0.15),rgba(201,162,39,0.05))", border: "1px solid rgba(201,162,39,0.4)", borderRadius: 12, padding: "14px 20px", marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <span style={{ background: "#C9A227", color: "#020617", fontSize: 10, fontWeight: 900, letterSpacing: "0.12em", padding: "3px 8px", borderRadius: 4, textTransform: "uppercase" }}>DEMO</span>
+                        <span style={{ fontSize: 13, color: "#94a3b8" }}>This is a sample portfolio — add real wines from the Market to track your investments</span>
+                      </div>
+                      <button onClick={() => setTab("market")} style={{ background: "#C9A227", border: "none", borderRadius: 8, padding: "8px 16px", fontWeight: 700, color: "#0b1220", cursor: "pointer", fontSize: 12, whiteSpace: "nowrap" }}>Add Real Wines →</button>
+                    </div>
+                    {/* Demo stats */}
+                    <div className="statsGrid" style={{ marginBottom: 28 }}>
+                      {[
+                        { label: "Demo Portfolio Value", value: `€ ${demoValue.toLocaleString()}` },
+                        { label: "Total Invested (demo)", value: `€ ${demoInvested.toLocaleString()}` },
+                        { label: "Demo Profit", value: `+€ ${(demoValue - demoInvested).toLocaleString()}`, color: "#4caf50" },
+                        { label: "Demo ROI", value: `+${demoROI}%`, color: "#4caf50" },
+                      ].map((s, i) => (
+                        <div key={i} className="statCard">
+                          <small>{s.label}</small>
+                          <h2 style={s.color ? { color: s.color } : {}}>{s.value}</h2>
+                        </div>
+                      ))}
+                    </div>
+                    {/* Demo table */}
+                    <div style={{ overflowX: "auto" }}>
+                      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, opacity: 0.85 }}>
+                        <thead>
+                          <tr style={{ borderBottom: "1px solid #0f1a2e", color: "#3a5a7a" }}>
+                            {["Wine", "Bottles", "Buy Price", "Current", "Value", "ROI"].map(h => (
+                              <th key={h} style={{ textAlign: h === "Wine" ? "left" : "right", padding: "9px 8px", fontWeight: 600, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em" }}>{h}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {DEMO_HOLDINGS.map((h, i) => (
+                            <tr key={h.id} style={{ borderBottom: "1px solid #0a1220", background: i % 2 === 0 ? "transparent" : "rgba(11,18,32,0.5)" }}>
+                              <td style={{ padding: "11px 8px", fontWeight: 600, fontFamily: "'Playfair Display', Georgia, serif" }}>
+                                {h.name}
+                                <span style={{ marginLeft: 8, fontSize: 9, background: "rgba(201,162,39,0.15)", color: "#C9A227", borderRadius: 3, padding: "1px 5px", fontFamily: "Inter, sans-serif" }}>DEMO</span>
+                              </td>
+                              <td style={{ textAlign: "right", padding: "11px 8px" }}>{h.quantity}</td>
+                              <td style={{ textAlign: "right", padding: "11px 8px" }}>€{h.purchasePrice}</td>
+                              <td style={{ textAlign: "right", padding: "11px 8px" }}>€{h.currentPrice}</td>
+                              <td style={{ textAlign: "right", padding: "11px 8px" }}>€{h.currentValue.toLocaleString()}</td>
+                              <td style={{ textAlign: "right", padding: "11px 8px", color: "#4caf50" }}>{h.roi}%</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                );
+              })()}
               {holdings.length > 0 && (
                 <>
                   <div className="statsGrid" style={{ marginBottom: 28 }}>
@@ -1719,6 +1774,7 @@ createRoot(document.getElementById("root")).render(
       <CurrencyProvider>
         <Suspense fallback={<div style={{ minHeight: "100vh", background: "#0b1220", display: "flex", alignItems: "center", justifyContent: "center", color: "#C9A227", fontSize: 14 }}>Caricamento...</div>}>
         <Routes>
+          <Route path="/landing" element={<LandingPage onLogin={({ user, account_type }) => { window.location.href = "/"; }} />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/b2b" element={<B2BPage />} />
           <Route path="/learn" element={<Learn />} />
@@ -1747,6 +1803,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/cookies" element={<Cookies />} />
+          <Route path="/landing" element={<LandingPage />} />
           <Route path="*" element={<App />} />
         </Routes>
         </Suspense>
