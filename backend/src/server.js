@@ -1197,35 +1197,39 @@ res.json({
 
 // ── Trending: top 5 wines by simulated 24h price change ─────────────────────
 app.get("/api/trending", cacheFor(14400), (req, res) => {
-  const timeWindow = Math.floor(Date.now() / (1000 * 3600 * 4)); // changes every 4h
-  // Full-string hash for deterministic but unique per-wine variation
+  const timeWindow = Math.floor(Date.now() / (1000 * 3600 * 4)); // rotates every 4h
   function hashStr(s, salt) {
     let h = salt;
     for (let i = 0; i < s.length; i++) h = (Math.imul(31, h) + s.charCodeAt(i)) | 0;
     return ((h >>> 0) / 0xffffffff);
   }
-  // Volatility by region/price (more expensive = lower daily vol)
-  function getRegionVol(w) {
-    const r = (w.region || "").toLowerCase();
-    const p = w.currentPrice || 100;
-    if (r.includes("borgogna") || r.includes("burgundy")) return p > 500 ? 6 : 9;
-    if (r.includes("bordeaux")) return p > 300 ? 5 : 8;
-    if (r.includes("champagne")) return 4;
-    if (r.includes("italia") || r.includes("toscana") || r.includes("piemonte")) return 7;
-    return 10;
+  // Restrict pool to wines priced ≥ 30 to get a meaningful ~2000-wine universe
+  // then select 200 by seeded shuffle so the top-5 have meaningfully spread hash values
+  const pool = allWines.filter(w => (w.currentPrice || 0) >= 30);
+  const poolSize = Math.min(200, pool.length);
+  // Seeded Fisher-Yates to pick 200 diverse wines deterministically
+  const shuffled = pool.slice();
+  let rng = timeWindow;
+  function lcg() { rng = (Math.imul(1664525, rng) + 1013904223) >>> 0; return rng / 0xffffffff; }
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(lcg() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
-  const trending = allWines
-    .filter(w => w.currentPrice > 0)
-    .map(w => {
-      const id = String(w.id || w.name || "x");
-      const r = hashStr(id, timeWindow);
-      const vol = getRegionVol(w);
-      const change = parseFloat(((r - 0.42) * vol * 2).toFixed(2));
-      return { ...w, change, absChange: Math.abs(change) };
-    })
-    .sort((a, b) => b.absChange - a.absChange)
-    .slice(0, 5)
-    .map(({ absChange: _, ...w }) => w);
+  const candidates = shuffled.slice(0, poolSize);
+  // Map each wine's id-hash to a realistic change: -5% … +8% (fine wine upward bias)
+  const scored = candidates.map(w => {
+    const id = String(w.id || w.name || "");
+    const r = hashStr(id, timeWindow);
+    // r ∈ [0,1] → change ∈ [-5, +8]
+    const change = parseFloat((r * 13 - 5).toFixed(2));
+    return { ...w, change };
+  });
+  // Top 3 gainers + top 2 losers — gives realistic, always-varied display
+  const sorted = scored.slice().sort((a, b) => b.change - a.change);
+  const trending = [
+    ...sorted.slice(0, 3),
+    ...sorted.slice(-2),
+  ];
   res.json({ wines: trending, updated: new Date().toISOString(), note: "Simulazione — variazioni giornaliere stimate" });
 });
 
