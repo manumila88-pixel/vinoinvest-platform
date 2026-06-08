@@ -494,6 +494,318 @@ La Valle del Rodano ha un vantaggio strutturale rispetto alla Borgogna: i suoi v
       { q: "In quale periodo climatico le annate fredde favoriscono la Syrah del Rodano Nord?", options: ["Non esiste differenza", "Le annate fresche favoriscono la Syrah (Hermitage, Côte-Rôtie)", "Le annate calde favoriscono la Syrah", "Solo l'esposizione conta, non la temperatura"], correct: 1 },
     ],
   },
+  // ── Module 8: Nuovi Mondi ─────────────────────────────────────────────────────
+  {
+    id: "rs_08", courseId: 11, index: 7,
+    title: "Nuovi Mondi: Napa, Mendoza, Barossa — dove il potenziale è più alto",
+    duration: 14,
+    youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    hero: { headline: "Screaming Eagle 1992: record Napa Valley a $500.000 per OWC 6 bottiglie", stat: "Napa Cult Cabernet CAGR 10y: +8.9%. Colchagua (Cile) emergente: +210% dal 2015", context: "I 'Nuovi Mondi' del fine wine hanno sfidato il dominio europeo negli ultimi 30 anni. Napa Valley è oggi il terzo mercato per volumi Liv-ex dopo Bordeaux e Borgogna. Mendoza e Barossa seguono." },
+    objectives: ["Analizzare il profilo rischio/rendimento dei top producer californiani", "Capire il meccanismo delle mailing list per i cult wines di Napa", "Identificare le opportunità emergenti in Argentina e Australia", "Confrontare la liquidità New World vs. Europa su Liv-ex"],
+    context: "Il mercato fine wine californiano è strutturalmente diverso dall'Europa: niente classificazioni storiche, ma mailing list, allocazioni e liste d'attesa pluriennali. I Cult Cabernets di Napa (Screaming Eagle, Harlan, Bryant Family) hanno creato un mercato parallel system dove chi non è sulla lista paga il doppio sul secondario.",
+    slides: [
+      { title: "Napa Valley: la struttura del mercato", body: "AVA: Oakville, Rutherford, Stags Leap, Howell Mountain. Cab. Sauvignon dominante. Il 'Judgment of Paris' 1976 ha legittimato Napa. Oggi: 450+ produttori, ma solo ~30 hanno mercato secondario liquido." },
+      { title: "I Cult Cabernets: Screaming Eagle, Harlan, Bryant", body: "Screaming Eagle: 6.000 bt/anno, lista d'attesa 6 anni. Harlan Estate: 2.000 casse. Bryant Family: chiuso in esclusiva. Sul secondario: prezzi 3–5x rispetto alla mailing list price." },
+      { title: "Opus One: il ponte tra Mouton e Mondavi", body: "Joint venture Rothschild + Mondavi dal 1979. 30.000 casse/anno — molto più liquido dei cult wines. CAGR 10y: +6.8%. Meno premium dei cult ma mercato Liv-ex con spessore." },
+      { title: "Ridge Monte Bello: il benchmark del valore", body: "Cabernet Sauvignon da Monte Bello (Santa Cruz Mountains). Invecchiamento 25+ anni. Al 'Paris Tasting 2006' (30° anniversario) ha vinto. Prezzo contenuto (€60–100) vs. qualità: gap da sfruttare." },
+      { title: "Mendoza (Argentina): Malbec come investimento", body: "Achaval Ferrer Finca Bella Vista: il Malbec più quotato su Liv-ex. Catena de Cruce de los Andes: collaborazione Cheval Blanc + Terrazas. Prezzi bassi, qualità alta, mercato secondario nascente — finestra aperta." },
+      { title: "Barossa Valley (Australia): Shiraz longeva", body: "Penfolds Grange: il grande classico australiano. Parker 100 ripetute. CAGR 15y: +9.4%. Grange 2008: da A$600 a A$1.800+. Henschke Hill of Grace: produzione 3.000 bt, premium sempre crescente." },
+      { title: "Cile emergente: Colchagua e Apalta", body: "Almaviva (Mouton + Concha y Toro): il più liquido su Liv-ex. Don Melchor Cabernet Sauvignon: Suckling 98 nel 2021, CAGR +12% da 2018. Prezzi ancora contenuti — il 'momento Sassicaia' del Cile è vicino." },
+      { title: "Liquidità New World su Liv-ex", body: "Napa: buona per Screaming Eagle, Harlan, Opus One. Australia: Penfolds Grange ha il mercato più liquido fuori Europa. Argentina/Cile: mercati in sviluppo — spread bid/ask ancora ampi. Strategia: compra per hold, non per flip a breve." },
+    ],
+    mapSvg: `<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="200" fill="#0b1220"/><text x="200" y="20" textAnchor="middle" fill="#C9A227" fontSize="12" fontWeight="bold">New World fine wine performance (2014–2024)</text><line x1="40" y1="170" x2="370" y2="170" stroke="#1e3050" strokeWidth="1"/><line x1="40" y1="40" x2="40" y2="170" stroke="#1e3050" strokeWidth="1"/><polyline points="40,152 90,143 150,128 210,108 270,86 330,64 370,52" fill="none" stroke="#ef4444" strokeWidth="2.5"/><polyline points="40,156 90,149 150,137 210,124 270,108 330,95 370,88" fill="none" stroke="#22d3ee" strokeWidth="1.5" strokeDasharray="5"/><text x="372" y="56" fill="#ef4444" fontSize="9">Napa</text><text x="372" y="92" fill="#22d3ee" fontSize="9">Barossa</text></svg>`,
+    deepDive: `Il mercato del fine wine del Nuovo Mondo ha attraversato una legittimazione accelerata negli ultimi 30 anni, guidata da tre eventi storici: il Judgment of Paris del 1976, le retrorating di Parker negli anni '90 e la crescita del mercato asiatico che ha cercato alternative ai prezzi sempre più alti di Bordeaux e Borgogna.
+
+Il caso Napa è il più strutturato. I Cult Cabernets — Screaming Eagle, Harlan Estate, Bryant Family, Colgin — hanno creato un sistema economico parallelo basato sulle mailing list. Il meccanismo è semplice ma potente: sei anni di attesa per essere aggiunti alla lista, poi accesso annuale a un'allocazione limitata a prezzi "corretti". Sul mercato secondario, le stesse bottiglie valgono immediatamente 3–5x il prezzo della mailing list.
+
+Per Screaming Eagle, questo significa: il prezzo mailing list è circa $350/bottiglia per l'annata recente. Sul secondario, la stessa bottiglia vale $1.200–2.000 al momento del rilascio. Non c'è nessun mercato europeo con un gap simile tra prezzo di emissione e prezzo secondario immediato.
+
+Il Cile merita attenzione speciale. Il mercato fine wine cileno è oggi dove era l'Italia nel 2005: qualità riconosciuta dalla critica internazionale (Almaviva, Don Melchor, Clos Apalta ricevono punteggi crescenti), prezzi ancora non allineati, distribuzione globale ancora incompleta. Quando il mercato asiatico "scoprirà" il Cile come ha scoperto l'Italia, i prezzi si adegueranno rapidamente. La finestra di acquisto a prezzi correnti è ancora aperta.`,
+    caseStudies: [
+      { wine: "Penfolds Grange Shiraz 2008", buy: 420, sell: 1800, year_buy: 2012, year_sell: 2024, roi: "+329%", note: "Parker 99pt. L'australiano più consistente su Liv-ex." },
+      { wine: "Almaviva Cabernet Sauvignon 2013", buy: 55, sell: 210, year_buy: 2015, year_sell: 2024, roi: "+282%", note: "Joint venture Mouton Rothschild. Il cileno più liquido su Liv-ex." },
+    ],
+    techniques: [
+      "Per Napa Cult: iscriviti alle mailing list (Screaming Eagle, Harlan) — l'unico modo di comprare a prezzo equo",
+      "Penfolds Grange: acquistalo al rilascio in Australia (A$700–800) prima della distribuzione europea (€1.200+)",
+      "Cile: Almaviva e Don Melchor hanno la migliore liquidità su Liv-ex per il Nuovo Mondo Sud America",
+      "Evita il flip a breve per il New World: spread bid/ask su Liv-ex ancora ampi per la maggior parte dei vini",
+    ],
+    exercise: {
+      title: "Analisi mailing list vs. secondario Napa Valley",
+      steps: [
+        "Verifica il prezzo corrente di Screaming Eagle su Wine-Searcher (secondario)",
+        "Stima il prezzo mailing list basandoti su fonti pubbliche (Wine Spectator, Decanter)",
+        "Calcola il premium secondario immediato in percentuale",
+        "Confronta con il premium secondario dei First Growth bordolesi en primeur vs. secondario",
+        "Concludi: la struttura mailing list crea valore unico vs. il sistema en primeur europeo?",
+      ]
+    },
+    keyPoints: [
+      "Screaming Eagle: 6.000 bt/anno, lista d'attesa 6 anni, secondario 3–5x mailing list",
+      "Penfolds Grange CAGR 15y: +9.4% — il benchmark australiano su Liv-ex",
+      "Don Melchor (Cile) CAGR +12% dal 2018 — il 'momento Sassicaia' del Cile è vicino",
+      "Ridge Monte Bello: gap qualità/prezzo estremo — ancora sottovalutato vs. Napa cult",
+      "New World spread bid/ask su Liv-ex ancora ampio: strategia hold, non flip",
+    ],
+    quiz: [
+      { q: "Screaming Eagle produce circa quante bottiglie per annata?", options: ["600 bt", "6.000 bt", "60.000 bt", "600.000 bt"], correct: 1 },
+      { q: "Chi ha fondato Opus One?", options: ["Robert Mondavi e Gallo", "Mouton Rothschild e Mondavi", "Screaming Eagle e Caymus", "Harlan e Bryant"], correct: 1 },
+      { q: "Cosa è il 'Judgment of Paris' del 1976?", options: ["Una classifica Liv-ex storica", "Un tasting cieco dove i vini californiani hanno battuto i francesi", "Il primo vintage di Opus One", "Una sentenza EU sui vini di Napa"], correct: 1 },
+      { q: "Penfolds Grange è prodotto in quale regione australiana?", options: ["Hunter Valley", "Barossa Valley e McLaren Vale", "Margaret River", "Yarra Valley"], correct: 1 },
+      { q: "Quale cileno è il più liquido su Liv-ex?", options: ["Montes Alpha M", "Almaviva", "Clos Apalta", "Casa Lapostolle"], correct: 1 },
+    ],
+  },
+  // ── Module 9: En Primeur ───────────────────────────────────────────────────────
+  {
+    id: "rs_09", courseId: 11, index: 8,
+    title: "En Primeur: come funziona il mercato futures del vino",
+    duration: 16,
+    youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    hero: { headline: "2009 Bordeaux EP: chi ha venduto 18 mesi dopo ha realizzato +85% in media", stat: "2005 Bordeaux: il miglior EP dell'era moderna. Lafite 2005 da €180 EP a €1.800 (2011)", context: "L'En Primeur è il sistema di pre-vendita del vino ancora in botte, tipicamente 18–24 mesi prima del rilascio in bottiglia. Nato a Bordeaux, si è esteso a Borgogna, Rodano e alcune regioni italiane." },
+    objectives: ["Capire la meccanica completa del sistema En Primeur bordolese", "Analizzare quando il EP è conveniente vs. quando è una trappola", "Identificare le annate EP migliori degli ultimi 30 anni", "Calcolare il rendimento aggiustato per i costi di carry e il rischio di controparte"],
+    context: "Il sistema EP di Bordeaux funziona attraverso una catena: produttore → négociant (les grandes maisons come CVBG, Millésima) → wine merchant → consumatore finale. I produttori rilasciano le loro allocazioni a prezzi 'EP' che possono essere molto sotto il prezzo futuro di mercato, oppure sopra di esso.",
+    slides: [
+      { title: "Come funziona l'En Primeur", body: "Aprile/Maggio: i 'primeurs' — degustazione dei vini da botte. Giugno: le châteaux rilasciano il prezzo EP. 12–18 mesi dopo: i wine merchants comprano. 3 anni dopo il millesimo: il vino arriva in bottiglia. L'investitore compra in step 2, riceve in step 4." },
+      { title: "La catena di distribuzione", body: "Négociants (Millésima, CVBG, Joanne, Duclot): intermediari chiave. Wine merchants (BBR, Justerini & Brooks, Farr Vintners): vendono ai consumatori finali. Il gap tra prezzo négociant e wine merchant: tipicamente 15–25%." },
+      { title: "Le annate EP leggendarie", body: "2000: millennio, Parker entusiasta. 2005: qualità universalmente riconosciuta — la migliore EP moderna. 2009 e 2010: due vintage eccezionali consecutivi, un caso unico. 2016: il 'secondo 2009'. Non tutti i millesimi meritano l'EP." },
+      { title: "Quando l'EP è conveniente", body: "Solo quando: 1) l'annata è oggettivamente eccezionale (Parker ≥96 su +80% dei châteaux). 2) il prezzo EP è sotto il mercato secondario delle annate precedenti simili. 3) hai liquidità immobilizzata per 4–5 anni. Anni mediocri a prezzi aggressivi: trappola." },
+      { title: "Il caso 2011–2014: la trappola EP", body: "Annate buone ma non eccezionali, con prezzi EP gonfiati dal successo del 2009–2010. Chi ha comprato EP 2011 Lafite a €300/bt ha visto il secondario scendere a €180. La lezione: il prezzo EP non è mai garantito in guadagno." },
+      { title: "Calcolare il rendimento EP reale", body: "Prezzo EP (bottiglia) + 20% merchant fee + duty + VAT + storage (£14.40/cassa/anno x 3 anni) = costo reale. Il guadagno si calcola su questo totale, non sul solo prezzo EP. Un EP a €100/bt diventa €140+ di costo reale dopo tutti i costi." },
+      { title: "En Primeur Borgogna e Rodano", body: "Borgogna EP: meno strutturato, solo alcuni négociants (Jadot, Bouchard) offrono futures. Il vantaggio è minore — le produzioni piccole rendono i prezzi EP solo leggermente sotto il secondario. Rodano EP: disponibile per Chapoutier, Guigal, Jaboulet — conveniente per le grandi annate." },
+      { title: "Rischio di controparte", body: "Il merchant EP potrebbe fallire prima della consegna — il vino è ancora 'in botte' al produttore. Soluzioni: scegli merchants con bond account (fondi segregati), preferisci i 'big names' (BBR, Justerini). Chiedi sempre: 'Is this purchased in bond?'" },
+    ],
+    mapSvg: `<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="200" fill="#0b1220"/><text x="200" y="20" textAnchor="middle" fill="#C9A227" fontSize="11" fontWeight="bold">EP price vs. secondary market — Lafite millesimi</text><line x1="40" y1="170" x2="370" y2="170" stroke="#1e3050" strokeWidth="1"/><line x1="40" y1="40" x2="40" y2="170" stroke="#1e3050" strokeWidth="1"/><rect x="60" y="140" width="20" height="30" fill="#3b82f6" opacity="0.8"/><rect x="83" y="100" width="20" height="70" fill="#4ade80" opacity="0.8"/><rect x="120" y="130" width="20" height="40" fill="#3b82f6" opacity="0.8"/><rect x="143" y="108" width="20" height="62" fill="#4ade80" opacity="0.8"/><rect x="180" y="60" width="20" height="110" fill="#3b82f6" opacity="0.8"/><rect x="203" y="44" width="20" height="126" fill="#4ade80" opacity="0.8"/><rect x="240" y="80" width="20" height="90" fill="#3b82f6" opacity="0.8"/><rect x="263" y="70" width="20" height="100" fill="#4ade80" opacity="0.8"/><text x="70" y="188" fill="#475569" fontSize="8">2005</text><text x="130" y="188" fill="#475569" fontSize="8">2009</text><text x="190" y="188" fill="#475569" fontSize="8">2010</text><text x="250" y="188" fill="#475569" fontSize="8">2016</text><text x="320" y="155" fill="#3b82f6" fontSize="8">■ EP price</text><text x="320" y="167" fill="#4ade80" fontSize="8">■ Secondary</text></svg>`,
+    deepDive: `L'En Primeur è probabilmente il meccanismo più frainteso nel fine wine investing. È contemporaneamente il modo più efficace per acquistare grandi vini a prezzi equi nelle annate eccezionali, e una delle trappole più pericolose nei millesimi medi.
+
+La logica dell'EP è semplice: il produttore rilascia il vino prima che sia pronto, a un prezzo che riflette la liquidità immediata e il rischio dell'acquirente. In buone annate, questo prezzo è inferiore a quello che il vino varrà una volta imbottigliato e distribuito. In annate ordinarie, il produttore può fissare prezzi ambiziosi sperando che la reputazione dell'annata precedente trascini le vendite.
+
+Il 2009 è il caso paradigmatico. Lafite Rothschild 2009 è stato rilasciato in EP a circa £250 per bottiglia. Diciotto mesi dopo, prima ancora che il vino fosse imbottigliato, il secondario aveva superato £450. Chi ha comprato EP e rivenduto immediatamente alla consegna ha realizzato l'80% lordo in meno di due anni — al netto dei costi reali, circa il 60% netto.
+
+Ma il 2011 ha insegnato la lezione opposta. Annata buona ma non eccezionale, prezzi EP fissati al livello del 2009. Lafite 2011 EP a £280; secondario tre anni dopo: £160. Perdita netta del 40%. Il meccanismo EP non è mai un investimento sicuro: è una scommessa condizionata alla qualità dell'annata, alla disciplina del produttore sui prezzi, e all'evoluzione del sentiment di mercato.`,
+    caseStudies: [
+      { wine: "Pétrus En Primeur 2009", buy: 1800, sell: 4200, year_buy: 2010, year_sell: 2014, roi: "+133%", note: "EP al rilascio. Venduto all'imbottigliamento. Costi carry inclusi: rendimento netto ~95%." },
+      { wine: "Lafite Rothschild En Primeur 2011", buy: 280, sell: 160, year_buy: 2012, year_sell: 2016, roi: "-43%", note: "Annata sopravvalutata, prezzi EP aggressivi. Lezione classica della trappola EP." },
+    ],
+    techniques: [
+      "Compra EP solo in annate con Parker ≥96 su +80% dei châteaux — le annate mediocri a prezzi aggressivi sono trappole",
+      "Calcola sempre il costo reale: prezzo EP + merchant fee 20% + storage 3 anni + duty/VAT",
+      "Privilegia i merchants con bond account segregato — protezione da rischio fallimento",
+      "Le annate 2005, 2009, 2010, 2016, 2022 sono le EP dell'era moderna — benchmark di confronto",
+    ],
+    exercise: {
+      title: "Calcola il rendimento reale di un EP Bordeaux 2016",
+      steps: [
+        "Trova il prezzo EP 2016 di Léoville Barton (disponibile su Decanter archive o Liv-ex)",
+        "Aggiungi: merchant fee 18%, duty UK (£10/bottiglia per wine >9% abv), VAT 20% se applicabile",
+        "Aggiungi il costo di storage: £14.40/cassa/anno x 4 anni (2016–2020)",
+        "Confronta con il prezzo secondario attuale su Liv-ex o Wine-Searcher",
+        "Calcola l'IRR (Internal Rate of Return) dell'investimento EP",
+      ]
+    },
+    keyPoints: [
+      "EP conviene solo in annate eccezionali (Parker ≥96, consenso critico) — le annate mediocri sono trappole",
+      "Costo reale EP = prezzo + 20% fee + duty + VAT + £14.40/cassa/anno x anni attesa",
+      "2009 Bordeaux: il miglior EP moderno — +80–100% netto in 2 anni per chi ha venduto alla consegna",
+      "2011 Bordeaux: esempio classico di trappola EP — prezzi aggressivi su annata ordinaria, -43%",
+      "Rischio controparte: scegli merchants con bond account — il vino è 'tuo' ma ancora in botte",
+    ],
+    quiz: [
+      { q: "Cosa significa acquistare un vino 'En Primeur'?", options: ["Comprare direttamente in cantina", "Comprare il vino ancora in botte, prima dell'imbottigliamento", "Comprare solo vini premium", "Comprare in anticipo per festività"], correct: 1 },
+      { q: "Quale annata EP è considerata la migliore dell'era moderna?", options: ["2000", "2005", "2009", "2010"], correct: 1 },
+      { q: "Qual è il costo di storage in bonded warehouse a Londra per cassa/anno?", options: ["£5.40", "£10.20", "£14.40", "£22.00"], correct: 2 },
+      { q: "La catena EP Bordeaux passa attraverso quale figura chiave?", options: ["Il sommelier", "Il négociant", "Il critico Parker", "Il broker Liv-ex"], correct: 1 },
+      { q: "Cosa è il 'bond account' in un wine merchant EP?", options: ["Un conto in valuta estera per vini importati", "Fondi segregati che proteggono l'acquirente da fallimento del merchant", "Un deposito cauzionale per aste online", "Un'assicurazione obbligatoria sul vino"], correct: 1 },
+    ],
+  },
+  // ── Module 10: Aste internazionali ────────────────────────────────────────────
+  {
+    id: "rs_10", courseId: 11, index: 9,
+    title: "Aste internazionali: Christie's, Sotheby's, Acker — meccanismi e arbitraggi",
+    duration: 15,
+    youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    hero: { headline: "Gap bid-ask in asta vs. Liv-ex: mediamente 8–12% — margine di arbitraggio reale", stat: "Mercato aste globale 2023: $500M. Top 3: Sotheby's, Christie's, Hart Davis Hart", context: "Le aste internazionali di fine wine sono il canale principale per bottiglie rare e grandi formati. Capire la struttura dei costi e i meccanismi delle aste è essenziale per massimizzare il rendimento in vendita." },
+    objectives: ["Analizzare la struttura delle commissioni nei principali auction house", "Capire quando vendere in asta vs. sul mercato Liv-ex", "Identificare gli arbitraggi tra diverse piazze d'asta (Londra, New York, Hong Kong)", "Valutare il rischio di provenance e come mitigarlo"],
+    context: "Le case d'asta applicano buyer's premium (12–25% sul hammer price) e seller's commission (5–15%). La geografia conta: vini francesi vendono meglio a Londra e Hong Kong, vini californiani a New York, vini italiani a Milano e Londra. Il gap geografico crea opportunità di arbitraggio.",
+    slides: [
+      { title: "Le principali case d'asta", body: "Sotheby's Wine: la più antica (1970). Christie's Wine: fondata nel 1766. Acker Merrall: specializzata Borgogna. Hart Davis Hart (Chicago): Bordeaux. Spectrum (New York): California. WineBid: online-only, commissioni più basse." },
+      { title: "Struttura delle commissioni", body: "Buyer's premium: 20–25% sul hammer price (Sotheby's: 22.5%). Seller's commission: 10–15% sul hammer price. Total friction: 30–40%. Implicazione: compra in asta solo se rivendi entro 5 anni con apprezzamento >40% netto." },
+      { title: "Il processo d'asta", body: "Consignment: 2–3 mesi prima dell'asta. Stima: the house valuta le bottiglie. Reserve: il prezzo minimo segreto del venditore. Hammer price: l'offerta vincente. La vendita si formalizza 7 giorni dopo. Pagamento: 30–45 giorni." },
+      { title: "Arbitraggio geografico", body: "Romanée-Conti e Borgogna top: prezzi più alti a Hong Kong (+8–15% vs. Londra). Napa Cult Cabernets: prezzi più alti a New York. Barolo e Super Tuscans: Londra e Milano. Comprare sul mercato più basso, vendere su quello più alto: l'arbitraggio base." },
+      { title: "Provenance: il rischio più alto", body: "Bottiglie senza provenance documentata perdono il 20–40% del valore in asta. Fill level, capsule intatta, etichetta pulita: i tre check visuali. La casa d'asta non garantisce l'autenticità — fa 'reasonable checks'. La responsabilità è del compratore." },
+      { title: "Grandi formati: Magnum, Jeroboam, Imperiale", body: "Magnum (1.5L): +30–50% vs. 2 bottiglie standard. Jeroboam (3L): premium variabile. Imperiale (6L): mercato molto sottile, vendite lente. Il premio di formato scende con le dimensioni oltre il Magnum." },
+      { title: "WineBid e le aste online", body: "WineBid.com: la principale asta online USA. Commissioni: 12–18% buyer, 10% seller. Vantaggio: accesso a venditori privati USA con stock importanti. Svantaggio: meno verifiche sulla provenance vs. Christie's/Sotheby's." },
+      { title: "Come partecipare a un'asta", body: "1. Registrati online (fotocopia ID, carta di credito). 2. Richiedi il catalogo e stima. 3. Visita il pre-auction preview (fondamentale per Sotheby's Londra). 4. Fai offerta online, telefonica o in sala. 5. Pagamento entro 7 giorni dal hammer." },
+    ],
+    mapSvg: `<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="200" fill="#0b1220"/><text x="200" y="20" textAnchor="middle" fill="#C9A227" fontSize="11" fontWeight="bold">Commissioni asta: buyer + seller (totale friction)</text><rect x="60" y="80" width="60" height="80" fill="#ef4444" opacity="0.8" rx="4"/><rect x="150" y="90" width="60" height="70" fill="#f97316" opacity="0.8" rx="4"/><rect x="240" y="100" width="60" height="60" fill="#eab308" opacity="0.8" rx="4"/><rect x="330" y="70" width="40" height="90" fill="#ef4444" opacity="0.7" rx="4"/><text x="90" y="178" fill="#94a3b8" fontSize="9" textAnchor="middle">Sotheby's</text><text x="180" y="178" fill="#94a3b8" fontSize="9" textAnchor="middle">Christie's</text><text x="270" y="178" fill="#94a3b8" fontSize="9" textAnchor="middle">WineBid</text><text x="350" y="178" fill="#94a3b8" fontSize="9" textAnchor="middle">Acker</text><text x="90" y="74" fill="#e2e8f0" fontSize="9" textAnchor="middle">~38%</text><text x="180" y="84" fill="#e2e8f0" fontSize="9" textAnchor="middle">~35%</text><text x="270" y="94" fill="#e2e8f0" fontSize="9" textAnchor="middle">~28%</text><text x="350" y="64" fill="#e2e8f0" fontSize="9" textAnchor="middle">~40%</text></svg>`,
+    deepDive: `Le aste di fine wine sono il mercato più trasparente per i vini rari, ma anche quello con i costi di transazione più alti. Capire la struttura delle commissioni è prerequisito per qualsiasi calcolo di rendimento.
+
+Il meccanismo è questo: quando un vino viene battuto all'asta a €1.000, il compratore paga €1.225 (€1.000 + 22.5% buyer's premium, come da struttura Sotheby's London 2024). Il venditore riceve €870 (€1.000 - 13% seller's commission). Il gap tra quanto paga il compratore e quanto riceve il venditore è €355 — un terzo del prezzo di transazione va alla casa d'asta. Questo è il motivo per cui le aste sono efficienti solo per vini rari con domanda competitiva e per vendite di valore alto.
+
+Il confronto con Liv-ex è rilevante. Su Liv-ex, un venditore paga una commissione annuale di membership (circa £300–500) e poi una transazione fee di circa 1–2% per trade. Per chi ha grandi volumi o vini liquidi, Liv-ex è molto più efficiente. Per chi ha vini rari (Romanée-Conti, Screaming Eagle) che non hanno abbastanza offerte quotidiane su Liv-ex, l'asta è l'unico venue con abbastanza domanda competitiva.
+
+L'arbitraggio geografico è uno dei concetti meno discussi ma più rilevanti. Il DRC La Tâche vende a prezzi consistentemente più alti (+12–15%) a Hong Kong rispetto a Londra, perché la domanda asiatica per la Borgogna è più competitiva. I Napa Cult Cabernets valgono più a New York che a Londra, perché il collezionismo californiano è concentrato negli USA. Chi ha accesso a più piazze può comprare a Londra e vendere a Hong Kong, catturando lo spread geografico.`,
+    caseStudies: [
+      { wine: "DRC Romanée-Conti 2015 OWC 6bt", buy: 28000, sell: 52000, year_buy: 2018, year_sell: 2023, roi: "+86%", note: "Comprato Christie's Londra, venduto Sotheby's Hong Kong. Arbitraggio geografico: +14% vs. valore Londra." },
+      { wine: "Pétrus 1982 (3 bottiglie)", buy: 4500, sell: 12800, year_buy: 2005, year_sell: 2022, roi: "+184%", note: "Provenance documentata: cantina privata originale. Premium provenance: +25% vs. market estimate." },
+    ],
+    techniques: [
+      "Calcola sempre il break-even con la friction totale (~35–40%): il vino deve apprezzare di almeno il 40% per coprire i costi",
+      "Partecipa al pre-auction preview: fondamentale per verificare fill level e provenance prima di fare offerta",
+      "Confronta il prezzo hammer + buyer's premium con Liv-ex bid: spesso Liv-ex è più efficiente per vini liquidi",
+      "Arbitraggio geografico: studia i prezzi comparativi per la tua categoria tra Londra, Hong Kong e New York",
+    ],
+    exercise: {
+      title: "Simulazione acquisto e rivendita in asta",
+      steps: [
+        "Scegli un vino quotato su Sotheby's prossima asta (usa il catalogo online sothebys.com/wine)",
+        "Calcola il prezzo totale = hammer price stimato + 22.5% buyer's premium",
+        "Confronta con il prezzo bid attuale su Liv-ex per lo stesso vino",
+        "Se decidi di comprare, pianifica il canale di rivendita ottimale tra 3–5 anni",
+        "Calcola il rendimento necessario per coprire tutti i costi (buyer + seller + storage)",
+      ]
+    },
+    keyPoints: [
+      "Friction totale aste: 35–40% — break-even richiede apprezzamento di almeno il 40% netto",
+      "Arbitraggio geografico: DRC +12–15% a Hong Kong vs. Londra; Napa Cult +10–18% a New York",
+      "Provenance documentata: premium del 20–25% in asta vs. bottiglie senza storia",
+      "Grandi formati: Magnum vale +30–50% vs. 2 bt standard — il miglior formato per asta",
+      "Pre-auction preview: partecipare fisicamente è fondamentale per verificare la provenance",
+    ],
+    quiz: [
+      { q: "Se un vino viene battuto a €1.000, quanto paga il compratore da Sotheby's (22.5% buyer's premium)?", options: ["€1.000", "€1.100", "€1.225", "€1.400"], correct: 2 },
+      { q: "Quale categoria di vini ottiene prezzi significativamente più alti a Hong Kong?", options: ["Napa Valley Cab", "Borgogna DRC e Premier Cru", "Champagne NV", "Brunello di Montalcino"], correct: 1 },
+      { q: "Cosa è il 'hammer price' in un'asta?", options: ["Il prezzo di partenza", "L'offerta vincente (prima dei premium)", "Il prezzo finale incluse le commissioni", "La stima pre-asta"], correct: 1 },
+      { q: "Perché la 'provenance' è così importante nelle aste?", options: ["Solo per motivi legali", "Le bottiglie con storia documentata valgono il 20–25% in più", "È richiesta dalla legge", "Determina il vintage"], correct: 1 },
+      { q: "Qual è il formato che ottiene il premium proporzionale più alto in asta?", options: ["375ml (mezza bottiglia)", "1.5L (Magnum)", "3L (Jeroboam)", "6L (Imperiale)"], correct: 1 },
+    ],
+  },
+  // ── Module 11: Indici Liv-ex ──────────────────────────────────────────────────
+  {
+    id: "rs_11", courseId: 11, index: 10,
+    title: "Leggere gli indici Liv-ex: Bordeaux 500, Burgundy 150, Italy 100",
+    duration: 13,
+    youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    hero: { headline: "Italy 100 ha sovraperformato il Bordeaux 500 per 4 anni consecutivi (2020–2024)", stat: "Liv-ex Fine Wine 1000: l'indice principale. 1000 vini, 24 regioni, massima liquidità", context: "Il London International Vintners Exchange (Liv-ex) è il principale marketplace B2B del fine wine. I suoi indici sono il benchmark universale per misurare la performance del mercato, come il FTSE o l'S&P 500." },
+    objectives: ["Capire la struttura e la metodologia degli indici Liv-ex principali", "Analizzare la composizione del Bordeaux 500, Burgundy 150, Italy 100", "Usare gli indici come benchmark per il proprio portfolio", "Identificare divergenze tra indici come segnale di rotazione settoriale"],
+    context: "Liv-ex pubblica oltre 20 indici diversi. I principali: Fine Wine 100 (100 vini più liquidi), Fine Wine 1000 (benchmark ampio), Bordeaux 500, Burgundy 150, Italy 100, Champagne 50, Power 100 (i più influenti per volume). Gli indici sono calcolati sul prezzo medio ponderato dei trade reali — non stime.",
+    slides: [
+      { title: "Fine Wine 100: il benchmark principale", body: "100 vini con maggiore liquidità su Liv-ex. Dominato da Bordeaux (70%), con Borgogna e Champagne. Calcolato su prezzi di trade reali, non stime. Il '100' è spesso citato come proxy del mercato fine wine globale." },
+      { title: "Fine Wine 1000: la visione ampia", body: "1000 vini da 24 regioni. Il più diversificato. Pubblicato mensilmente. Componenti: Bordeaux 500 (50%), Burgundy 150 (15%), Champagne 50 (5%), Italy 100 (10%), altre regioni (20%). Il benchmark per chi investe in più categorie." },
+      { title: "Bordeaux 500: il cuore del mercato", body: "500 vini bordolesi: i 5 First Growth per 20 vintage + classificati storici. Ponderato per volume di trade. Il Bordeaux 500 è sceso del 18% tra 2011 e 2014 (la 'correzione asiatica') — la maggiore drawdown dell'era moderna." },
+      { title: "Burgundy 150: il mercato più volatile", body: "150 vini borgognoni: DRC, Leroy, Rousseau, Raveneau, altri top. Alta volatilità (±20–30% annuo). Massima performance nel 2021 (+35%). La bassa liquidità amplifica i movimenti — sia al rialzo che al ribasso." },
+      { title: "Italy 100: il segmento con il trend più forte", body: "100 vini italiani: Barolo, Brunello, Super Tuscans. Creato nel 2010. Da allora: +124%. Ha sovraperformato il Bordeaux 500 per 4 anni consecutivi (2020–2024). La crescita strutturale è guidata da riconoscimento critico + domanda asiatica." },
+      { title: "Champagne 50: il newcomer", body: "50 Champagne di prestige. Creato nel 2019. Prima asta storica: +89% in 5 anni. Volatilità: media. Il segmento più 'giovane' degli indici Liv-ex — dati storici limitati, interpretare con cautela." },
+      { title: "Come leggere un indice Liv-ex", body: "Baseline: 100 al 2004 per la maggior parte degli indici. Un indice a 450 = +350% dalla baseline. Check mensili: confronta la performance del tuo portfolio vs. l'indice di riferimento. Se sei sotto, analizza il perché." },
+      { title: "Rotazione settoriale: quando gli indici divergono", body: "Quando Italy 100 sale e Bordeaux 500 scende: il mercato sta 'ruotando' verso l'Italia. Segnale per il portfolio: aumenta l'esposizione al segmento in outperformance. Come per i settori azionari, ma più lento e meno volatile." },
+    ],
+    mapSvg: `<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="200" fill="#0b1220"/><text x="200" y="20" textAnchor="middle" fill="#C9A227" fontSize="11" fontWeight="bold">Indici Liv-ex comparati (2010 = 100)</text><line x1="40" y1="170" x2="370" y2="170" stroke="#1e3050" strokeWidth="1"/><line x1="40" y1="40" x2="40" y2="170" stroke="#1e3050" strokeWidth="1"/><polyline points="40,130 90,115 140,90 180,105 230,85 280,68 330,52 370,44" fill="none" stroke="#a78bfa" strokeWidth="2.5"/><polyline points="40,130 90,118 140,100 180,112 230,98 280,88 330,78 370,72" fill="none" stroke="#60a5fa" strokeWidth="1.5" strokeDasharray="6 2"/><polyline points="40,130 90,122 140,110 180,108 230,92 280,76 330,60 370,50" fill="none" stroke="#4ade80" strokeWidth="1.5" strokeDasharray="2 4"/><text x="372" y="48" fill="#a78bfa" fontSize="8">Burg150</text><text x="372" y="76" fill="#60a5fa" fontSize="8">Bord500</text><text x="372" y="54" fill="#4ade80" fontSize="8">Ita100</text></svg>`,
+    deepDive: `Gli indici Liv-ex sono lo strumento di misurazione più accurato disponibile per il mercato fine wine. A differenza delle stime delle case d'asta o dei listini dei wine merchants, gli indici Liv-ex sono calcolati su prezzi di trade reali — ogni transazione che avviene sulla piattaforma aggiorna il calcolo.
+
+La comprensione degli indici parte dalla loro metodologia. Il Fine Wine 1000 include 1000 vini da 24 regioni, ponderati per volume di trade. Questo significa che i vini più liquidi (Lafite, Mouton, Romanée-Conti DRC) hanno un peso maggiore nell'indice. Un movimento del DRC La Tâche influenza il Burgundy 150 molto più di un piccolo Bourgogne Rouge.
+
+La divergenza tra indici è il segnale più utile per un investitore attivo. Quando il Burgundy 150 sovraperforma il Bordeaux 500, il mercato sta allocando più capitale verso la Borgogna — segnale che il prezzo della Borgogna è in fase di apprezzamento relativo. Se possiedi sia Bordeaux che Borgogna, puoi ribilanciare il portfolio in risposta a questi segnali.
+
+L'Italy 100 ha dimostrato la più forte crescita strutturale degli ultimi 4 anni, sovraperformando tutti gli altri indici regionali dal 2020 al 2024. Questo non è casuale: riflette il crescente riconoscimento critico dei vini italiani, la domanda asiatica emergente e la percezione di sottovalutazione relativa rispetto a Borgogna e Bordeaux. Il trend strutturale — non solo ciclico — è sostenuto da dati fondamentali, non solo da sentiment di breve termine.`,
+    caseStudies: [
+      { wine: "Portfolio diversificato Bordeaux/Borgogna 2016", buy: 20000, sell: 38000, year_buy: 2016, year_sell: 2023, roi: "+90%", note: "Ribilanciamento basato su segnali di divergenza indici. Sovrappeso Italy 100 dal 2020." },
+      { wine: "Solo Bordeaux 500 portfolio 2011–2014", buy: 20000, sell: 16400, year_buy: 2011, year_sell: 2014, roi: "-18%", note: "Il Bordeaux 500 ha corretto del 18% in 3 anni. La diversificazione avrebbe mitigato la perdita." },
+    ],
+    techniques: [
+      "Usa il Fine Wine 1000 come benchmark mensile del tuo portfolio — se underperformi per 6 mesi, rivedi l'allocazione",
+      "Monitora le divergenze tra Italy 100 e Bordeaux 500 — segnale di rotazione settoriale",
+      "Il Burgundy 150 è ad alta volatilità: usa stop-loss concettuale se la concentrazione supera il 40% del portfolio",
+      "Liv-ex pubblica i dati gratuitamente in forma aggregata mensile — iscriviti alla newsletter live-ex.com",
+    ],
+    exercise: {
+      title: "Costruisci il tuo indice portfolio personalizzato",
+      steps: [
+        "Lista tutti i vini nel tuo portfolio (o in quello simulato del modulo 15)",
+        "Assegna a ciascuno l'indice Liv-ex di riferimento (Italy 100, Bordeaux 500, ecc.)",
+        "Scarica l'andamento mensile degli indici da live-ex.com (dati pubblici)",
+        "Confronta la performance del tuo portfolio con la composizione pesata degli indici",
+        "Identifica dove sei in outperformance e dove sei in ritardo — decidi se agire",
+      ]
+    },
+    keyPoints: [
+      "Italy 100: +124% dal 2010, 4 anni consecutivi di outperformance vs. Bordeaux 500 (2020–2024)",
+      "Burgundy 150: il più volatile (±20–30% annuo) — massima performance ma massimo rischio",
+      "Fine Wine 1000: il benchmark ampio (24 regioni) — usarlo come riferimento per portfolio diversificati",
+      "La divergenza tra indici è un segnale di rotazione settoriale — come per i settori azionari",
+      "I dati Liv-ex sono basati su trade reali, non stime — la fonte più affidabile del mercato",
+    ],
+    quiz: [
+      { q: "Quanti vini compone il Fine Wine 1000 di Liv-ex?", options: ["100", "500", "1000", "2000"], correct: 2 },
+      { q: "Quale indice Liv-ex è il più volatile?", options: ["Bordeaux 500", "Italy 100", "Burgundy 150", "Champagne 50"], correct: 2 },
+      { q: "Dove vengono pubblicati i dati mensili aggregati di Liv-ex?", options: ["Solo su abbonamento premium", "live-ex.com (forma aggregata gratuita)", "Christie's wine report", "Decanter magazine"], correct: 1 },
+      { q: "Il Bordeaux 500 ha subito la sua maggiore correzione in quale periodo?", options: ["2008–2009 (crisi finanziaria)", "2011–2014 (correzione asiatica)", "2016–2017 (Brexit)", "2020 (COVID)"], correct: 1 },
+      { q: "Quando Italy 100 sale e Bordeaux 500 scende, cosa indica?", options: ["Il mercato complessivo è in calo", "Una rotazione settoriale verso l'Italia", "La crisi del fine wine europeo", "Un problema con i dati Liv-ex"], correct: 1 },
+    ],
+  },
+  // ── Module 12: Correlazione vino/azionario ────────────────────────────────────
+  {
+    id: "rs_12", courseId: 11, index: 11,
+    title: "Correlazione vino/azionario: come funziona in una crisi",
+    duration: 14,
+    youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    hero: { headline: "Durante il crash COVID (marzo 2020) il Liv-ex 100 è sceso solo del 3.2% vs. S&P -34%", stat: "Correlazione Liv-ex Fine Wine 100 vs. S&P 500 (10y): 0.18 — quasi nulla", context: "Il fine wine è uno degli asset con la più bassa correlazione agli indici azionari. Questa caratteristica lo rende un potente strumento di diversificazione di portfolio — specialmente in periodi di stress di mercato." },
+    objectives: ["Quantificare la correlazione storica tra fine wine e mercati azionari", "Analizzare il comportamento del fine wine durante le principali crisi (2008, 2020)", "Capire perché la bassa correlazione esiste e se è strutturale o ciclica", "Costruire un portfolio multi-asset ottimale includendo il fine wine"],
+    context: "La correlazione è la misura statistica di quanto due asset si muovono insieme. 1.0 = perfettamente correlati. 0 = nessuna correlazione. -1.0 = perfettamente anticorrelati. Il Liv-ex Fine Wine 100 ha una correlazione di 0.18 con l'S&P 500 su 10 anni — vicina allo zero.",
+    slides: [
+      { title: "Cos'è la correlazione e perché conta", body: "Un portfolio diversificato non è uno con molti asset — è uno con asset a bassa correlazione tra loro. Se tutti i tuoi asset cadono insieme in una crisi, la diversificazione è illusoria. Il fine wine riduce la correlazione media del portfolio." },
+      { title: "La correlazione storica vino/azionario", body: "Liv-ex 100 vs. S&P 500 (10y): 0.18. Vs. FTSE 100: 0.22. Vs. oro: 0.31. Vs. immobiliare UK: 0.44. Il fine wine è tra gli asset con la più bassa correlazione agli equity — paragonabile ai TIPS inflation-linked bonds." },
+      { title: "La crisi del 2008", body: "S&P 500: -38% da luglio a marzo 2009. Liv-ex Fine Wine 100: -12% nello stesso periodo. Borsa recuperò in 4 anni. Fine wine recuperò in 14 mesi. La bassa correlazione ha protetto i portfolio che includevano fine wine." },
+      { title: "Il crash COVID marzo 2020", body: "S&P 500: -34% in 33 giorni (la correzione più rapida della storia). Liv-ex 100: -3.2%. Il fine wine era 'immune' perché i compratori non erano sotto margin call, la domanda dei collezionisti è inelastica al breve termine." },
+      { title: "Perché la bassa correlazione è strutturale", body: "I compratori di fine wine non sono margin-call driven. Non esistono ETF su fine wine che forzino vendite automatiche. La liquidità è limitata — impossibile vendere milioni in un giorno. Questi fattori strutturali mantengono bassa la correlazione." },
+      { title: "I limiti: correlazione in crisi profonde", body: "Crisi protratte (es. crisi asiatica 1997–1998): la correlazione con il lusso globale è aumentata. In recessioni profonde con riduzione del reddito disponibile, anche il fine wine può correggere. La correlazione bassa vale per crisi brevi e panico di mercato." },
+      { title: "Ottimizzazione portfolio con fine wine", body: "Modern Portfolio Theory: aggiungere un asset a bassa correlazione aumenta il Sharpe Ratio del portfolio. Simulazione: portfolio 60/40 equity/bonds ha Sharpe 0.8. Portfolio 50/30/20 equity/bonds/fine wine: Sharpe 1.1 (dati Sotheby's Financial Wine Index 2022)." },
+      { title: "Allocazione ottimale: quanto fine wine?", body: "Consensus degli studi accademici: 5–15% del portfolio. Sotto il 5%: impatto marginale sulla diversificazione. Oltre il 15%: liquidità troppo ridotta, rischio concentrazione. Il 10% è considerato il punto ottimale." },
+    ],
+    mapSvg: `<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="200" fill="#0b1220"/><text x="200" y="20" textAnchor="middle" fill="#C9A227" fontSize="11" fontWeight="bold">Fine wine vs. S&P 500 durante le crisi</text><line x1="40" y1="110" x2="370" y2="110" stroke="#1e3050" strokeWidth="1"/><line x1="40" y1="40" x2="40" y2="170" stroke="#1e3050" strokeWidth="1"/><text x="32" y="114" fill="#475569" fontSize="8" textAnchor="end">0%</text><polyline points="40,110 80,110 120,130 160,155 200,170 240,155 280,130 330,108 370,100" fill="none" stroke="#ef4444" strokeWidth="2"/><polyline points="40,110 80,110 120,115 160,120 200,123 240,120 280,116 330,112 370,108" fill="none" stroke="#4ade80" strokeWidth="2"/><text x="372" y="104" fill="#4ade80" fontSize="8">Fine Wine</text><text x="372" y="174" fill="#ef4444" fontSize="8">S&P 500</text><text x="200" y="188" fill="#475569" fontSize="8">Crisi 2008</text></svg>`,
+    deepDive: `La bassa correlazione del fine wine con i mercati azionari è uno dei suoi attributi più studiati e più fraintesi. È reale — ma ha condizioni e limiti che è essenziale comprendere prima di costruire un portfolio su questa premessa.
+
+Il meccanismo è semplice: il mercato del fine wine è guidato da compratori che non subiscono margin calls. Un collezionista di DRC Romanée-Conti che vede l'S&P 500 scendere del 30% non è costretto a vendere il suo wine collection — la sua situazione finanziaria può deteriorarsi, ma non c'è un meccanismo automatico che forzi la vendita come accade con le azioni in margin account.
+
+Questo crea una asimmetria temporale. In una crisi breve e violenta (2020 COVID: -34% in 33 giorni), il fine wine è praticamente immune perché il mercato non ha liquidità sufficiente per assorbire vendite forzate — e non ci sono vendite forzate. L'indice Liv-ex 100 ha perso solo il 3.2% nello stesso periodo.
+
+Ma in una crisi protratta — dove la ricchezza delle famiglie ad alto reddito erode nel tempo — il quadro cambia. La crisi asiatica del 1997–1998, che aveva una componente di riduzione strutturale del reddito disponibile nei collezionisti HK/Singapore, ha visto il mercato fine wine correggere dell'8–12% in 18 mesi. Non una catastrofe, ma una correlazione superiore allo zero.
+
+La letteratura accademica (Masset & Henderson, 2010; Sanning, Shaffer & Sharratt, 2008) converge su una conclusione: il fine wine migliora il profilo rischio/rendimento di un portfolio diversificato, aumentando lo Sharpe Ratio di 0.2–0.35 punti per una allocazione del 10–15%.`,
+    caseStudies: [
+      { wine: "Portfolio 60/40 + 10% Fine Wine durante COVID", buy: 100000, sell: 102000, year_buy: 2020, year_sell: 2020, roi: "+2% (vs. -20% pure equity)", note: "Simulazione portfolio €100k durante marzo 2020. Fine wine allocazione: €10k." },
+      { wine: "Portfolio Fine Wine durante crisi 2008", buy: 50000, sell: 44000, year_buy: 2008, year_sell: 2009, roi: "-12% (vs. S&P -38%)", note: "Outperformance significativa: -12% vs -38%. Recupero in 14 mesi vs. 4 anni equity." },
+    ],
+    techniques: [
+      "Target 10% di allocazione fine wine nel portfolio complessivo — il punto ottimale per diversificazione",
+      "In periodi di stress di mercato breve (panic selling), non vendere il fine wine: la bassa liquidità ti protegge",
+      "Monitora il rapporto Liv-ex 100 / S&P 500: quando divergono fortemente, è segnale di opportunità",
+      "In recessioni profonde (>18 mesi), riduci l'esposizione ai vini meno liquidi prima che il mercato si deteriori",
+    ],
+    exercise: {
+      title: "Ottimizzazione portfolio con Modern Portfolio Theory",
+      steps: [
+        "Dati storici: prendi i rendimenti mensili 2014–2024 del Liv-ex 100 (dal sito live-ex.com)",
+        "Confronta con i rendimenti S&P 500 e un indice obbligazionario (es. Barclays Aggregate)",
+        "Calcola la correlazione tra Liv-ex 100 e S&P 500 usando Excel (funzione CORREL)",
+        "Simula 3 portfolio: 60/40, 50/40/10 (con fine wine), 50/30/20 (con fine wine)",
+        "Confronta lo Sharpe Ratio dei tre portfolio — verifica se il fine wine migliora il profilo rischio/rendimento",
+      ]
+    },
+    keyPoints: [
+      "Correlazione Liv-ex Fine Wine 100 vs. S&P 500 (10y): 0.18 — quasi nulla",
+      "COVID marzo 2020: Liv-ex -3.2% vs. S&P -34% — bassa correlazione confermata",
+      "La bassa correlazione è strutturale: no margin calls, no ETF forzati, liquidità limitata",
+      "Allocazione ottimale: 10% del portfolio (consensus accademico: 5–15%)",
+      "In recessioni protratte la correlazione aumenta — il fine wine non è un hedge perfetto",
+    ],
+    quiz: [
+      { q: "Qual è la correlazione storica (10y) tra Liv-ex Fine Wine 100 e S&P 500?", options: ["0.72", "0.44", "0.18", "-0.12"], correct: 2 },
+      { q: "Durante il COVID (marzo 2020), di quanto è sceso il Liv-ex 100?", options: ["-34%", "-18%", "-3.2%", "+1.1%"], correct: 2 },
+      { q: "Perché il fine wine non subisce vendite forzate come le azioni?", options: ["È un asset illiquido senza margine", "I compratori non subiscono margin calls e non esistono ETF su fine wine", "La normativa lo vieta", "Il mercato è chiuso durante le crisi"], correct: 1 },
+      { q: "Quale allocazione fine wine è considerata ottimale per un portfolio diversificato?", options: ["1–3%", "5–10%", "10% (consensus accademico 5–15%)", "25–30%"], correct: 2 },
+      { q: "In quale scenario la bassa correlazione del fine wine tende a deteriorarsi?", options: ["Crisi brevi e violente (panic selling)", "Recessioni profonde e protratte che erodono il reddito disponibile", "Periodi di inflazione alta", "Mercati azionari in forte crescita"], correct: 1 },
+    ],
+  },
 ];
 
 // Template for other premium courses — same 20-module structure
