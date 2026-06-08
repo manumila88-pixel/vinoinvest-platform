@@ -47,18 +47,14 @@ export default function CookieBanner() {
         <span style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.5 }}>
           🍪 Utilizziamo cookie tecnici essenziali per il funzionamento del sito.{" "}
           <a
-            href="https://www.garanteprivacy.it"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/privacy"
             style={{ color: "#C9A227", textDecoration: "underline", fontSize: 12 }}
           >
             Privacy Policy
           </a>
           {" · "}
           <a
-            href="https://www.garanteprivacy.it"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/cookies"
             style={{ color: "#C9A227", textDecoration: "underline", fontSize: 12 }}
           >
             Cookie Policy
