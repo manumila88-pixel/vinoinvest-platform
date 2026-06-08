@@ -3,6 +3,7 @@ import { fetchCellarTrackerPrice, fetchCellarTrackerNotes } from "../connectors/
 import { getWikiSummary, getWikidataWine, getECBInflation, getAuctionIndexData } from "../services/freeDataService.js";
 import { getWineImage } from "../services/imageService.js";
 import { getProducerFromWikidata } from "../services/wikidataService.js";
+import { getRedditSentiment } from "../services/redditService.js";
 
 const router = Router();
 
@@ -134,6 +135,22 @@ router.get("/inflation", async (_req, res) => {
 router.get("/market-index", async (_req, res) => {
   const data = await getAuctionIndexData();
   res.json(data || { livex100_ytd: null, source: "unavailable" });
+});
+
+// GET /api/wine-info/:wineName/reddit-sentiment — community sentiment from r/wine
+router.get("/:wineName/reddit-sentiment", async (req, res) => {
+  const wineName = decodeURIComponent(req.params.wineName || "").trim();
+  if (!wineName || wineName.length < 2) {
+    return res.status(400).json({ error: "wineName required" });
+  }
+
+  try {
+    const data = await getRedditSentiment(wineName);
+    res.set("Cache-Control", "public, max-age=86400");
+    return res.json(data);
+  } catch {
+    return res.json({ score: 70, error: "No data" });
+  }
 });
 
 // GET /api/wine-info/producer/:producerName/wikidata — Wikidata producer info

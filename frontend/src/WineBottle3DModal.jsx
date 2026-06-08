@@ -66,6 +66,53 @@ function AwardsBadges({ awards }) {
   );
 }
 
+function RedditSentimentBadge({ wineName }) {
+  const [sentiment, setSentiment] = useState(null);
+
+  useEffect(() => {
+    if (!wineName) return;
+    fetch(`${API}/api/wine-info/${encodeURIComponent(wineName)}/reddit-sentiment`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data && typeof data.score === "number") setSentiment(data);
+      })
+      .catch(() => {});
+  }, [wineName]);
+
+  if (!sentiment) return null;
+
+  const { score, url } = sentiment;
+  let bg, border, color;
+  if (score >= 60) {
+    bg = "rgba(74,222,128,0.08)"; border = "rgba(74,222,128,0.3)"; color = "#4ade80";
+  } else if (score >= 40) {
+    bg = "rgba(250,204,21,0.08)"; border = "rgba(250,204,21,0.3)"; color = "#facc15";
+  } else {
+    bg = "rgba(248,113,113,0.08)"; border = "rgba(248,113,113,0.3)"; color = "#f87171";
+  }
+
+  return (
+    <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+      <span style={{
+        padding: "3px 10px", borderRadius: 999, fontSize: 11,
+        background: bg, color, border: `1px solid ${border}`, fontWeight: 700,
+      }}>
+        👥 Community: {score}% positivo
+      </span>
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{ fontSize: 10, color: "#ff4500", textDecoration: "none", opacity: 0.85 }}
+        onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.textDecoration = "underline"; }}
+        onMouseLeave={(e) => { e.currentTarget.style.opacity = "0.85"; e.currentTarget.style.textDecoration = "none"; }}
+      >
+        r/wine
+      </a>
+    </div>
+  );
+}
+
 function ProducerInfoCard({ producerName }) {
   const [info, setInfo] = useState(null);
 
@@ -344,6 +391,9 @@ export default function WineBottle3DModal({ wine, onClose }) {
 
           {/* ── Awards & Recognitions ─────────────────────────────────── */}
           <AwardsBadges awards={wineAwards} />
+
+          {/* ── Reddit Community Sentiment ────────────────────────────── */}
+          <RedditSentimentBadge wineName={wine.name} />
 
           <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
             <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#0c1a2e", color: "#60a5fa", border: "1px solid #1e3a5f" }}>{wineType}</span>
