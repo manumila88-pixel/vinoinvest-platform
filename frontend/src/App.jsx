@@ -29,31 +29,32 @@ import CookieBanner from "./components/CookieBanner";
 import CurrencySelector, { CurrencyProvider, usePrice } from "./components/CurrencySelector";
 import VintageScore from "./components/VintageScore";
 import InvestmentCalculator from "./components/InvestmentCalculator";
-import Learn from "./pages/Learn";
-import MarketIndex from "./pages/MarketIndex";
-import WineCellar from "./pages/WineCellar";
-import WineJournal from "./pages/WineJournal";
-import LabelScannerPage from "./pages/LabelScanner";
-import ReferralPage from "./pages/ReferralPage";
-import SharePortfolio from "./pages/SharePortfolio";
-import EnPrimeur from "./pages/EnPrimeur";
-import AuctionTracker from "./pages/AuctionTracker";
-import PressKit from "./pages/PressKit";
-import MarketSentiment from "./pages/MarketSentiment";
-import InvestmentGoals from "./pages/InvestmentGoals";
-import Transparency from "./pages/Transparency";
-import NotificationSettings from "./pages/NotificationSettings";
-import Academy from "./pages/Academy";
-import AcademyCourse from "./pages/AcademyCourse";
-import AcademyLesson from "./pages/AcademyLesson";
-import AcademyVerify from "./pages/AcademyVerify";
-import AcademyModule from "./pages/AcademyModule";
-import AdminDashboard from "./pages/AdminDashboard";
-import PrivacySettings from "./pages/PrivacySettings";
-import Terms from "./pages/Terms";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import Disclaimer from "./pages/Disclaimer";
-import Cookies from "./pages/Cookies";
+import { lazy, Suspense } from "react";
+const Learn = lazy(() => import("./pages/Learn"));
+const MarketIndex = lazy(() => import("./pages/MarketIndex"));
+const WineCellar = lazy(() => import("./pages/WineCellar"));
+const WineJournal = lazy(() => import("./pages/WineJournal"));
+const LabelScannerPage = lazy(() => import("./pages/LabelScanner"));
+const ReferralPage = lazy(() => import("./pages/ReferralPage"));
+const SharePortfolio = lazy(() => import("./pages/SharePortfolio"));
+const EnPrimeur = lazy(() => import("./pages/EnPrimeur"));
+const AuctionTracker = lazy(() => import("./pages/AuctionTracker"));
+const PressKit = lazy(() => import("./pages/PressKit"));
+const MarketSentiment = lazy(() => import("./pages/MarketSentiment"));
+const InvestmentGoals = lazy(() => import("./pages/InvestmentGoals"));
+const Transparency = lazy(() => import("./pages/Transparency"));
+const NotificationSettings = lazy(() => import("./pages/NotificationSettings"));
+const Academy = lazy(() => import("./pages/Academy"));
+const AcademyCourse = lazy(() => import("./pages/AcademyCourse"));
+const AcademyLesson = lazy(() => import("./pages/AcademyLesson"));
+const AcademyVerify = lazy(() => import("./pages/AcademyVerify"));
+const AcademyModule = lazy(() => import("./pages/AcademyModule"));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const PrivacySettings = lazy(() => import("./pages/PrivacySettings"));
+const Terms = lazy(() => import("./pages/Terms"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const Disclaimer = lazy(() => import("./pages/Disclaimer"));
+const Cookies = lazy(() => import("./pages/Cookies"));
 import ThemeToggle from "./components/ThemeToggle";
 import VoiceInterface from "./components/VoiceInterface";
 import ExitIntentPopup from "./components/ExitIntentPopup";
@@ -1712,6 +1713,7 @@ createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <ToastProvider>
       <CurrencyProvider>
+        <Suspense fallback={<div style={{ minHeight: "100vh", background: "#0b1220", display: "flex", alignItems: "center", justifyContent: "center", color: "#C9A227", fontSize: 14 }}>Caricamento...</div>}>
         <Routes>
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/b2b" element={<B2BPage />} />
@@ -1743,6 +1745,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="/cookies" element={<Cookies />} />
           <Route path="*" element={<App />} />
         </Routes>
+        </Suspense>
       </CurrencyProvider>
     </ToastProvider>
   </BrowserRouter>
