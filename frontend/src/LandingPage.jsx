@@ -271,6 +271,27 @@ export default function LandingPage({ onLogin }) {
     setLoading(false);
   }
 
+  async function handleGoogleLogin() {
+    setError(""); setLoading(true);
+    const { error: err } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: window.location.origin },
+    });
+    if (err) setError(err.message);
+    setLoading(false);
+  }
+
+  async function handleForgotPassword() {
+    if (!email) { setError("Insert your email first, then click Forgot Password."); return; }
+    setLoading(true);
+    const { error: err } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}?reset=1`,
+    });
+    if (err) setError(err.message);
+    else setError("Password reset email sent! Check your inbox.");
+    setLoading(false);
+  }
+
   return (
     <>
       <div style={{ background: BG, minHeight: "100vh", color: "white", fontFamily: "'Inter', Arial, sans-serif", overflowX: "hidden" }}>
@@ -524,7 +545,7 @@ export default function LandingPage({ onLogin }) {
                 </select>
               )}
               {error && (
-                <p style={{ color: error.startsWith("Account created") ? GOLD : "#e53935", fontSize: 12, margin: 0, textAlign: "center" }}>
+                <p style={{ color: error.startsWith("Account created") || error.startsWith("Password reset") ? GOLD : "#e53935", fontSize: 12, margin: 0, textAlign: "center" }}>
                   {error}
                 </p>
               )}
@@ -534,7 +555,36 @@ export default function LandingPage({ onLogin }) {
               >
                 {loading ? "Please wait..." : authTab === "login" ? "Log In →" : "Create Account →"}
               </button>
+
+              {authTab === "login" && (
+                <button type="button" onClick={handleForgotPassword} style={{ background: "none", border: "none", color: "#3a5a7a", fontSize: 12, cursor: "pointer", textDecoration: "underline", marginTop: -4, fontFamily: "inherit" }}>
+                  Forgot password?
+                </button>
+              )}
             </form>
+
+            {/* ── Google OAuth ── */}
+            <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "16px 0 0" }}>
+              <div style={{ flex: 1, height: 1, background: "rgba(30,41,59,0.6)" }} />
+              <span style={{ color: "#3a5a7a", fontSize: 11 }}>or continue with</span>
+              <div style={{ flex: 1, height: 1, background: "rgba(30,41,59,0.6)" }} />
+            </div>
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              disabled={loading}
+              style={{ marginTop: 12, width: "100%", padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(30,41,59,0.8)", background: "#07090f", color: "#e2e8f0", fontWeight: 600, fontSize: 13, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, fontFamily: "'Inter', Arial, sans-serif", transition: "border-color 0.2s" }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = GOLD}
+              onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(30,41,59,0.8)"}
+            >
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+                <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"/>
+                <path d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+                <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+              </svg>
+              Google
+            </button>
           </div>
         </div>
       )}
