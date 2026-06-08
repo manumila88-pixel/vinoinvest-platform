@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-
-const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
+import { API } from "../lib/constants";
 const STORAGE_KEY = "vino_exit_popup_shown";
 
 export default function ExitIntentPopup({ userEmail }) {

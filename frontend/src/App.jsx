@@ -58,9 +58,8 @@ import ThemeToggle from "./components/ThemeToggle";
 import VoiceInterface from "./components/VoiceInterface";
 import ExitIntentPopup from "./components/ExitIntentPopup";
 import { getSavedTheme, applyTheme } from "./lib/theme";
+import { API, ADMIN_EMAIL as ADMIN_EMAIL_CONST } from "./lib/constants";
 import "./style.css";
-
-const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
 // ── Skeleton Card ────────────────────────────────────────────────────────────
 function SkeletonCard() {
@@ -314,7 +313,7 @@ function App() {
   const navigate = useNavigate();
   const toast = useToast();
   const { t, i18n } = useTranslation();
-  const ADMIN_EMAIL = "manumila88@gmail.com";
+  const ADMIN_EMAIL = ADMIN_EMAIL_CONST;
   const [authChecked, setAuthChecked] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState("");

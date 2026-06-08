@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-
-const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
+import { API } from "../lib/constants";
 
 const DEFAULT_FACTS = [
   { icon: "🍷", label: "Vini analizzati", value: 50234, suffix: "+" },

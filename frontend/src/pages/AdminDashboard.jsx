@@ -1,9 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
-
-const ADMIN_EMAIL = "manumila88@gmail.com";
-const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
+import { API, ADMIN_EMAIL } from "../lib/constants";
 const BG = "#0b1220";
 
 async function getAuthHeader() {

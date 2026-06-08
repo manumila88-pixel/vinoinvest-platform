@@ -1,8 +1,6 @@
 // Premium Academy course content — 20 sequential modules per course
 // Each module unlocks only after 70% quiz pass on the previous one.
-
-export const ADMIN_EMAIL = "manumila88@gmail.com";
-export const QUIZ_PASS_THRESHOLD = 70; // %
+export { ADMIN_EMAIL, QUIZ_PASS_THRESHOLD } from "../lib/constants";
 
 // ── Course 11: Rendimenti Storici ─────────────────────────────────────────────
 export const RENDIMENTI_STORICI_MODULES = [

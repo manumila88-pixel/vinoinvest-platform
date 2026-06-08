@@ -3,8 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { COURSES, PREMIUM_COURSES, BADGES, XP_RULES } from "../data/academyContent";
 import AuthModal from "../components/AuthModal";
 
-const BACKEND = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
-const ADMIN_EMAIL = "manumila88@gmail.com";
+import { API as BACKEND, ADMIN_EMAIL } from "../lib/constants";
 
 function getStoredUser() {
   try { return JSON.parse(localStorage.getItem("vino_user") || "{}"); } catch { return {}; }
