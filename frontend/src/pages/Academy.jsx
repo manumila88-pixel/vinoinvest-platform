@@ -67,10 +67,11 @@ export default function Academy() {
   return (
     <div style={{ minHeight: "100vh", background: BG, color: "#e2e8f0", fontFamily: "Inter, sans-serif" }}>
       {/* Header */}
-      <div style={{ background: "rgba(11,18,32,0.95)", borderBottom: "1px solid rgba(201,162,39,0.2)", padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <button onClick={() => navigate("/")} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: 18 }}>←</button>
-          <span style={{ fontSize: 20, fontWeight: 700, color: "#C9A227" }}>🎓 Academy</span>
+      <div style={{ background: "rgba(11,18,32,0.97)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(201,162,39,0.15)", padding: "14px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <button onClick={() => navigate("/")} style={{ background: "none", border: "none", color: "#C9A227", cursor: "pointer", fontWeight: 700, fontSize: 14, padding: 0 }}>VinoInvest</button>
+          <span style={{ color: "#475569" }}>›</span>
+          <span style={{ fontSize: 14, fontWeight: 700, color: "#e2e8f0" }}>🎓 Academy</span>
         </div>
         {/* XP Bar */}
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>

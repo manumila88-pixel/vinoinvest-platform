@@ -36,12 +36,13 @@ export default function AcademyCourse() {
   return (
     <div style={{ minHeight: "100vh", background: BG, color: "#e2e8f0", fontFamily: "Inter, sans-serif" }}>
       {/* Header */}
-      <div style={{ background: "rgba(11,18,32,0.95)", borderBottom: "1px solid rgba(201,162,39,0.2)", padding: "16px 24px", position: "sticky", top: 0, zIndex: 100 }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", alignItems: "center", gap: 12 }}>
-          <button onClick={() => navigate("/academy")} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: 18 }}>←</button>
-          <span style={{ fontWeight: 700, color: "#C9A227" }}>🎓 Academy</span>
+      <div style={{ background: "rgba(11,18,32,0.97)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(201,162,39,0.15)", padding: "14px 24px", position: "sticky", top: 0, zIndex: 100 }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", fontSize: 13 }}>
+          <button onClick={() => navigate("/")} style={{ background: "none", border: "none", color: "#C9A227", cursor: "pointer", fontWeight: 700, fontSize: 14, padding: 0 }}>VinoInvest</button>
           <span style={{ color: "#475569" }}>›</span>
-          <span style={{ color: "#e2e8f0" }}>{course.title}</span>
+          <button onClick={() => navigate("/academy")} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", padding: 0 }}>🎓 Academy</button>
+          <span style={{ color: "#475569" }}>›</span>
+          <span style={{ color: "#e2e8f0", fontWeight: 600 }}>{course.icon} {course.title}</span>
         </div>
       </div>
 
