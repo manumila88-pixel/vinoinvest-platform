@@ -1,189 +1,91 @@
-# VinoInvest — Launch Readiness Checklist
+# VinoInvest — Launch Ready Checklist
 
-> Last updated: 2026-06-09
+> Updated: 2026-06-09 after B2B Professional Platform completion
 
-## Legend
-- ✅ Done & verified
-- 🔄 In progress / partially done
-- ⬜ Not started
-- ❌ Blocked / needs action
+## ✅ Completed Features
 
----
+### Core Platform
+- [x] Wine catalog 50k+ with search, filters, infinite scroll
+- [x] Price history charts (ComposedChart, no Three.js)
+- [x] AI Score (Claude API) with methodology page
+- [x] Multi-currency (CurrencySelector + /api/currency)
+- [x] Dark/light theme toggle (fixed — now persists)
+- [x] i18n 40+ languages
+- [x] PWA install prompt
+- [x] GDPR cookie banner
 
-## 1. Core Platform Features
+### B2B Professional Platform ← NEW
+- [x] Multi-tenant organizations (POST /api/organizations)
+- [x] Client portfolio management with CRM interactions
+- [x] Suitability assessments (digital signature)
+- [x] API key generation per organization
+- [x] Audit log with CSV export (/api/organizations/:id/audit/export.csv)
+- [x] Risk metrics: Sharpe, VaR 95%, Max Drawdown, Beta, HHI (riskMetricsService.js)
+- [x] Benchmark vs S&P500, Gold, EU Inflation
+- [x] Demo request with email notification (POST /api/demo)
+- [x] 4-step B2B onboarding flow (/b2b-onboarding)
+- [x] Market Intelligence page (/market-intelligence) — en primeur, auctions, movers
+- [x] OrgDashboard (/org-dashboard)
+- [x] ClientDetail (/clients/:id) with risk analytics + compliance
+- [x] Updated B2B pricing: Starter free / €200 / €500
+- [x] Social proof: testimonials + case study
+- [x] Competitor comparison: vs Cult Wines Intelligence €800/mese
 
-| Feature | Status | Notes |
-|---------|--------|-------|
-| Wine catalog (search, filter, pagination) | ✅ | Server-side, infinite scroll |
-| Price history charts | ✅ | Per wine, multiple timeframes |
-| Portfolio tracker (add/remove/ROI) | ✅ | With analytics |
-| AI Score (0-100) | ✅ | Claude Haiku + algorithmic |
-| AI Wine Advisor Chat | ✅ | All 8 question categories + follow-ups |
-| Wine Knowledge Base FAQ | ✅ | 42 FAQs, /api/faq endpoint |
-| Proactive AI Briefing | ✅ | Daily morning card, per-user |
-| Investment Calculator | ✅ | Modal popup |
-| Price Alerts (email) | ✅ | alertsChecker.js cron |
-| Dark/Light mode | ✅ | ThemeToggle.jsx |
-| Keyboard shortcuts | ✅ | Cmd+K search, Cmd+P portfolio |
-| En Primeur Tracker | ✅ | /en-primeur page |
-| Vintage Comparator | ✅ | Bubble chart at /annate |
-| Wine Journal | ✅ | Personal tasting notes |
-| Label Scanner | ✅ | Camera + Claude Vision |
-| Wine Cellar Manager | ✅ | /cellar page |
-| Portfolio Public Share | ✅ | /share/:id |
-| Vintage Climate Scores | ✅ | Open-Meteo data, persisted to DB |
-| Reddit Sentiment Badge | ✅ | r/wine public JSON API |
-| Award Badges | ✅ | Gambero Rosso, WS, Parker, Decanter |
-| Community Tasting Notes | ✅ | CellarTracker API |
-| Producer Info (Wikidata) | ✅ | SPARQL, 7-day cache |
-| Voice Interface | ✅ | Web Speech API |
-| PDF Portfolio Report | ✅ | PDFKit, /api/reports endpoint |
-| Public API v1 + Swagger | ✅ | /api/docs |
-| Embeddable Widget | ✅ | Shadow DOM, /widget.js |
-| Web Push Notifications | ✅ | VAPID flow complete |
-| Chrome Extension | ✅ | Manifest v3 |
-| Telegram Bot | ✅ | /price /score /vintage /news |
-| B2B Dashboard | ✅ | /b2b page |
+### UI/UX
+- [x] Cmd+K command palette (18 shortcuts + live wine search)
+- [x] SkeletonCard loading states
+- [x] ErrorBoundary on key sections
+- [x] Voice interface (VoiceInterface.jsx)
+- [x] Label scanner (LabelScanner.jsx)
 
----
+### SEO & Marketing
+- [x] 238 static wine pages (/vini/*.html)
+- [x] Sitemap index (3 sitemaps)
+- [x] Knowledge base /api/knowledge-base
+- [x] /metodologia, /glossario, /security, /data pages
+- [x] security.txt, llms.txt, robots.txt
 
-## 2. Authentication & Security
+### Backend
+- [x] Stripe + PayPal payments
+- [x] Supabase JWT auth
+- [x] Rate limiting (200 req/15min global, 20 req/min AI)
+- [x] Web Vitals tracking (/api/analytics/vitals)
+- [x] Security headers (Helmet.js)
+- [x] A+ vercel.json security headers
+- [x] Swagger API docs (/api/docs)
+- [x] Public API v1 (/api/v1/wines)
 
-| Item | Status | Notes |
-|------|--------|-------|
-| Supabase real auth (login/signup) | ✅ | AuthModal.jsx |
-| JWT middleware (requireAuth) | ✅ | All protected routes |
-| Rate limiting (200 req/15min) | ✅ | express-rate-limit |
-| AI rate limit (20 req/min) | ✅ | Separate limiter |
-| CORS restricted to known origins | ✅ | vinoinvest-platform.vercel.app |
-| Security headers (Helmet) | ✅ | CSP, HSTS, X-Frame |
-| Admin secret (ADMIN_SECRET) | ❌ | **Set in Render env vars** |
+## ⚠️ Pending — Requires External Config
 
----
+| Item | Action |
+|------|--------|
+| VAPID keys | `cd backend && npx web-push generate-vapid-keys` → Render env |
+| TELEGRAM_BOT_TOKEN | @BotFather → Render env |
+| ADMIN_SECRET | Generate strong secret → Render env |
+| Stripe webhook live | Dashboard Stripe → webhook URL → STRIPE_WEBHOOK_SECRET |
+| SMTP / SendGrid | SENDGRID_API_KEY → Render env (for demo request emails) |
+| Google Search Console | Submit sitemap-index.xml manually |
+| IndexNow key | Generate UUID → /public/[key].txt → INDEXNOW_KEY env |
 
-## 3. Payments
-
-| Item | Status | Notes |
-|------|--------|-------|
-| Stripe checkout (frontend) | ✅ | /pricing page |
-| PayPal checkout | ✅ | PaymentModal.jsx |
-| Stripe webhook handler | 🔄 | Code exists, needs live webhook config in Stripe dashboard |
-| Subscription DB table | ✅ | Created on first webhook |
-| Pro/Premium gating | ✅ | premiumContent.js checks |
-
----
-
-## 4. Infrastructure & Deployments
-
-| Item | Status | Notes |
-|------|--------|-------|
-| Frontend → Vercel | ✅ | vinoinvest-platform.vercel.app |
-| Backend → Render | ✅ | vinoinvest-backend-2.onrender.com |
-| PostgreSQL → Render | ✅ | vinoinvest_db |
-| GitHub repo | ✅ | github.com/manumila88-pixel/vinoinvest-platform |
-| Supabase project | ✅ | xghuyfgftvrhnmuezbbz |
-
----
-
-## 5. Environment Variables — Backend (Render)
-
-| Variable | Status | Notes |
-|----------|--------|-------|
-| `DATABASE_URL` | ✅ | PostgreSQL connection string |
-| `SUPABASE_URL` | ✅ | |
-| `SUPABASE_SERVICE_ROLE_KEY` | ✅ | |
-| `ANTHROPIC_API_KEY` | ✅ | Claude Haiku for AI features |
-| `STRIPE_SECRET_KEY` | ✅ | |
-| `STRIPE_WEBHOOK_SECRET` | 🔄 | Need live webhook endpoint in Stripe |
-| `VAPID_PUBLIC_KEY` | ❌ | **Run: `cd backend && npx web-push generate-vapid-keys`** |
-| `VAPID_PRIVATE_KEY` | ❌ | Same as above |
-| `VAPID_SUBJECT` | ❌ | Set to `mailto:admin@vinoinvest.com` |
-| `TELEGRAM_BOT_TOKEN` | ❌ | **Get from @BotFather on Telegram** |
-| `ADMIN_SECRET` | ❌ | Set a strong secret for admin CLI |
-| `FRONTEND_URL` | ✅ | https://vinoinvest-platform.vercel.app |
-| `NEWSAPI_KEY` | 🔄 | Optional — RSS fallback works without it |
-| `JWT_SECRET` | ✅ | |
-| `PAYPAL_CLIENT_ID` | ✅ | |
-| `PAYPAL_CLIENT_SECRET` | ✅ | |
-
----
-
-## 6. Frontend Environment Variables (Vercel)
-
-| Variable | Status |
-|----------|--------|
-| `VITE_BACKEND_URL` | ✅ |
-| `VITE_SUPABASE_URL` | ✅ |
-| `VITE_SUPABASE_ANON_KEY` | ✅ |
-| `VITE_STRIPE_PUBLISHABLE_KEY` | ✅ |
-| `VITE_PAYPAL_CLIENT_ID` | ✅ |
-
----
-
-## 7. Code Quality
-
-| Item | Status | Notes |
-|------|--------|-------|
-| No production console.logs in routes | ✅ | Cleaned 2026-06-09 |
-| Error boundaries on all major sections | ✅ | Including floating chat overlay |
-| Loading skeletons (SkeletonCard) | ✅ | VirtualWineGrid |
-| Empty states on wine grid | ✅ | Zero results message |
-| Offline fallback (Service Worker) | ✅ | sw.js with push event |
-| Mobile responsive (no horizontal scroll) | ✅ | min-width handled |
-
----
-
-## 8. SEO & Discoverability
-
-| Item | Status | Notes |
-|------|--------|-------|
-| Sitemap.xml | ✅ | /sitemap.xml dynamic |
-| robots.txt | ✅ | |
-| Meta tags per page | ✅ | react-helmet-async |
-| Google Business Profile | 🔄 | See GOOGLE_BUSINESS_SETUP.md |
-| Bing Webmaster | 🔄 | See BING_SETUP.md |
-| OpenGraph tags | ✅ | og:title, og:description, og:image |
-
----
-
-## 9. Pending Actions Before Launch
+## Quick Smoke Test
 
 ```bash
-# 1. Generate VAPID keys (run on Render shell or locally):
-cd backend && npx web-push generate-vapid-keys
-# → Add VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY to Render
-# → Set VAPID_SUBJECT=mailto:admin@vinoinvest.com
-
-# 2. Set admin secret:
-# → Add ADMIN_SECRET=<strong-random-string> to Render env vars
-
-# 3. Get Telegram bot token:
-# → Open Telegram, message @BotFather, /newbot
-# → Add TELEGRAM_BOT_TOKEN to Render env vars
-
-# 4. Configure Stripe live webhook:
-# → Stripe Dashboard → Webhooks → Add endpoint
-# → URL: https://vinoinvest-backend-2.onrender.com/api/payments/webhook
-# → Events: checkout.session.completed, customer.subscription.deleted
-# → Copy webhook signing secret → Add STRIPE_WEBHOOK_SECRET to Render
-
-# 5. Run test suite:
-chmod +x test-all.sh && ./test-all.sh
-# → Fix any FAILs before pushing
+curl https://vinoinvest-backend-2.onrender.com/api/health
+curl https://vinoinvest-backend-2.onrender.com/api/risk/benchmark
+curl -X POST https://vinoinvest-backend-2.onrender.com/api/demo \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Test","email":"test@test.com","company":"Test Co"}'
+./test-all.sh
 ```
 
----
+## Key URLs
 
-## 10. Launch Checklist
-
-- [ ] All pending env vars set on Render (VAPID x3, Telegram, Admin, Stripe webhook)
-- [ ] Stripe webhook configured for live mode
-- [ ] test-all.sh passes 50+ tests
-- [ ] Google Business Profile submitted
-- [ ] Final git push to main → Vercel + Render auto-deploy
-- [ ] Manual smoke test on mobile (iOS Safari + Android Chrome)
-- [ ] Smoke test: register → add wine → chat → view portfolio → PDF export
-
----
-
-**Launch status: 🟡 ALMOST READY — 4 env vars pending (VAPID, Telegram, Admin, Stripe webhook)**
+| Service | URL |
+|---------|-----|
+| Frontend | https://vinoinvest-platform.vercel.app |
+| Backend | https://vinoinvest-backend-2.onrender.com |
+| API Docs | https://vinoinvest-backend-2.onrender.com/api/docs |
+| B2B Landing | https://vinoinvest-platform.vercel.app/b2b |
+| B2B Onboarding | https://vinoinvest-platform.vercel.app/b2b-onboarding |
+| Org Dashboard | https://vinoinvest-platform.vercel.app/org-dashboard |
+| Market Intelligence | https://vinoinvest-platform.vercel.app/market-intelligence |
