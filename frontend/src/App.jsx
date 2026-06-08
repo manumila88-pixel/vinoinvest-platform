@@ -49,6 +49,7 @@ import AcademyLesson from "./pages/AcademyLesson";
 import AcademyVerify from "./pages/AcademyVerify";
 import AcademyModule from "./pages/AcademyModule";
 import AdminDashboard from "./pages/AdminDashboard";
+import PrivacySettings from "./pages/PrivacySettings";
 import ThemeToggle from "./components/ThemeToggle";
 import VoiceInterface from "./components/VoiceInterface";
 import { getSavedTheme, applyTheme } from "./lib/theme";
@@ -1718,6 +1719,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="/academy/module/:moduleId" element={<AcademyModule />} />
           <Route path="/verify/:code" element={<AcademyVerify />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/settings/privacy" element={<PrivacySettings />} />
           <Route path="*" element={<App />} />
         </Routes>
       </CurrencyProvider>

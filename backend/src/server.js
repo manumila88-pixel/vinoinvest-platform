@@ -10,7 +10,7 @@ import { requireAuth, requireAdmin, optionalAuth } from "./middleware/auth.js";
 import { initUsageTable, trackUsage } from "./middleware/tokenTracker.js";
 import paymentsRouter from "./routes/payments.js";
 import pricesRouter from "./routes/prices.js";
-import authRouter from "./routes/auth.js";
+import authRouter, { setAuthPool } from "./routes/auth.js";
 import aiScoreRouter from "./routes/aiScore.js";
 import alertsRouter from "./routes/alerts.js";
 import notificationsRouter from "./routes/notifications.js";
@@ -487,7 +487,7 @@ initDB().then(() => {
   if (pool) setAnalysisPool(pool);
   if (pool) { setGamificationPool(pool); initGamificationTable(); }
   if (pool) { setCellarPool(pool); setJournalPool(pool); setGoalsPool(pool); setReferralPool(pool); }
-  if (pool) { setEmailPrefPool(pool); setFeedbackPool(pool); }
+  if (pool) { setEmailPrefPool(pool); setFeedbackPool(pool); setAuthPool(pool); }
   // Start scheduled agents
   startBlogAgent();
   startImageAgent();

@@ -64,7 +64,18 @@ export async function requireAuth(req, res, next) {
 }
 
 export async function requireAdmin(req, res, next) {
-  if (!supabase) return next(); // dev bypass
+  // Allow admin secret header as fallback when Supabase is not configured
+  const adminSecret = process.env.ADMIN_SECRET;
+  const secretHeader = req.headers["x-admin-secret"];
+  if (adminSecret && secretHeader === adminSecret) {
+    req.user = { email: ADMIN_EMAIL, is_admin: true };
+    return next();
+  }
+
+  if (!supabase) {
+    // No Supabase and no ADMIN_SECRET — block all admin access
+    return res.status(503).json({ error: "Admin authentication not configured" });
+  }
 
   const token = extractToken(req);
   if (!token) return res.status(401).json({ error: "Authentication required" });
