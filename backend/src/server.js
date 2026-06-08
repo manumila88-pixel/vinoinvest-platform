@@ -6,6 +6,10 @@ import rateLimit from "express-rate-limit";
 import NodeCache from "node-cache";
 import pg from "pg";
 import cors from "cors";
+import { createRequire } from "module";
+const _require = createRequire(import.meta.url);
+const swaggerJsdoc = _require("swagger-jsdoc");
+const swaggerUi = _require("swagger-ui-express");
 import { requireAuth, requireAdmin, optionalAuth } from "./middleware/auth.js";
 import { initUsageTable, trackUsage } from "./middleware/tokenTracker.js";
 import paymentsRouter from "./routes/payments.js";
@@ -64,6 +68,7 @@ import { setEmailFlowPool, setEmailFlowWines } from "./services/emailFlowService
 import { setMarketResearchWines } from "./services/wineMarketResearch.js";
 import { segmentWines } from "./services/wineSegmentationService.js";
 import "./jobs/emailFlowJob.js";
+import v1Router, { setV1Wines, setV1MarketIndex, setV1NewsService } from "./routes/v1/index.js";
 
 // Global in-memory cache
 const appCache = new NodeCache({ stdTTL: 0, checkperiod: 120 });
@@ -73,6 +78,36 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const app = express();
+
+// ── Swagger / OpenAPI setup ──────────────────────────────────────────────────
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "VinoInvest API",
+      version: "1.0.0",
+      description: "The Bloomberg Terminal for Fine Wine Investment — Public API",
+      contact: {
+        name: "VinoInvest",
+        url: "https://vinoinvest-platform.vercel.app",
+        email: "api@vinoinvest.com",
+      },
+      license: {
+        name: "Proprietary",
+      },
+    },
+    servers: [
+      { url: "https://vinoinvest-backend-2.onrender.com", description: "Production" },
+      { url: "http://localhost:3000", description: "Local development" },
+    ],
+    externalDocs: {
+      description: "VinoInvest Platform",
+      url: "https://vinoinvest-platform.vercel.app",
+    },
+  },
+  apis: ["./src/routes/v1/*.js"],
+};
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 // Security headers
 app.use(helmet({
@@ -199,6 +234,23 @@ app.use("/api/subscriptions", subscriptionsRouter);
 app.use("/api", cacheFor(86400), schemaRouter);
 app.use("/api/hub", cacheFor(86400), hubRouter);
 
+// ── Public API v1 + Swagger UI ───────────────────────────────────────────────
+app.use("/api/v1", v1Router);
+// Swagger UI needs relaxed CSP (inline scripts/styles from swagger-ui-dist)
+app.use("/api/docs", (_req, res, next) => {
+  res.setHeader("Content-Security-Policy",
+    "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:"
+  );
+  next();
+});
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customSiteTitle: "VinoInvest API Docs",
+  customfavIcon: "https://vinoinvest-platform.vercel.app/favicon.ico",
+  swaggerOptions: { docExpansion: "list", defaultModelsExpandDepth: 1 },
+}));
+// Serve raw OpenAPI JSON spec for programmatic consumers
+app.get("/api/docs.json", (_req, res) => res.json(swaggerSpec));
+
 const __filename =
   fileURLToPath(import.meta.url);
 
@@ -265,6 +317,11 @@ setSchemaWines(allWines);
 setHubWines(allWines);
 setEmailFlowWines(allWines);
 setMarketResearchWines(allWines);
+
+// Wire v1 public API with data sources
+setV1Wines(allWines);
+setV1MarketIndex(getVinoInvestIndex);
+setV1NewsService(fetchRSSNews);
 
 const marketplaceData = [
 
