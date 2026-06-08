@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+
+const PREFS_KEY = "vino_user_prefs_v1";
 
 const STORAGE_KEY = "vino_onboarding_v1";
 const STORAGE_KEY_B2B = "vino_onboarding_b2b_v1";
@@ -317,6 +319,12 @@ const STEPS = [
     ),
   },
   {
+    icon: "🎯",
+    title: "Personalizza la tua esperienza",
+    subtitle: "Dicci qualcosa di te — useremo queste info per personalizzare il feed",
+    isPreferences: true,
+  },
+  {
     icon: "🔔",
     title: "Price Alerts",
     subtitle: "Non perdere mai il momento giusto per comprare",
@@ -356,11 +364,82 @@ export function resetOnboarding(accountType) {
   localStorage.removeItem(key);
 }
 
+function PreferencesForm({ onSave }) {
+  const [budget, setBudget] = useState("");
+  const [risk, setRisk] = useState("");
+  const [regions, setRegions] = useState([]);
+
+  const REGIONS = ["Bordeaux", "Borgogna", "Barolo/Barbaresco", "Champagne", "Toscana", "Spagna", "Napa Valley", "Altro"];
+  const toggleRegion = (r) => setRegions(prev => prev.includes(r) ? prev.filter(x => x !== r) : [...prev, r]);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      <div>
+        <div style={{ fontSize: 12, color: "#64748b", marginBottom: 8, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Budget di investimento</div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          {["< €1.000", "€1k–5k", "€5k–20k", "€20k–50k", "> €50k"].map(b => (
+            <button key={b} onClick={() => setBudget(b)} style={{
+              padding: "7px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer", border: "1px solid",
+              borderColor: budget === b ? "#C9A227" : "rgba(71,85,105,0.4)",
+              background: budget === b ? "rgba(201,162,39,0.12)" : "rgba(30,41,59,0.5)",
+              color: budget === b ? "#C9A227" : "#94a3b8",
+            }}>{b}</button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <div style={{ fontSize: 12, color: "#64748b", marginBottom: 8, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Tolleranza al rischio</div>
+        <div style={{ display: "flex", gap: 8 }}>
+          {[{ v: "low", l: "Bassa", c: "#4ade80" }, { v: "medium", l: "Media", c: "#C9A227" }, { v: "high", l: "Alta", c: "#f87171" }].map(({ v, l, c }) => (
+            <button key={v} onClick={() => setRisk(v)} style={{
+              flex: 1, padding: "8px 0", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: "pointer", border: "1px solid",
+              borderColor: risk === v ? c : "rgba(71,85,105,0.4)",
+              background: risk === v ? `${c}18` : "rgba(30,41,59,0.5)",
+              color: risk === v ? c : "#94a3b8",
+            }}>{l}</button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <div style={{ fontSize: 12, color: "#64748b", marginBottom: 8, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Regioni preferite (opzionale)</div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+          {REGIONS.map(r => (
+            <button key={r} onClick={() => toggleRegion(r)} style={{
+              padding: "5px 12px", borderRadius: 20, fontSize: 11, fontWeight: 600, cursor: "pointer", border: "1px solid",
+              borderColor: regions.includes(r) ? "rgba(201,162,39,0.5)" : "rgba(71,85,105,0.3)",
+              background: regions.includes(r) ? "rgba(201,162,39,0.1)" : "rgba(30,41,59,0.4)",
+              color: regions.includes(r) ? "#C9A227" : "#64748b",
+            }}>{r}</button>
+          ))}
+        </div>
+      </div>
+
+      <button
+        onClick={() => {
+          const prefs = { budget, risk, regions, updatedAt: Date.now() };
+          localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
+          onSave(prefs);
+        }}
+        style={{
+          padding: "11px 20px", borderRadius: 10, fontSize: 13, fontWeight: 700,
+          background: "linear-gradient(135deg,#C9A227,#a07d1a)", border: "none",
+          color: "#0b1220", cursor: "pointer",
+        }}
+      >
+        Salva preferenze →
+      </button>
+    </div>
+  );
+}
+
 export default function OnboardingModal({ onClose, accountType }) {
   const isB2B = accountType === "cantina" || accountType === "wealth_manager";
   const steps = isB2B ? STEPS_B2B : STEPS;
   const storageKey = isB2B ? STORAGE_KEY_B2B : STORAGE_KEY;
   const [step, setStep] = useState(0);
+  const [prefsSaved, setPrefsSaved] = useState(false);
   const current = steps[step];
   const isLast = step === steps.length - 1;
 
@@ -454,11 +533,13 @@ export default function OnboardingModal({ onClose, accountType }) {
 
           {/* Content */}
           <div style={{ padding: "0 32px 28px", minHeight: 260 }}>
-            {current.content}
+            {current.isPreferences
+              ? <PreferencesForm onSave={() => { setPrefsSaved(true); setStep(s => s + 1); }} />
+              : current.content}
           </div>
 
-          {/* Footer */}
-          <div style={{
+          {/* Footer — hidden while showing preferences form (has its own CTA) */}
+          {!current.isPreferences && <div style={{
             padding: "16px 32px 24px",
             borderTop: "1px solid rgba(30,41,59,0.5)",
             display: "flex", justifyContent: "space-between", alignItems: "center",
@@ -513,7 +594,7 @@ export default function OnboardingModal({ onClose, accountType }) {
                 </button>
               )}
             </div>
-          </div>
+          </div>}
         </div>
       </div>
 
