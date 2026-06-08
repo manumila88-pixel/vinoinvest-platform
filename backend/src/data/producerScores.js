@@ -1,7 +1,7 @@
 // Producer reputation scores (0-100) based on auction history, critic consensus, market position
 // Sources: Wine Spectator rankings, Liv-ex annual reports, Robert Parker database
 export const PRODUCER_SCORES = {
-  // Bordeaux — First Growths
+  // ── Bordeaux — First Growths & Ultra-Prestige ──────────────────────────────
   "Petrus": 98, "Pétrus": 98,
   "Chateau Petrus": 98, "Château Pétrus": 98,
   "Romanee-Conti": 100, "Romanée-Conti": 100,
@@ -13,8 +13,12 @@ export const PRODUCER_SCORES = {
   "Mouton Rothschild": 94, "Château Mouton Rothschild": 94,
   "Chateau Haut-Brion": 95, "Château Haut-Brion": 95,
   "Haut-Brion": 95,
+  "Cheval Blanc": 97, "Château Cheval Blanc": 97,
+  "Ausone": 96, "Château Ausone": 96,
+  "Le Pin": 97,
+  "Lafleur": 96, "Château Lafleur": 96,
 
-  // Bordeaux — Second Growths
+  // ── Bordeaux — Second & Third Growths ──────────────────────────────────────
   "Chateau Leoville Las Cases": 93, "Château Léoville Las Cases": 93,
   "Chateau Palmer": 92, "Château Palmer": 92,
   "Chateau Pichon Baron": 90, "Château Pichon Baron": 90,
@@ -23,15 +27,29 @@ export const PRODUCER_SCORES = {
   "Chateau Leoville Barton": 90, "Château Léoville Barton": 90,
   "Chateau Pichon Longueville Comtesse": 91,
   "Chateau Lynch-Bages": 90, "Château Lynch-Bages": 90,
-  "Cheval Blanc": 97, "Château Cheval Blanc": 97,
-  "Ausone": 96, "Château Ausone": 96,
-  "Le Pin": 97,
-  "Lafleur": 96, "Château Lafleur": 96,
   "Vieux Chateau Certan": 92,
   "Conseillante": 90, "Château La Conseillante": 90,
   "L'Evangile": 89, "Château L'Évangile": 89,
+  "Chateau Figeac": 91, "Château Figeac": 91,
+  "Chateau Angelus": 93, "Château Angélus": 93,
+  "Chateau Pavie": 92, "Château Pavie": 92,
+  "Chateau Troplong Mondot": 88, "Château Troplong Mondot": 88,
+  "Chateau Canon": 89, "Château Canon": 89,
+  "Chateau La Mission Haut Brion": 94, "Château La Mission Haut-Brion": 94,
+  "Chateau Pontet Canet": 91, "Château Pontet-Canet": 91,
+  "Chateau Montrose": 91, "Château Montrose": 91,
+  "Chateau Leoville Poyferre": 89, "Château Léoville Poyferré": 89,
+  "Chateau Beychevelle": 86, "Château Beychevelle": 86,
+  "Chateau Gruaud Larose": 87, "Château Gruaud-Larose": 87,
+  "Chateau Talbot": 85, "Château Talbot": 85,
+  "Chateau Langoa Barton": 85, "Château Langoa-Barton": 85,
+  "Chateau Brane Cantenac": 84, "Château Brane-Cantenac": 84,
+  "Chateau Rauzan Segla": 87, "Château Rauzan-Ségla": 87,
+  "Chateau Calon Segur": 88, "Château Calon-Ségur": 88,
+  "Petite Eglise": 87, "La Petite Eglise": 87,
+  "Clinet": 90, "Château Clinet": 90,
 
-  // Burgundy — Domaines
+  // ── Burgundy — Grand Cru Domaines ──────────────────────────────────────────
   "Leroy": 97, "Domaine Leroy": 97,
   "Rousseau": 96, "Domaine Rousseau": 96, "Armand Rousseau": 96,
   "Roumier": 97, "Domaine Roumier": 97, "Georges Roumier": 97,
@@ -45,8 +63,25 @@ export const PRODUCER_SCORES = {
   "Comte Vogue": 95, "Domaine Comte de Vogüé": 95,
   "Trapet": 88, "Domaine Trapet": 88,
   "Yvon Metras": 87, "Domaine Yvon Métras": 87,
+  "Fourrier": 91, "Domaine Fourrier": 91,
+  "Bachelet": 89, "Denis Bachelet": 89,
+  "Meo-Camuzet": 93, "Méo-Camuzet": 93,
+  "Anne Gros": 90,
+  "Marquis d'Angerville": 92,
+  "Hubert Lignier": 91,
+  "Bruno Clair": 89,
+  "Michel Lafarge": 91,
+  "Comtes Lafon": 94,
+  "Pierre-Yves Colin-Morey": 92,
+  "Etienne Sauzet": 91, "Étienne Sauzet": 91,
+  "Paul Pernot": 87,
+  "Henri Boillot": 88,
+  "Faiveley": 85,
+  "Bouchard Pere et Fils": 83, "Bouchard Père et Fils": 83,
+  "Louis Jadot": 82,
+  "Joseph Drouhin": 81,
 
-  // Champagne — Prestige
+  // ── Champagne — Prestige & Grower ──────────────────────────────────────────
   "Dom Perignon": 92, "Dom Pérignon": 92,
   "Krug": 93,
   "Salon": 95,
@@ -57,8 +92,17 @@ export const PRODUCER_SCORES = {
   "Moet Chandon": 79, "Moët & Chandon": 79,
   "Veuve Clicquot": 82,
   "Jacques Selosse": 94,
+  "Egly-Ouriet": 92,
+  "Pierre Peters": 90, "Pierre Péters": 90,
+  "Ulysse Collin": 91,
+  "Henri Giraud": 87,
+  "Gosset": 85,
+  "Perrier-Jouet": 80, "Perrier-Jouët": 80,
+  "Charles Heidsieck": 86,
+  "Piper-Heidsieck": 79,
+  "Henriot": 81,
 
-  // Italy — Super Tuscans + DOCG
+  // ── Italy — Super Tuscans & Piemonte ───────────────────────────────────────
   "Sassicaia": 91, "Tenuta San Guido": 91,
   "Masseto": 93,
   "Ornellaia": 91,
@@ -69,7 +113,6 @@ export const PRODUCER_SCORES = {
   "Bartolo Mascarello": 94,
   "Giuseppe Rinaldi": 92,
   "Aldo Conterno": 91,
-  "Barolo Chinato": 76,
   "Biondi Santi": 92,
   "Soldera": 95,
   "Il Poggione": 84,
@@ -79,8 +122,24 @@ export const PRODUCER_SCORES = {
   "Masi": 72,
   "Zonin": 45,
   "Riunite": 38,
+  "Elvio Cogno": 88,
+  "Vietti": 87,
+  "Sandrone": 89, "Luciano Sandrone": 89,
+  "Roberto Voerzio": 93,
+  "Elio Altare": 90,
+  "Paolo Scavino": 87,
+  "Cavallotto": 85,
+  "Ceretto": 83,
+  "Produttori del Barbaresco": 86,
+  "Angelo Gaja": 90,
+  "Fontodi": 88,
+  "Isole e Olena": 86,
+  "Montevertine": 90,
+  "Castello dei Rampolla": 88,
+  "Querciabella": 86,
+  "Avignonesi": 82,
 
-  // Rhône Valley
+  // ── Rhône Valley ───────────────────────────────────────────────────────────
   "Guigal": 88, "E. Guigal": 88,
   "Chapoutier": 85,
   "Jaboulet": 82,
@@ -90,8 +149,27 @@ export const PRODUCER_SCORES = {
   "Bonneau": 95, "Henri Bonneau": 95,
   "Vieux Telegraphe": 91, "Vieux Télégraphe": 91,
   "Beaucastel": 90, "Château Beaucastel": 90,
+  "Clos des Papes": 91,
+  "Tardieu-Laurent": 87,
+  "Colombo": 84, "Jean-Luc Colombo": 84,
+  "Delas": 83,
+  "Clape": 91, "Auguste Clape": 91,
+  "Thierry Allemand": 93,
 
-  // Napa Valley
+  // ── Alsace & Loire ─────────────────────────────────────────────────────────
+  "Zind-Humbrecht": 93,
+  "Trimbach": 88,
+  "Hugel": 84,
+  "Weinbach": 91, "Domaine Weinbach": 91,
+  "Ostertag": 88,
+  "Nicolas Joly": 88,
+  "Coulée de Serrant": 89,
+  "Clos Rougeard": 94,
+  "Henri Bourgeois": 85,
+  "Didier Dagueneau": 94,
+  "Huet": 92, "Domaine Huet": 92,
+
+  // ── Napa Valley & California ────────────────────────────────────────────────
   "Screaming Eagle": 99,
   "Harlan Estate": 97,
   "Opus One": 90,
@@ -102,22 +180,108 @@ export const PRODUCER_SCORES = {
   "Silver Oak": 80,
   "Beringer": 75,
   "Robert Mondavi": 78,
+  "Dalla Valle": 91,
+  "Bryant Family": 93,
+  "Araujo": 95,
+  "Shafer": 88,
+  "Colgin": 94,
+  "Dominus": 92,
+  "Dunn": 88,
+  "Spottswoode": 89,
+  "Mayacamas": 86,
+  "Joseph Phelps": 84,
+  "Duckhorn": 82,
 
-  // Australia
+  // ── Oregon & Washington ────────────────────────────────────────────────────
+  "Eyrie": 87, "The Eyrie Vineyards": 87,
+  "Adelsheim": 82,
+  "Ponzi": 84,
+  "Cristom": 86,
+  "Domaine Drouhin Oregon": 88,
+  "Beaux Freres": 89,
+  "Sine Qua Non": 95,
+  "Quilceda Creek": 93,
+
+  // ── Australia ──────────────────────────────────────────────────────────────
   "Penfolds": 88,
   "Henschke": 89,
   "Torbreck": 83,
   "Two Hands": 79,
   "Mollydooker": 76,
+  "Clarendon Hills": 86,
+  "Grosset": 87,
+  "Jim Barry": 82,
+  "Leeuwin Estate": 85,
+  "Cape Mentelle": 80,
+  "Cullen": 86,
+  "Mount Mary": 87,
 
-  // Spain
+  // ── Spain ──────────────────────────────────────────────────────────────────
   "Vega Sicilia": 94, "Vega-Sicilia": 94,
   "Pingus": 97,
   "Alvaro Palacios": 92,
   "Protos": 74,
   "Torres": 72,
+  "La Rioja Alta": 82,
+  "CVNE": 78,
+  "Lopez de Heredia": 88,
+  "Muga": 81,
+  "Artadi": 89,
+  "Roda": 83,
+  "Marques de Murrieta": 80, "Marqués de Murrieta": 80,
+  "Telmo Rodriguez": 84,
+  "Clos Mogador": 90,
 
-  // Defaults by tier
+  // ── Germany ────────────────────────────────────────────────────────────────
+  "Egon Muller": 98, "Egon Müller": 98,
+  "JJ Prum": 95, "J.J. Prüm": 95,
+  "Moselland": 62,
+  "Loosen": 86, "Dr. Loosen": 86,
+  "Selbach-Oster": 88,
+  "Willi Schaefer": 93,
+  "Maximin Grunhaus": 90, "Maximin Grünhaus": 90,
+  "Schloss Johannisberg": 86,
+  "Georg Breuer": 87,
+  "Donnhoff": 92, "Dönnhoff": 92,
+  "Keller": 95,
+
+  // ── Portugal ───────────────────────────────────────────────────────────────
+  "Taylor's": 87,
+  "Graham's": 86,
+  "Fonseca": 85,
+  "Quinta do Noval": 91,
+  "Quinta do Vesuvio": 89,
+  "Niepoort": 90,
+  "Ramos Pinto": 80,
+  "Churchill": 79,
+  "Cockburn's": 78,
+  "Symington": 85,
+  "Esporao": 76, "Herdade do Esporão": 76,
+
+  // ── Argentina & Chile ──────────────────────────────────────────────────────
+  "Catena Zapata": 88,
+  "Achaval Ferrer": 87, "Achaval-Ferrer": 87,
+  "Clos de los Siete": 83,
+  "Zuccardi": 84,
+  "Rutini": 77,
+  "Clos Apalta": 89,
+  "Casa Lapostolle": 86,
+  "Don Melchor": 88,
+  "Almaviva": 90,
+  "Coyam": 84,
+
+  // ── New Zealand & South Africa ─────────────────────────────────────────────
+  "Cloudy Bay": 82,
+  "Kumeu River": 87,
+  "Felton Road": 89,
+  "Ata Rangi": 88,
+  "Martinborough Vineyard": 84,
+  "Kanonkop": 85,
+  "Hamilton Russell": 86,
+  "Meerlust": 83,
+  "Vergelegen": 82,
+
+  // ── Defaults by tier ───────────────────────────────────────────────────────
   "default_premier_cru": 88,
   "default_grand_cru": 92,
   "default_premium": 75,
@@ -129,14 +293,11 @@ export const PRODUCER_SCORES = {
 export function getProducerScore(producerName) {
   if (!producerName) return PRODUCER_SCORES.default_standard;
   const clean = producerName.trim();
-  // Exact match
   if (PRODUCER_SCORES[clean] !== undefined) return PRODUCER_SCORES[clean];
-  // Case-insensitive match
   const lower = clean.toLowerCase();
   for (const [key, score] of Object.entries(PRODUCER_SCORES)) {
     if (key.toLowerCase() === lower) return score;
   }
-  // Partial match (producer name contains a key)
   for (const [key, score] of Object.entries(PRODUCER_SCORES)) {
     if (key.startsWith("default_")) continue;
     if (lower.includes(key.toLowerCase()) || key.toLowerCase().includes(lower)) return score;
