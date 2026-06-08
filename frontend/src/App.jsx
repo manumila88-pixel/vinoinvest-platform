@@ -26,6 +26,7 @@ import HelpBot from "./components/HelpBot";
 import GuidedTour, { isTourCompleted, resetTour } from "./components/GuidedTour";
 import InfoTooltip from "./components/InfoTooltip";
 import CookieBanner from "./components/CookieBanner";
+import DisclaimerBar from "./components/DisclaimerBar";
 import CurrencySelector, { CurrencyProvider, usePrice } from "./components/CurrencySelector";
 import VintageScore from "./components/VintageScore";
 import InvestmentCalculator from "./components/InvestmentCalculator";
@@ -1636,6 +1637,9 @@ function App() {
 
       {/* ── Investment Calculator ────────────────────────────────────────── */}
       {showCalculator && <InvestmentCalculator onClose={() => setShowCalculator(false)} />}
+
+      {/* ── Disclaimer Bar finanziario ──────────────────────────────────── */}
+      <DisclaimerBar />
 
       {/* ── Cookie Banner GDPR ──────────────────────────────────────────── */}
       <CookieBanner />
