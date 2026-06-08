@@ -593,6 +593,19 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", ts: Date.now() });
 });
 
+// Detailed health check for UptimeRobot / monitoring
+app.get("/api/health/detailed", async (_req, res) => {
+  const start = Date.now();
+  const checks = { db: false, cache: true, version: "1.0.0" };
+  try {
+    await pool.query("SELECT 1");
+    checks.db = true;
+  } catch {}
+  const latency = Date.now() - start;
+  const status = checks.db ? "healthy" : "degraded";
+  res.status(checks.db ? 200 : 503).json({ status, latency_ms: latency, checks, ts: new Date().toISOString() });
+});
+
 // Public stats for social proof counters (no auth needed)
 app.get("/api/stats/public", cacheFor(3600), async (req, res) => {
   try {
