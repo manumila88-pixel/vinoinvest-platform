@@ -1318,6 +1318,8 @@ app.get("/api/sitemap.xml", (_req, res) => {
     { p: "/press",       freq: "monthly", pri: "0.5" },
     { p: "/transparency",freq: "monthly", pri: "0.5" },
     { p: "/referral",    freq: "monthly", pri: "0.4" },
+    { p: "/about",       freq: "monthly", pri: "0.6" },
+    { p: "/landing",     freq: "monthly", pri: "0.7" },
     { p: "/terms",       freq: "yearly",  pri: "0.3" },
     { p: "/privacy",     freq: "yearly",  pri: "0.3" },
     { p: "/cookies",     freq: "yearly",  pri: "0.3" },
@@ -1327,9 +1329,19 @@ app.get("/api/sitemap.xml", (_req, res) => {
   );
   const wineUrls = allWines.slice(0, 10000).map(w => {
     const slug = (w.id || w.name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-    return `<url><loc>${base}/wine/${slug}</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>`;
+    return `<url><loc>${base}/wine/${slug}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>`;
   });
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...staticPages, ...wineUrls].join("\n")}\n</urlset>`;
+  const blogSlugs = [
+    "come-investire-nel-vino-2026-guida-completa",
+    "barolo-vs-bordeaux-investimento-2026",
+    "tasse-vino-investimento-italia-art-67-tuir",
+    "ai-score-vinoinvest-come-funziona",
+    "migliori-annate-vino-investimento-rendimento",
+  ];
+  const blogUrls = blogSlugs.map(s =>
+    `<url><loc>${base}/blog/${s}</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>`
+  );
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...staticPages, ...wineUrls, ...blogUrls].join("\n")}\n</urlset>`;
   res.setHeader("Content-Type", "application/xml");
   res.send(xml);
 });

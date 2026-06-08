@@ -6,7 +6,35 @@ const router = express.Router();
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 let pool = null;
-export function setBlogPool(p) { pool = p; }
+export function setBlogPool(p) {
+  pool = p;
+  seedFallbackPostsToDb().catch(() => {});
+}
+
+async function seedFallbackPostsToDb() {
+  if (!pool) return;
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS blog_posts (
+      id SERIAL PRIMARY KEY,
+      title TEXT,
+      slug TEXT UNIQUE,
+      excerpt TEXT,
+      content TEXT,
+      category TEXT,
+      author TEXT DEFAULT 'VinoInvest AI',
+      read_time TEXT,
+      tokens_used INTEGER DEFAULT 0,
+      published_at TIMESTAMPTZ DEFAULT NOW()
+    )
+  `).catch(() => {});
+  for (const p of FALLBACK_POSTS) {
+    await pool.query(
+      `INSERT INTO blog_posts (title, slug, excerpt, content, category, author, read_time)
+       VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (slug) DO NOTHING`,
+      [p.title, p.slug, p.excerpt, p.content, p.category || "Analisi", p.author || "VinoInvest AI", p.readTime || "6 min"]
+    ).catch(() => {});
+  }
+}
 
 // In-memory cache: 1 hour
 let blogCache = null;
@@ -46,6 +74,28 @@ const FALLBACK_POSTS = [
     author: "VinoInvest AI",
     publishedAt: new Date().toISOString(),
     readTime: "6 min",
+  },
+  {
+    id: 4,
+    title: "Art. 67 TUIR: Nessuna Tassa sul Vino per i Collezionisti Italiani",
+    slug: "tasse-vino-investimento-italia-art-67-tuir",
+    excerpt: "In Italia le plusvalenze da vendita di vino da collezione sono generalmente esenti da tassazione. Ecco cosa dice la legge e quando si applica.",
+    content: "In Italia, la vendita di vino pregiato da parte di privati rientra nell'art. 67, comma 1, lett. c) del TUIR. Le plusvalenze sono considerate redditi diversi solo se realizzate entro 5 anni dall'acquisto.\n\nSe acquisti Barolo 2021 oggi e lo vendi dopo il 2031, la plusvalenza sara' presumibilmente esente da tassazione. Questo e' un vantaggio fiscale unico rispetto ad altri asset finanziari.\n\nLe accise sul vino fermo in Italia sono pari a zero - un vantaggio ulteriore rispetto a birra e superalcolici. Conserva sempre la documentazione di acquisto per poter dimostrare la data e il prezzo.",
+    category: "Fiscalita'",
+    author: "VinoInvest AI",
+    publishedAt: new Date(Date.now() - 3 * 86400000).toISOString(),
+    readTime: "5 min",
+  },
+  {
+    id: 5,
+    title: "AI Score VinoInvest: Come Funziona e Come Usarlo per Investire",
+    slug: "ai-score-vinoinvest-come-funziona",
+    excerpt: "L'AI Score e' il cuore di VinoInvest: un punteggio 0-100 che sintetizza 15+ variabili per ogni vino. Ecco la metodologia completa.",
+    content: "L'AI Score di VinoInvest misura l'attrattivita' di un vino come investimento su 5 dimensioni: Performance Storica (25%), Punteggi Critici (20%), Liquidita' di Mercato (20%), Rarita' e Scalabilita' (20%), Momentum e Outlook (15%).\n\nScore 90-100: Strong Buy. Score 75-89: Buy. Score 60-74: Watch. Score 40-59: Neutral. Score sotto 40: Avoid.\n\nEsempi reali: Barolo Monfortino 2021 score 96 (Strong Buy), Chateau Petrus 2019 score 93 (Strong Buy), DRC Romanee-Conti 2020 score 91 (Buy).\n\nL'AI Score non e' una garanzia ma un supporto decisionale. Usalo sempre insieme all'analisi del grafico storico prezzi.",
+    category: "Strumenti",
+    author: "VinoInvest AI",
+    publishedAt: new Date(Date.now() - 2 * 86400000).toISOString(),
+    readTime: "7 min",
   },
 ];
 
@@ -101,9 +151,11 @@ async function generatePost(topic) {
 
 async function generateAndCachePosts() {
   const topics = [
-    "Come investire in vino pregiato per principianti nel 2026",
-    "Top 5 vini con il miglior potenziale di apprezzamento quest'anno",
-    "Bordeaux vs Borgogna: analisi investimento 2026",
+    "Come investire nel vino nel 2026: guida completa per principianti con dati reali rendimenti",
+    "Barolo vs Bordeaux: quale rende di piu' nel 2026, confronto rendimenti storici e prezzi",
+    "Art. 67 TUIR: nessuna tassa sul vino per i collezionisti italiani, guida fiscale",
+    "AI Score VinoInvest: come funziona la metodologia per analisi investimento vino",
+    "Le 10 annate piu' redditizie degli ultimi 20 anni per investire in fine wine",
   ];
 
   const posts = [];

@@ -289,17 +289,26 @@ async function runAlgorithmicAgent({ message, conversationHistory, holdings, all
       const result = await executeTool("get_top_opportunities", { riskLevel: "medio", budget: maxBudget }, { allWines, API_URL });
       toolsUsed.push("get_top_opportunities");
       const opps = result.opportunities || [];
-      suggestedWines = opps.slice(0, 5);
 
-      if (!opps.length) {
+      // Build basket: greedily add wines until sum would exceed budget
+      let runningTotal = 0;
+      const basket = [];
+      for (const w of opps) {
+        const price = w.price || 0;
+        if (price > 0 && runningTotal + price <= maxBudget) {
+          basket.push(w);
+          runningTotal += price;
+        }
+        if (basket.length >= 5) break;
+      }
+      suggestedWines = basket;
+
+      if (!basket.length) {
         responseText = `${t.budget_intro(maxBudget)}\n\nNessun vino trovato nel range. Prova ad aumentare il budget.`;
       } else {
-        const lines = opps.slice(0, 5).map((w, i) => `${i + 1}. ${t.wine_label(w)}\n   📍 ${w.region || ""} | ⚖️ Rischio: ${w.risk || "Medio"} | 📈 ${w.trend || "Stable"}`);
+        const lines = basket.map((w, i) => `${i + 1}. ${t.wine_label(w)}\n   📍 ${w.region || ""} | ⚖️ Rischio: ${w.risk || "Medio"} | 📈 ${w.trend || "Stable"}`);
         responseText = `${t.budget_intro(maxBudget)}\n\n${lines.join("\n\n")}`;
-        if (opps.length >= 3) {
-          const total = opps.slice(0, 3).reduce((s, w) => s + (w.price || 0), 0);
-          responseText += `\n\n💡 **Portfolio mix consigliato**: acquista 1 bottiglia ciascuno dei top 3 = €${total.toFixed(0)} totale, buona diversificazione.`;
-        }
+        responseText += `\n\n💰 **Totale: €${runningTotal.toFixed(0)} / Budget: €${maxBudget.toLocaleString("it")}** (${basket.length} vini, ${(maxBudget - runningTotal).toFixed(0)}€ di riserva)`;
       }
       resourceLinks = buildResourceLinks(["prices", "market"]);
       break;
@@ -509,16 +518,21 @@ Always end with 2-3 relevant resource links.`;
   };
 }
 
+const DISCLAIMER = "\n\n---\n⚠️ Analisi informativa. Non è consulenza finanziaria.";
+
 // ── Public API ─────────────────────────────────────────────────────────────
 export async function runAgent({ message, conversationHistory = [], holdings = [], allWines = [], searchWinesFromDB, API_URL = "https://vinoinvest-backend-2.onrender.com", lang = "it" }) {
+  let result;
   if (process.env.ANTHROPIC_API_KEY) {
     try {
-      return await runClaudeAgent({ message, conversationHistory, holdings, allWines, searchWinesFromDB, API_URL, lang });
+      result = await runClaudeAgent({ message, conversationHistory, holdings, allWines, searchWinesFromDB, API_URL, lang });
     } catch (err) {
       console.error("[agent] Claude API error, falling back to algorithmic:", err.message);
     }
   }
-  return runAlgorithmicAgent({ message, conversationHistory, holdings, allWines, searchWinesFromDB, API_URL, lang });
+  if (!result) result = await runAlgorithmicAgent({ message, conversationHistory, holdings, allWines, searchWinesFromDB, API_URL, lang });
+  if (result.response) result.response += DISCLAIMER;
+  return result;
 }
 
 export { buildResourceLinks };

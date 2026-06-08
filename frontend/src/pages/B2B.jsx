@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { FAQ, B2B_CATS, B2B_CATEGORIES } from "../data/faq.js";
 
 const FAQ_B2B = FAQ.filter(f => B2B_CATS.has(f.cat));
@@ -179,6 +180,13 @@ export default function B2BPage() {
       color: "#e2e8f0",
       fontFamily: "'Inter',Arial,sans-serif",
     }}>
+      <Helmet>
+        <title>Soluzioni B2B per Wealth Manager | VinoInvest</title>
+        <meta name="description" content="Dashboard professionale per wealth manager, family office e consulenti finanziari. API, dati Liv-ex, AI Score e reportistica per clienti HNWI." />
+        <meta property="og:title" content="Soluzioni B2B per Wealth Manager | VinoInvest" />
+        <meta property="og:description" content="Strumenti professionali per investimento in wine per wealth manager e family office." />
+        <link rel="canonical" href="https://vinoinvest-platform.vercel.app/b2b" />
+      </Helmet>
       {/* Nav */}
       <nav style={{
         position: "sticky", top: 0, zIndex: 100,

@@ -3,6 +3,7 @@ import "./i18n";
 import { useTranslation } from "react-i18next";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { HelmetProvider, Helmet } from "react-helmet-async";
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ComposedChart } from "recharts";
 import PriceHistoryChart from "./components/PriceHistoryChart";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -56,6 +57,7 @@ const Terms = lazy(() => import("./pages/Terms"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Disclaimer = lazy(() => import("./pages/Disclaimer"));
 const Cookies = lazy(() => import("./pages/Cookies"));
+const AboutPage = lazy(() => import("./pages/About"));
 import ThemeToggle from "./components/ThemeToggle";
 import VoiceInterface from "./components/VoiceInterface";
 import ExitIntentPopup from "./components/ExitIntentPopup";
@@ -872,8 +874,33 @@ function App() {
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
+  const tabMeta = {
+    dashboard: { title: "Dashboard Portfolio | VinoInvest", desc: "Monitora il tuo portfolio di vini pregiati con AI Score, grafici prezzi e alert in tempo reale." },
+    market: { title: "Mercato Vini da Investimento | VinoInvest", desc: "Esplora 50.000+ vini da investimento con prezzi storici Liv-ex, AI Score e filtri avanzati." },
+    blog: { title: "Wine Investment Blog | VinoInvest", desc: "Guide, analisi e strategie per investire in vino pregiato. Aggiornato settimanalmente." },
+    analysis: { title: "Analisi AI Portfolio | VinoInvest", desc: "Analisi intelligente del tuo portfolio vini con raccomandazioni AI personalizzate." },
+    myportfolio: { title: "Il Tuo Portfolio Vino | VinoInvest", desc: "Gestisci e valuta il tuo cellar con prezzi real-time e performance storiche." },
+    portfolio: { title: "Il Tuo Portfolio Vino | VinoInvest", desc: "Gestisci e valuta il tuo cellar con prezzi real-time e performance storiche." },
+    b2b: { title: "Soluzioni B2B per Wealth Manager | VinoInvest", desc: "Dashboard professionale per wealth manager, family office e consulenti finanziari." },
+  };
+  const currentMeta = modalWine
+    ? { title: `${modalWine.name} - Analisi e Prezzo | VinoInvest`, desc: `Analisi investimento, storico prezzi e AI Score per ${modalWine.name} ${modalWine.vintage || ""}. Produttore: ${modalWine.producer || ""}.` }
+    : (tabMeta[tab] || { title: "VinoInvest — Piattaforma Intelligente per Investire in Vino", desc: "AI Score su 50.000+ vini. Portfolio tracker, prezzi storici Liv-ex, Academy 20 moduli." });
+
   return (
     <div className="app">
+      <Helmet>
+        <title>{currentMeta.title}</title>
+        <meta name="description" content={currentMeta.desc} />
+        <meta property="og:title" content={currentMeta.title} />
+        <meta property="og:description" content={currentMeta.desc} />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="VinoInvest" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={currentMeta.title} />
+        <meta name="twitter:description" content={currentMeta.desc} />
+        <link rel="canonical" href={`https://vinoinvest-platform.vercel.app${tab !== "dashboard" ? `/${tab}` : ""}`} />
+      </Helmet>
       {/* ── Offline banner ───────────────────────────────────────────────── */}
       {backendWaking && (
         <div style={{ background: "#1c1400", color: "#C9A227", padding: "8px 20px", fontSize: 12, fontWeight: 600, textAlign: "center", zIndex: 999, borderBottom: "1px solid rgba(201,162,39,0.2)" }}>
@@ -1769,6 +1796,7 @@ if ("serviceWorker" in navigator) {
 }
 
 createRoot(document.getElementById("root")).render(
+  <HelmetProvider>
   <BrowserRouter>
     <ToastProvider>
       <CurrencyProvider>
@@ -1803,6 +1831,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/cookies" element={<Cookies />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="/landing" element={<LandingPage />} />
           <Route path="*" element={<App />} />
         </Routes>
@@ -1810,4 +1839,5 @@ createRoot(document.getElementById("root")).render(
       </CurrencyProvider>
     </ToastProvider>
   </BrowserRouter>
+  </HelmetProvider>
 );

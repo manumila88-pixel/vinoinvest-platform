@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { COURSES, PREMIUM_COURSES, PATHWAYS, ASSESSMENT_QUESTIONS, LEVELS, XP_RULES, BADGES } from "../data/academyContent";
 
 const BG = "#0b1220";
@@ -66,6 +67,13 @@ export default function Academy() {
 
   return (
     <div style={{ minHeight: "100vh", background: BG, color: "#e2e8f0", fontFamily: "Inter, sans-serif" }}>
+      <Helmet>
+        <title>Academy Wine Investment | VinoInvest</title>
+        <meta name="description" content="20 moduli completi su investimento in vino: Bordeaux, Borgogna, En Primeur, Aste, Liv-ex, Fiscalità e casi studio reali. Certificato verificabile incluso." />
+        <meta property="og:title" content="Academy Wine Investment | VinoInvest" />
+        <meta property="og:description" content="Il corso più completo su investimento in vino. 20 moduli, certificato, dati reali Liv-ex." />
+        <link rel="canonical" href="https://vinoinvest-platform.vercel.app/academy" />
+      </Helmet>
       {/* Header */}
       <div style={{ background: "rgba(11,18,32,0.97)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(201,162,39,0.15)", padding: "14px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>

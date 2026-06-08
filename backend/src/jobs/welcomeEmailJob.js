@@ -1,10 +1,10 @@
 /**
  * Welcome Email Sequence — 5-email drip campaign via Resend
  * Day 0: Welcome (sent immediately on registration via auth route)
- * Day 3: First wine discovery
- * Day 7: Portfolio builder intro
- * Day 14: Market insights & alerts
- * Day 30: Upgrade to Pro offer
+ * Day 3: AI Score discovery (IT)
+ * Day 7: Top 5 wines this week (IT)
+ * Day 14: Portfolio guide €5.000 (IT)
+ * Day 21: Academy upgrade (IT)
  */
 import cron from "node-cron";
 
@@ -51,65 +51,71 @@ async function sendEmail(to, subject, html) {
 }
 
 function getTemplate(dayNum, firstName) {
-  const name = firstName || "Wine enthusiast";
+  const name = firstName || "investitore";
   switch (dayNum) {
     case 3:
       return {
-        subject: `${name}, discover your first investment-grade wine 🍷`,
-        html: `<h2 style="font-family:Georgia,serif;color:#020617">Your First Wine Discovery 🍷</h2>
-<p>Hi ${name}, you joined VinoInvest 3 days ago. Let's find your first great investment.</p>
+        subject: `Hai scoperto l'AI Score? Ecco come usarlo`,
+        html: `<h2 style="font-family:Georgia,serif;color:#020617">Hai scoperto l'AI Score? 🤖</h2>
+<p>Ciao ${name}, sono passati 3 giorni da quando ti sei unito a VinoInvest. Hai già visto l'AI Score?</p>
 <div class="s">
-  <p><strong>🏆 Editor's Pick This Week:</strong> Château Lynch-Bages 2019</p>
-  <p>📍 Pauillac, Bordeaux · AI Score: <strong>89/100</strong></p>
-  <p>💰 Current price: <strong>€185/bottle</strong> · Market trend: <span style="color:#16a34a">📈 +12% YoY</span></p>
-  <p>Risk level: <strong>Low-Medium</strong> · Recommended hold: 5–10 years</p>
+  <p><strong>Cos'è l'AI Score:</strong> un punteggio 0-100 che analizza storico prezzi, punteggi critici, liquidità e momentum per ogni vino.</p>
+  <p>🟢 <strong>90-100 = Strong Buy</strong> — eccezionale opportunità</p>
+  <p>🟡 <strong>75-89 = Buy</strong> — buona opportunità</p>
+  <p>⚪ <strong>60-74 = Watch</strong> — monitorare</p>
 </div>
-<p style="text-align:center;margin:24px 0"><a href="${BASE_URL}/?search=lynch-bages" class="btn">Explore This Wine →</a></p>
-<p>Or use our <a href="${BASE_URL}/?section=portfolio">AI Portfolio Builder</a> to find wines matching your exact budget and risk tolerance.</p>`,
+<p><strong>I top vini questa settimana:</strong></p>
+<div class="s">
+  <p>1. 🍷 Barolo Monfortino 2021 — Score <strong>96/100</strong> — Strong Buy</p>
+  <p>2. 🍷 Château Petrus 2019 — Score <strong>93/100</strong> — Strong Buy</p>
+  <p>3. 🍷 Brunello di Montalcino 2019 — Score <strong>91/100</strong> — Buy</p>
+</div>
+<p style="text-align:center;margin:24px 0"><a href="${BASE_URL}" class="btn">Esplora i Top Score →</a></p>`,
       };
     case 7:
       return {
-        subject: `Build your wine portfolio in 5 minutes — here's how`,
-        html: `<h2 style="font-family:Georgia,serif;color:#020617">Build Your Portfolio in 5 Minutes 📊</h2>
-<p>Hi ${name}, week one down — time to start tracking your investments.</p>
+        subject: `I 5 vini più interessanti questa settimana`,
+        html: `<h2 style="font-family:Georgia,serif;color:#020617">Top 5 della Settimana 🏆</h2>
+<p>Ciao ${name}, ecco i 5 vini con il miglior potenziale di apprezzamento questa settimana secondo l'AI di VinoInvest.</p>
 <div class="s">
-  <p><strong>How it works:</strong></p>
-  <p>1. 🔍 Search for a wine in the <a href="${BASE_URL}">marketplace</a></p>
-  <p>2. 👆 Click "Add to Portfolio" on any wine card</p>
-  <p>3. 📈 Watch your returns tracked in real time</p>
-  <p>4. 🤖 Get AI analysis of your full portfolio</p>
+  <p>1. <strong>Barolo Cascina Francia 2019</strong> — Score 94 — €320/bt — +18% YoY</p>
+  <p>2. <strong>Château Lynch-Bages 2019</strong> — Score 89 — €185/bt — +12% YoY</p>
+  <p>3. <strong>Sassicaia 2020</strong> — Score 88 — €230/bt — +9% YoY</p>
+  <p>4. <strong>Ornellaia 2019</strong> — Score 86 — €190/bt — +11% YoY</p>
+  <p>5. <strong>Champagne Salon 2013</strong> — Score 92 — €780/bt — +22% YoY</p>
 </div>
-<p style="text-align:center;margin:24px 0"><a href="${BASE_URL}/?section=myportfolio" class="btn">Open My Portfolio →</a></p>
-<p style="font-size:12px;color:#888">Pro tip: The AI Portfolio tab generates a fully optimized allocation for your budget — set it up in 60 seconds.</p>`,
+<p>Clicca su qualsiasi vino per vedere lo storico prezzi completo e l'analisi AI dettagliata.</p>
+<p style="text-align:center;margin:24px 0"><a href="${BASE_URL}" class="btn">Vedi Tutti i Vini →</a></p>`,
       };
     case 14:
       return {
-        subject: `Wine market this week: what smart investors are watching`,
-        html: `<h2 style="font-family:Georgia,serif;color:#020617">Market Insights — Week 2 📰</h2>
-<p>Hi ${name}, here's what's moving in the fine wine market right now.</p>
+        subject: `Come costruire un portfolio da €5.000 in fine wine`,
+        html: `<h2 style="font-family:Georgia,serif;color:#020617">Portfolio da €5.000: Guida Pratica 💼</h2>
+<p>Ciao ${name}, ecco come costruire il tuo primo portfolio di fine wine con €5.000.</p>
 <div class="s">
-  <p><strong>🔥 Trending Regions:</strong> Burgundy (+8% avg), Barolo (+6%), Champagne (+4%)</p>
-  <p><strong>📉 Under Watch:</strong> Some 2020 Bordeaux futures trading below issue price</p>
-  <p><strong>💎 Best Value Right Now:</strong> Ribera del Duero — AI score 82, avg price €45</p>
+  <p><strong>Allocazione raccomandata:</strong></p>
+  <p>🍷 <strong>40% — Barolo top labels (€2.000)</strong><br>6 bottiglie annata 2019/2021. Orizzonte: 7-10 anni. Potenziale: +150-250%</p>
+  <p>🍷 <strong>35% — Bordeaux Premier Cru (€1.750)</strong><br>3 bottiglie Pauillac/Saint-Julien. Liquidità massima. Potenziale: +80-130%</p>
+  <p>🍷 <strong>15% — Brunello di Montalcino (€750)</strong><br>2 bottiglie annata eccezionale. Orizzonte: 8-12 anni. Potenziale: +120-200%</p>
+  <p>🍷 <strong>10% — Champagne Prestige (€500)</strong><br>1 bottiglia Dom Pérignon/Krug. Diversificazione. Potenziale: +50-100%</p>
 </div>
-<p>Set a <strong>price alert</strong> for any wine — we'll notify you instantly when the price hits your target.</p>
-<p style="text-align:center;margin:24px 0"><a href="${BASE_URL}/?section=alerts" class="btn">Set Price Alerts →</a></p>
-<p>Also explore our <a href="${BASE_URL}/market-index">Market Index</a> — real-time composite of the 100 most-traded investment wines.</p>`,
+<p style="text-align:center;margin:24px 0"><a href="${BASE_URL}/?section=portfolio" class="btn">Crea il Mio Portfolio →</a></p>`,
       };
-    case 30:
+    case 21:
       return {
-        subject: `One month on VinoInvest — unlock the full platform 🔓`,
-        html: `<h2 style="font-family:Georgia,serif;color:#020617">You've Been With Us a Month! 🎉</h2>
-<p>Hi ${name}, 30 days ago you joined VinoInvest. Here's what you could unlock with a Pro plan:</p>
+        subject: `Sei pronto per il livello successivo? 🎓`,
+        html: `<h2 style="font-family:Georgia,serif;color:#020617">Pronto per l'Academy? 🎓</h2>
+<p>Ciao ${name}, sono 3 settimane che usi VinoInvest. È il momento di approfondire con la nostra Academy.</p>
 <div class="s">
-  <p>✅ <strong>Unlimited AI portfolio analysis</strong> — real-time Claude AI insights</p>
-  <p>✅ <strong>Cellar management</strong> — track drink windows, storage costs, insurance value</p>
-  <p>✅ <strong>En Primeur tracker</strong> — futures pricing from Bordeaux châteaux</p>
-  <p>✅ <strong>Liv-ex market data</strong> — institutional-grade price benchmarks</p>
-  <p>✅ <strong>Priority price alerts</strong> — instant notifications, no delay</p>
+  <p>📚 <strong>20 moduli completi</strong> — dal Bordeaux ai casi studio +1000%</p>
+  <p>📊 <strong>Portfolio simulato 2010-2024</strong> — vedi come avresti performato</p>
+  <p>🎓 <strong>Certificato verificabile</strong> — mostralo su LinkedIn</p>
+  <p>📈 <strong>Dati Liv-ex reali</strong> — non teoria, solo mercato vero</p>
+  <p>🤖 <strong>Quiz e esercizi pratici</strong> — impara facendo</p>
 </div>
-<p style="text-align:center;margin:24px 0"><a href="${BASE_URL}/pricing" class="btn">See Plans & Pricing →</a></p>
-<p style="font-size:12px;color:#888">Questions? Reply to this email — our team responds within 24h.</p>`,
+<p>I moduli 1-5 sono <strong>completamente gratuiti</strong>. Inizia oggi senza impegno.</p>
+<p style="text-align:center;margin:24px 0"><a href="${BASE_URL}/academy" class="btn">Accedi all'Academy →</a></p>
+<p style="font-size:12px;color:#888">Vuoi il piano completo? Vedi i <a href="${BASE_URL}/pricing">piani e prezzi</a> — da €9/mese.</p>`,
       };
     default:
       return null;
@@ -121,10 +127,10 @@ export async function queueWelcomeSequence(userEmail, firstName) {
   await ensureTable();
   const now = new Date();
   const schedule = [
-    { day: 3,  offset: 3 * 24 * 60 * 60 * 1000 },
-    { day: 7,  offset: 7 * 24 * 60 * 60 * 1000 },
+    { day: 3,  offset: 3  * 24 * 60 * 60 * 1000 },
+    { day: 7,  offset: 7  * 24 * 60 * 60 * 1000 },
     { day: 14, offset: 14 * 24 * 60 * 60 * 1000 },
-    { day: 30, offset: 30 * 24 * 60 * 60 * 1000 },
+    { day: 21, offset: 21 * 24 * 60 * 60 * 1000 },
   ];
   for (const { day, offset } of schedule) {
     const sendAfter = new Date(now.getTime() + offset);

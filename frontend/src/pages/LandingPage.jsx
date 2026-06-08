@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { API } from "../lib/constants";
 
 const FEATURES = [
@@ -50,6 +51,15 @@ export default function LandingPage() {
 
   return (
     <div style={{ background: "#0b1220", color: "#e2e8f0", minHeight: "100vh", fontFamily: "'Inter', system-ui, sans-serif" }}>
+      <Helmet>
+        <title>VinoInvest — Investi in Vino Pregiato con l'AI</title>
+        <meta name="description" content="La piattaforma #1 per investire in fine wine. AI Score su 50.000+ vini, prezzi storici Liv-ex, Academy 20 moduli, portfolio tracker. Inizia gratis." />
+        <meta property="og:title" content="VinoInvest — Investi in Vino Pregiato con l'AI" />
+        <meta property="og:description" content="La piattaforma #1 per investire in fine wine. AI Score su 50.000+ vini, prezzi storici Liv-ex, Academy 20 moduli, portfolio tracker." />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link rel="canonical" href="https://vinoinvest-platform.vercel.app/landing" />
+      </Helmet>
 
       {/* NAV */}
       <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, background: "rgba(11,18,32,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid #1e3050", padding: "14px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>

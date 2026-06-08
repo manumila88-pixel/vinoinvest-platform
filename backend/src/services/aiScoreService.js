@@ -73,6 +73,13 @@ async function saveScore(wineId, data) {
   }
 }
 
+const ELITE_PRODUCERS = ["romanee-conti", "romanée-conti", "drc", "domaine de la romanee-conti", "petrus", "pétrus", "masseto"];
+
+function isEliteWine(wine) {
+  const text = `${wine.producer || ""} ${wine.name || ""}`.toLowerCase();
+  return ELITE_PRODUCERS.some(e => text.includes(e));
+}
+
 function algorithmicScore(wine) {
   const criticScore = wine.criticScore || wine.investmentScore || 90;
   const vintage = parseInt(wine.vintage) || 2015;
@@ -161,8 +168,9 @@ Respond ONLY with valid JSON, no markdown:
     const clamp = v => Math.min(100, Math.max(0, parseInt(v) || 0));
     const valid = ["Strong Buy", "Buy", "Hold", "Sell"];
 
+    const rawScore = clamp(parsed.score);
     const result = {
-      score: clamp(parsed.score),
+      score: rawScore === 100 && !isEliteWine(wine) ? 99 : rawScore,
       breakdown: {
         vintage: clamp(parsed.breakdown?.vintage),
         producer: clamp(parsed.breakdown?.producer),

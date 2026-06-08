@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import Bottle3D from "./components/Bottle3D";
 import PriceHistoryChart from "./components/PriceHistoryChart";
 import SourceBadge from "./components/SourceBadge";
@@ -84,8 +85,35 @@ export default function WineBottle3DModal({ wine, onClose }) {
   const aiScore = wine.aiScoreData?.score ?? wine.analysis?.aiScore ?? wine.investmentScore ?? "—";
   const aiSignal = wine.aiScoreData?.signal;
 
+  const schemaLD = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": wine.name,
+    "description": `${wine.name} ${wine.vintage || ""} — ${wine.producer || ""}. Vino da investimento con AI Score ${wine.investment_score || wine.aiScore || ""}/100.`,
+    "brand": { "@type": "Brand", "name": wine.producer || "VinoInvest" },
+    "offers": {
+      "@type": "Offer",
+      "price": wine.current_price || wine.price || "0",
+      "priceCurrency": "EUR",
+      "availability": "https://schema.org/InStock",
+    },
+    ...(wine.investment_score || wine.aiScore ? {
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": wine.investment_score || wine.aiScore,
+        "bestRating": "100",
+        "ratingCount": "1",
+      }
+    } : {}),
+  };
+
   return (
     <div className="bottle-overlay" onClick={onClose}>
+      <Helmet>
+        <title>{wine.name} {wine.vintage || ""} - Analisi e Prezzo | VinoInvest</title>
+        <meta name="description" content={`Analisi investimento, storico prezzi e AI Score per ${wine.name} ${wine.vintage || ""}. Produttore: ${wine.producer || ""}. Prezzo attuale: €${wine.current_price || wine.price || "N/A"}.`} />
+        <script type="application/ld+json">{JSON.stringify(schemaLD)}</script>
+      </Helmet>
       <div className="bottle-modal" style={{ overflowY: "auto", maxHeight: "92vh" }} onClick={e => e.stopPropagation()}>
         <button className="bottle-modal-close" onClick={onClose}>×</button>
 
