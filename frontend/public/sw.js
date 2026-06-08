@@ -1,11 +1,12 @@
 // VinoInvest Service Worker — offline cache strategy
-const CACHE_VERSION = "vino-v3";
+const CACHE_VERSION = "vino-v4";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const API_CACHE    = `${CACHE_VERSION}-api`;
 
 const STATIC_ASSETS = [
   "/",
   "/index.html",
+  "/offline.html",
 ];
 
 const API_CACHE_PATTERNS = [
@@ -13,6 +14,8 @@ const API_CACHE_PATTERNS = [
   /\/api\/market\/index/,
   /\/api\/currency\/rates/,
   /\/api\/news/,
+  /\/api\/stats\/public/,
+  /\/api\/rates/,
 ];
 
 const API_BYPASS_PATTERNS = [
@@ -73,7 +76,10 @@ self.addEventListener("fetch", (e) => {
           caches.open(STATIC_CACHE).then(c => c.put(request, res.clone()));
         }
         return res;
-      }).catch(() => caches.match("/index.html"));
+      }).catch(() => {
+        if (request.destination === "document") return caches.match("/offline.html");
+        return caches.match("/index.html");
+      });
     })
   );
 });
