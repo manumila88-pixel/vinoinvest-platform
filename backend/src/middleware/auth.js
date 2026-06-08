@@ -6,11 +6,12 @@ const supabase =
     : null;
 
 export const ADMIN_EMAIL = "manumila88@gmail.com";
+export const isAdmin = (user) => user?.email === ADMIN_EMAIL;
 
 // In-memory login attempt tracker (per IP)
 const loginAttempts = new Map();
 const LOGIN_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
-const MAX_LOGIN_ATTEMPTS = 10;
+const MAX_LOGIN_ATTEMPTS = 5;
 
 export function trackLoginAttempt(ip, success) {
   const now = Date.now();

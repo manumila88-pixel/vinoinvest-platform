@@ -1,7 +1,17 @@
 import express from "express";
+import rateLimit from "express-rate-limit";
 import { requireAuth, trackLoginAttempt, isLoginLocked, ADMIN_EMAIL } from "../middleware/auth.js";
 
 const router = express.Router();
+
+// 5 login attempts per 15 min per IP — enforced at HTTP layer before business logic
+const loginRateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { locked: true, error: "Troppi tentativi. Attendi 15 minuti." },
+});
 
 let pool = null;
 export function setAuthPool(p) { pool = p; }
@@ -21,7 +31,7 @@ async function logSecurityEvent(type, ip, email, details) {
 
 // POST /api/auth/login-check — rate limit check before Supabase login attempt
 // Frontend calls this first; if locked, shows lockout message without hitting Supabase
-router.post("/login-check", (req, res) => {
+router.post("/login-check", loginRateLimit, (req, res) => {
   const ip = req.ip || req.headers["x-forwarded-for"] || "unknown";
   if (isLoginLocked(ip)) {
     logSecurityEvent("login_locked", ip, req.body?.email, { reason: "max_attempts_exceeded" });
@@ -31,7 +41,7 @@ router.post("/login-check", (req, res) => {
 });
 
 // POST /api/auth/login-result — called after Supabase login to track success/failure
-router.post("/login-result", (req, res) => {
+router.post("/login-result", loginRateLimit, (req, res) => {
   const ip = req.ip || req.headers["x-forwarded-for"] || "unknown";
   const { success, email } = req.body;
   const entry = trackLoginAttempt(ip, success === true);

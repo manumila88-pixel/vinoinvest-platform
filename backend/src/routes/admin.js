@@ -49,20 +49,28 @@ router.get("/stats", async (req, res) => {
 
     const [
       usersTotal,
+      usersActiveToday,
       subsActive,
       subsRevenue,
+      ordersRevenue,
       academyProgress,
       academyCerts,
       apiUsage,
+      aiTokensToday,
+      topWines,
       recentAudit,
       securityEvents,
     ] = await Promise.all([
       pool.query(`SELECT COUNT(*) AS total FROM users`).catch(() => ({ rows: [{ total: 0 }] })),
+      pool.query(`SELECT COUNT(DISTINCT user_id) AS active FROM audit_log WHERE created_at::date = CURRENT_DATE`).catch(() => ({ rows: [{ active: 0 }] })),
       pool.query(`SELECT plan, COUNT(*) AS count FROM subscriptions WHERE active = true GROUP BY plan`).catch(() => ({ rows: [] })),
       pool.query(`SELECT SUM(CASE WHEN plan='investor' THEN 9.99 WHEN plan='pro' OR plan='professional' THEN 19.99 WHEN plan='bundle' THEN 24.99 ELSE 0 END) AS mrr FROM subscriptions WHERE active = true`).catch(() => ({ rows: [{ mrr: 0 }] })),
+      pool.query(`SELECT COALESCE(SUM(purchase_price * quantity), 0) AS total_revenue FROM orders WHERE status != 'cancelled'`).catch(() => ({ rows: [{ total_revenue: 0 }] })),
       pool.query(`SELECT COUNT(DISTINCT user_id) AS learners, COUNT(*) AS completions FROM academy_progress WHERE done = true`).catch(() => ({ rows: [{ learners: 0, completions: 0 }] })),
       pool.query(`SELECT COUNT(*) AS certs FROM academy_certificates`).catch(() => ({ rows: [{ certs: 0 }] })),
       pool.query(`SELECT endpoint, COUNT(*) AS calls, COALESCE(SUM(cost_usd),0) AS cost FROM api_usage WHERE created_at > NOW() - INTERVAL '30 days' GROUP BY endpoint ORDER BY cost DESC LIMIT 10`).catch(() => ({ rows: [] })),
+      pool.query(`SELECT COALESCE(SUM(tokens_input + tokens_output), 0) AS tokens, COALESCE(SUM(cost_usd), 0) AS cost FROM api_usage WHERE created_at::date = CURRENT_DATE`).catch(() => ({ rows: [{ tokens: 0, cost: 0 }] })),
+      pool.query(`SELECT target AS wine_id, COUNT(*) AS searches FROM audit_log WHERE action LIKE '%search%' AND created_at > NOW() - INTERVAL '7 days' GROUP BY target ORDER BY searches DESC LIMIT 10`).catch(() => ({ rows: [] })),
       pool.query(`SELECT * FROM audit_log ORDER BY created_at DESC LIMIT 20`).catch(() => ({ rows: [] })),
       pool.query(`SELECT event_type, COUNT(*) AS count FROM security_events WHERE created_at > NOW() - INTERVAL '7 days' GROUP BY event_type`).catch(() => ({ rows: [] })),
     ]);
@@ -73,11 +81,17 @@ router.get("/stats", async (req, res) => {
     await logAudit(req.user?.email || ADMIN_EMAIL, "VIEW_STATS", "/admin/stats", {}, req.ip);
 
     res.json({
-      users: { total: parseInt(usersTotal.rows[0]?.total || 0) },
+      users: {
+        total: parseInt(usersTotal.rows[0]?.total || 0),
+        active_today: parseInt(usersActiveToday.rows[0]?.active || 0),
+      },
       subscriptions: {
         byPlan: planBreakdown,
         total: Object.values(planBreakdown).reduce((a, b) => a + b, 0),
         mrr: parseFloat(subsRevenue.rows[0]?.mrr || 0).toFixed(2),
+      },
+      revenue: {
+        orders_total: parseFloat(ordersRevenue.rows[0]?.total_revenue || 0).toFixed(2),
       },
       academy: {
         learners: parseInt(academyProgress.rows[0]?.learners || 0),
@@ -90,6 +104,18 @@ router.get("/stats", async (req, res) => {
           calls: parseInt(r.calls),
           cost: parseFloat(r.cost),
         })),
+        ai_tokens_today: parseInt(aiTokensToday.rows[0]?.tokens || 0),
+        ai_cost_today_usd: parseFloat(aiTokensToday.rows[0]?.cost || 0).toFixed(4),
+      },
+      top_wines_searched: topWines.rows.map(r => ({ wine_id: r.wine_id, searches: parseInt(r.searches) })),
+      system: {
+        uptime_seconds: Math.floor(process.uptime()),
+        uptime_human: (() => {
+          const s = Math.floor(process.uptime());
+          const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60);
+          return `${h}h ${m}m`;
+        })(),
+        memory_mb: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
       },
       auditLog: recentAudit.rows,
       securityEvents: securityEvents.rows,

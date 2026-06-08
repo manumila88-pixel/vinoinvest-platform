@@ -153,7 +153,8 @@ app.use("/api/rates", cacheFor(21600), ratesRouter);   // 6h — exchange rates 
 app.use("/api/news", cacheFor(1800), newsRouter);        // 30min
 app.use("/api/ai", aiRateLimit, aiMarketRouter);
 app.use("/api/ai", aiRateLimit, aiPortfolioRouter);
-app.use("/api/blog", cacheFor(7200), blogRouter);        // 2h
+app.use("/api/blog", cacheFor(3600), blogRouter);        // 1h
+app.get("/api/agent/opportunities", cacheFor(900));      // 15 min cache before AI rate limit
 app.use("/api/agent", aiRateLimit, agentRouter);
 app.use("/api/purchase", purchaseRouter);
 app.use("/api/admin", requireAdmin, adminRouter);
@@ -595,9 +596,16 @@ function normalize(text) {
 
 }
 
-// Health endpoint for keep-alive pings (Render free tier)
+// Health endpoint — keep-alive pings + basic monitoring
 app.get("/api/health", (req, res) => {
-  res.json({ status: "ok", ts: Date.now() });
+  res.json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    uptime_seconds: Math.floor(process.uptime()),
+    memory_mb: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+    db_connected: pool !== null,
+    version: process.env.npm_package_version || "1.0.0",
+  });
 });
 
 // Detailed health check for UptimeRobot / monitoring
@@ -1324,6 +1332,13 @@ app.get("/api/sitemap.xml", (_req, res) => {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...staticPages, ...wineUrls].join("\n")}\n</urlset>`;
   res.setHeader("Content-Type", "application/xml");
   res.send(xml);
+});
+
+// Global error handler — must be last middleware
+app.use((err, req, res, _next) => {
+  console.error({ timestamp: new Date().toISOString(), path: req.path, method: req.method, error: err.message });
+  const status = err.status || err.statusCode || 500;
+  res.status(status).json({ error: "Errore interno. Riprova tra poco." });
 });
 
 const PORT =
