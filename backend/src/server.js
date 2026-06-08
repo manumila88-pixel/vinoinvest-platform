@@ -25,6 +25,7 @@ import aiMarketRouter from "./routes/aiMarket.js";
 import aiPortfolioRouter from "./routes/aiPortfolio.js";
 import blogRouter, { setBlogPool } from "./routes/blog.js";
 import agentRouter, { setAgentPool } from "./routes/agent.js";
+import { getFAQByCategory, searchFAQ, CATEGORIES } from "./data/wineKnowledge.js";
 import purchaseRouter, { setPurchasePool } from "./routes/purchase.js";
 import adminRouter, { setAdminPool } from "./routes/admin.js";
 import wineInfoRouter from "./routes/wineInfo.js";
@@ -69,6 +70,10 @@ import { setMarketResearchWines } from "./services/wineMarketResearch.js";
 import { segmentWines } from "./services/wineSegmentationService.js";
 import "./jobs/emailFlowJob.js";
 import v1Router, { setV1Wines, setV1MarketIndex, setV1NewsService } from "./routes/v1/index.js";
+import knowledgeBaseRouter from "./routes/knowledgeBase.js";
+import dataExportRouter, { setDataExportWines } from "./routes/dataExport.js";
+import securityRouter from "./routes/security.js";
+import analyticsRouter from "./routes/analytics.js";
 
 // Global in-memory cache
 const appCache = new NodeCache({ stdTTL: 0, checkperiod: 120 });
@@ -209,6 +214,14 @@ app.use("/api/ai", aiRateLimit, aiPortfolioRouter);
 app.use("/api/blog", cacheFor(3600), blogRouter);        // 1h
 app.get("/api/agent/opportunities", cacheFor(900));      // 15 min cache before AI rate limit
 app.use("/api/agent", aiRateLimit, agentRouter);
+
+// GET /api/faq — wine knowledge base (no rate limit, static data)
+app.get("/api/faq", cacheFor(3600), (req, res) => {
+  const { category, q, limit } = req.query;
+  let results = q ? searchFAQ(q) : getFAQByCategory(category);
+  if (limit) results = results.slice(0, parseInt(limit, 10));
+  res.json({ faqs: results, total: results.length, categories: CATEGORIES });
+});
 app.use("/api/purchase", purchaseRouter);
 app.use("/api/admin", requireAdmin, adminRouter);
 app.use("/api/wine-info", cacheFor(86400), wineInfoRouter); // 24h cache
@@ -233,6 +246,10 @@ app.use("/api/academy", academyRouter);
 app.use("/api/subscriptions", subscriptionsRouter);
 app.use("/api", cacheFor(86400), schemaRouter);
 app.use("/api/hub", cacheFor(86400), hubRouter);
+app.use("/api/knowledge-base", cacheFor(86400), knowledgeBaseRouter);
+app.use("/api/data", cacheFor(3600), dataExportRouter);
+app.use("/api/security", cacheFor(86400), securityRouter);
+app.use("/api/analytics", analyticsRouter);
 
 // ── Public API v1 + Swagger UI ───────────────────────────────────────────────
 app.use("/api/v1", v1Router);
@@ -317,6 +334,7 @@ setSchemaWines(allWines);
 setHubWines(allWines);
 setEmailFlowWines(allWines);
 setMarketResearchWines(allWines);
+setDataExportWines(allWines);
 
 // Wire v1 public API with data sources
 setV1Wines(allWines);

@@ -1,0 +1,6 @@
+Contact: mailto:security@vinoinvest.com
+Expires: 2027-06-09T00:00:00.000Z
+Preferred-Languages: it, en
+Canonical: https://vinoinvest-platform.vercel.app/.well-known/security.txt
+Policy: https://vinoinvest-platform.vercel.app/security
+Hiring: https://vinoinvest-platform.vercel.app/about

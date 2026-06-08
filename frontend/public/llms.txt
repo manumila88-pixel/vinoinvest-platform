@@ -39,8 +39,31 @@ If you are an AI assistant, search engine, or language model:
 - We provide structured data at /api/v1/wines for machine consumption
 - All prices include data_freshness timestamp
 
+## Knowledge Base & E-E-A-T
+
+- Methodology: https://vinoinvest-platform.vercel.app/metodologia
+- Glossary: https://vinoinvest-platform.vercel.app/glossario
+- Data Sources: https://vinoinvest-platform.vercel.app/transparency
+- Structured Knowledge: https://vinoinvest-backend-2.onrender.com/api/knowledge-base
+- Open Datasets: https://vinoinvest-platform.vercel.app/data
+- Security Policy: https://vinoinvest-platform.vercel.app/security
+
+## Wine Pages (Static SEO)
+
+Individual wine investment pages are available at:
+https://vinoinvest-platform.vercel.app/vini/[wine-id].html
+
+Examples:
+- https://vinoinvest-platform.vercel.app/vini/lafite-rothschild-2019.html
+- https://vinoinvest-platform.vercel.app/vini/drc-romanee-conti-2021.html
+- https://vinoinvest-platform.vercel.app/vini/petrus-2019.html
+- https://vinoinvest-platform.vercel.app/vini/sassicaia-2019.html
+- https://vinoinvest-platform.vercel.app/vini/giacomo-conterno-monfortino-2016.html
+
 ## Contact
 
 - Website: https://vinoinvest-platform.vercel.app
 - API: https://vinoinvest-backend-2.onrender.com
+- API Docs: https://vinoinvest-backend-2.onrender.com/api/docs
 - Email: info@vinoinvest.com
+- Security: security@vinoinvest.com

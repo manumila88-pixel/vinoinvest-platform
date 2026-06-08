@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { createRequire } from "module";
-import { runAgent, executeTool } from "../agents/portfolioAgent.js";
+import { runAgent, executeTool, getFollowUpSuggestions } from "../agents/portfolioAgent.js";
 import { translateText } from "../services/translationService.js";
+import { FAQ, getFAQByCategory, searchFAQ, CATEGORIES } from "../data/wineKnowledge.js";
 
 let agentPool = null;
 export const setAgentPool = (p) => { agentPool = p; };
@@ -76,6 +77,8 @@ router.post("/chat", async (req, res) => {
       suggestedWines: result.suggestedWines || [],
       resourceLinks: result.resourceLinks || [],
       toolsUsed: result.toolsUsed || [],
+      followUpSuggestions: result.followUpSuggestions || [],
+      intent: result.intent || "general",
       mode: result.mode || "algorithmic",
       sessionId: sid,
     });
@@ -152,6 +155,19 @@ router.get("/similar/:wineId", async (req, res) => {
   } catch (err) {
     res.json({ wines: [] });
   }
+});
+
+// GET /api/faq — wine knowledge base FAQs
+router.get("/faq", (req, res) => {
+  const { category, q, limit } = req.query;
+  let results = q ? searchFAQ(q) : getFAQByCategory(category);
+  if (limit) results = results.slice(0, parseInt(limit, 10));
+  res.json({ faqs: results, total: results.length, categories: CATEGORIES });
+});
+
+// GET /api/faq/categories
+router.get("/faq/categories", (_req, res) => {
+  res.json({ categories: CATEGORIES });
 });
 
 export default router;

@@ -179,14 +179,32 @@ function buildResourceLinks(categories = ["news", "prices"]) {
 // ── Intent detection for algorithmic fallback ──────────────────────────────
 function detectIntent(message) {
   const m = message.toLowerCase();
-  if (/budget|compro|acquis|invest|spend|acheter|kaufen|€|eur/i.test(m)) return "budget";
-  if (/portfolio|portafolio|portafoglio|analyse|analizza|holdings|posizioni/i.test(m)) return "portfolio";
-  if (/vendo|sell|vendere|reduce|uscire|liquidare/i.test(m)) return "sell";
-  if (/news|notizie|mercato|market|oggi|today|settimana|semaine|woche/i.test(m)) return "news";
-  if (/simil|like|comme|ähnlich|come.*château|tipo.*vino/i.test(m)) return "similar";
-  if (/barolo|borgogna|bordeaux|champagne|toscana|tuscany|napa|rioja/i.test(m)) return "region";
-  if (/cos.*è|what.*is|come.*funziona|how.*work|qu.*est|was.*ist|educaz/i.test(m)) return "education";
+  // Comparison (must check before budget/region to avoid false matches)
+  if (/vs\.?|versus|contro|rispetto|confronta|differ[ae]|meglio.*o.*|or.*better|compared?|s&p|sp500|azioni|stock/i.test(m)) return "confronto";
+  // Practical how-to
+  if (/dove.*compra|where.*buy|come.*conserv|how.*store|autenticità|authentic|fals[oa]|fake|cantina professionale|temperatura|umidità|cellar/i.test(m)) return "pratico";
+  // Market trends
+  if (/trend|crescon|growing|cala|declin|2025|2026|regione.*meglio|region.*best|liv-?ex|andamento/i.test(m)) return "mercato";
+  // En primeur
+  if (/en primeur|primeur|futures|barrel|botte|annata/i.test(m)) return "enprimeur";
+  // Budget allocation
+  if (/budget|compro|acquis|spend|acheter|kaufen|€|eur/i.test(m) && !/invest.*vs|vs.*invest/i.test(m)) return "budget";
+  // Portfolio analysis
+  if (/portfolio|portafolio|portafoglio|analiz|holdings|posizioni|diversific/i.test(m)) return "portfolio";
+  // Sell timing
+  if (/vendo|sell|vendere|reduce|uscire|liquidare|quando.*vend/i.test(m)) return "sell";
+  // News
+  if (/news|notizie|oggi|today|settimana|week|ultimo|latest|cosa.*successo/i.test(m)) return "news";
+  // Search / similar
+  if (/simil|like|comme|ähnlich|come.*château|tipo.*vino|trovami|find.*wine|cerca/i.test(m)) return "similar";
+  // Regional
+  if (/barolo|borgogna|bordeaux|champagne|toscana|tuscany|napa|rioja|brunello|amarone|prosecco|champagne/i.test(m) && !/vs|versus|contro/i.test(m)) return "region";
+  // Education
+  if (/cos.*è|what.*is|come.*funziona|how.*work|qu.*est|was.*ist|educaz|spiega|explain|significa|meaning/i.test(m)) return "education";
+  // Top / opportunities
   if (/top|best|miglior|meilleur|beste|opportunit/i.test(m)) return "opportunities";
+  // General market question
+  if (/mercato|market|economy|economia/i.test(m)) return "mercato";
   return "general";
 }
 
@@ -421,6 +439,157 @@ async function runAlgorithmicAgent({ message, conversationHistory, holdings, all
       break;
     }
 
+    case "confronto": {
+      // Comparison questions: Barolo vs Bordeaux, wine vs S&P500, etc.
+      const isVsMarket = /s&p|sp500|azioni|stock|bond|immobil|real estate|gold|oro/i.test(message);
+      if (isVsMarket) {
+        responseText = `**Vino Fine vs Mercati Finanziari**\n\n`;
+        responseText += `📊 **Rendimenti storici (annualizzati, 20 anni)**\n`;
+        responseText += `🍷 Liv-ex Fine Wine 100: **+8-12%/anno**\n`;
+        responseText += `📈 S&P 500: **+10-11%/anno**\n`;
+        responseText += `🏠 Immobiliare IT: **+3-5%/anno**\n`;
+        responseText += `🥇 Oro: **+7-8%/anno**\n\n`;
+        responseText += `**Vantaggi del vino come asset:**\n`;
+        responseText += `✅ **Bassa correlazione** con azioni (beta ~0.2) — protegge in crash azionari\n`;
+        responseText += `✅ **Asset fisico** — non può andare a zero\n`;
+        responseText += `✅ **Scarsità crescente** — le bottiglie si consumano, l'offerta cala\n`;
+        responseText += `✅ **Fiscalità favorevole** — in Italia, plusvalenze vino non sono soggette a capital gain ordinario (Art. 67 TUIR, verifica con commercialista)\n\n`;
+        responseText += `**Svantaggi:**\n`;
+        responseText += `⚠️ Illiquidità (orizzonte 5-10 anni)\n`;
+        responseText += `⚠️ Costi conservazione (€5-15/cassa/anno)\n`;
+        responseText += `⚠️ Rischio autenticità\n\n`;
+        responseText += `💡 **Conclusione**: Il vino funziona meglio come **diversificatore** (10-20% del portfolio totale), non sostituto del mercato azionario.`;
+      } else {
+        // Wine vs wine comparison — extract the two terms
+        const parts = message.match(/(\w[\w\s]*?)\s+vs\.?\s+([\w\s]+)/i);
+        const [wine1, wine2] = parts ? [parts[1].trim(), parts[2].trim()] : [searchTerm, "bordeaux"];
+        const [r1, r2] = await Promise.all([
+          executeTool("search_wines", { query: wine1, limit: 3 }, { allWines, API_URL, searchWinesFromDB }),
+          executeTool("search_wines", { query: wine2, limit: 3 }, { allWines, API_URL, searchWinesFromDB }),
+        ]);
+        toolsUsed.push("search_wines", "search_wines");
+        const w1 = (r1.results || [])[0];
+        const w2 = (r2.results || [])[0];
+        responseText = `**Confronto: ${wine1.toUpperCase()} vs ${wine2.toUpperCase()}**\n\n`;
+        if (w1) responseText += `🍷 **${w1.name}** — €${w1.price} | Score: ${w1.score}/100 | Rischio: ${w1.risk}\n`;
+        if (w2) responseText += `🍾 **${w2.name}** — €${w2.price} | Score: ${w2.score}/100 | Rischio: ${w2.risk}\n\n`;
+        responseText += `**Differenze chiave:**\n`;
+        responseText += `📍 ${wine1}: Regione diversa, stile diverso, mercato target diverso\n`;
+        responseText += `📍 ${wine2}: Liquidità mercato secondario, domanda globale\n\n`;
+        responseText += `💡 Per un confronto preciso, cerca i due vini nella sezione **Mercato** e confronta i grafici storici.`;
+        suggestedWines = [...(r1.results || []).slice(0, 2), ...(r2.results || []).slice(0, 2)];
+      }
+      resourceLinks = buildResourceLinks(["market", "ratings", "prices"]);
+      break;
+    }
+
+    case "pratico": {
+      const isPratico_conserva = /conserv|store|cantina|temperature|umidità|cellar/i.test(message);
+      const isPratico_auth = /autenticità|authentic|fals|fake|verifica/i.test(message);
+      const isPratico_buy = /dove.*compra|where.*buy|compro.*dove/i.test(message);
+      if (isPratico_conserva) {
+        responseText = `**Come conservare il vino da investimento**\n\n`;
+        responseText += `🌡️ **Temperatura**: 12-14°C costante (mai sopra 18°C)\n`;
+        responseText += `💧 **Umidità**: 70-80% (tappo non si secca, etichette intatte)\n`;
+        responseText += `🌑 **Luce**: assenza totale di luce UV\n`;
+        responseText += `📳 **Vibrazioni**: zero (no vicino a macchinari)\n`;
+        responseText += `🍾 **Posizione**: orizzontale per vini con tappo in sughero\n\n`;
+        responseText += `**Opzioni:**\n`;
+        responseText += `1. **Cantina professionale** (Octavian, Cru, EuroCave Pro) — €5-15/cassa/anno\n`;
+        responseText += `2. **Armadio climatizzato** — da €800 per uso casalingo\n`;
+        responseText += `3. **Cantina privata** — investimento maggiore, controllo totale\n\n`;
+        responseText += `⚠️ **Regola d'oro**: Se non puoi garantire 12-14°C costanti, usa una cantina professionale. Un vino mal conservato perde il 50-100% del valore.`;
+      } else if (isPratico_auth) {
+        responseText = `**Come verificare l'autenticità di un vino**\n\n`;
+        responseText += `🔍 **Metodi principali:**\n`;
+        responseText += `1. **Etichetta**: Verifica font, colori, stampa rispetto a bottiglie note. Usa community WineSearcher\n`;
+        responseText += `2. **Capsula**: I grandi Châteaux usano capsule specifiche per annata\n`;
+        responseText += `3. **Livello del vino**: Deve essere normale. Livello basso = possibile problema\n`;
+        responseText += `4. **Provenienza**: Richiedi sempre la catena di custodia (provenance)\n`;
+        responseText += `5. **Scanner etichetta**: Usa la funzione **Scanner** di VinoInvest per identificazione rapida\n\n`;
+        responseText += `**Servizi certificati:**\n`;
+        responseText += `- Vinfolio (certificazione USA)\n`;
+        responseText += `- Farr Vintners (UK)\n`;
+        responseText += `- Berry Bros & Rudd (UK)\n\n`;
+        responseText += `⚠️ Acquista solo da rivenditori certificati o case d'asta di primo piano.`;
+      } else if (isPratico_buy) {
+        const opps = await executeTool("get_top_opportunities", { riskLevel: "medio" }, { allWines, API_URL });
+        toolsUsed.push("get_top_opportunities");
+        suggestedWines = (opps.opportunities || []).slice(0, 4);
+        responseText = `**Dove comprare vino da investimento**\n\n`;
+        responseText += `🏪 **Marketplace online:**\n`;
+        responseText += `- **Wine-Searcher**: confronto prezzi globale\n`;
+        responseText += `- **Vivino**: community + prezzi\n`;
+        responseText += `- **Idealwine**: aste online, ottimo per Borgogna\n\n`;
+        responseText += `🏛️ **Case d'asta tradizionali:**\n`;
+        responseText += `- Sotheby's Wine, Christie's — grandi bottiglie e lotti\n`;
+        responseText += `- Acker, Hart Davis Hart — americane, ottimi prezzi\n\n`;
+        responseText += `🇮🇹 **In Italia:**\n`;
+        responseText += `- Serena Wines, Tannico (consumer)\n`;
+        responseText += `- Winemaker — aste\n\n`;
+        responseText += `💡 **Su VinoInvest**: Acquista direttamente dalla piattaforma con prezzi aggiornati e investimento tracciato nel tuo portfolio.`;
+      } else {
+        responseText = `**Guida pratica all'investimento nel vino**\n\n`;
+        responseText += `Ho diverse guide pratiche. Chiedimi:\n`;
+        responseText += `🏪 "Dove comprare vino da investimento"\n`;
+        responseText += `🌡️ "Come conservare il vino"\n`;
+        responseText += `🔍 "Come verificare l'autenticità"\n`;
+        responseText += `📋 "Come iniziare con €5.000"\n`;
+        responseText += `⚖️ "Fiscalità del vino in Italia"\n`;
+      }
+      resourceLinks = buildResourceLinks(["prices", "education", "auctions"]);
+      break;
+    }
+
+    case "mercato": {
+      const newsResult = await executeTool("get_market_news", { country: "all", category: "market" }, { allWines, API_URL });
+      toolsUsed.push("get_market_news");
+      const articles = newsResult.articles || [];
+      responseText = `**Andamento del Mercato del Vino Fine**\n\n`;
+      responseText += `📊 **Tendenze 2025-2026:**\n`;
+      responseText += `📈 **Borgogna (Bourgogne)**: domanda asiatica forte, prezzi in crescita +15% YoY\n`;
+      responseText += `📈 **Super Tuscans (IT)**: Sassicaia, Masseto — interesse crescente, buona liquidità\n`;
+      responseText += `📈 **Barolo/Barbaresco**: mercato in espansione, ancora valutazioni ragionevoli\n`;
+      responseText += `📉 **Bordeaux classico**: correzione -5-10% da picco 2022, occasioni su annate secondarie\n`;
+      responseText += `➡️ **Champagne**: stabile dopo rally 2021-2022\n\n`;
+      if (articles.length) {
+        responseText += `📰 **Ultime notizie:**\n`;
+        articles.slice(0, 3).forEach(a => {
+          responseText += `• **${a.title}** — ${a.source || "fonte"}\n`;
+        });
+        responseText += "\n";
+      }
+      responseText += `🔍 **Indice Liv-ex Fine Wine 100**: monitora le 100 bottiglie più scambiate. Usa come benchmark.\n`;
+      responseText += `💡 Le regioni con miglior rapporto qualità/prezzo nel 2026: **Barolo**, **Ribera del Duero**, **Côte-Rôtie**.`;
+      const opps = await executeTool("get_top_opportunities", { riskLevel: "medio" }, { allWines, API_URL });
+      toolsUsed.push("get_top_opportunities");
+      suggestedWines = (opps.opportunities || []).slice(0, 4);
+      resourceLinks = buildResourceLinks(["market", "news", "prices"]);
+      break;
+    }
+
+    case "enprimeur": {
+      responseText = `**En Primeur: Come funziona**\n\n`;
+      responseText += `En Primeur è il sistema di acquisto di vini **prima dell'imbottigliamento** (in botte), tipicamente 18-24 mesi prima della commercializzazione.\n\n`;
+      responseText += `📅 **Calendario tipico (Bordeaux):**\n`;
+      responseText += `- **Marzo-Aprile**: degustazioni barrel sample da critici\n`;
+      responseText += `- **Aprile-Giugno**: finestra di vendita En Primeur\n`;
+      responseText += `- **18-24 mesi dopo**: bottling e consegna\n\n`;
+      responseText += `**Vantaggi:**\n`;
+      responseText += `✅ Prezzo spesso inferiore al mercato secondario\n`;
+      responseText += `✅ Accesso a vini rari (allocazioni limitate)\n`;
+      responseText += `✅ Provenance perfetta (primo acquirente)\n\n`;
+      responseText += `**Rischi:**\n`;
+      responseText += `⚠️ Devi immobilizzare il capitale 2+ anni\n`;
+      responseText += `⚠️ Possibile che il mercato secondario scenda\n`;
+      responseText += `⚠️ Rischio produttore/merchant\n\n`;
+      responseText += `**Annate da seguire (2026):**\n`;
+      responseText += `Bordeaux 2024 · Borgogna 2023 · Barolo 2022\n\n`;
+      responseText += `📆 Usa il **Tracker En Primeur** di VinoInvest per seguire tutte le finestre di apertura.`;
+      resourceLinks = buildResourceLinks(["education", "market", "auctions"]);
+      break;
+    }
+
     case "opportunities":
     default: {
       const result = await executeTool("get_top_opportunities", { riskLevel: "medio" }, { allWines, API_URL });
@@ -453,24 +622,43 @@ async function runAlgorithmicAgent({ message, conversationHistory, holdings, all
 // ── Claude-powered agent ───────────────────────────────────────────────────
 async function runClaudeAgent({ message, conversationHistory, holdings, allWines, searchWinesFromDB, API_URL, lang }) {
   const client = getClient();
-  const systemPrompt = `You are VinoInvest AI Agent, an expert fine wine investment advisor with access to real-time market data and tools.
+  const portfolioTotal = holdings.reduce((s, h) => s + (h.currentValue || 0), 0);
+  const systemPrompt = `You are VinoInvest AI Agent, an expert fine wine investment advisor with deep knowledge of:
+- Investment strategy: ROI, timing, diversification, portfolio construction
+- Market data: Bordeaux, Burgundy, Tuscany, Barolo, Champagne, Rhône trends
+- Education: en primeur, Liv-ex, TUIR Art.67 tax law, authentication, storage
+- Comparisons: wine vs S&P500, Barolo vs Bordeaux, region analysis
+- Practical: where to buy, how to store (12-14°C, 70% humidity), authentication
+- News: latest market movements, critic scores, auction results
 
 CURRENT USER PORTFOLIO (${holdings.length} wines):
 ${holdings.length > 0
-    ? holdings.map(h => `- ${h.name}: ${h.quantity}btl @ €${h.purchasePrice} → €${h.currentPrice} (ROI: ${h.roi}%)`).join("\n") + `\nTotal: €${holdings.reduce((s, h) => s + (h.currentValue || 0), 0).toFixed(0)}`
+    ? holdings.map(h => `- ${h.name}: ${h.quantity}btl @ €${h.purchasePrice} → €${h.currentPrice} (ROI: ${h.roi}%)`).join("\n") + `\nTotal: €${portfolioTotal.toFixed(0)}`
     : "No portfolio positions yet."}
 
+CATEGORY EXPERTISE:
+- investimento: ROI, quando comprare/vendere, budget allocation
+- mercato: tendenze 2025-2026, regioni in crescita, Liv-ex benchmark
+- educativo: en primeur, Liv-ex, fiscalità, come funziona il mercato
+- portfolio: analisi ROI, diversificazione, rebalancing
+- ricerca: trovare vini specifici, confronto annate
+- confronto: wine A vs B, vino vs S&P500, confronto regioni
+- notizie: ultime news, aste, punteggi critici
+- pratico: dove comprare, come conservare, autenticità
+
 RESOURCES TO CITE when relevant:
-- News: decanter.com, jancisrobinson.com
+- News/ratings: decanter.com, jancisrobinson.com, winespectator.com, robertparker.com
 - Prices: wine-searcher.com, vivino.com
-- Auctions: sothebys.com, christies.com
-- Ratings: robertparker.com, winespectator.com
+- Auctions: sothebys.com, christies.com, idealwine.com
 - Market: liv-ex.com
 
 Always respond in the user's language (language hint: ${lang || "it"}).
-Be concise (max 300 words), actionable, and always use real data from tools.
+Be concise (max 350 words), actionable, use real data from tools.
 Format with markdown bold and emoji for readability.
-Always end with 2-3 relevant resource links.`;
+Always end with a suggestion for next action on VinoInvest platform.
+Include 2-3 relevant resource links.
+End with: "---\n⚠️ Analisi informativa. Non costituisce consulenza finanziaria."`;
+
 
   const messages = [...(conversationHistory || []), { role: "user", content: message }];
   const toolsUsed = [];
@@ -518,20 +706,44 @@ Always end with 2-3 relevant resource links.`;
   };
 }
 
-const DISCLAIMER = "\n\n---\n⚠️ Analisi informativa. Non è consulenza finanziaria.";
+const DISCLAIMER = "\n\n---\n⚠️ Analisi informativa. Non costituisce consulenza finanziaria.";
+
+// ── Proactive suggestions based on context ────────────────────────────────
+export function getFollowUpSuggestions(intent, lang = "it") {
+  const suggestions = {
+    budget: ["Analizza il mio portfolio", "Mostra i rischi di questi vini", "Come diversifico meglio?"],
+    portfolio: ["Quando dovrei vendere?", "Mostrami opportunità di rebalancing", "Confronta il mio ROI con S&P500"],
+    news: ["Quali vini beneficiano di questi trend?", "Top opportunità oggi", "Analizza il mio portfolio"],
+    confronto: ["Mostrami il grafico storico prezzi", "Cosa compro con €5.000?", "Top Barolo da investimento"],
+    pratico: ["Dove compro questi vini?", "Come verifico l'autenticità?", "Quanto costa conservare?"],
+    mercato: ["Top vini per questo mercato", "Quali regioni crescono di più?", "Analizza il mio portfolio"],
+    enprimeur: ["Bordeaux 2024 en primeur", "Come accedo alle allocazioni?", "Rischi dell'en primeur"],
+    education: ["Come inizio con €5.000?", "Top vini per principianti", "En primeur: come funziona?"],
+    sell: ["Quando vendere il mio top performer?", "Dove vendere?", "Quanto posso realizzare?"],
+    similar: ["Confronta questi vini", "Aggiungi al portfolio", "Storico prezzi"],
+    region: ["Top vini di questa regione", "Confronto con altre regioni", "Annate migliori"],
+    opportunities: ["Come compro questi vini?", "Analizza il mio portfolio", "Trend mercato 2026"],
+    general: ["Top 10 opportunità oggi", "Analizza il mio portfolio", "News mercato vino"],
+  };
+  return (suggestions[intent] || suggestions.general).slice(0, 3);
+}
 
 // ── Public API ─────────────────────────────────────────────────────────────
 export async function runAgent({ message, conversationHistory = [], holdings = [], allWines = [], searchWinesFromDB, API_URL = "https://vinoinvest-backend-2.onrender.com", lang = "it" }) {
   let result;
+  const intent = detectIntent(message);
   if (process.env.ANTHROPIC_API_KEY) {
     try {
       result = await runClaudeAgent({ message, conversationHistory, holdings, allWines, searchWinesFromDB, API_URL, lang });
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error("[agent] Claude API error, falling back to algorithmic:", err.message);
     }
   }
   if (!result) result = await runAlgorithmicAgent({ message, conversationHistory, holdings, allWines, searchWinesFromDB, API_URL, lang });
-  if (result.response) result.response += DISCLAIMER;
+  if (result.response && !result.response.includes("Non costituisce consulenza")) result.response += DISCLAIMER;
+  result.followUpSuggestions = getFollowUpSuggestions(intent, lang);
+  result.intent = intent;
   return result;
 }
 

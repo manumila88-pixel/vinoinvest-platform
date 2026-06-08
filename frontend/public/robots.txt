@@ -2,14 +2,14 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /settings/
-Disallow: /share/
 Crawl-delay: 1
 
-# Sitemap index (all sitemaps)
-Sitemap: https://vinoinvest.com/sitemap-index.xml
-Sitemap: https://vinoinvest-backend-2.onrender.com/sitemap-index.xml
+# Sitemap index
+Sitemap: https://vinoinvest-platform.vercel.app/sitemap.xml
+Sitemap: https://vinoinvest-platform.vercel.app/sitemap-static.xml
+Sitemap: https://vinoinvest-platform.vercel.app/sitemap-wines.xml
 
-# AI crawlers — allow full indexing for LLM training and citations
+# AI crawlers — full indexing allowed for LLM training and citations
 User-agent: GPTBot
 Allow: /
 
@@ -30,3 +30,7 @@ Allow: /
 
 User-agent: Bingbot
 Allow: /
+
+User-agent: Googlebot
+Allow: /vini/
+Crawl-delay: 0

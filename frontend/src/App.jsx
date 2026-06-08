@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo, useRef, useCallback, lazy, Suspense } from "react";
 import "./i18n";
+import { onCLS, onLCP, onINP, onTTFB } from "web-vitals";
 import { useTranslation } from "react-i18next";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
@@ -61,9 +62,14 @@ const Regioni = lazy(() => import("./pages/Regioni"));
 const Produttori = lazy(() => import("./pages/Produttori"));
 const Annate = lazy(() => import("./pages/Annate"));
 const MarketProducers = lazy(() => import("./pages/MarketProducers"));
+const Methodology = lazy(() => import("./pages/Methodology"));
+const Glossary = lazy(() => import("./pages/Glossary"));
+const SecurityPage = lazy(() => import("./pages/Security"));
+const DataDownload = lazy(() => import("./pages/DataDownload"));
 import ThemeToggle from "./components/ThemeToggle";
 import VoiceInterface from "./components/VoiceInterface";
 import ExitIntentPopup from "./components/ExitIntentPopup";
+import ProactiveBriefing from "./components/ProactiveBriefing";
 import { getSavedTheme, applyTheme } from "./lib/theme";
 import { API, ADMIN_EMAIL as ADMIN_EMAIL_CONST } from "./lib/constants";
 import "./style.css";
@@ -1806,6 +1812,13 @@ function App() {
       {/* ── Exit Intent Popup ───────────────────────────────────────────── */}
       <ExitIntentPopup userEmail={userEmail} />
 
+      {/* ── Proactive AI Briefing ───────────────────────────────────────── */}
+      <ProactiveBriefing
+        userId={localStorage.getItem("vino_user_id")}
+        holdings={portfolio?.wines || []}
+        marketWines={wines || []}
+      />
+
       {/* ── PWA Install Banner ──────────────────────────────────────────── */}
       <PWAInstallBanner />
 
@@ -1872,6 +1885,29 @@ if ("serviceWorker" in navigator) {
   });
 }
 
+// Web Vitals reporting — sends to console in dev, to analytics in production
+function reportWebVitals(metric) {
+  if (import.meta.env.DEV) {
+    console.log(`[WebVital] ${metric.name}:`, metric.value.toFixed(1), metric.rating);
+    return;
+  }
+  // Send to backend analytics endpoint (fire-and-forget)
+  try {
+    navigator.sendBeacon?.("/api/analytics/vitals", JSON.stringify({
+      name: metric.name,
+      value: metric.value,
+      rating: metric.rating,
+      id: metric.id,
+      navigationType: metric.navigationType,
+    }));
+  } catch (_) {}
+}
+
+onCLS(reportWebVitals);
+onLCP(reportWebVitals);
+onINP(reportWebVitals);
+onTTFB(reportWebVitals);
+
 createRoot(document.getElementById("root")).render(
   <HelmetProvider>
   <BrowserRouter>
@@ -1914,6 +1950,10 @@ createRoot(document.getElementById("root")).render(
           <Route path="/annate" element={<Annate />} />
           <Route path="/market/producers" element={<MarketProducers />} />
           <Route path="/market/producers/:name" element={<MarketProducers />} />
+          <Route path="/metodologia" element={<Methodology />} />
+          <Route path="/glossario" element={<Glossary />} />
+          <Route path="/security" element={<SecurityPage />} />
+          <Route path="/data" element={<DataDownload />} />
           <Route path="/landing" element={<LandingPage />} />
           <Route path="*" element={<App />} />
         </Routes>

@@ -22,21 +22,41 @@ const TOOL_LABELS = {
   get_top_opportunities: "💎 Opportunità AI",
 };
 
+// Simple sparkline SVG for wine price trend indicator
+function Sparkline({ trend }) {
+  if (!trend) return null;
+  const isUp = trend === "Crescita" || trend === "bullish" || trend === "up";
+  const isDown = trend === "Calo" || trend === "bearish" || trend === "down";
+  const color = isUp ? "#4ade80" : isDown ? "#f87171" : "#C9A227";
+  const path = isUp ? "M2,10 L6,7 L10,5 L14,4 L18,2" : isDown ? "M2,2 L6,5 L10,7 L14,8 L18,10" : "M2,6 L6,5 L10,6 L14,5 L18,6";
+  return (
+    <svg width="20" height="12" viewBox="0 0 20 12" style={{ verticalAlign: "middle" }}>
+      <polyline points={path.replace(/M|L/g, "").replace(/,/g, " ").trim().split(" ").reduce((a, v, i) => a + (i % 2 === 0 ? (i > 0 ? " " : "") + v + "," : v), "")}
+        fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+        points={path.replace(/[ML]/g, "").trim().split(" ").join(",")} />
+    </svg>
+  );
+}
+
 function parseMd(text) {
   return text
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    .replace(/`(.+?)`/g, '<code style="background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:4px;font-size:11px;font-family:monospace">$1</code>')
     .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color:#C9A227;text-decoration:underline">$1</a>')
+    .replace(/^#{1,3}\s+(.+)$/gm, "<strong>$1</strong>")
     .replace(/\n/g, "<br/>");
 }
 
-const WineRecommendationCard = memo(function WineRecommendationCard({ wine, onAdd }) {
+const WineRecommendationCard = memo(function WineRecommendationCard({ wine, onAdd, onViewDetail }) {
   return (
-    <div style={{
-      display: "flex", alignItems: "center", gap: 10, padding: "8px 12px",
-      background: "rgba(5,10,20,0.7)", border: "1px solid rgba(201,162,39,0.2)",
-      borderRadius: 10, marginTop: 6, cursor: "pointer",
-      transition: "border-color 0.2s",
-    }}
+    <div
+      style={{
+        display: "flex", alignItems: "center", gap: 10, padding: "8px 12px",
+        background: "rgba(5,10,20,0.7)", border: "1px solid rgba(201,162,39,0.2)",
+        borderRadius: 10, marginTop: 6, cursor: "pointer", transition: "border-color 0.2s",
+      }}
+      onClick={() => onViewDetail && onViewDetail(wine)}
       onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(201,162,39,0.5)"}
       onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(201,162,39,0.2)"}
     >
@@ -48,10 +68,11 @@ const WineRecommendationCard = memo(function WineRecommendationCard({ wine, onAd
           <span style={{ fontSize: 11, color: "#C9A227", fontWeight: 700 }}>€{wine.price}</span>
           {wine.score && <span style={{ fontSize: 10, color: "#4ade80" }}>⭐ {wine.score}/100</span>}
           {wine.risk && <span style={{ fontSize: 9, color: "#94a3b8", border: "1px solid rgba(148,163,184,0.2)", borderRadius: 4, padding: "1px 5px" }}>{wine.risk}</span>}
+          {wine.trend && <Sparkline trend={wine.trend} />}
         </div>
       </div>
       <button
-        onClick={() => onAdd && onAdd(wine)}
+        onClick={e => { e.stopPropagation(); onAdd && onAdd(wine); }}
         style={{ fontSize: 9, padding: "4px 8px", borderRadius: 6, border: "1px solid rgba(201,162,39,0.4)", background: "rgba(201,162,39,0.1)", color: "#C9A227", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
       >+ Portfolio</button>
     </div>
@@ -75,6 +96,23 @@ const ResourceLinks = memo(function ResourceLinks({ links }) {
   );
 });
 
+const FollowUpChips = memo(function FollowUpChips({ suggestions, onSelect }) {
+  if (!suggestions?.length) return null;
+  return (
+    <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginTop: 8, marginLeft: 36 }}>
+      {suggestions.map(s => (
+        <button key={s} onClick={() => onSelect(s)}
+          style={{ fontSize: 10, padding: "3px 10px", borderRadius: 999, border: "1px solid rgba(201,162,39,0.2)", background: "rgba(201,162,39,0.05)", color: "#94a3b8", cursor: "pointer", transition: "all 0.15s" }}
+          onMouseEnter={e => { e.currentTarget.style.background = "rgba(201,162,39,0.12)"; e.currentTarget.style.color = "#C9A227"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.4)"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "rgba(201,162,39,0.05)"; e.currentTarget.style.color = "#94a3b8"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.2)"; }}
+        >
+          {s}
+        </button>
+      ))}
+    </div>
+  );
+});
+
 function loadStoredHistory() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -88,10 +126,12 @@ function saveHistory(msgs) {
   } catch {}
 }
 
-export default function AgentChat({ holdings = [], onAddToPortfolio, compact = false, initialMessage = "", onInitialMessageSent }) {
+export default function AgentChat({ holdings = [], onAddToPortfolio, onViewWine, compact = false, initialMessage = "", onInitialMessageSent }) {
+  const storedHistory = loadStoredHistory();
+  const hasHistory = storedHistory?.length > 1;
+
   const [messages, setMessages] = useState(() => {
-    const stored = loadStoredHistory();
-    if (stored?.length) return stored;
+    if (storedHistory?.length) return storedHistory;
     return [{
       role: "assistant",
       content: "Ciao! 🍷 Sono il tuo **AI Wine Advisor**.\n\nPosso analizzare il tuo portfolio, trovare opportunità, rispondere a domande sul mercato del vino e molto altro. Come posso aiutarti oggi?",
@@ -102,6 +142,7 @@ export default function AgentChat({ holdings = [], onAddToPortfolio, compact = f
   });
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showContinueBanner, setShowContinueBanner] = useState(hasHistory);
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).slice(2)}`);
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
@@ -114,7 +155,6 @@ export default function AgentChat({ holdings = [], onAddToPortfolio, compact = f
     saveHistory(messages);
   }, [messages]);
 
-  // Auto-send initialMessage from HelpBot
   useEffect(() => {
     if (initialMessage?.trim()) {
       sendMessage(initialMessage);
@@ -128,6 +168,7 @@ export default function AgentChat({ holdings = [], onAddToPortfolio, compact = f
     if (!msg || loading) return;
 
     setInput("");
+    setShowContinueBanner(false);
     setMessages(prev => [...prev, { role: "user", content: msg }]);
     setLoading(true);
 
@@ -151,12 +192,14 @@ export default function AgentChat({ holdings = [], onAddToPortfolio, compact = f
         suggestedWines: data.suggestedWines || [],
         resourceLinks: data.resourceLinks || [],
         toolsUsed: data.toolsUsed || [],
+        followUpSuggestions: data.followUpSuggestions || [],
+        intent: data.intent,
         mode: data.mode,
       }]);
     } catch (err) {
       setMessages(prev => [...prev, {
         role: "assistant",
-        content: err.name === "TimeoutError" ? "⏱ Timeout — il server sta partendo. Riprova tra 15 secondi." : `Errore di connessione. Verifica la rete.`,
+        content: err.name === "TimeoutError" ? "⏱ Timeout — il server sta partendo. Riprova tra 15 secondi." : "Errore di connessione. Verifica la rete.",
         suggestedWines: [],
         resourceLinks: [{ url: "https://www.wine-searcher.com", label: "wine-searcher.com" }],
         toolsUsed: [],
@@ -171,16 +214,29 @@ export default function AgentChat({ holdings = [], onAddToPortfolio, compact = f
   function clearChat() {
     const initial = [{ role: "assistant", content: "Chat resettata. Come posso aiutarti?", suggestedWines: [], resourceLinks: [], toolsUsed: [] }];
     setMessages(initial);
+    setShowContinueBanner(false);
     localStorage.removeItem(STORAGE_KEY);
   }
 
-  function exportPDF() {
-    const lines = messages.map(m => `[${m.role === "user" ? "TU" : "AI"}] ${m.content}`).join("\n\n");
-    const blob = new Blob([`VinoInvest AI Chat Export\n${"=".repeat(40)}\n\n${lines}`], { type: "text/plain" });
+  function exportChat() {
+    const lines = messages.map(m => `[${m.role === "user" ? "TU" : "AI Wine Advisor"}]\n${m.content}`).join("\n\n---\n\n");
+    const header = `VinoInvest AI Chat Export\n${"=".repeat(40)}\nData: ${new Date().toLocaleDateString("it")}\n\n`;
+    const footer = `\n\n${"=".repeat(40)}\n⚠️ Non costituisce consulenza finanziaria.\n© VinoInvest`;
+    const blob = new Blob([header + lines + footer], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url; a.download = "vinoinvest-chat.txt"; a.click();
+    a.href = url; a.download = `vinoinvest-chat-${new Date().toISOString().slice(0, 10)}.txt`; a.click();
     URL.revokeObjectURL(url);
+  }
+
+  function shareChat() {
+    const text = messages.filter(m => m.role === "user").map(m => m.content).slice(-3).join(" | ");
+    const url = `${window.location.origin}?ai=${encodeURIComponent(text.slice(0, 100))}`;
+    if (navigator.share) {
+      navigator.share({ title: "VinoInvest AI Chat", text: "Analisi vino da VinoInvest AI", url }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(url).then(() => alert("Link copiato!")).catch(() => {});
+    }
   }
 
   const showSuggestions = messages.length <= 1;
@@ -197,11 +253,20 @@ export default function AgentChat({ holdings = [], onAddToPortfolio, compact = f
             <div style={{ fontSize: 10, color: "#4ade80" }}>● Online</div>
           </div>
         </div>
-        <div style={{ display: "flex", gap: 6 }}>
-          <button onClick={exportPDF} title="Esporta chat" style={{ fontSize: 11, padding: "3px 9px", borderRadius: 8, border: "1px solid rgba(30,41,59,0.6)", background: "transparent", color: "#64748b", cursor: "pointer" }}>↓ Export</button>
+        <div style={{ display: "flex", gap: 5 }}>
+          <button onClick={shareChat} title="Condividi" style={{ fontSize: 11, padding: "3px 9px", borderRadius: 8, border: "1px solid rgba(30,41,59,0.6)", background: "transparent", color: "#64748b", cursor: "pointer" }}>⎘ Share</button>
+          <button onClick={exportChat} title="Esporta chat" style={{ fontSize: 11, padding: "3px 9px", borderRadius: 8, border: "1px solid rgba(30,41,59,0.6)", background: "transparent", color: "#64748b", cursor: "pointer" }}>↓ Export</button>
           <button onClick={clearChat} title="Nuova chat" style={{ fontSize: 11, padding: "3px 9px", borderRadius: 8, border: "1px solid rgba(30,41,59,0.6)", background: "transparent", color: "#64748b", cursor: "pointer" }}>✕ Reset</button>
         </div>
       </div>
+
+      {/* Continue banner */}
+      {showContinueBanner && (
+        <div style={{ padding: "6px 14px", background: "rgba(201,162,39,0.06)", borderBottom: "1px solid rgba(201,162,39,0.12)", fontSize: 11, color: "#C9A227", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
+          <span>💬 Stai continuando la conversazione precedente</span>
+          <button onClick={clearChat} style={{ fontSize: 10, color: "#64748b", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}>Nuova chat</button>
+        </div>
+      )}
 
       {/* Messages area */}
       <div style={{ flex: 1, overflowY: "auto", padding: "14px 12px", display: "flex", flexDirection: "column", gap: 14 }}>
@@ -248,9 +313,13 @@ export default function AgentChat({ holdings = [], onAddToPortfolio, compact = f
               <div style={{ marginLeft: 36, marginTop: 4 }}>
                 <div style={{ fontSize: 10, color: "#64748b", marginBottom: 3, textTransform: "uppercase", letterSpacing: "0.08em" }}>💎 Vini consigliati</div>
                 {msg.suggestedWines.slice(0, compact ? 2 : 4).map(w => (
-                  <WineRecommendationCard key={w.id || w.name} wine={w} onAdd={onAddToPortfolio} />
+                  <WineRecommendationCard key={w.id || w.name} wine={w} onAdd={onAddToPortfolio} onViewDetail={onViewWine} />
                 ))}
               </div>
+            )}
+            {/* Follow-up suggestions — only for latest assistant message */}
+            {msg.role === "assistant" && msg.followUpSuggestions?.length > 0 && i === messages.length - 1 && !loading && (
+              <FollowUpChips suggestions={msg.followUpSuggestions} onSelect={sendMessage} />
             )}
           </div>
         ))}
@@ -271,7 +340,7 @@ export default function AgentChat({ holdings = [], onAddToPortfolio, compact = f
         <div ref={bottomRef} />
       </div>
 
-      {/* Quick suggestions */}
+      {/* Quick suggestions (only when conversation starts) */}
       {showSuggestions && (
         <div style={{ padding: "0 12px 8px", display: "flex", gap: 6, flexWrap: "wrap", flexShrink: 0 }}>
           {QUICK_SUGGESTIONS.map(s => (
