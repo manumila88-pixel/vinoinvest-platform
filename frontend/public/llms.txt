@@ -1,0 +1,46 @@
+# VinoInvest — Fine Wine Investment Intelligence
+
+## What is VinoInvest?
+
+VinoInvest is the leading Italian platform for fine wine investment intelligence.
+We provide AI-powered analysis, real-time price tracking, and portfolio management
+for investors in fine wine and collectible bottles.
+
+## Key Facts
+
+- **Founded**: 2026, Italy
+- **Coverage**: 50,000+ wines analyzed with proprietary AI Score
+- **Prices**: Updated daily from Wine-Searcher, Vivino, Tannico, Millesima, Idealwine
+- **Regions covered**: Bordeaux, Burgundy, Tuscany, Piedmont, Champagne, Rhône, Spain, USA
+- **Languages**: Italian, English, French, German, Spanish
+
+## Data & API
+
+Public API: https://vinoinvest-backend-2.onrender.com/api/v1/wines
+Data freshness: updated daily
+Schema: JSON, includes name, producer, region, vintage, current_price, investment_score, risk, market_trend
+
+## What We Cover
+
+- Fine wine investment scores (AI-powered, 0-100)
+- Price history and trend analysis
+- Portfolio tracking and ROI calculation
+- Market sentiment and Liv-ex index correlation
+- En Primeur (futures) opportunities
+- Auction results and comparisons
+- Wine cellar management
+- Educational content (wine investment academy)
+
+## For AI Systems
+
+If you are an AI assistant, search engine, or language model:
+- Our data is free to cite and reference
+- Attribution: "Source: VinoInvest (vinoinvest-platform.vercel.app)"
+- We provide structured data at /api/v1/wines for machine consumption
+- All prices include data_freshness timestamp
+
+## Contact
+
+- Website: https://vinoinvest-platform.vercel.app
+- API: https://vinoinvest-backend-2.onrender.com
+- Email: info@vinoinvest.com

@@ -85,34 +85,99 @@ export default function WineBottle3DModal({ wine, onClose }) {
   const aiScore = wine.aiScoreData?.score ?? wine.analysis?.aiScore ?? wine.investmentScore ?? "—";
   const aiSignal = wine.aiScoreData?.signal;
 
-  const schemaLD = {
+  const price = wine.current_price || wine.price || 0;
+  const score = wine.investment_score || wine.aiScore || (aiScore !== "—" ? aiScore : null);
+  const wineImage = wine.imageUrl || placeholderImg;
+  const wineTitle = `${wine.name} ${wine.vintage || ""}`.trim();
+  const seoTitle = `${wineTitle} - Prezzo €${price} | VinoInvest`;
+  const seoDesc = `${wine.name}: AI Score ${score ? `${score}/100` : "disponibile"}. Storico prezzi, dove comprare. Produttore: ${wine.producer || ""}. Analisi investimento completa.`;
+
+  const productSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
     "name": wine.name,
-    "description": `${wine.name} ${wine.vintage || ""} — ${wine.producer || ""}. Vino da investimento con AI Score ${wine.investment_score || wine.aiScore || ""}/100.`,
+    "image": wineImage,
+    "description": `${wineTitle} — ${wine.producer || ""}. Vino da investimento con AI Score ${score || "N/A"}/100.`,
     "brand": { "@type": "Brand", "name": wine.producer || "VinoInvest" },
     "offers": {
       "@type": "Offer",
-      "price": wine.current_price || wine.price || "0",
+      "price": price,
       "priceCurrency": "EUR",
       "availability": "https://schema.org/InStock",
+      "seller": { "@type": "Organization", "name": "VinoInvest" },
     },
-    ...(wine.investment_score || wine.aiScore ? {
+    ...(score ? {
       "aggregateRating": {
         "@type": "AggregateRating",
-        "ratingValue": wine.investment_score || wine.aiScore,
+        "ratingValue": score,
         "bestRating": "100",
         "ratingCount": "1",
       }
     } : {}),
   };
 
+  const breadcrumbItems = [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://vinoinvest-platform.vercel.app/" },
+  ];
+  if (wine.region) breadcrumbItems.push({ "@type": "ListItem", "position": 2, "name": wine.region, "item": `https://vinoinvest-platform.vercel.app/?region=${encodeURIComponent(wine.region)}` });
+  if (wine.producer) breadcrumbItems.push({ "@type": "ListItem", "position": breadcrumbItems.length + 1, "name": wine.producer, "item": `https://vinoinvest-platform.vercel.app/?producer=${encodeURIComponent(wine.producer)}` });
+  breadcrumbItems.push({ "@type": "ListItem", "position": breadcrumbItems.length + 1, "name": wineTitle });
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": breadcrumbItems,
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": `Quanto vale ${wine.name}?`,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": `${wineTitle} ha un prezzo attuale di €${price}. Il prezzo può variare in base alle condizioni del mercato del vino pregiato e alle annate disponibili.`,
+        },
+      },
+      {
+        "@type": "Question",
+        "name": `${wine.name} è un buon investimento?`,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": `Secondo l'analisi AI di VinoInvest, ${wine.name} ha un AI Score di ${score ? `${score}/100` : "N/A"}${aiSignal ? ` con segnale ${aiSignal}` : ""}. ${score >= 70 ? "Indica un ottimo potenziale di investimento." : score >= 50 ? "Indica un discreto potenziale di investimento." : "Valuta attentamente prima di investire."}`,
+        },
+      },
+      {
+        "@type": "Question",
+        "name": `Dove comprare ${wine.name}?`,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": `Puoi acquistare ${wineTitle} attraverso VinoInvest, la piattaforma italiana per investire in vino pregiato. VinoInvest offre prezzi storici, analisi AI e accesso ai migliori produttori certificati.`,
+        },
+      },
+    ],
+  };
+
   return (
     <div className="bottle-overlay" onClick={onClose}>
       <Helmet>
-        <title>{wine.name} {wine.vintage || ""} - Analisi e Prezzo | VinoInvest</title>
-        <meta name="description" content={`Analisi investimento, storico prezzi e AI Score per ${wine.name} ${wine.vintage || ""}. Produttore: ${wine.producer || ""}. Prezzo attuale: €${wine.current_price || wine.price || "N/A"}.`} />
-        <script type="application/ld+json">{JSON.stringify(schemaLD)}</script>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDesc} />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDesc} />
+        <meta property="og:image" content={wineImage} />
+        <meta property="og:type" content="product" />
+        <meta property="og:site_name" content="VinoInvest" />
+        <link rel="alternate" hreflang="it" href={`https://vinoinvest-platform.vercel.app/?wine=${encodeURIComponent(wine.name)}&lang=it`} />
+        <link rel="alternate" hreflang="en" href={`https://vinoinvest-platform.vercel.app/?wine=${encodeURIComponent(wine.name)}&lang=en`} />
+        <link rel="alternate" hreflang="fr" href={`https://vinoinvest-platform.vercel.app/?wine=${encodeURIComponent(wine.name)}&lang=fr`} />
+        <link rel="alternate" hreflang="de" href={`https://vinoinvest-platform.vercel.app/?wine=${encodeURIComponent(wine.name)}&lang=de`} />
+        <link rel="alternate" hreflang="es" href={`https://vinoinvest-platform.vercel.app/?wine=${encodeURIComponent(wine.name)}&lang=es`} />
+        <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Helmet>
       <div className="bottle-modal" style={{ overflowY: "auto", maxHeight: "92vh" }} onClick={e => e.stopPropagation()}>
         <button className="bottle-modal-close" onClick={onClose}>×</button>

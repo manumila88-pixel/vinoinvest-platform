@@ -29,7 +29,7 @@
     <meta name="twitter:description" content="AI-powered wine investment intelligence. 50,000+ wines tracked. Real-time price analysis and portfolio builder.">
     <meta name="twitter:image" content="https://vinoinvest-platform.vercel.app/og-image.jpg">
 
-    <!-- JSON-LD Structured Data -->
+    <!-- JSON-LD Structured Data: WebApplication -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -60,6 +60,46 @@
           "url": "https://vinoinvest-platform.vercel.app/logo.png"
         }
       }
+    }
+    </script>
+
+    <!-- JSON-LD: WebSite with SearchAction -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "VinoInvest",
+      "url": "https://vinoinvest-platform.vercel.app",
+      "description": "Piattaforma AI per investire in vino pregiato. 50.000+ vini tracciati con prezzi storici, AI Score e portfolio builder.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://vinoinvest-platform.vercel.app/?search={search_term_string}",
+        "query-input": "required name=search_term_string"
+      },
+      "inLanguage": ["it", "en", "fr", "de", "es"]
+    }
+    </script>
+
+    <!-- JSON-LD: Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "VinoInvest",
+      "url": "https://vinoinvest-platform.vercel.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://vinoinvest-platform.vercel.app/icon-512.png"
+      },
+      "sameAs": [
+        "https://github.com/manumila88-pixel/vinoinvest-platform"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "availableLanguage": ["Italian", "English", "French", "German", "Spanish"]
+      },
+      "description": "VinoInvest è la piattaforma leader italiana per investire in vino pregiato con intelligenza artificiale."
     }
     </script>
 
@@ -144,6 +184,7 @@
     <!-- <script defer src="https://analytics.vinoinvest.it/script.js" data-website-id="YOUR_UMAMI_ID"></script> -->
   </head>
   <body>
+    <a href="#main-content" class="skip-link" style="position:absolute;top:-40px;left:0;background:#C9A227;color:#020617;padding:8px 16px;font-weight:700;font-size:13px;z-index:10000;border-radius:0 0 8px 0;transition:top 0.2s" onfocus="this.style.top='0'" onblur="this.style.top='-40px'">Vai al contenuto principale</a>
     <div id="root"></div>
     <script type="module" src="/src/App.jsx"></script>
   </body>

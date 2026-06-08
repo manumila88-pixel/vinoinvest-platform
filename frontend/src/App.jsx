@@ -57,6 +57,9 @@ const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Disclaimer = lazy(() => import("./pages/Disclaimer"));
 const Cookies = lazy(() => import("./pages/Cookies"));
 const AboutPage = lazy(() => import("./pages/About"));
+const Regioni = lazy(() => import("./pages/Regioni"));
+const Produttori = lazy(() => import("./pages/Produttori"));
+const Annate = lazy(() => import("./pages/Annate"));
 import ThemeToggle from "./components/ThemeToggle";
 import VoiceInterface from "./components/VoiceInterface";
 import ExitIntentPopup from "./components/ExitIntentPopup";
@@ -404,17 +407,22 @@ function App() {
 
   // ── Backend wakeup ping (Render free tier cold start) ────────────────────
   useEffect(() => {
-    const start = Date.now();
+    let retryInterval = null;
     setBackendWaking(true);
-    fetch(`${API}/api/health`, { signal: AbortSignal.timeout(8000) })
-      .then(() => setBackendWaking(false))
-      .catch(() => {
-        // Server may be sleeping — keep banner visible, retry once after 6s
-        setTimeout(() => {
-          fetch(`${API}/api/health`, { signal: AbortSignal.timeout(15000) })
-            .finally(() => setBackendWaking(false));
-        }, 6000);
-      });
+
+    function ping() {
+      fetch(`${API}/api/health`, { signal: AbortSignal.timeout(12000) })
+        .then(() => {
+          setBackendWaking(false);
+          if (retryInterval) { clearInterval(retryInterval); retryInterval = null; }
+        })
+        .catch(() => {});
+    }
+
+    ping();
+    retryInterval = setInterval(ping, 10000);
+
+    return () => { if (retryInterval) clearInterval(retryInterval); };
   }, []);
 
   // ── Chart + market grid responsive widths ───────────────────────────────
@@ -887,7 +895,7 @@ function App() {
     b2b: { title: "Soluzioni B2B per Wealth Manager | VinoInvest", desc: "Dashboard professionale per wealth manager, family office e consulenti finanziari." },
   };
   const currentMeta = modalWine
-    ? { title: `${modalWine.name} - Analisi e Prezzo | VinoInvest`, desc: `Analisi investimento, storico prezzi e AI Score per ${modalWine.name} ${modalWine.vintage || ""}. Produttore: ${modalWine.producer || ""}.` }
+    ? { title: `${modalWine.name} ${modalWine.vintage || ""} - Prezzo ${modalWine.current_price || modalWine.price || ""} EUR | VinoInvest`.replace(/\s+/g, " ").trim(), desc: `${modalWine.name}: AI Score ${modalWine.investment_score || modalWine.aiScore || "N/A"}/100. Storico prezzi, dove comprare. Produttore: ${modalWine.producer || ""}.` }
     : (tabMeta[tab] || { title: "VinoInvest — Piattaforma Intelligente per Investire in Vino", desc: "AI Score su 50.000+ vini. Portfolio tracker, prezzi storici Liv-ex, Academy 20 moduli." });
 
   return (
@@ -899,15 +907,18 @@ function App() {
         <meta property="og:description" content={currentMeta.desc} />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="VinoInvest" />
+        <meta property="og:image" content="https://vinoinvest-platform.vercel.app/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={currentMeta.title} />
         <meta name="twitter:description" content={currentMeta.desc} />
+        <meta name="twitter:image" content="https://vinoinvest-platform.vercel.app/og-image.jpg" />
         <link rel="canonical" href={`https://vinoinvest-platform.vercel.app${tab !== "dashboard" ? `/${tab}` : ""}`} />
       </Helmet>
       {/* ── Offline banner ───────────────────────────────────────────────── */}
       {backendWaking && (
-        <div style={{ background: "#1c1400", color: "#C9A227", padding: "8px 20px", fontSize: 12, fontWeight: 600, textAlign: "center", zIndex: 999, borderBottom: "1px solid rgba(201,162,39,0.2)" }}>
-          {t("auth.serverStarting")}
+        <div style={{ background: "#1c1400", color: "#C9A227", padding: "8px 20px", fontSize: 12, fontWeight: 600, textAlign: "center", zIndex: 999, borderBottom: "1px solid rgba(201,162,39,0.2)", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+          <span style={{ width: 10, height: 10, borderRadius: "50%", border: "2px solid #C9A227", borderTopColor: "transparent", display: "inline-block", animation: "spin 0.8s linear infinite", flexShrink: 0 }} />
+          ⏳ {t("auth.serverStarting")} (prima connessione può richiedere 30s)
         </div>
       )}
       {isOffline && (
@@ -958,7 +969,7 @@ function App() {
             onMouseEnter={e => { e.currentTarget.style.color = "#C9A227"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.5)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.25)"; }}
           >📊 Index</button>
-          <a href="/scan" title="Scan wine label" style={{ padding: "6px 10px", border: "1px solid rgba(30,41,59,0.7)", borderRadius: 8, background: "transparent", color: "#4a6a8a", fontSize: 15, cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center" }}>📷</a>
+          <a href="/scan" title="Scan wine label" aria-label="Scansiona etichetta vino" style={{ padding: "6px 10px", border: "1px solid rgba(30,41,59,0.7)", borderRadius: 8, background: "transparent", color: "#4a6a8a", fontSize: 15, cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center" }}>📷</a>
           <CurrencySelector />
           <LangSelector />
           {userEmail && <span style={{ fontSize: 12, color: "#3a5a7a" }}>{userEmail}</span>}
@@ -1035,7 +1046,7 @@ function App() {
         </div>
       </header>
 
-      <main className="main">
+      <main className="main" id="main-content">
         {/* ── Mobile sidebar overlay ───────────────────────────────────────── */}
         <div className={`sidebar-overlay ${sidebarOpen ? "open" : ""}`} onClick={() => setSidebarOpen(false)} />
 
@@ -1167,8 +1178,11 @@ function App() {
           {tab === "market" && (
             <ErrorBoundary>
             <>
+              <label htmlFor="market-search" className="visually-hidden">Cerca vini</label>
               <input
+                id="market-search"
                 className="searchInput"
+                aria-label="Cerca vini nel mercato"
                 placeholder={t("market.searchPlaceholder")}
                 value={marketSearch}
                 onChange={e => handleMarketSearch(e.target.value)}
@@ -1367,6 +1381,7 @@ function App() {
 
           {/* ── My Portfolio ──────────────────────────────────────────────── */}
           {tab === "myportfolio" && (
+            <ErrorBoundary>
             <section className="ordersPanel">
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 22, flexWrap: "wrap", gap: 10 }}>
                 <h2 style={{ margin: 0 }}>My Portfolio</h2>
@@ -1568,10 +1583,12 @@ function App() {
                 </>
               )}
             </section>
+            </ErrorBoundary>
           )}
 
           {/* ── Portfolio AI ───────────────────────────────────────────────── */}
           {tab === "portfolio" && (
+            <ErrorBoundary>
             <section className="ordersPanel">
               {/* ── AI Chat Advisor ────────────────────────────────────────── */}
               <div style={{ marginBottom: 36 }}>
@@ -1622,9 +1639,10 @@ function App() {
                 </>
               )}
             </section>
+            </ErrorBoundary>
           )}
 
-          {tab === "b2b" && <Suspense fallback={null}><DashboardB2B /></Suspense>}
+          {tab === "b2b" && <ErrorBoundary><Suspense fallback={null}><DashboardB2B /></Suspense></ErrorBoundary>}
 
           {/* ── Notifications ─────────────────────────────────────────────── */}
           {tab === "notifications" && (
@@ -1713,6 +1731,7 @@ function App() {
 
       {/* ── Floating AI Chat Button ──────────────────────────────────────── */}
       <button
+        aria-label={floatChatOpen ? "Chiudi chat AI" : "Apri chat AI"}
         onClick={() => { setFloatChatOpen(o => !o); setFloatUnread(0); }}
         style={{
           position: "fixed", bottom: 28, right: 28, zIndex: 9000,
@@ -1887,6 +1906,9 @@ createRoot(document.getElementById("root")).render(
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/cookies" element={<Cookies />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/regioni" element={<Regioni />} />
+          <Route path="/produttori" element={<Produttori />} />
+          <Route path="/annate" element={<Annate />} />
           <Route path="/landing" element={<LandingPage />} />
           <Route path="*" element={<App />} />
         </Routes>

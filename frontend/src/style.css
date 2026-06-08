@@ -48,6 +48,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: var(--transition);
+  overflow-x: hidden;
 }
 
 h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
@@ -1060,6 +1061,41 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
 
   /* Notifications badges */
   .nav-badge { font-size: 9px; min-width: 14px; height: 14px; }
+
+  /* Modal: scrollable with max-height on mobile */
+  .bottle-modal {
+    max-height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* All inputs 16px to prevent iOS auto-zoom */
+  input, textarea, select { font-size: 16px !important; }
+
+  /* All touch targets min 44px */
+  button { min-height: 44px; }
+  a[role="button"] { min-height: 44px; display: inline-flex; align-items: center; }
+
+  /* Prevent any section from causing horizontal scroll */
+  .content > * { max-width: 100%; overflow-x: hidden; }
+}
+
+/* ── Accessibility ────────────────────────────────── */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+:focus-visible {
+  outline: 2px solid #C9A227;
+  outline-offset: 2px;
 }
 
 /* ── RTL support (Arabic, Hebrew) ─────────────────── */

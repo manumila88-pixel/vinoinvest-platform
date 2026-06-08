@@ -102,6 +102,13 @@ app.use(cors({
   credentials: true,
 }));
 
+// Brand every response so AI crawlers, Perplexity, ChatGPT identify the source
+app.use((_req, res, next) => {
+  res.set("X-Data-Source", "VinoInvest");
+  res.set("X-Data-URL", "https://vinoinvest-platform.vercel.app");
+  next();
+});
+
 // Global rate limit: 200 req / 15 min per IP
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -1309,53 +1316,176 @@ app.get("/api/ai/proactive-analysis/:userId", (req, res) => {
   res.json({ available: true, ageMinutes: ageMin, ...result });
 });
 
-// GET /api/sitemap.xml — dynamic sitemap: all static routes + wine catalog
-app.get("/api/sitemap.xml", (_req, res) => {
-  const base = "https://vinoinvest-platform.vercel.app";
+const BLOG_SLUGS = [
+  "come-investire-nel-vino-2026-guida-completa",
+  "barolo-vs-bordeaux-investimento-2026",
+  "tasse-vino-investimento-italia-art-67-tuir",
+  "ai-score-vinoinvest-come-funziona",
+  "migliori-annate-vino-investimento-rendimento",
+  "bordeaux-2022-en-primeur-guida",
+  "romanee-conti-prezzo-investimento",
+  "barolo-2016-guida-acquisto",
+  "sassicaia-storia-prezzo-investimento",
+  "champagne-investimento-dom-perignon-krug",
+  "screaming-eagle-prezzo-investimento",
+  "vino-come-asset-class-rendimenti",
+  "liv-ex-indice-vino-investimento",
+  "diversificare-portfolio-vino-fine",
+  "brunello-montalcino-investimento-guida",
+];
+
+const STATIC_PAGES = [
+  { p: "/",             freq: "daily",   pri: "1.0" },
+  { p: "/pricing",      freq: "weekly",  pri: "0.9" },
+  { p: "/b2b",          freq: "monthly", pri: "0.8" },
+  { p: "/academy",      freq: "weekly",  pri: "0.8" },
+  { p: "/regioni",      freq: "weekly",  pri: "0.9" },
+  { p: "/produttori",   freq: "weekly",  pri: "0.9" },
+  { p: "/annate",       freq: "weekly",  pri: "0.9" },
+  { p: "/learn",        freq: "weekly",  pri: "0.7" },
+  { p: "/market-index", freq: "daily",   pri: "0.7" },
+  { p: "/sentiment",    freq: "daily",   pri: "0.7" },
+  { p: "/en-primeur",   freq: "weekly",  pri: "0.6" },
+  { p: "/auctions",     freq: "daily",   pri: "0.6" },
+  { p: "/cellar",       freq: "weekly",  pri: "0.6" },
+  { p: "/goals",        freq: "monthly", pri: "0.5" },
+  { p: "/journal",      freq: "weekly",  pri: "0.5" },
+  { p: "/scan",         freq: "monthly", pri: "0.5" },
+  { p: "/press",        freq: "monthly", pri: "0.5" },
+  { p: "/transparency", freq: "monthly", pri: "0.5" },
+  { p: "/referral",     freq: "monthly", pri: "0.4" },
+  { p: "/about",        freq: "monthly", pri: "0.6" },
+  { p: "/landing",      freq: "monthly", pri: "0.7" },
+  { p: "/terms",        freq: "yearly",  pri: "0.3" },
+  { p: "/privacy",      freq: "yearly",  pri: "0.3" },
+  { p: "/cookies",      freq: "yearly",  pri: "0.3" },
+  { p: "/disclaimer",   freq: "yearly",  pri: "0.3" },
+];
+
+function xmlHeader() { return `<?xml version="1.0" encoding="UTF-8"?>`; }
+function urlsetOpen() { return `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">`; }
+function urlsetClose() { return `</urlset>`; }
+
+// GET /sitemap-index.xml — master sitemap index
+app.get("/sitemap-index.xml", (_req, res) => {
+  const base = "https://vinoinvest-backend-2.onrender.com";
   const today = new Date().toISOString().slice(0, 10);
-  const staticPages = [
-    { p: "/",            freq: "daily",   pri: "1.0" },
-    { p: "/pricing",     freq: "weekly",  pri: "0.9" },
-    { p: "/b2b",         freq: "monthly", pri: "0.8" },
-    { p: "/academy",     freq: "weekly",  pri: "0.8" },
-    { p: "/learn",       freq: "weekly",  pri: "0.7" },
-    { p: "/market-index",freq: "daily",   pri: "0.7" },
-    { p: "/sentiment",   freq: "daily",   pri: "0.7" },
-    { p: "/en-primeur",  freq: "weekly",  pri: "0.6" },
-    { p: "/auctions",    freq: "daily",   pri: "0.6" },
-    { p: "/cellar",      freq: "weekly",  pri: "0.6" },
-    { p: "/goals",       freq: "monthly", pri: "0.5" },
-    { p: "/journal",     freq: "weekly",  pri: "0.5" },
-    { p: "/scan",        freq: "monthly", pri: "0.5" },
-    { p: "/press",       freq: "monthly", pri: "0.5" },
-    { p: "/transparency",freq: "monthly", pri: "0.5" },
-    { p: "/referral",    freq: "monthly", pri: "0.4" },
-    { p: "/about",       freq: "monthly", pri: "0.6" },
-    { p: "/landing",     freq: "monthly", pri: "0.7" },
-    { p: "/terms",       freq: "yearly",  pri: "0.3" },
-    { p: "/privacy",     freq: "yearly",  pri: "0.3" },
-    { p: "/cookies",     freq: "yearly",  pri: "0.3" },
-    { p: "/disclaimer",  freq: "yearly",  pri: "0.3" },
-  ].map(({ p, freq, pri }) =>
-    `<url><loc>${base}${p}</loc><lastmod>${today}</lastmod><changefreq>${freq}</changefreq><priority>${pri}</priority></url>`
-  );
-  const wineUrls = allWines.slice(0, 10000).map(w => {
-    const slug = (w.id || w.name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-    return `<url><loc>${base}/wine/${slug}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>`;
-  });
-  const blogSlugs = [
-    "come-investire-nel-vino-2026-guida-completa",
-    "barolo-vs-bordeaux-investimento-2026",
-    "tasse-vino-investimento-italia-art-67-tuir",
-    "ai-score-vinoinvest-come-funziona",
-    "migliori-annate-vino-investimento-rendimento",
-  ];
-  const blogUrls = blogSlugs.map(s =>
-    `<url><loc>${base}/blog/${s}</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>`
-  );
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...staticPages, ...wineUrls, ...blogUrls].join("\n")}\n</urlset>`;
+  const xml = `${xmlHeader()}
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap><loc>${base}/sitemap-pages.xml</loc><lastmod>${today}</lastmod></sitemap>
+  <sitemap><loc>${base}/sitemap-wines.xml</loc><lastmod>${today}</lastmod></sitemap>
+  <sitemap><loc>${base}/sitemap-blog.xml</loc><lastmod>${today}</lastmod></sitemap>
+</sitemapindex>`;
   res.setHeader("Content-Type", "application/xml");
   res.send(xml);
+});
+
+// GET /sitemap-pages.xml — static pages with hreflang
+app.get("/sitemap-pages.xml", (_req, res) => {
+  const base = "https://vinoinvest-platform.vercel.app";
+  const today = new Date().toISOString().slice(0, 10);
+  const langs = ["it", "en", "fr", "de", "es"];
+  const urls = STATIC_PAGES.map(({ p, freq, pri }) => {
+    const alts = langs.map(l => `    <xhtml:link rel="alternate" hreflang="${l}" href="${base}${p}?lang=${l}"/>`).join("\n");
+    return `  <url>\n    <loc>${base}${p}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${freq}</changefreq>\n    <priority>${pri}</priority>\n${alts}\n  </url>`;
+  });
+  const xml = `${xmlHeader()}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${urls.join("\n")}
+</urlset>`;
+  res.setHeader("Content-Type", "application/xml");
+  res.send(xml);
+});
+
+// GET /sitemap-wines.xml — full wine catalog with image tags
+app.get("/sitemap-wines.xml", cacheFor(3600), (_req, res) => {
+  const base = "https://vinoinvest-platform.vercel.app";
+  const today = new Date().toISOString().slice(0, 10);
+  const urls = allWines.slice(0, 50000).map(w => {
+    const slug = (w.id || w.name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const title = `${w.name || slug} — AI Score ${w.investmentScore || w.investment_score || ""}`;
+    const imageTag = w.imageUrl || w.image_url
+      ? `    <image:image>\n      <image:loc>${w.imageUrl || w.image_url}</image:loc>\n      <image:title>${(w.name || slug).replace(/&/g, "&amp;")}</image:title>\n    </image:image>`
+      : "";
+    return `  <url>\n    <loc>${base}/wine/${slug}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n${imageTag}\n  </url>`;
+  });
+  const xml = `${xmlHeader()}
+${urlsetOpen()}
+${urls.join("\n")}
+${urlsetClose()}`;
+  res.setHeader("Content-Type", "application/xml");
+  res.send(xml);
+});
+
+// GET /sitemap-blog.xml — blog articles
+app.get("/sitemap-blog.xml", cacheFor(3600), (_req, res) => {
+  const base = "https://vinoinvest-platform.vercel.app";
+  const today = new Date().toISOString().slice(0, 10);
+  const urls = BLOG_SLUGS.map(s =>
+    `  <url>\n    <loc>${base}/blog/${s}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>`
+  );
+  const xml = `${xmlHeader()}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.join("\n")}
+</urlset>`;
+  res.setHeader("Content-Type", "application/xml");
+  res.send(xml);
+});
+
+// GET /api/sitemap.xml — legacy: keep for backwards compatibility, now alias of pages+wines
+app.get("/api/sitemap.xml", (_req, res) => {
+  res.redirect(301, "/sitemap-index.xml");
+});
+
+// GET /api/v1/wines — public structured API for AI crawlers (Perplexity, ChatGPT, etc.)
+app.get("/api/v1/wines", cacheFor(3600), (req, res) => {
+  const search = (req.query.search || "").toString().trim();
+  const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 50));
+  const page = Math.max(1, parseInt(req.query.page) || 1);
+  const region = (req.query.region || "").toString().trim();
+  const vintage = req.query.vintage ? parseInt(req.query.vintage) : null;
+  const minScore = req.query.min_score ? parseInt(req.query.min_score) : null;
+
+  let filtered = allWines;
+  if (search) {
+    const q = normalize(search);
+    filtered = filtered.filter(w => normalize(`${w.name} ${w.producer} ${w.region} ${w.country}`).includes(q));
+  }
+  if (region) {
+    const r = normalize(region);
+    filtered = filtered.filter(w => normalize(w.region || "").includes(r));
+  }
+  if (vintage) filtered = filtered.filter(w => w.vintage === vintage);
+  if (minScore) filtered = filtered.filter(w => (w.investmentScore || w.investment_score || 0) >= minScore);
+
+  const total = filtered.length;
+  const slice = filtered.slice((page - 1) * limit, page * limit).map(w => ({
+    id: w.id,
+    name: w.name,
+    producer: w.producer,
+    region: w.region,
+    country: w.country,
+    vintage: w.vintage,
+    current_price_eur: w.currentPrice || w.current_price,
+    investment_score: w.investmentScore || w.investment_score,
+    risk: w.risk,
+    market_trend: w.marketTrend || w.market_trend,
+    image_url: w.imageUrl || w.image_url || null,
+    source: "VinoInvest",
+    data_freshness: new Date().toISOString(),
+  }));
+
+  res.json({
+    source: "VinoInvest",
+    description: "Fine Wine Investment Intelligence — 50,000+ wines with AI Score",
+    api_version: "1.0",
+    data_freshness: new Date().toISOString(),
+    total,
+    page,
+    total_pages: Math.ceil(total / limit),
+    has_more: page * limit < total,
+    results: slice,
+  });
 });
 
 // Global error handler — must be last middleware
