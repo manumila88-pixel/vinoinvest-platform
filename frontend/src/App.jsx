@@ -1777,15 +1777,17 @@ function App() {
             boxShadow: "0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,162,39,0.2)",
             animation: "floatIn 0.2s ease-out",
           }}>
-            <Suspense fallback={<div style={{ minHeight: 200, display: "flex", alignItems: "center", justifyContent: "center", color: "#3a5a7a", fontSize: 13 }}>Caricamento...</div>}>
-              <AgentChat
-                holdings={holdings}
-                onAddToPortfolio={handleAddToPortfolio}
-                compact={true}
-                initialMessage={chatInitMsg}
-                onInitialMessageSent={() => setChatInitMsg("")}
-              />
-            </Suspense>
+            <ErrorBoundary>
+              <Suspense fallback={<div style={{ minHeight: 200, display: "flex", alignItems: "center", justifyContent: "center", color: "#3a5a7a", fontSize: 13 }}>Caricamento...</div>}>
+                <AgentChat
+                  holdings={holdings}
+                  onAddToPortfolio={handleAddToPortfolio}
+                  compact={true}
+                  initialMessage={chatInitMsg}
+                  onInitialMessageSent={() => setChatInitMsg("")}
+                />
+              </Suspense>
+            </ErrorBoundary>
           </div>
         </>
       )}

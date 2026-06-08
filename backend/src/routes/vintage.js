@@ -89,7 +89,6 @@ router.get("/scores/:region/:year", async (req, res) => {
 router.post("/seed", requireAdmin, async (req, res) => {
   res.json({ ok: true, message: "Vintage scores seed started in background. This may take several minutes.", started_at: new Date().toISOString() });
   seedAllVintageScores()
-    .then(r => console.log("[vintage/seed] done:", r))
     .catch(e => console.error("[vintage/seed] error:", e.message));
 });
 

@@ -46,7 +46,6 @@ router.post("/stripe/webhook", express.raw({ type: "application/json" }), async 
     const session = event.data.object;
     const email = session.customer_email;
     const plan = session.metadata?.plan || "pro";
-    console.log("[stripe] checkout.session.completed:", email, plan);
 
     try {
       const { pool } = await import("../db/pool.js");
@@ -71,7 +70,6 @@ router.post("/stripe/webhook", express.raw({ type: "application/json" }), async 
            updated_at = NOW()`,
         [email, plan, session.customer || null, session.id]
       );
-      console.log("[stripe] Subscription saved:", email, plan);
     } catch (e) {
       console.error("[stripe] DB write failed:", e.message);
     }
@@ -86,7 +84,6 @@ router.post("/stripe/webhook", express.raw({ type: "application/json" }), async 
          WHERE stripe_customer_id = $1`,
         [sub.customer]
       );
-      console.log("[stripe] Subscription deactivated:", sub.customer);
     } catch (e) {
       console.error("[stripe] Deactivate failed:", e.message);
     }

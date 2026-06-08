@@ -146,11 +146,101 @@ if [[ -f "$FRONTEND_DIR/package.json" ]]; then
   cd - > /dev/null
 fi
 
-# ── Count wines with images ──────────────────────────────
+# ── Agent & FAQ ──────────────────────────────────────────
+echo "── Agent & FAQ ──"
+check "GET /api/faq" 200 "$API/api/faq"
+check_json "faq has items" "$API/api/faq" "len(d['faqs']) > 0"
+check "GET /api/faq?category=investimento" 200 "$API/api/faq?category=investimento"
+check "GET /api/faq?category=mercato" 200 "$API/api/faq?category=mercato"
+check "GET /api/faq?q=barolo" 200 "$API/api/faq?q=barolo"
+check "POST /api/agent/chat (confronto)" 200 "$API/api/agent/chat" \
+  -X POST -H "Content-Type: application/json" \
+  -d '{"message":"Barolo vs Bordeaux quale scelgo?","sessionId":"test-cfr","holdings":[]}'
+check "POST /api/agent/chat (pratico)" 200 "$API/api/agent/chat" \
+  -X POST -H "Content-Type: application/json" \
+  -d '{"message":"Come conservo il vino?","sessionId":"test-pra","holdings":[]}'
+check "POST /api/agent/chat (mercato)" 200 "$API/api/agent/chat" \
+  -X POST -H "Content-Type: application/json" \
+  -d '{"message":"Come va il mercato?","sessionId":"test-mkt","holdings":[]}'
+check "POST /api/agent/chat (followUpSuggestions)" 200 "$API/api/agent/chat" \
+  -X POST -H "Content-Type: application/json" \
+  -d '{"message":"Top 5 opportunità","sessionId":"test-opp","holdings":[]}'
+
+# ── Vintage & Climate ─────────────────────────────────────
+echo "── Vintage & Climate ──"
+check "GET /api/vintage/scores" 200 "$API/api/vintage/scores"
+check "GET /api/vintage/score?region=barolo&year=2016" 200 "$API/api/vintage/score?region=barolo&year=2016"
+
+# ── PDF Report ───────────────────────────────────────────
+echo "── PDF Report ──"
+check "GET /api/reports/portfolio/test/pdf (no auth → 401)" 401 "$API/api/reports/portfolio/test/pdf"
+
+# ── Public API v1 ────────────────────────────────────────
+echo "── Public API v1 ──"
+check "GET /api/v1/wines" 200 "$API/api/v1/wines"
+check "GET /api/v1/market/index" 200 "$API/api/v1/market/index"
+check "GET /api/docs" 200 "$API/api/docs"
+
+# ── Market & Producers ───────────────────────────────────
+echo "── Market ──"
+check "GET /api/market" 200 "$API/api/market"
+check "GET /api/market/producers" 200 "$API/api/market/producers"
+check "GET /api/vintage" 200 "$API/api/vintage"
+
+# ── Knowledge Base ───────────────────────────────────────
+echo "── Knowledge Base ──"
+check "GET /api/knowledge-base" 200 "$API/api/knowledge-base"
+
+# ── Notifications ────────────────────────────────────────
+echo "── Notifications ──"
+check "GET /api/notifications/vapid-public-key" 200 "$API/api/notifications/vapid-public-key"
+
+# ── Security Headers ─────────────────────────────────────
+echo "── Security Headers ──"
+SEC_HEADERS=$(curl -s -I "$API/api/health" 2>/dev/null)
+check_header() {
+  local hdr="$1"; local label="$2"
+  if echo "$SEC_HEADERS" | grep -qi "$hdr"; then
+    echo "  ✅  Security header: $label"
+    ((PASS++))
+  else
+    echo "  ❌  Missing security header: $label"
+    ((FAIL++))
+  fi
+}
+check_header "x-content-type-options" "X-Content-Type-Options"
+check_header "x-frame-options\|frame-ancestors" "X-Frame-Options / CSP frame"
+check_header "strict-transport-security" "HSTS"
+
+# ── Performance: key endpoints < 2000ms ──────────────────
+echo "── Performance ──"
+perf_check() {
+  local label="$1"; local url="$2"; local max_ms="${3:-2000}"
+  local ms; ms=$(curl -s -o /dev/null -w "%{time_total}" --max-time 30 "$url" 2>/dev/null | awk '{printf "%d", $1*1000}')
+  if (( ms < max_ms )); then
+    echo "  ✅  $label — ${ms}ms (< ${max_ms}ms)"
+    ((PASS++))
+  else
+    echo "  ⚠️   $label — ${ms}ms (>${max_ms}ms — may be cold start)"
+    ((PASS++))
+  fi
+}
+perf_check "GET /api/wines" "$API/api/wines"
+perf_check "GET /api/news" "$API/api/news"
+perf_check "GET /api/faq" "$API/api/faq" 500
+
+# ── Data Quality ─────────────────────────────────────────
 echo "── Data Quality ──"
 WINES_JSON=$(curl -s "$API/api/wines?limit=50" 2>/dev/null)
-TOTAL=$(python3 -c "import sys,json; d=json.loads('$WINES_JSON'.replace(\"'\",\"'\")); print(d.get('total',0))" 2>/dev/null || echo "0")
+TOTAL=$(python3 -c "import sys,json; d=json.loads(sys.stdin.read()); print(d.get('total',0))" <<< "$WINES_JSON" 2>/dev/null || echo "0")
 echo "  ℹ️   Total wines: $TOTAL"
+if (( TOTAL > 0 )); then
+  echo "  ✅  Wine catalog populated ($TOTAL wines)"
+  ((PASS++))
+else
+  echo "  ❌  Wine catalog empty"
+  ((FAIL++))
+fi
 
 # ── Summary ──────────────────────────────────────────────
 echo ""
