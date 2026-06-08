@@ -141,6 +141,13 @@ export default function Pricing() {
         </div>
       </div>
 
+      {/* Stripe test mode banner */}
+      {(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "").startsWith("pk_test_") && (
+        <div style={{ background: "#1c0b07", border: "1px solid #9a3412", borderRadius: 10, padding: "10px 20px", marginBottom: 24, color: "#fb923c", textAlign: "center", maxWidth: 560, margin: "0 auto 24px", fontSize: 13 }}>
+          ⚠️ <strong>Stripe in modalità TEST</strong> — nessun addebito reale viene processato. Usa la carta di test: 4242 4242 4242 4242.
+        </div>
+      )}
+
       {/* Feedback banners */}
       {success && (
         <div style={{ background: "#052e16", border: "1px solid #166534", borderRadius: 12, padding: "14px 20px", marginBottom: 32, color: "#4ade80", textAlign: "center", maxWidth: 560, margin: "0 auto 32px" }}>
