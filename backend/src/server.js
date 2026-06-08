@@ -37,7 +37,7 @@ import "./jobs/alertsChecker.js";
 import "./jobs/cellarTrackerCron.js";
 import { proactiveResults, setAnalysisPool, setWinesRef } from "./jobs/portfolioAnalysisJob.js";
 import { setWelcomeEmailPool, queueWelcomeSequence } from "./jobs/welcomeEmailJob.js";
-import { setEmailFlowPool, startEmailFlowService, enqueueUserFlow } from "./jobs/emailFlowService.js";
+import { setEmailFlowPool as setJobEmailFlowPool, startEmailFlowService, enqueueUserFlow } from "./jobs/emailFlowService.js";
 import { setGamificationPool, initGamificationTable } from "./services/gamificationService.js";
 import { initTelegramBot } from "./bots/telegramBot.js";
 import { getVinoInvestIndex } from "./services/vinoInvestIndex.js";
@@ -59,6 +59,7 @@ import schemaRouter, { setSchemaWines } from "./routes/schema.js";
 import hubRouter, { setHubWines } from "./routes/hub.js";
 import emailFlowRouter, { setEmailFlowRoutePool } from "./routes/emailFlow.js";
 import marketProducersRouter from "./routes/marketProducers.js";
+import reportsRouter, { setReportsPool } from "./routes/reports.js";
 import { setEmailFlowPool, setEmailFlowWines } from "./services/emailFlowService.js";
 import { setMarketResearchWines } from "./services/wineMarketResearch.js";
 import { segmentWines } from "./services/wineSegmentationService.js";
@@ -191,6 +192,7 @@ app.use("/api/email-preferences", emailPrefRouter);
 app.use("/api/unsubscribe", emailPrefRouter);
 app.use("/api/email-flow", emailFlowRouter);
 app.use("/api/market/producers", cacheFor(3600), marketProducersRouter);
+app.use("/api/reports", reportsRouter);
 app.use("/api/feedback", feedbackRouter);
 app.use("/api/academy", academyRouter);
 app.use("/api/subscriptions", subscriptionsRouter);
@@ -519,10 +521,11 @@ initDB().then(() => {
   if (pool) { setGamificationPool(pool); initGamificationTable(); }
   if (pool) { setCellarPool(pool); setJournalPool(pool); setGoalsPool(pool); setReferralPool(pool); }
   if (pool) { setEmailPrefPool(pool); setFeedbackPool(pool); setAuthPool(pool); }
+  if (pool) { setReportsPool(pool); }
   if (pool) { setNewsletterPool(pool); }
   if (pool) { setAgentPool(pool); }
   if (pool) { setWelcomeEmailPool(pool); }
-  if (pool) { setEmailFlowPool(pool); startEmailFlowService(); }
+  if (pool) { setJobEmailFlowPool(pool); startEmailFlowService(); }
   if (pool) { setRealPricePool(pool); }
   if (pool) { setVintageScoresPool(pool); initVintageScoresTable(); }
   if (pool) { setEmailFlowPool(pool); setEmailFlowRoutePool(pool); }
