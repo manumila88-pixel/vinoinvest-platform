@@ -877,6 +877,12 @@ app.get("/api/wines", cacheFor(300), (req, res) => {
     filtered = segmentWines(filtered, segment);
   }
 
+  // Sort by investmentScore desc so best wines appear first by default
+  const sortBy = (req.query.sort || "score").toString();
+  if (sortBy === "score" || !search) {
+    filtered = [...filtered].sort((a, b) => (b.investmentScore || b.investment_score || 0) - (a.investmentScore || a.investment_score || 0));
+  }
+
   const total = filtered.length;
   const offset = (page - 1) * limit;
   const slice = filtered.slice(offset, offset + limit);

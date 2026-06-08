@@ -1,8 +1,26 @@
 # VinoInvest — Launch Ready Checklist
 
-> Updated: 2026-06-09 after B2B Professional Platform completion
+> Updated: 2026-06-09 GOD MODE session — istituzionale + B2B Professional
 
-## ✅ Completed Features
+---
+
+## Legenda
+- ✅ **VERDE** — Fatto e funzionante
+- ⚠️ **GIALLO** — Fatto ma da verificare / configurare
+- ❌ **ROSSO** — Mancante o rotto
+- 🔵 **BLU** — Richiede azione manuale (solo Manoel)
+
+---
+
+## ✅ VERDE — Completed Features
+
+### Credenziali e Autorevolezza (GOD MODE session)
+- [x] `/about` — Hero istituzionale, 4 pilastri "Trasparenza/Metodologia/Sicurezza", stats 50k/1.8M/40+, team section, disclaimer finanziario
+- [x] `/metodologia` — Formula AI Score visiva con colori, 5 fattori con WHY + esempi reali, tabella confronto Liv-ex/Wine-Searcher, limitazioni oneste
+- [x] `/security` — OWASP Top 10 con note dettagliate, GDPR 5 sezioni (base giuridica, retention 7y, diritti, trasferimenti, breach), bug bounty €500-€2000, security headers
+- [x] `/data-sources` — 9 fonti documentate con badge verificata/stimata/elaborata/algoritmica, tabella completa, limitazioni oneste, form segnalazione dato errato
+- [x] Cmd+K command palette (18 shortcut + live wine search)
+- [x] Wine endpoint sorting fix — ora ordina per investmentScore DESC (best wines first)
 
 ### Core Platform
 - [x] Wine catalog 50k+ with search, filters, infinite scroll
@@ -55,7 +73,22 @@
 - [x] Swagger API docs (/api/docs)
 - [x] Public API v1 (/api/v1/wines)
 
-## ⚠️ Pending — Requires External Config
+## ❌ ROSSO — Mancante
+
+- [ ] **Stripe test mode banner su /pricing** — visibile solo in /admin, aggiungere su pagina prezzi
+- [ ] **200 pagine B2B** `/b2b/guide/:slug` — script pronto, non eseguito
+- [ ] **Stripe webhook live** — necessario per abbonamenti real-time
+- [ ] **Dominio custom** — vinoinvest.com non acquistato
+
+## ⚠️ GIALLO — Da verificare / configurare
+
+## 🔵 BLU — Azioni manuali (solo Manoel)
+
+1. **Blog 100 articoli**: `cd backend && node src/scripts/generateBlogContent.js`
+2. **Stripe live**: `STRIPE_LIVE_KEY` + `STRIPE_WEBHOOK_SECRET_LIVE` su Render env
+3. **Cron-job.org ping**: `https://vinoinvest-backend-2.onrender.com/api/health` ogni 10 min
+4. **Dominio**: acquistare `vinoinvest.com` e collegarlo a Vercel
+5. **Google Search Console**: submitta sitemap-index.xml
 
 | Item | Action |
 |------|--------|
