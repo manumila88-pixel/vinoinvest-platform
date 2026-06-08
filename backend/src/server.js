@@ -621,6 +621,7 @@ initDB().then(() => {
   if (pool) { setCellarPool(pool); setJournalPool(pool); setGoalsPool(pool); setReferralPool(pool); }
   if (pool) { setEmailPrefPool(pool); setFeedbackPool(pool); setAuthPool(pool); }
   if (pool) { setReportsPool(pool); }
+  if (pool) { setOrgsPool(pool); setClientPortfoliosPool(pool); setDemoPool(pool); setRiskPool(pool); }
   if (pool) { setNewsletterPool(pool); }
   if (pool) { setAgentPool(pool); }
   if (pool) { setWelcomeEmailPool(pool); }

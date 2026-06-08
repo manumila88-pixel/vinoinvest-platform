@@ -242,6 +242,50 @@ else
   ((FAIL++))
 fi
 
+# ── B2B / Organization APIs ───────────────────────────────
+echo "── B2B Organization APIs ──"
+check "GET /api/organizations/my (auth required)" 401 "$API/api/organizations/my"
+check "POST /api/demo (missing body)" 400 "$API/api/demo" -X POST -H "Content-Type: application/json" -d '{}'
+check "POST /api/demo (valid request)" 200 "$API/api/demo" -X POST -H "Content-Type: application/json" -d '{"name":"Test User","email":"test@test.com","company":"Test Co"}'
+check "GET /api/risk/benchmark" 200 "$API/api/risk/benchmark"
+check "GET /api/risk/portfolio/:id (auth required)" 401 "$API/api/risk/portfolio/testuser"
+check "GET /api/client-portfolios (no orgId)" 400 "$API/api/client-portfolios"
+
+# ── New B2B Routes ────────────────────────────────────────
+echo "── New Backend Routes ──"
+check "GET /api/knowledge-base" 200 "$API/api/knowledge-base"
+check "GET /api/data/wines.csv" 200 "$API/api/data/wines.csv"
+check "GET /api/data/prices.csv" 200 "$API/api/data/prices.csv"
+check "GET /api/data/metadata.json" 200 "$API/api/data/metadata.json"
+check "GET /api/security" 200 "$API/api/security"
+check "GET /api/analytics/vitals/summary" 200 "$API/api/analytics/vitals/summary"
+
+# ── Security Headers ──────────────────────────────────────
+echo "── Security Headers ──"
+HEADERS=$(curl -sI --max-time 15 "$API/api/health" 2>/dev/null)
+for hdr in "strict-transport-security" "x-content-type-options"; do
+  if echo "$HEADERS" | grep -qi "$hdr"; then
+    echo "  ✅  Header $hdr present"
+    ((PASS++))
+  else
+    echo "  ❌  Header $hdr missing"
+    ((FAIL++))
+  fi
+done
+
+# ── Frontend Pages ────────────────────────────────────────
+echo "── Frontend Pages ──"
+FRONTEND="${FRONTEND_URL:-https://vinoinvest-platform.vercel.app}"
+for path in "" "/b2b" "/pricing" "/metodologia" "/glossario" "/security" "/data" "/transparency" "/about" "/market-intelligence" "/b2b-onboarding" "/org-dashboard"; do
+  OUT=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 "$FRONTEND$path" 2>/dev/null)
+  if [[ "$OUT" == "200" ]]; then
+    echo "  ✅  $FRONTEND$path ($OUT)"
+    ((PASS++))
+  else
+    echo "  ⚠️   $FRONTEND$path ($OUT) — may need deploy"
+  fi
+done
+
 # ── Summary ──────────────────────────────────────────────
 echo ""
 echo "═══════════════════════════════════════════════════════"

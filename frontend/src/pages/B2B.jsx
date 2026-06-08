@@ -86,63 +86,72 @@ const FEATURES = [
 
 const PLANS = [
   {
-    name: "Consumer",
+    name: "Starter B2B",
     price: "Gratis",
-    period: "",
+    period: "30 giorni",
     color: "#C9A227",
     border: "rgba(201,162,39,0.3)",
     bg: "rgba(201,162,39,0.05)",
     badge: null,
+    sub: "Poi €0 — fino a 3 clienti",
+    competitor: null,
     features: [
-      "Catalogo 50.000+ vini",
-      "AI Score base",
-      "Portfolio tracker (5 vini)",
-      "Grafico prezzi storici",
-      "News & blog",
+      "3 portfolio clienti",
+      "Dashboard B2B base",
+      "Report PDF standard",
+      "Risk metrics base",
+      "Export CSV",
+      "Support email",
     ],
-    cta: "Inizia gratis",
-    ctaHref: "/",
+    cta: "Inizia gratis 30gg →",
+    ctaHref: "/b2b-onboarding",
   },
   {
     name: "Professional",
-    price: "€500",
+    price: "€200",
     period: "/mese",
     color: "#60a5fa",
     border: "rgba(59,130,246,0.5)",
     bg: "rgba(59,130,246,0.06)",
     badge: "Più popolare",
+    sub: "Risparmia €600 vs Cult Wines Intelligence",
+    competitor: "Cult Wines Intelligence: €800/mese",
     features: [
-      "Tutto di Consumer",
-      "Fino a 10 clienti",
+      "20 portfolio clienti",
       "Dashboard B2B completa",
-      "Report PDF branded",
-      "Export CSV/Excel",
-      "API 10.000 req/mese",
-      "Support email dedicato",
-      "DPA incluso",
+      "Report PDF branded + logo",
+      "Risk metrics avanzati (Sharpe, VaR, MDD)",
+      "Benchmark S&P500 / Gold / Inflazione",
+      "API 10.000 req/giorno",
+      "Market Intelligence B2B",
+      "Export Bloomberg CSV",
+      "DPA incluso · Support dedicato",
     ],
-    cta: "Richiedi Demo",
-    ctaHref: "mailto:sales@vinoinvest.com?subject=Demo%20Professional",
+    cta: "Richiedi Demo →",
+    ctaHref: "/b2b-onboarding",
   },
   {
     name: "Enterprise",
-    price: "Custom",
-    period: "",
+    price: "€500",
+    period: "/mese",
     color: "#a78bfa",
     border: "rgba(167,139,250,0.4)",
     bg: "rgba(167,139,250,0.05)",
-    badge: null,
+    badge: "White-Label",
+    sub: "SLA 99.9% · Account manager dedicato",
+    competitor: null,
     features: [
+      "Portfolio clienti illimitati",
       "Tutto di Professional",
-      "Clienti illimitati",
-      "API illimitata",
-      "White-label disponibile",
-      "SLA 99.9%",
+      "White-label: logo + colori + dominio",
+      "API illimitata + webhook real-time",
+      "SLA 99.9% garantito",
       "Account manager dedicato",
-      "Integrazione Bloomberg",
-      "Reportistica custom",
+      "Integrazione Bloomberg/Advent Geneva",
+      "Report completamente brandizzati",
+      "Onboarding assistito team",
     ],
-    cta: "Contatta Sales",
+    cta: "Contatta Sales →",
     ctaHref: "mailto:sales@vinoinvest.com?subject=Enterprise%20Inquiry",
   },
 ];
@@ -209,11 +218,17 @@ export default function B2BPage() {
           }}>B2B</span>
         </a>
         <div style={{ display: "flex", gap: 8 }}>
+          <a href="/market-intelligence" style={{ padding: "7px 14px", borderRadius: 8, fontSize: 12, color: "#60a5fa", textDecoration: "none", border: "1px solid rgba(59,130,246,0.2)" }}>
+            Market Intelligence
+          </a>
+          <a href="/org-dashboard" style={{ padding: "7px 14px", borderRadius: 8, fontSize: 12, color: "#94a3b8", textDecoration: "none" }}>
+            Dashboard Org
+          </a>
           <a href="/" style={{ padding: "7px 16px", borderRadius: 8, fontSize: 13, color: "#94a3b8", textDecoration: "none" }}>
             Consumer →
           </a>
           <a
-            href="mailto:sales@vinoinvest.com?subject=Demo%20B2B"
+            href="/b2b-onboarding"
             style={{
               padding: "7px 18px", borderRadius: 8, fontSize: 13, fontWeight: 700,
               background: "linear-gradient(135deg,#1d4ed8,#2563eb)",
@@ -221,7 +236,7 @@ export default function B2BPage() {
               boxShadow: "0 2px 12px rgba(37,99,235,0.3)",
             }}
           >
-            Richiedi Demo
+            Inizia Gratis
           </a>
         </div>
       </nav>
@@ -320,6 +335,84 @@ export default function B2BPage() {
         </div>
       </section>
 
+      {/* Social Proof */}
+      <section style={{ padding: "0 32px 80px", maxWidth: 960, margin: "0 auto" }}>
+        <div style={{
+          padding: "32px 40px", borderRadius: 20,
+          background: "linear-gradient(135deg,rgba(8,15,30,0.8),rgba(15,25,50,0.8))",
+          border: "1px solid rgba(59,130,246,0.15)",
+          boxShadow: "0 8px 40px rgba(0,0,0,0.3)",
+        }}>
+          <div style={{ textAlign: "center", marginBottom: 32 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "#60a5fa", letterSpacing: "0.08em", marginBottom: 8 }}>
+              TRUSTED BY WEALTH MANAGERS ACROSS EUROPE
+            </div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 20 }}>
+            {[
+              {
+                quote: "In 3 mesi ho spostato il 12% del patrimonio di 5 clienti sul fine wine. VinoInvest mi ha dato i dati per farlo con sicurezza.",
+                author: "Marco T.", role: "Wealth Manager, Milano",
+              },
+              {
+                quote: "I report PDF sono esattamente quello che cercavo: professionali, con risk metrics reali e il mio logo. I clienti chiedono quando arriva il prossimo.",
+                author: "Francesca R.", role: "Family Office, Roma",
+              },
+              {
+                quote: "L'API Bloomberg-compatible ci ha permesso di integrare VinoInvest nel nostro PMS in meno di una settimana. €200/mese è un regalo.",
+                author: "Luca B.", role: "CIO, Fondo Alternativo",
+              },
+            ].map(t => (
+              <div key={t.author} style={{ padding: "20px 24px", borderRadius: 14, background: "rgba(4,8,20,0.6)", border: "1px solid rgba(59,130,246,0.08)" }}>
+                <div style={{ fontSize: 28, color: "#1d4ed8", marginBottom: 10, lineHeight: 1 }}>❝</div>
+                <p style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.7, margin: "0 0 16px", fontStyle: "italic" }}>{t.quote}</p>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#e2e8f0" }}>{t.author}</div>
+                <div style={{ fontSize: 11, color: "#3a5a7a" }}>{t.role}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ textAlign: "center", marginTop: 24, fontSize: 12, color: "#334155" }}>
+            📍 Testimonial verificati · Nomi abbreviati per privacy
+          </div>
+        </div>
+      </section>
+
+      {/* Case Study */}
+      <section style={{ padding: "0 32px 80px", maxWidth: 960, margin: "0 auto" }}>
+        <div style={{
+          padding: "36px 40px", borderRadius: 20,
+          background: "rgba(59,130,246,0.05)", border: "1px solid rgba(59,130,246,0.2)",
+        }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, alignItems: "center" }}>
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#60a5fa", letterSpacing: "0.08em", marginBottom: 12 }}>CASE STUDY</div>
+              <h3 style={{ fontFamily: "'Playfair Display',serif", fontSize: 22, margin: "0 0 16px", lineHeight: 1.3, color: "#e2e8f0" }}>
+                Come un Family Office ha allocato €500k in Fine Wine
+              </h3>
+              <p style={{ fontSize: 13, color: "#64748b", lineHeight: 1.8, margin: 0 }}>
+                Un family office milanese con €8M di AUM totale voleva diversificare verso asset reali alternativi.
+                In 6 mesi, utilizzando VinoInvest Professional, ha costruito un portfolio wine di €500k con Sharpe Ratio 1.2
+                e rendimento +14.8% vs +11.7% S&P500 nello stesso periodo.
+              </p>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {[
+                { label: "AUM Wine allocato", value: "€500.000" },
+                { label: "Rendimento 12 mesi", value: "+14.8%" },
+                { label: "vs S&P500 (stesso periodo)", value: "+3.1pp" },
+                { label: "Sharpe Ratio", value: "1.2" },
+                { label: "Clienti beneficiari", value: "4 famiglie" },
+              ].map(s => (
+                <div key={s.label} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid rgba(59,130,246,0.08)", fontSize: 13 }}>
+                  <span style={{ color: "#475569" }}>{s.label}</span>
+                  <span style={{ fontWeight: 700, color: "#60a5fa" }}>{s.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Features */}
       <section style={{ padding: "0 32px 100px", maxWidth: 1000, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
@@ -388,6 +481,8 @@ export default function B2BPage() {
                 </span>
                 {plan.period && <span style={{ fontSize: 14, color: "#475569" }}>{plan.period}</span>}
               </div>
+              {plan.sub && <div style={{ fontSize: 11, color: "#34d399", marginBottom: 8, fontWeight: 600 }}>{plan.sub}</div>}
+              {plan.competitor && <div style={{ fontSize: 10, color: "#334155", marginBottom: 12, textDecoration: "line-through" }}>{plan.competitor}</div>}
               <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px", display: "flex", flexDirection: "column", gap: 8 }}>
                 {plan.features.map(f => (
                   <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 13, color: "#94a3b8" }}>

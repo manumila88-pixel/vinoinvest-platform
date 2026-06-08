@@ -67,6 +67,11 @@ const Methodology = lazy(() => import("./pages/Methodology"));
 const Glossary = lazy(() => import("./pages/Glossary"));
 const SecurityPage = lazy(() => import("./pages/Security"));
 const DataDownload = lazy(() => import("./pages/DataDownload"));
+const OrgDashboard = lazy(() => import("./pages/OrgDashboard"));
+const ClientDetail = lazy(() => import("./pages/ClientDetail"));
+const MarketIntelligence = lazy(() => import("./pages/MarketIntelligence"));
+const B2BOnboarding = lazy(() => import("./pages/B2BOnboarding"));
+const DataSources = lazy(() => import("./pages/DataSources"));
 import ThemeToggle from "./components/ThemeToggle";
 import VoiceInterface from "./components/VoiceInterface";
 import ExitIntentPopup from "./components/ExitIntentPopup";
@@ -1958,6 +1963,11 @@ createRoot(document.getElementById("root")).render(
           <Route path="/glossario" element={<Glossary />} />
           <Route path="/security" element={<SecurityPage />} />
           <Route path="/data" element={<DataDownload />} />
+          <Route path="/data-sources" element={<DataSources />} />
+          <Route path="/org-dashboard" element={<OrgDashboard />} />
+          <Route path="/clients/:clientId" element={<ClientDetail />} />
+          <Route path="/market-intelligence" element={<MarketIntelligence />} />
+          <Route path="/b2b-onboarding" element={<B2BOnboarding />} />
           <Route path="/landing" element={<LandingPage />} />
           <Route path="*" element={<App />} />
         </Routes>
