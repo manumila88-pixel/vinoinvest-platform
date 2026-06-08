@@ -239,4 +239,17 @@ router.get("/security-events", async (req, res) => {
   }
 });
 
+// GET /api/admin/email-analytics — full email marketing analytics
+router.get("/email-analytics", async (_req, res) => {
+  if (!pool) return res.json({ error: "DB not configured" });
+  try {
+    const { getEmailAnalytics } = await import("../services/emailFlowService.js");
+    const data = await getEmailAnalytics();
+    if (!data) return res.json({ totals: {}, bySegment: [], byDay: [], byTrigger: [], recentSent: [] });
+    res.json(data);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 export default router;

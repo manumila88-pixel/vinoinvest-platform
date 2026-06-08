@@ -31,6 +31,8 @@ export default function AdminDashboard() {
   const [grantPlan, setGrantPlan] = useState("investor");
   const [grantMsg, setGrantMsg] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
+  const [emailAnalytics, setEmailAnalytics] = useState(null);
+  const [emailLoading, setEmailLoading] = useState(false);
 
   // Guard: only admin can access
   useEffect(() => {
@@ -82,7 +84,17 @@ export default function AdminDashboard() {
     loadAll();
   }
 
-  const tabs = ["overview", "users", "security", "grant"];
+  async function loadEmailAnalytics() {
+    setEmailLoading(true);
+    try {
+      const headers = await getAuthHeader();
+      const r = await fetch(`${API}/api/admin/email-analytics`, { headers });
+      if (r.ok) setEmailAnalytics(await r.json());
+    } catch {}
+    setEmailLoading(false);
+  }
+
+  const tabs = ["overview", "users", "security", "email", "grant"];
 
   return (
     <div style={{ minHeight: "100vh", background: BG, color: "#e2e8f0", fontFamily: "Inter, sans-serif" }}>
@@ -116,8 +128,8 @@ export default function AdminDashboard() {
         {/* Tabs */}
         <div style={{ display: "flex", gap: 4, marginBottom: 28, background: "rgba(255,255,255,0.04)", borderRadius: 12, padding: 4 }}>
           {tabs.map(t => (
-            <button key={t} onClick={() => setActiveTab(t)} style={{ flex: 1, padding: "9px 16px", borderRadius: 9, border: "none", background: activeTab === t ? "#1a2535" : "transparent", color: activeTab === t ? "#C9A227" : "#64748b", fontWeight: activeTab === t ? 700 : 500, cursor: "pointer", fontSize: 13, textTransform: "capitalize" }}>
-              {t === "overview" ? "Panoramica" : t === "users" ? "Utenti" : t === "security" ? "Sicurezza" : "Accessi"}
+            <button key={t} onClick={() => { setActiveTab(t); if (t === "email" && !emailAnalytics) loadEmailAnalytics(); }} style={{ flex: 1, padding: "9px 16px", borderRadius: 9, border: "none", background: activeTab === t ? "#1a2535" : "transparent", color: activeTab === t ? "#C9A227" : "#64748b", fontWeight: activeTab === t ? 700 : 500, cursor: "pointer", fontSize: 13, textTransform: "capitalize" }}>
+              {t === "overview" ? "Panoramica" : t === "users" ? "Utenti" : t === "security" ? "Sicurezza" : t === "email" ? "Email" : "Accessi"}
             </button>
           ))}
         </div>
@@ -240,6 +252,153 @@ export default function AdminDashboard() {
                     <span style={{ fontSize: 12, color: "#64748b" }}>×{ev.count}</span>
                   </div>
                 ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Email Analytics Tab */}
+        {activeTab === "email" && (
+          <div>
+            {emailLoading && <div style={{ color: "#64748b", textAlign: "center", padding: 40 }}>Caricamento analytics...</div>}
+            {!emailLoading && emailAnalytics && (
+              <div>
+                {/* KPI Row */}
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16, marginBottom: 28 }}>
+                  <StatCard label="Email Inviate" value={emailAnalytics.totals?.total || 0} />
+                  <StatCard label="Open Rate" value={`${emailAnalytics.openRate || 0}%`} color="#4ade80" sub={`${emailAnalytics.totals?.opened || 0} aperte`} />
+                  <StatCard label="Click Rate" value={`${emailAnalytics.clickRate || 0}%`} color="#60a5fa" sub={`${emailAnalytics.totals?.clicked || 0} click`} />
+                  <StatCard label="Unsub Rate" value={`${emailAnalytics.unsubRate || 0}%`} color="#f87171" sub={`${emailAnalytics.totals?.unsub || 0} unsub`} />
+                </div>
+
+                {/* Segment breakdown */}
+                {emailAnalytics.bySegment?.length > 0 && (
+                  <div style={{ background: "#1a2535", borderRadius: 16, padding: 24, marginBottom: 24 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#94a3b8", marginBottom: 16, textTransform: "uppercase", letterSpacing: "0.08em" }}>Performance per Segmento</div>
+                    <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+                      {emailAnalytics.bySegment.map((s, i) => (
+                        <div key={i} style={{ flex: 1, minWidth: 200, background: "rgba(255,255,255,0.04)", borderRadius: 12, padding: "16px 20px" }}>
+                          <div style={{ fontSize: 12, fontWeight: 800, color: s.segment === "b2b" ? "#C9A227" : "#60a5fa", textTransform: "uppercase", marginBottom: 10 }}>{s.segment}</div>
+                          <div style={{ display: "flex", gap: 16 }}>
+                            <div><div style={{ fontSize: 10, color: "#475569" }}>INVIATE</div><div style={{ fontSize: 20, fontWeight: 800 }}>{s.sent}</div></div>
+                            <div><div style={{ fontSize: 10, color: "#475569" }}>APERTE</div><div style={{ fontSize: 20, fontWeight: 800, color: "#4ade80" }}>{s.opened || 0}</div></div>
+                            <div><div style={{ fontSize: 10, color: "#475569" }}>CLICK</div><div style={{ fontSize: 20, fontWeight: 800, color: "#60a5fa" }}>{s.clicked || 0}</div></div>
+                          </div>
+                          <div style={{ marginTop: 8, fontSize: 11, color: "#64748b" }}>
+                            OR: {s.sent ? Math.round((s.opened / s.sent) * 100) : 0}% · CTR: {s.sent ? Math.round((s.clicked / s.sent) * 100) : 0}%
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* By day number — scheduled sequence performance */}
+                {emailAnalytics.byDay?.length > 0 && (
+                  <div style={{ background: "#1a2535", borderRadius: 16, padding: 24, marginBottom: 24 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#94a3b8", marginBottom: 16, textTransform: "uppercase", letterSpacing: "0.08em" }}>Performance per Giorno della Sequenza</div>
+                    <div style={{ overflowX: "auto" }}>
+                      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+                        <thead>
+                          <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                            {["Giorno", "Subject", "Inviate", "Aperte", "OR%", "Click", "CTR%"].map(h => (
+                              <th key={h} style={{ textAlign: "left", padding: "7px 10px", color: "#475569", fontWeight: 600, fontSize: 11, textTransform: "uppercase", whiteSpace: "nowrap" }}>{h}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {emailAnalytics.byDay.map((d, i) => {
+                            const or = d.sent ? Math.round((d.opened / d.sent) * 100) : 0;
+                            const ctr = d.sent ? Math.round((d.clicked / d.sent) * 100) : 0;
+                            return (
+                              <tr key={i} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                                <td style={{ padding: "8px 10px" }}><span style={{ background: "rgba(201,162,39,0.12)", color: "#C9A227", borderRadius: 4, padding: "2px 7px", fontWeight: 700 }}>D{d.day_number}</span></td>
+                                <td style={{ padding: "8px 10px", color: "#94a3b8", maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{d.email_subject || "—"}</td>
+                                <td style={{ padding: "8px 10px" }}>{d.sent}</td>
+                                <td style={{ padding: "8px 10px", color: "#4ade80" }}>{d.opened || 0}</td>
+                                <td style={{ padding: "8px 10px", color: or >= 20 ? "#4ade80" : or >= 10 ? "#fbbf24" : "#f87171", fontWeight: 700 }}>{or}%</td>
+                                <td style={{ padding: "8px 10px", color: "#60a5fa" }}>{d.clicked || 0}</td>
+                                <td style={{ padding: "8px 10px", color: ctr >= 5 ? "#4ade80" : "#64748b", fontWeight: 700 }}>{ctr}%</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* Behavioral triggers */}
+                {emailAnalytics.byTrigger?.length > 0 && (
+                  <div style={{ background: "#1a2535", borderRadius: 16, padding: 24, marginBottom: 24 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#94a3b8", marginBottom: 16, textTransform: "uppercase", letterSpacing: "0.08em" }}>Trigger Comportamentali</div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      {emailAnalytics.byTrigger.map((t, i) => {
+                        const or = t.sent ? Math.round((t.opened / t.sent) * 100) : 0;
+                        return (
+                          <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "rgba(255,255,255,0.03)", borderRadius: 10 }}>
+                            <span style={{ fontSize: 13, color: "#C9A227", fontFamily: "monospace" }}>{t.trigger_event}</span>
+                            <div style={{ display: "flex", gap: 20, fontSize: 12, color: "#64748b" }}>
+                              <span>{t.sent} inviate</span>
+                              <span style={{ color: "#4ade80" }}>{t.opened || 0} aperte</span>
+                              <span style={{ fontWeight: 700, color: or >= 25 ? "#4ade80" : "#94a3b8" }}>OR {or}%</span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Revenue attribution */}
+                {emailAnalytics.revenueAttribution?.length > 0 && (
+                  <div style={{ background: "#1a2535", borderRadius: 16, padding: 24, marginBottom: 24 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#94a3b8", marginBottom: 16, textTransform: "uppercase", letterSpacing: "0.08em" }}>Revenue Attribution (48h dopo click)</div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                      {emailAnalytics.revenueAttribution.map((r, i) => (
+                        <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "rgba(255,255,255,0.03)", borderRadius: 8, fontSize: 12 }}>
+                          <span style={{ color: "#94a3b8", maxWidth: 300, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.email_subject}</span>
+                          <div style={{ display: "flex", gap: 16 }}>
+                            <span style={{ color: "#64748b" }}>{r.conversions} conversioni</span>
+                            <span style={{ fontWeight: 700, color: "#4ade80" }}>€{parseFloat(r.revenue).toLocaleString("it-IT", { maximumFractionDigits: 0 })}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Recent sent */}
+                {emailAnalytics.recentSent?.length > 0 && (
+                  <div style={{ background: "#1a2535", borderRadius: 16, padding: 24 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#94a3b8", marginBottom: 16, textTransform: "uppercase", letterSpacing: "0.08em" }}>Ultime Email Inviate</div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: 320, overflowY: "auto" }}>
+                      {emailAnalytics.recentSent.map((e, i) => (
+                        <div key={i} style={{ display: "flex", gap: 10, padding: "8px 12px", background: "rgba(255,255,255,0.03)", borderRadius: 8, fontSize: 12, alignItems: "center", flexWrap: "wrap" }}>
+                          <span style={{ background: "rgba(201,162,39,0.1)", color: "#C9A227", borderRadius: 4, padding: "1px 6px", fontSize: 10, fontWeight: 700, textTransform: "uppercase" }}>{e.segment}</span>
+                          <span style={{ color: "#64748b" }}>{e.user_email}</span>
+                          <span style={{ color: "#94a3b8", flex: 1 }}>{e.email_subject}</span>
+                          <span style={{ color: "#475569", marginLeft: "auto", whiteSpace: "nowrap" }}>{new Date(e.sent_at).toLocaleString("it-IT")}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div style={{ textAlign: "right", marginTop: 16 }}>
+                  <button onClick={loadEmailAnalytics} style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, padding: "8px 16px", color: "#94a3b8", cursor: "pointer", fontSize: 13 }}>
+                    Aggiorna Analytics
+                  </button>
+                </div>
+              </div>
+            )}
+            {!emailLoading && !emailAnalytics && (
+              <div style={{ color: "#475569", textAlign: "center", padding: 40 }}>
+                <div style={{ fontSize: 32, marginBottom: 12 }}>📧</div>
+                <div>Nessun dato disponibile. Le tabelle email potrebbero non essere ancora popolate.</div>
+                <button onClick={loadEmailAnalytics} style={{ marginTop: 16, background: "#C9A227", border: "none", borderRadius: 8, padding: "10px 20px", color: "#0b1220", fontWeight: 700, cursor: "pointer" }}>
+                  Carica Analytics
+                </button>
               </div>
             )}
           </div>
