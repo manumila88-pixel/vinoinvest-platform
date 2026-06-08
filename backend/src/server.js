@@ -49,6 +49,7 @@ import emailPrefRouter, { setEmailPrefPool } from "./routes/emailPreferences.js"
 import feedbackRouter, { setFeedbackPool } from "./routes/feedback.js";
 import academyRouter from "./routes/academy.js";
 import subscriptionsRouter from "./routes/subscriptions.js";
+import { setNewsletterPool, setNewsletterWines, startNewsletterCron } from "./services/newsletterService.js";
 
 // Global in-memory cache
 const appCache = new NodeCache({ stdTTL: 0, checkperiod: 120 });
@@ -232,6 +233,7 @@ app.use("/api/agent", (req, _res, next) => { req._allWines = allWines; next(); }
 
 // Share wines reference with proactive analysis job
 setWinesRef(allWines);
+setNewsletterWines(allWines);
 
 const marketplaceData = [
 
@@ -488,9 +490,11 @@ initDB().then(() => {
   if (pool) { setGamificationPool(pool); initGamificationTable(); }
   if (pool) { setCellarPool(pool); setJournalPool(pool); setGoalsPool(pool); setReferralPool(pool); }
   if (pool) { setEmailPrefPool(pool); setFeedbackPool(pool); setAuthPool(pool); }
+  if (pool) { setNewsletterPool(pool); }
   // Start scheduled agents
   startBlogAgent();
   startImageAgent();
+  startNewsletterCron();
 
   // Start Telegram bot (no-op if TELEGRAM_BOT_TOKEN not set)
   setTimeout(() => {
@@ -615,6 +619,13 @@ app.get("/api/stats/public", cacheFor(3600), async (req, res) => {
   } catch {
     res.json({ wines: 50234, pricePoints: 1842000, users: 3847, aiAnalyses: 127 });
   }
+});
+
+// Admin: trigger weekly newsletter manually
+app.post("/api/admin/newsletter/trigger", requireAdmin, async (req, res) => {
+  const { runWeeklyNewsletter } = await import("./services/newsletterService.js");
+  const result = await runWeeklyNewsletter();
+  res.json(result);
 });
 
 app.get("/", (req, res) => {

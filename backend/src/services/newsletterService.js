@@ -13,7 +13,7 @@ export const setNewsletterWines = (w) => { allWines = w; };
 
 let cronJob = null;
 
-export function startNewsletterCron() {
+export async function startNewsletterCron() {
   try {
     const cron = await import("node-cron");
 
