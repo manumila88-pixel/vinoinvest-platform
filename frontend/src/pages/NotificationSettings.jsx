@@ -3,6 +3,14 @@ import { supabase } from "../lib/supabase";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
+// Converts a base64url-encoded VAPID public key to a Uint8Array for pushManager.subscribe
+function urlBase64ToUint8Array(base64String) {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const rawData = atob(base64);
+  return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+}
+
 const REGIONS = ["Bordeaux", "Burgundy", "Champagne", "Tuscany", "Piedmont", "Rhône", "Barossa", "Napa Valley", "Rioja", "Douro", "Alsace", "Loire Valley"];
 const TYPES = ["Red", "White", "Rosé", "Champagne/Sparkling", "Sweet/Fortified"];
 const FREQUENCIES = [
@@ -28,7 +36,31 @@ export default function NotificationSettings() {
   const [saved, setSaved] = useState(false);
   const [testSent, setTestSent] = useState(false);
 
-  useEffect(() => { loadPrefs(); }, []);
+  // Web Push state
+  const [vapidKey, setVapidKey] = useState("");
+  const [pushStatus, setPushStatus] = useState("idle"); // idle | loading | granted | denied | unsupported | subscribed
+  const [pushSupported, setPushSupported] = useState(false);
+
+  useEffect(() => {
+    loadPrefs();
+    // Check push support
+    if ("serviceWorker" in navigator && "PushManager" in window) {
+      setPushSupported(true);
+      // Check if already subscribed
+      navigator.serviceWorker.ready.then(reg =>
+        reg.pushManager.getSubscription()
+      ).then(sub => {
+        if (sub) setPushStatus("subscribed");
+      }).catch(() => {});
+    } else {
+      setPushStatus("unsupported");
+    }
+    // Fetch VAPID public key
+    fetch(`${API}/api/notifications/vapid-public-key`)
+      .then(r => r.json())
+      .then(d => { if (d.publicKey) setVapidKey(d.publicKey); })
+      .catch(() => {});
+  }, []);
 
   async function loadPrefs() {
     setLoading(true);
@@ -71,6 +103,62 @@ export default function NotificationSettings() {
     } catch (e) {}
   }
 
+  async function enablePush() {
+    if (!pushSupported) return;
+    if (!vapidKey) return alert("VAPID key not configured on server.");
+    setPushStatus("loading");
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission === "denied") { setPushStatus("denied"); return; }
+      if (permission !== "granted") { setPushStatus("idle"); return; }
+
+      const reg = await navigator.serviceWorker.ready;
+      // Unsubscribe any existing sub before creating new one
+      const existing = await reg.pushManager.getSubscription();
+      if (existing) { await existing.unsubscribe(); }
+
+      const sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(vapidKey),
+      });
+
+      const { data: { session } } = await supabase.auth.getSession();
+      const userId = session?.user?.id || undefined;
+
+      await fetch(`${API}/api/notifications/subscribe`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subscription: sub.toJSON(), userId }),
+      });
+
+      setPushStatus("subscribed");
+    } catch (e) {
+      console.error("[push] enable error:", e);
+      setPushStatus("idle");
+    }
+  }
+
+  async function disablePush() {
+    setPushStatus("loading");
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      const sub = await reg.pushManager.getSubscription();
+      if (sub) {
+        const endpoint = sub.endpoint;
+        await sub.unsubscribe();
+        await fetch(`${API}/api/notifications/unsubscribe`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ endpoint }),
+        });
+      }
+      setPushStatus("idle");
+    } catch (e) {
+      console.error("[push] disable error:", e);
+      setPushStatus("idle");
+    }
+  }
+
   function toggleArray(arr, item) {
     return arr.includes(item) ? arr.filter(x => x !== item) : [...arr, item];
   }
@@ -109,6 +197,51 @@ export default function NotificationSettings() {
               }} />
             </button>
           </div>
+        </div>
+
+        {/* Push Notifications */}
+        <div style={{ background: "rgba(11,18,32,0.85)", border: "1px solid rgba(30,41,59,0.5)", borderRadius: 14, padding: 20, marginBottom: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 15 }}>Push Notifications</div>
+              <div style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}>
+                {pushStatus === "unsupported"
+                  ? "Browser non supportato"
+                  : pushStatus === "denied"
+                  ? "Permesso negato dal browser"
+                  : pushStatus === "subscribed"
+                  ? "Notifiche push attivate"
+                  : "Ricevi avvisi istantanei sul dispositivo"}
+              </div>
+            </div>
+            {pushStatus === "unsupported" ? (
+              <span style={{ fontSize: 12, color: "#64748b" }}>Non disponibile</span>
+            ) : pushStatus === "subscribed" ? (
+              <button
+                onClick={disablePush}
+                style={{ padding: "8px 16px", background: "rgba(239,68,68,0.15)", color: "#f87171", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 8, fontWeight: 600, cursor: "pointer", fontSize: 13 }}
+              >
+                Disattiva
+              </button>
+            ) : (
+              <button
+                onClick={enablePush}
+                disabled={pushStatus === "loading" || pushStatus === "denied"}
+                style={{
+                  padding: "8px 16px",
+                  background: pushStatus === "denied" ? "rgba(30,41,59,0.4)" : "rgba(201,162,39,0.15)",
+                  color: pushStatus === "denied" ? "#64748b" : "#C9A227",
+                  border: `1px solid ${pushStatus === "denied" ? "rgba(30,41,59,0.4)" : "rgba(201,162,39,0.3)"}`,
+                  borderRadius: 8, fontWeight: 600, cursor: pushStatus === "denied" ? "not-allowed" : "pointer", fontSize: 13
+                }}
+              >
+                {pushStatus === "loading" ? "..." : pushStatus === "denied" ? "Permesso negato" : "Abilita notifiche push"}
+              </button>
+            )}
+          </div>
+          {pushStatus === "subscribed" && (
+            <div style={{ marginTop: 10, fontSize: 12, color: "#4ade80" }}>Notifiche push attivate ✓</div>
+          )}
         </div>
 
         {prefs.email_subscribed && (
