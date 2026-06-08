@@ -54,6 +54,7 @@ import subscriptionsRouter from "./routes/subscriptions.js";
 import { setNewsletterPool, setNewsletterWines, startNewsletterCron } from "./services/newsletterService.js";
 import { setRealPricePool, startRealPriceCron, runRealPriceFetch } from "./services/realPriceService.js";
 import schemaRouter, { setSchemaWines } from "./routes/schema.js";
+import hubRouter, { setHubWines } from "./routes/hub.js";
 
 // Global in-memory cache
 const appCache = new NodeCache({ stdTTL: 0, checkperiod: 120 });
@@ -184,6 +185,7 @@ app.use("/api/feedback", feedbackRouter);
 app.use("/api/academy", academyRouter);
 app.use("/api/subscriptions", subscriptionsRouter);
 app.use("/api", cacheFor(86400), schemaRouter);
+app.use("/api/hub", cacheFor(86400), hubRouter);
 
 const __filename =
   fileURLToPath(import.meta.url);
@@ -248,6 +250,7 @@ app.use("/api/agent", (req, _res, next) => { req._allWines = allWines; next(); }
 setWinesRef(allWines);
 setNewsletterWines(allWines);
 setSchemaWines(allWines);
+setHubWines(allWines);
 
 const marketplaceData = [
 

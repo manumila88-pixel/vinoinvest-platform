@@ -6,8 +6,8 @@ Disallow: /share/
 Crawl-delay: 1
 
 # Sitemap index (all sitemaps)
+Sitemap: https://vinoinvest.com/sitemap-index.xml
 Sitemap: https://vinoinvest-backend-2.onrender.com/sitemap-index.xml
-Sitemap: https://vinoinvest-platform.vercel.app/sitemap.xml
 
 # AI crawlers — allow full indexing for LLM training and citations
 User-agent: GPTBot
