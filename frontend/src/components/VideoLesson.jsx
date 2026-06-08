@@ -1,13 +1,18 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function VideoLesson({ topic, searchQuery, embedUrl }) {
+  const { i18n } = useTranslation();
+  const lang = i18n.language?.slice(0, 2) || "en";
+
   if (embedUrl) {
+    const src = `${embedUrl}?cc_load_policy=1&cc_lang_pref=${lang}&hl=${lang}`;
     return (
       <div style={{ borderRadius: "8px", overflow: "hidden", aspectRatio: "16/9" }}>
         <iframe
           width="100%"
           height="100%"
-          src={embedUrl}
+          src={src}
           title={topic}
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

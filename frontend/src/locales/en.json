@@ -68,5 +68,9 @@
     "realData": "Real data",
     "estimated": "Estimated data",
     "mixed": "Mixed"
+  },
+  "disclaimer": {
+    "text": "VinoInvest is an analysis and intelligence platform for the fine wine market. We do not offer financial advice, manage assets, or hold MiFID II licensing. All AI Scores and prices are for informational purposes only. Past performance does not guarantee future results.",
+    "link": "Full disclaimer →"
   }
 }

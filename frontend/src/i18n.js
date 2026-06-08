@@ -15,6 +15,7 @@ const fr = {
   notifications: { title: "Notifications", enablePush: "🔔 Activer Push", markAllRead: "Tout marquer comme lu", noNotifications: "Pas encore de notifications.", pushEnabled: "Notifications push activées!" },
   common: { loading: "Chargement...", noData: "Aucune donnée", refresh: "Actualiser", save: "Enregistrer", cancel: "Annuler", close: "Fermer", back: "Retour", error: "Erreur", success: "Succès" },
   chart: { realData: "Données réelles", estimated: "Données estimées", mixed: "Mixte" },
+  disclaimer: { text: "VinoInvest est une plateforme d'analyse et d'intelligence pour le marché des vins fins. Nous n'offrons pas de conseils financiers, ne gérons pas d'actifs et ne détenons pas de licence MiFID II. Tous les AI Scores et les prix sont fournis à titre informatif uniquement. Les performances passées ne garantissent pas les résultats futurs.", link: "Avertissement complet →" },
   portfolio: { ...en.portfolio, title: "Mon Portefeuille", exportCSV: "Exporter CSV", noPositions: "Aucune position. Allez sur le Marché et ajoutez une position.", growth: "Croissance du Portefeuille", diversification: "Diversification", byType: "Par Type", byWine: "Par Vin", estimatedNote: "* Valeurs estimées basées sur 8% de croissance annuelle moyenne" }
 };
 const de = {
@@ -26,6 +27,7 @@ const de = {
   notifications: { title: "Benachrichtigungen", enablePush: "🔔 Push aktivieren", markAllRead: "Alle als gelesen markieren", noNotifications: "Noch keine Benachrichtigungen.", pushEnabled: "Push-Benachrichtigungen aktiviert!" },
   common: { loading: "Laden...", noData: "Keine Daten", refresh: "Aktualisieren", save: "Speichern", cancel: "Abbrechen", close: "Schließen", back: "Zurück", error: "Fehler", success: "Erfolg" },
   chart: { realData: "Echte Daten", estimated: "Geschätzte Daten", mixed: "Gemischt" },
+  disclaimer: { text: "VinoInvest ist eine Analyse- und Intelligence-Plattform für den Markt für Qualitätsweine. Wir bieten keine Finanzberatung an, verwalten keine Vermögenswerte und verfügen über keine MiFID-II-Lizenz. Alle AI-Scores und Preise dienen ausschließlich zu Informationszwecken. Vergangene Wertentwicklungen garantieren keine künftigen Ergebnisse.", link: "Vollständiger Haftungsausschluss →" },
   portfolio: { ...en.portfolio, title: "Mein Portfolio", exportCSV: "CSV exportieren", noPositions: "Noch keine Positionen.", growth: "Portfolio-Wachstum", diversification: "Diversifikation", byType: "Nach Typ", byWine: "Nach Wein", estimatedNote: "* Geschätzte Werte basierend auf 8% jährlichem Wachstum" }
 };
 const es = {
@@ -37,6 +39,7 @@ const es = {
   notifications: { title: "Notificaciones", enablePush: "🔔 Activar Push", markAllRead: "Marcar todo como leído", noNotifications: "Aún no hay notificaciones.", pushEnabled: "¡Notificaciones push activadas!" },
   common: { loading: "Cargando...", noData: "Sin datos", refresh: "Actualizar", save: "Guardar", cancel: "Cancelar", close: "Cerrar", back: "Volver", error: "Error", success: "Éxito" },
   chart: { realData: "Datos reales", estimated: "Datos estimados", mixed: "Mixto" },
+  disclaimer: { text: "VinoInvest es una plataforma de análisis e inteligencia para el mercado de vinos finos. No ofrecemos asesoramiento financiero, no gestionamos activos ni contamos con licencia MiFID II. Todos los AI Scores y precios son únicamente para fines informativos. Los rendimientos pasados no garantizan resultados futuros.", link: "Aviso legal completo →" },
   portfolio: { ...en.portfolio, title: "Mi Cartera", exportCSV: "Exportar CSV", noPositions: "Sin posiciones aún.", growth: "Crecimiento de la Cartera", diversification: "Diversificación", byType: "Por Tipo", byWine: "Por Vino", estimatedNote: "* Valores estimados basados en crecimiento anual promedio del 8%" }
 };
 const pt = {
@@ -48,6 +51,7 @@ const pt = {
   notifications: { title: "Notificações", enablePush: "🔔 Ativar Push", markAllRead: "Marcar tudo como lido", noNotifications: "Sem notificações ainda.", pushEnabled: "Notificações push ativadas!" },
   common: { loading: "Carregando...", noData: "Sem dados", refresh: "Atualizar", save: "Salvar", cancel: "Cancelar", close: "Fechar", back: "Voltar", error: "Erro", success: "Sucesso" },
   chart: { realData: "Dados reais", estimated: "Dados estimados", mixed: "Mistos" },
+  disclaimer: { text: "VinoInvest é uma plataforma de análise e inteligência para o mercado de vinhos finos. Não oferecemos aconselhamento financeiro, não gerimos ativos e não possuímos licença MiFID II. Todos os AI Scores e preços são apenas para fins informativos. Desempenhos passados não garantem resultados futuros.", link: "Aviso legal completo →" },
   portfolio: { ...en.portfolio, title: "Minha Carteira", exportCSV: "Exportar CSV", noPositions: "Sem posições ainda.", growth: "Crescimento da Carteira", diversification: "Diversificação", byType: "Por Tipo", byWine: "Por Vinho", estimatedNote: "* Valores estimados com base em crescimento médio anual de 8%" }
 };
 const zh = {
@@ -59,6 +63,7 @@ const zh = {
   notifications: { title: "通知", enablePush: "🔔 启用推送", markAllRead: "全部标为已读", noNotifications: "暂无通知。", pushEnabled: "推送通知已启用！" },
   common: { loading: "加载中...", noData: "无数据", refresh: "刷新", save: "保存", cancel: "取消", close: "关闭", back: "返回", error: "错误", success: "成功" },
   chart: { realData: "真实数据", estimated: "估算数据", mixed: "混合" },
+  disclaimer: { text: "VinoInvest 是一个针对精品葡萄酒市场的分析与智能平台。我们不提供财务建议，不管理资产，也不持有 MiFID II 许可证。所有 AI 评分和价格仅供参考。过去的表现不保证未来的结果。", link: "完整免责声明 →" },
   portfolio: { ...en.portfolio, title: "我的投资组合", exportCSV: "导出CSV", noPositions: "暂无持仓。", growth: "投资组合增长", diversification: "多元化", byType: "按类型", byWine: "按葡萄酒", estimatedNote: "* 基于葡萄酒市场历史年均8%增长的估算值" }
 };
 const ja = {
@@ -70,6 +75,7 @@ const ja = {
   notifications: { title: "通知", enablePush: "🔔 プッシュを有効化", markAllRead: "すべて既読にする", noNotifications: "まだ通知はありません。", pushEnabled: "プッシュ通知が有効になりました！" },
   common: { loading: "読み込み中...", noData: "データなし", refresh: "更新", save: "保存", cancel: "キャンセル", close: "閉じる", back: "戻る", error: "エラー", success: "成功" },
   chart: { realData: "実データ", estimated: "推定データ", mixed: "混合" },
+  disclaimer: { text: "VinoInvestは高級ワイン市場の分析・インテリジェンスプラットフォームです。当社は財務アドバイスの提供、資産運用、MiFID IIライセンスの保有を行っておりません。すべてのAIスコアおよび価格は情報提供のみを目的としています。過去の実績は将来の結果を保証するものではありません。", link: "免責事項の全文 →" },
   portfolio: { ...en.portfolio, title: "マイポートフォリオ", exportCSV: "CSVエクスポート", noPositions: "まだポジションがありません。", growth: "ポートフォリオ成長", diversification: "分散化", byType: "タイプ別", byWine: "ワイン別", estimatedNote: "* ワイン市場の年平均8%成長に基づく推定値" }
 };
 const ko = {
@@ -81,6 +87,7 @@ const ko = {
   notifications: { title: "알림", enablePush: "🔔 푸시 활성화", markAllRead: "모두 읽음 표시", noNotifications: "아직 알림이 없습니다.", pushEnabled: "푸시 알림이 활성화되었습니다!" },
   common: { loading: "로딩 중...", noData: "데이터 없음", refresh: "새로고침", save: "저장", cancel: "취소", close: "닫기", back: "뒤로", error: "오류", success: "성공" },
   chart: { realData: "실제 데이터", estimated: "추정 데이터", mixed: "혼합" },
+  disclaimer: { text: "VinoInvest는 파인 와인 시장을 위한 분석 및 인텔리전스 플랫폼입니다. 당사는 재무 조언을 제공하지 않으며, 자산을 관리하지 않고, MiFID II 라이선스를 보유하지 않습니다. 모든 AI 점수 및 가격은 정보 제공 목적으로만 제공됩니다. 과거 성과가 미래 결과를 보장하지 않습니다.", link: "전체 면책 조항 →" },
   portfolio: { ...en.portfolio }
 };
 const ar = {
@@ -92,6 +99,7 @@ const ar = {
   notifications: { title: "الإشعارات", enablePush: "🔔 تفعيل Push", markAllRead: "تعليم الكل كمقروء", noNotifications: "لا توجد إشعارات بعد.", pushEnabled: "تم تفعيل إشعارات Push!" },
   common: { loading: "جار التحميل...", noData: "لا توجد بيانات", refresh: "تحديث", save: "حفظ", cancel: "إلغاء", close: "إغلاق", back: "رجوع", error: "خطأ", success: "نجاح" },
   chart: { realData: "بيانات حقيقية", estimated: "بيانات تقديرية", mixed: "مختلطة" },
+  disclaimer: { text: "VinoInvest منصة تحليل وذكاء لسوق النبيذ الفاخر. لا نقدم استشارات مالية، ولا ندير أصولاً، ولا نحمل ترخيص MiFID II. جميع درجات الذكاء الاصطناعي والأسعار لأغراض إعلامية فقط. الأداء السابق لا يضمن النتائج المستقبلية.", link: "إخلاء المسؤولية الكامل →" },
   portfolio: { ...en.portfolio }
 };
 const ru = { nav: { dashboard: "Панель", market: "Рынок", news: "Новости", blog: "ИИ Блог", analysis: "Анализ", portfolio: "Портфель", portfolioAI: "ИИ Портфель", b2b: "B2B панель", alerts: "Уведомления", pricing: "Цены" }, hero: { title: "Глобальная Платформа для Инвестиций в Вино", subtitle: "Конструктор портфеля ИИ, аналитика вина, аналитика и поиск.", searchPlaceholder: "Поиск вин, производителей, регионов, vintages..." }, stats: { globalMarket: "Мировой рынок", portfolioValue: "Стоимость портфеля", invested: "Инвестировано", profitLoss: "Прибыль / Убыток", roi: "ROI", watchlist: "Список наблюдения" }, market: { searchPlaceholder: "Поиск любого вина в мире...", addToPortfolio: "+ Добавить в портфель", buyOn: "Купить на Wine-Searcher →", noWines: "Вина не найдены.", loadingMore: "Загрузка вин…" }, auth: { signOut: "Выйти", serverStarting: "⚡ Сервер запускается...", offline: "⚠️ Нет соединения" }, notifications: { title: "Уведомления", enablePush: "🔔 Включить Push", markAllRead: "Отметить всё прочитанным", noNotifications: "Уведомлений пока нет.", pushEnabled: "Push-уведомления включены!" }, common: { loading: "Загрузка...", noData: "Нет данных", refresh: "Обновить", save: "Сохранить", cancel: "Отмена", close: "Закрыть", back: "Назад", error: "Ошибка", success: "Успех" }, chart: { realData: "Реальные данные", estimated: "Расчётные данные", mixed: "Смешанные" }, portfolio: { ...en.portfolio } };
@@ -107,6 +115,7 @@ const makeTranslation = (navOverrides, heroOverrides, statsOverrides, marketOver
   notifications: { ...en.notifications, ...notifOverrides },
   common: { ...en.common, ...commonOverrides },
   chart: en.chart,
+  disclaimer: en.disclaimer,
   portfolio: en.portfolio,
 });
 

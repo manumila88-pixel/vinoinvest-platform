@@ -94,7 +94,7 @@ export default function LabelScanner({ onResult, onClose }) {
       {/* Header */}
       <div style={{ padding: "16px 20px", borderBottom: "1px solid rgba(30,41,59,0.5)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
-          <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, margin: 0 }}>📸 Label Scanner</h3>
+          <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, margin: 0 }}>Label Scanner</h3>
           <p style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>Powered by Claude Vision AI</p>
         </div>
         {onClose && <button onClick={() => { stopCamera(); onClose(); }} style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 20 }}>×</button>}
@@ -111,7 +111,7 @@ export default function LabelScanner({ onResult, onClose }) {
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {isMobile && (
                 <button onClick={startCamera} style={{ padding: "12px", background: "#C9A227", color: "#020617", border: "none", borderRadius: 10, fontWeight: 700, cursor: "pointer", fontSize: 15 }}>
-                  📷 Open Camera
+                  Open Camera
                 </button>
               )}
               <label style={{ padding: "12px", background: "rgba(201,162,39,0.1)", color: "#C9A227", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 10, fontWeight: 600, cursor: "pointer", fontSize: 14, textAlign: "center", display: "block" }}>
@@ -134,7 +134,7 @@ export default function LabelScanner({ onResult, onClose }) {
             </div>
             <p style={{ color: "#94a3b8", fontSize: 12, marginBottom: 16 }}>Center the wine label in the frame</p>
             <button onClick={capturePhoto} style={{ padding: "14px 32px", background: "#C9A227", color: "#020617", border: "none", borderRadius: 30, fontWeight: 700, cursor: "pointer", fontSize: 16 }}>
-              📸 Capture
+              Capture
             </button>
             <canvas ref={canvasRef} style={{ display: "none" }} />
           </div>

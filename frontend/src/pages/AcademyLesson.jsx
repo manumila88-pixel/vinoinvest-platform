@@ -165,7 +165,7 @@ export default function AcademyLesson() {
             <span style={{ fontSize: 11, background: "rgba(255,255,255,0.1)", color: "#94a3b8", borderRadius: 20, padding: "3px 10px" }}>{slides.length} slide</span>
           </div>
           <h1 style={{ fontSize: 30, fontWeight: 900, color: "#fff", marginBottom: 6, textShadow: "0 2px 8px rgba(0,0,0,0.5)" }}>{lesson.title}</h1>
-          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>📷 {media.heroCredit} — Unsplash</div>
+          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>© {media.heroCredit} — Unsplash</div>
         </div>
       </div>
 

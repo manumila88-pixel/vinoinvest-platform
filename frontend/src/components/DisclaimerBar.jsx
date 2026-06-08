@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const KEY = "vino_disclaimer_bar_dismissed";
 
 export default function DisclaimerBar() {
+  const { t } = useTranslation();
   const [dismissed, setDismissed] = useState(() => {
     try { return !!sessionStorage.getItem(KEY); } catch { return false; }
   });
@@ -18,8 +20,8 @@ export default function DisclaimerBar() {
     }}>
       <span style={{ fontSize: 11, color: "#64748b", flex: 1, lineHeight: 1.4 }}>
         <strong style={{ color: "#C9A227" }}>⚠️</strong>{" "}
-        VinoInvest fornisce dati a scopo informativo e non costituisce consulenza finanziaria. I rendimenti passati non garantiscono risultati futuri. Investire nel vino comporta rischi di perdita del capitale.{" "}
-        <a href="/disclaimer" style={{ color: "#C9A227", textDecoration: "none" }}>Disclaimer completo →</a>
+        {t("disclaimer.text")}{" "}
+        <a href="/disclaimer" style={{ color: "#C9A227", textDecoration: "none" }}>{t("disclaimer.link")}</a>
       </span>
       <button
         onClick={() => {

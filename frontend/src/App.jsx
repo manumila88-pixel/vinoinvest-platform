@@ -969,7 +969,7 @@ function App() {
             onMouseEnter={e => { e.currentTarget.style.color = "#C9A227"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.5)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.25)"; }}
           >📊 Index</button>
-          <a href="/scan" title="Scan wine label" aria-label="Scansiona etichetta vino" style={{ padding: "6px 10px", border: "1px solid rgba(30,41,59,0.7)", borderRadius: 8, background: "transparent", color: "#4a6a8a", fontSize: 15, cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center" }}>📷</a>
+          <a href="/scan" title="Scan wine label" aria-label="Scansiona etichetta vino" style={{ padding: "6px 10px", border: "1px solid rgba(30,41,59,0.7)", borderRadius: 8, background: "transparent", color: "#4a6a8a", fontSize: 11, cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center", fontWeight: 600 }}>Scan</a>
           <CurrencySelector />
           <LangSelector />
           {userEmail && <span style={{ fontSize: 12, color: "#3a5a7a" }}>{userEmail}</span>}
