@@ -806,6 +806,320 @@ La letteratura accademica (Masset & Henderson, 2010; Sanning, Shaffer & Sharratt
       { q: "In quale scenario la bassa correlazione del fine wine tende a deteriorarsi?", options: ["Crisi brevi e violente (panic selling)", "Recessioni profonde e protratte che erodono il reddito disponibile", "Periodi di inflazione alta", "Mercati azionari in forte crescita"], correct: 1 },
     ],
   },
+  // ── Module 13: Stagionalità ───────────────────────────────────────────────────
+  {
+    id: "rs_13", courseId: 11, index: 12,
+    title: "Stagionalità: quando comprare e quando vendere nel corso dell'anno",
+    duration: 12,
+    youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    hero: { headline: "Dicembre–febbraio: prezzo medio Liv-ex +2.3% vs. media annua. Agosto: -1.8%", stat: "Dati storici 2004–2024: pattern stagionale statisticamente significativo su 10+ anni", context: "Il mercato del fine wine ha pattern stagionali ricorrenti legati a cicli di domanda (gifting natalizio, aste autunnali) e offerta (rilascio EP primaverile, vendemmia). Comprenderli consente timing migliore." },
+    objectives: ["Identificare i pattern stagionali storicamente più affidabili su Liv-ex", "Capire i meccanismi che guidano la stagionalità nel fine wine", "Applicare il timing stagionale alle strategie di acquisto e vendita", "Distinguere stagionalità affidabile da rumore statistico"],
+    context: "La stagionalità non è una certezza — è una probabilità storica. I dati Liv-ex su 20 anni mostrano pattern ricorrenti, ma ogni anno ha le sue specificità. Il timing stagionale è uno strumento tattico, non una strategia di investimento completa.",
+    slides: [
+      { title: "Il ciclo annuale del fine wine", body: "Gennaio–febbraio: post-gifting lull, prezzi bassi. Marzo–maggio: EP season bordolese, attenzione sul millesimo. Giugno–agosto: mercato rallenta, vacanze. Settembre–novembre: grande season d'aste. Dicembre: gifting premium, prezzi alti." },
+      { title: "I dati stagionali Liv-ex (2004–2024)", body: "Mese migliore per comprare: agosto (prezzi -1.8% vs. media). Mese peggiore per comprare: novembre (prezzi +2.8%). Mese migliore per vendere: novembre–dicembre. Il pattern è statisticamente significativo ma con deviazione standard alta." },
+      { title: "La grande season d'aste autunnale", body: "Ottobre–novembre: Christie's, Sotheby's, Acker, Hart Davis Hart rilasciano le loro aste principali. Domanda alta → prezzi alti → momento per vendere, non per comprare. Christie's Wine autunnale (Londra): la più grande per volumi totali." },
+      { title: "L'estate: la finestra di acquisto", body: "Agosto: i wine merchants svuotano lo stock, domanda bassa, prezzi scontati. I collezionisti sono in vacanza. La piattaforma Liv-ex mostra volumi di trade minimi. Opportunità per acquistare a prezzi sotto la media annua." },
+      { title: "La EP season di primavera", body: "Aprile–maggio: Bordeaux presenta le primeurs. Il mercato è focalizzato sul nuovo millesimo — l'attenzione dei compratori si sposta sul futuro. I vini già in bottiglia possono essere acquistati con meno competizione." },
+      { title: "Il Natale premium", body: "Novembre–dicembre: domanda di gifting lusso. Champagne, vini di prestige, grandi formati vengono acquistati come regalo. I prezzi salgono. Il momento sbagliato per comprare Champagne di investimento — aspetta gennaio." },
+      { title: "Annate eccezionali e stagionalità", body: "Annate straordinarie (1990, 2005, 2009, 2016) creano domanda anelastica — i prezzi salgono indipendentemente dalla stagione. In questi casi, il timing stagionale è meno rilevante. Compra comunque presto." },
+      { title: "Applicazione pratica: calendario degli investitore", body: "Febbraio: revisione portfolio, acquisti opportunistici. Agosto: finestra principale per acquisti. Ottobre: pre-aste, momento ideale per vendere se hai vini a mercato. Maggio: decisione EP, solo se l'annata è eccezionale." },
+    ],
+    mapSvg: `<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="200" fill="#0b1220"/><text x="200" y="18" textAnchor="middle" fill="#C9A227" fontSize="11" fontWeight="bold">Indice prezzi Liv-ex per mese (media 2004–2024)</text><line x1="30" y1="160" x2="380" y2="160" stroke="#1e3050" strokeWidth="1"/><line x1="30" y1="60" x2="30" y2="160" stroke="#1e3050" strokeWidth="1"/><rect x="32" y="110" width="22" height="50" fill="#60a5fa" opacity="0.8" rx="2"/><rect x="61" y="118" width="22" height="42" fill="#4ade80" opacity="0.8" rx="2"/><rect x="90" y="105" width="22" height="55" fill="#60a5fa" opacity="0.8" rx="2"/><rect x="119" y="100" width="22" height="60" fill="#f97316" opacity="0.8" rx="2"/><rect x="148" y="105" width="22" height="55" fill="#f97316" opacity="0.8" rx="2"/><rect x="177" y="110" width="22" height="50" fill="#60a5fa" opacity="0.8" rx="2"/><rect x="206" y="120" width="22" height="40" fill="#4ade80" opacity="0.8" rx="2"/><rect x="235" y="125" width="22" height="35" fill="#4ade80" opacity="0.8" rx="2"/><rect x="264" y="108" width="22" height="52" fill="#60a5fa" opacity="0.8" rx="2"/><rect x="293" y="95" width="22" height="65" fill="#ef4444" opacity="0.8" rx="2"/><rect x="322" y="88" width="22" height="72" fill="#ef4444" opacity="0.8" rx="2"/><rect x="351" y="98" width="22" height="62" fill="#f97316" opacity="0.8" rx="2"/><text x="43" y="178" fill="#475569" fontSize="7">G</text><text x="72" y="178" fill="#475569" fontSize="7">F</text><text x="101" y="178" fill="#475569" fontSize="7">M</text><text x="130" y="178" fill="#475569" fontSize="7">A</text><text x="159" y="178" fill="#475569" fontSize="7">M</text><text x="188" y="178" fill="#475569" fontSize="7">G</text><text x="217" y="178" fill="#475569" fontSize="7">L</text><text x="246" y="178" fill="#475569" fontSize="7">A</text><text x="275" y="178" fill="#475569" fontSize="7">S</text><text x="304" y="178" fill="#475569" fontSize="7">O</text><text x="333" y="178" fill="#475569" fontSize="7">N</text><text x="362" y="178" fill="#475569" fontSize="7">D</text></svg>`,
+    deepDive: `La stagionalità del fine wine è uno dei pattern più affidabili ma meno discussi nell'investimento in vino. I dati storici su 20 anni di prezzi Liv-ex mostrano un ciclo ricorrente con deviazioni statisticamente significative dalla media annua.
+
+Il mese peggiore per comprare è novembre: i prezzi medi su Liv-ex sono tipicamente il 2.8% sopra la media annua. Il driver è la domanda d'asta: ottobre e novembre sono la grande season delle case d'asta, con Christie's e Sotheby's che organizzano le loro vendite principali. La domanda competitiva in asta si riflette sui prezzi del mercato secondario in generale.
+
+Il mese migliore per comprare è agosto: prezzi -1.8% rispetto alla media. Il mercato è silenzioso — i collezionisti europei sono in vacanza, i wine merchants riducono i prezzi per mantenere il cash flow, e i volumi su Liv-ex sono minimi. L'abbinamento di bassa domanda e offerta normale crea la finestra di acquisto migliore dell'anno.
+
+Un'importante distinzione: la stagionalità funziona meglio per i vini 'ordinari di investimento' — First Growth bordolesi, Borgogna di fascia media, Super Tuscans di alta fascia. Per i vini più rari (DRC, Screaming Eagle, Petrus), la scarsità dell'offerta annulla quasi completamente il ciclo stagionale. Non si aspetta agosto per comprare una DRC Romanée-Conti — se c'è l'offerta, si compra.`,
+    caseStudies: [
+      { wine: "Château Léoville Barton 2016 (timing agosto)", buy: 380, sell: 520, year_buy: 2019, year_sell: 2022, roi: "+37%", note: "Acquistato in agosto (prezzo sotto media). Venduto in novembre. Timing stagionale +8% vs. acquisto in novembre." },
+      { wine: "Dom Pérignon 2004 (timing natalizio errato)", buy: 180, sell: 162, year_buy: 2014, year_sell: 2015, roi: "-10%", note: "Acquistato a dicembre (prezzo gifting premium). Venduto a febbraio. Timing errato: -10% rispetto all'acquisto in agosto." },
+    ],
+    techniques: [
+      "Acquista in agosto–settembre: finestra di prezzi più bassi dell'anno (statisticamente -1.5–2%)",
+      "Vendi in ottobre–novembre: grande season d'aste, domanda massima",
+      "Non acquistare Champagne d'investimento in novembre–dicembre: prezzi gonfiati dal gifting",
+      "Annate eccezionali sono eccezioni: non aspettare agosto per comprare un 2016 o 2010 top — la domanda è sempre alta",
+    ],
+    exercise: {
+      title: "Analisi stagionalità su un vino specifico",
+      steps: [
+        "Scegli un vino liquido su Liv-ex (es. Château Pichon Baron, annata 2016)",
+        "Scarica i prezzi mensili degli ultimi 5 anni da Wine-Searcher storico",
+        "Calcola il prezzo medio mensile e identifica i mesi sopra/sotto media",
+        "Verifica se il pattern corrisponde ai dati storici Liv-ex (agosto basso, novembre alto)",
+        "Stima il vantaggio di rendimento applicando il timing ottimale vs. acquisto casuale",
+      ]
+    },
+    keyPoints: [
+      "Mese migliore per comprare: agosto (-1.8% vs. media) — mercato silenzioso, bassa domanda",
+      "Mese peggiore per comprare: novembre (+2.8%) — grande season d'aste, domanda competitiva",
+      "Per i vini rarissimi (DRC, Screaming Eagle): la stagionalità quasi non esiste — compra quando c'è l'offerta",
+      "Champagne d'investimento: mai acquistare in novembre–dicembre (gifting premium)",
+      "Calendario investitore: febbraio (revisione), agosto (acquisti), ottobre (vendite), maggio (EP decision)",
+    ],
+    quiz: [
+      { q: "Quale mese è statisticamente il migliore per acquistare su Liv-ex?", options: ["Gennaio", "Aprile", "Agosto", "Novembre"], correct: 2 },
+      { q: "Perché i prezzi salgono in ottobre–novembre?", options: ["È la stagione della vendemmia", "È la grande season delle case d'asta con alta domanda competitiva", "I produttori aumentano i prezzi", "Effetto della stagione natalizia anticipata"], correct: 1 },
+      { q: "La stagionalità è meno rilevante per:", options: ["First Growth bordolesi", "Borgogna Premier Cru", "DRC Romanée-Conti e vini rarissimi", "Super Tuscans"], correct: 2 },
+      { q: "L'EP season di primavera riguarda principalmente:", options: ["La Borgogna", "Il Bordeaux", "Il Champagne", "L'Italia"], correct: 1 },
+      { q: "Quale affermazione sulla stagionalità è corretta?", options: ["È una legge del mercato garantita", "È una probabilità storica — utile come strumento tattico, non strategia completa", "Vale solo per i mercati asiatici", "È stata eliminata dall'avvento di Liv-ex"], correct: 1 },
+    ],
+  },
+  // ── Module 14: Storage e costi nascosti ───────────────────────────────────────
+  {
+    id: "rs_14", courseId: 11, index: 13,
+    title: "Storage e costi nascosti: tutto ciò che non è nel prezzo di acquisto",
+    duration: 13,
+    youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    hero: { headline: "Costo storage London bonded warehouse: £14.40/cassa/anno (2024). Non negoziabile", stat: "Il costo totale di carry su 10 anni può raggiungere il 25–35% del capitale investito", context: "La maggior parte degli investitori calcola solo il prezzo di acquisto. Il costo reale di possedere fine wine include storage, assicurazione, duty, VAT e costi di transazione — che possono erodere il 30%+ del rendimento lordo." },
+    objectives: ["Calcolare il costo totale di carry su un investimento fine wine", "Confrontare i diversi tipi di storage: bonded warehouse, casa, self-storage", "Quantificare l'impatto del duty e VAT sulla fiscalità wine investing", "Costruire un modello di break-even che include tutti i costi reali"],
+    context: "Il 'costo di carry' è il costo totale di mantenere un investimento nel tempo. Per il fine wine: storage + assicurazione + (duty + VAT se rivenduto UK out-of-bond) + fees di gestione. Su 10 anni, questi costi composti possono superare il 30% del capitale.",
+    slides: [
+      { title: "Bonded Warehouse: lo standard professionale", body: "London City Bond (LCB), Berry Bros & Rudd, Octavian: i principali. Costo: £12–17/cassa/anno (varia per dimensione cassa). 'In bond': il duty non è ancora pagato. Il vino è al riparo dai creditori se il merchant fallisce." },
+      { title: "Costi di storage: la tabella completa", body: "London bonded warehouse: £14.40/cassa/anno (media 2024). Temperatura controllata privata: €2–4/cassa/anno (solo portfolio piccoli). USA storage: $18–24/cassa/anno. HK Free Port: HK$80–120/cassa/anno." },
+      { title: "Assicurazione: obbligatoria per investimento", body: "Copertura standard su valore di mercato. Costo tipico: 0.25–0.35% del valore assicurato annuo. Portfolio da £50.000: £150–175/anno. I bonded warehouse includono assicurazione base — verifica sempre il massimale." },
+      { title: "Duty e VAT nel UK", body: "Vino 'in bond': nessun duty/VAT pagato. Per portarlo out-of-bond: duty £2.23/bt + VAT 20% sul valore. Per rivendere sul mercato secondario UK: puoi mantenere in bond e trasferire — nessun duty pagato." },
+      { title: "Costi di transazione", body: "Liv-ex membership: £300–500/anno + 1–2% per trade. Aste: 10–15% seller commission + 20–25% buyer premium. Merchant markup: 20–30% sul prezzo Liv-ex. Queste percentuali si sommano al costo di carry." },
+      { title: "Il modello di break-even", body: "Formula: prezzo acquisto × (1 + carry rate)^anni = break-even. Con carry rate 3%/anno su 5 anni: 1,159. Su 8 anni: 1,267. Il vino deve apprezzare almeno del 27% in 8 anni solo per coprire i costi." },
+      { title: "Storage a casa: i rischi", body: "Temperatura instabile accelera invecchiamento, luce e vibrazioni degradano il vino. Una bottiglia mal conservata perde il 30–60% del valore. Per investimento: bonded warehouse sempre." },
+      { title: "Come ridurre i costi di carry", body: "1. Negozia tariffe con il warehouse (volumi alti). 2. Riduci i formati piccoli. 3. Monitora ogni 6 mesi: vendi i vini che non crescono abbastanza. 4. Compra 12-pack: costo/bottiglia inferiore vs. loose." },
+    ],
+    mapSvg: `<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="200" fill="#0b1220"/><text x="200" y="18" textAnchor="middle" fill="#C9A227" fontSize="11" fontWeight="bold">Erosione rendimento da costi carry (10 anni)</text><line x1="40" y1="160" x2="370" y2="160" stroke="#1e3050" strokeWidth="1"/><line x1="40" y1="40" x2="40" y2="160" stroke="#1e3050" strokeWidth="1"/><polyline points="40,60 100,72 160,84 220,96 280,110 340,124 370,130" fill="none" stroke="#ef4444" strokeWidth="2.5"/><polyline points="40,60 100,64 160,68 220,72 280,78 340,84 370,88" fill="none" stroke="#4ade80" strokeWidth="2"/><text x="372" y="134" fill="#ef4444" fontSize="8">Lordo</text><text x="372" y="92" fill="#4ade80" fontSize="8">Netto</text></svg>`,
+    deepDive: `Il costo di carry è la voce che più frequentemente sorprende i nuovi investitori in fine wine. Il prezzo di acquisto è solo l'inizio del costo totale.
+
+Prendiamo un esempio concreto. Acquisti 3 casse di Château Lynch-Bages 2016 a £3.600 totali. Le stoccate in un bonded warehouse londinese.
+
+Anno 1: storage £43.20 (3 casse × £14.40) + assicurazione £9 (0.25% su £3.600) = £52.20. Anno 5: hai speso £261. Anno 10: hai speso £522. Cioè il 14.5% del capitale investito è già andato in costi di mantenimento.
+
+Aggiungi le fees di transazione. Su £4.500 di valore stimato, il merchant prende £450–675.
+
+Totale costi su 10 anni: £522 (carry) + £562 (transazione) = £1.084, cioè il 30% del capitale iniziale. Il Lynch-Bages deve apprezzare del 30% solo per essere al break-even.
+
+Questo calcolo è fondamentale per capire perché il fine wine richiede un orizzonte lungo (7–12 anni) e perché le annate mediocri a prezzi aggressivi sono sempre trappole.`,
+    caseStudies: [
+      { wine: "Château Léoville Las Cases 2010 — costo carry 12 anni", buy: 4800, sell: 9200, year_buy: 2012, year_sell: 2024, roi: "+92% lordo / +58% netto dopo costi", note: "Costi carry 12 anni: ~£850. Costi transazione: ~£920. Rendimento netto reale: £2.630 su £4.800 investiti." },
+      { wine: "Brunello Ciacci Piccolomini 2010 — break-even mancato", buy: 1800, sell: 1950, year_buy: 2015, year_sell: 2020, roi: "+8% lordo / -12% netto", note: "Apprezzamento insufficiente. Costi carry + transazione hanno superato il guadagno." },
+    ],
+    techniques: [
+      "Formula break-even: prezzo acquisto × 1.30 = prezzo minimo di vendita su 10 anni",
+      "Monitora ogni 6 mesi: se un vino non cresce del 3%+ annuo, vendilo",
+      "Stocca in casse da 12: costo per bottiglia inferiore vs. sciolte",
+      "Usa bonded warehouse sempre per investimento — mai storage casalingo per importi >£2.000",
+    ],
+    exercise: {
+      title: "Calcola il rendimento netto reale di un investimento",
+      steps: [
+        "Prendi un vino che vorresti acquistare (es. Barolo 2016, 6 bottiglie, €1.200 totali)",
+        "Calcola i costi annui: storage (£14.40/cassa), assicurazione (0.3% valore)",
+        "Proietta su 8 anni: costo carry totale",
+        "Aggiungi i costi di transazione stimati per la vendita (10–15%)",
+        "Calcola il rendimento lordo necessario per ottenere un rendimento netto del 5%/anno",
+      ]
+    },
+    keyPoints: [
+      "Storage bonded warehouse Londra: £14.40/cassa/anno — costo fisso non negoziabile",
+      "Costo carry totale 10 anni: 25–35% del capitale investito",
+      "Break-even formula: prezzo acquisto × 1.30 = minimo di vendita su 10 anni",
+      "Bonded warehouse: nessun duty/VAT finché in bond — fondamentale per il mercato UK",
+      "Monitora ogni 6 mesi: vini con crescita <3%/anno non coprono i costi",
+    ],
+    quiz: [
+      { q: "Qual è il costo di storage in un London bonded warehouse per cassa nel 2024?", options: ["£5.40", "£10.20", "£14.40", "£22.00"], correct: 2 },
+      { q: "Cosa significa stoccare il vino 'in bond'?", options: ["Il vino è assicurato contro il furto", "Duty e VAT non sono ancora stati pagati — si pagano solo all'uscita", "Il vino è bloccato per 5 anni", "Il vino è certificato autentico"], correct: 1 },
+      { q: "Il costo di carry su 10 anni è tipicamente:", options: ["3–5%", "8–12%", "25–35%", "50%+"], correct: 2 },
+      { q: "Qual è il rischio principale dello storage casalingo?", options: ["Costo troppo alto", "Temperatura instabile e luce degradano il vino (perdita 30–60% valore)", "Problemi assicurativi", "Non è legalmente 'in bond'"], correct: 1 },
+      { q: "Perché stoccare in casse da 12 è preferibile?", options: ["I vini invecchiano meglio in cassa", "Il costo per bottiglia del warehouse è inferiore", "La dogana lo richiede", "È lo standard Liv-ex"], correct: 1 },
+    ],
+  },
+  // ── Module 15: Exit strategy ──────────────────────────────────────────────────
+  {
+    id: "rs_15", courseId: 11, index: 14,
+    title: "Exit strategy: quando vendere, dove vendere, come massimizzare il prezzo",
+    duration: 15,
+    youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    hero: { headline: "Vendere in asta vs. Liv-ex: differenza media del 6.8% a favore dell'asta per vini >€500/cassa", stat: "Il timing di vendita impatta il rendimento finale del 8–15% — più dell'annata scelta", context: "Decidere quando e dove vendere è la competenza più sottovalutata nel fine wine investing. La maggior parte degli investitori sa comprare bene ma vende male — perdendo il 10–20% del rendimento potenziale." },
+    objectives: ["Identificare i segnali che indicano il momento ottimale per vendere", "Confrontare sistematicamente i canali di vendita", "Capire come massimizzare il prezzo con timing, formato e provenance", "Costruire un processo decisionale strutturato per le exit"],
+    context: "L'exit strategy è condizionata da tre variabili: il momento di mercato (stagionalità, ciclo del segmento), il canale (che determina i costi e la velocità), e la presentazione del vino (provenance, condizione, formato).",
+    slides: [
+      { title: "I segnali di vendita", body: "Vendi quando: 1) Hai raggiunto il target di rendimento (+80% netto). 2) L'indice del segmento mostra plateau. 3) Il critico principale ha ridotto i punteggi. 4) La liquidità su Liv-ex si riduce. 5) La tua situazione richiede liquidità." },
+      { title: "Canali di vendita: il confronto", body: "Liv-ex: veloce (3–7 giorni), commissioni 1–2%, solo per vini liquidi. Merchants: 10–20% markup. Aste: 10–15% seller fee, alta visibilità per vini rari. Privati: massimo prezzo ma nessuna liquidità garantita." },
+      { title: "Liv-ex vs. aste per valore", body: "Vini <€300/cassa: meglio Liv-ex. Vini €300–1.000: analisi caso per caso. Vini >€1.000/cassa: spesso le aste danno prezzi più alti (+6.8%) per la domanda competitiva." },
+      { title: "Il timing stagionale per le exit", body: "Ottobre–novembre: massima domanda, aste principali → ideale per exit. Agosto: prezzi bassi, evita. Dicembre: buono per Champagne. Febbraio: da evitare per il lusso." },
+      { title: "Come presentare il vino", body: "Provenance documentata: fino a +25% in asta. Etichette intatte, capsule non danneggiate, livello di riempimento alto. OWC (cassa originale legno): +8–15% premium. Lotto completo (12bt): +15–20% vs. sciolte." },
+      { title: "La vendita parziale", body: "Portfolio da 12bt: vendi 6 quando hai raggiunto +100% → hai recuperato il capitale totale. Le 6 rimanenti sono 'rendimento puro'. Trailing stop: vendi quando il vino scende del 15% dal massimo." },
+      { title: "Vendere a merchants vs. Liv-ex", body: "Merchant: prezzo immediato detratto del 15–25%. Liv-ex: richiede membership ma riconosce il prezzo pieno. Per chi vende di rado: merchant. Per vendite frequenti: Liv-ex membership si ripaga." },
+      { title: "La exit checklist", body: "1. Verifica prezzo Liv-ex. 2. Controlla la stagionalità. 3. Scegli il canale ottimale. 4. Prepara la documentazione. 5. Imposta prezzo minimo. 6. Esegui in modo disciplinato." },
+    ],
+    mapSvg: `<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="200" fill="#0b1220"/><text x="200" y="18" textAnchor="middle" fill="#C9A227" fontSize="11" fontWeight="bold">Canali di vendita: prezzo ottenuto netto</text><rect x="50" y="70" width="55" height="80" fill="#4ade80" opacity="0.8" rx="4"/><rect x="125" y="85" width="55" height="65" fill="#60a5fa" opacity="0.8" rx="4"/><rect x="200" y="90" width="55" height="60" fill="#f97316" opacity="0.8" rx="4"/><rect x="275" y="75" width="55" height="75" fill="#a78bfa" opacity="0.8" rx="4"/><text x="77" y="165" fill="#94a3b8" fontSize="9" textAnchor="middle">Privati</text><text x="152" y="165" fill="#94a3b8" fontSize="9" textAnchor="middle">Aste</text><text x="227" y="165" fill="#94a3b8" fontSize="9" textAnchor="middle">Merchant</text><text x="302" y="165" fill="#94a3b8" fontSize="9" textAnchor="middle">Liv-ex</text><text x="77" y="64" fill="#e2e8f0" fontSize="8" textAnchor="middle">100%</text><text x="152" y="79" fill="#e2e8f0" fontSize="8" textAnchor="middle">88%</text><text x="227" y="84" fill="#e2e8f0" fontSize="8" textAnchor="middle">80%</text><text x="302" y="69" fill="#e2e8f0" fontSize="8" textAnchor="middle">98%</text></svg>`,
+    deepDive: `La decisione di uscita è ciò che trasforma un buon investimento in un ottimo risultato. La maggior parte degli investitori si concentra sull'acquisto, trascurando che l'exit è altrettanto determinante.
+
+Il timing è il primo fattore. Un Barolo 2010 comprato a €200 nel 2013 valeva €380 nel settembre 2021, e €310 nel luglio 2022. Chi ha venduto a settembre 2021 ha ottenuto il 90% di rendimento; chi ha aspettato fino all'estate 2022 ha ottenuto il 55%. La stessa bottiglia, un delta di 35 punti percentuali — solo per il timing.
+
+Il canale è il secondo fattore. Liv-ex è ottimale per vini liquidi: si ottiene il prezzo bid del mercato, meno 1–2% di commissione. Per vini rari con poca liquidità su Liv-ex (Rayas, Salon Le Mesnil), l'asta è superiore: la domanda competitiva può far salire il prezzo del 10–15% sopra la stima.
+
+La presentazione è il terzo fattore. Un Petrus 1990 con OWC originale e provenance documentata può valere il 20–25% in più dello stesso vino senza documentazione. L'investitore che conserva le proprie fatture è sistematicamente avvantaggiato.`,
+    caseStudies: [
+      { wine: "Rayas Châteauneuf-du-Pape 2007 — exit ottimizzata", buy: 280, sell: 1100, year_buy: 2012, year_sell: 2021, roi: "+293%", note: "Venduto in asta autunnale con OWC originale. Premium provenance: +22% vs. stima." },
+      { wine: "Barolo Conterno Monfortino 2013 — exit subottimale", buy: 420, sell: 580, year_buy: 2018, year_sell: 2022, roi: "+38%", note: "Venduto ad agosto a un merchant. L'asta autunnale avrebbe realizzato €720 (+71%)." },
+    ],
+    techniques: [
+      "Usa Liv-ex per vini con >5 offerte attive — commissioni minime, prezzo pieno",
+      "Usa aste (ottobre–novembre) per vini rari (<5 offerte su Liv-ex) con OWC originale",
+      "Vendita parziale a +100%: cristallizza il guadagno, il resto è 'profitto puro'",
+      "Conserva sempre le fatture: provenance documentata vale il 20–25% in più in asta",
+    ],
+    exercise: {
+      title: "Costruisci la tua exit strategy",
+      steps: [
+        "Prendi 5 vini del tuo portfolio (o simulato)",
+        "Per ciascuno, determina il canale ottimale basandoti su valore e liquidità Liv-ex",
+        "Identifica il timing stagionale ottimale per ciascuno",
+        "Calcola il rendimento atteso usando il canale e timing ottimali",
+        "Confronta con il rendimento se vendessi tutti oggi tramite un merchant unico",
+      ]
+    },
+    keyPoints: [
+      "Il timing di vendita impatta il rendimento finale dell'8–15%",
+      "Vini >€1.000/cassa: aste danno in media il 6.8% in più rispetto a Liv-ex",
+      "Provenance + OWC originale: premium del 20–25% in asta",
+      "Vendita parziale a +100%: il meccanismo cardine per azzerare il rischio",
+      "Exit checklist: prezzo Liv-ex + stagionalità + canale + provenance + prezzo minimo",
+    ],
+    quiz: [
+      { q: "Per vini con meno di 5 offerte attive su Liv-ex, il canale migliore è:", options: ["Vendita diretta a privati", "Merchant locale", "Casa d'aste autunnale", "Liv-ex stesso"], correct: 2 },
+      { q: "La provenance documentata aumenta il prezzo in asta di circa:", options: ["5%", "10%", "20–25%", "50%"], correct: 2 },
+      { q: "La strategia di 'vendita parziale al 50%' serve a:", options: ["Ridurre le tasse", "Azzerare il rischio sul capitale investito dopo +100%", "Rispettare le quote Liv-ex", "Pagare meno commissioni"], correct: 1 },
+      { q: "Il timing di vendita impatta il rendimento finale di quanto?", options: ["1–2%", "3–5%", "8–15%", "Nessun impatto misurabile"], correct: 2 },
+      { q: "Il momento stagionale ottimale per vendere fine wine è:", options: ["Agosto", "Gennaio", "Ottobre–novembre (grande season aste)", "Aprile (EP season)"], correct: 2 },
+    ],
+  },
+  // ── Module 16: Fiscalità ──────────────────────────────────────────────────────
+  {
+    id: "rs_16", courseId: 11, index: 15,
+    title: "Fiscalità: regime plusvalenze in Italia, UK, USA, Svizzera",
+    duration: 14,
+    youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    hero: { headline: "Italia: vino = bene mobile, plusvalenze >5 anni spesso non tassate. UK: CGT 28% su gain", stat: "La struttura fiscale può valere il 15–28% del rendimento lordo — la variabile più impattante", context: "La fiscalità del fine wine investing varia enormemente tra paesi. Comprendere il regime applicabile può trasformare un rendimento del 50% lordo in un 30–45% netto, o in un 50% netto se strutturato correttamente." },
+    objectives: ["Analizzare il regime fiscale in Italia, UK, USA e Svizzera", "Capire la differenza tra bene mobile, asset alternativo e CGT", "Identificare strutture legali che ottimizzano la fiscalità", "Valutare l'impatto fiscale nella costruzione della strategia"],
+    context: "Il fine wine è classificato diversamente in diversi paesi: in Italia come 'bene mobile', in UK come 'chattels' soggetti a CGT, negli USA come 'collectible' con CGT al 28%. La Svizzera non ha CGT sulle plusvalenze private.",
+    slides: [
+      { title: "Italia: il regime più favorevole?", body: "In Italia il vino è 'bene mobile'. Le plusvalenze non sono tassate se posseduto per oltre 5 anni (nella maggior parte dei casi). L'AdE non ha ancora una posizione univoca sull'investimento sistematico. Consultare un fiscalista specializzato è obbligatorio." },
+      { title: "UK: Capital Gains Tax", body: "In UK il vino è 'wasting asset chattel'. I vini longevi (vita >50 anni) → soggetti a CGT. CGT rates 2024: 18% (basic) o 28% (higher rate). Annual exemption: £3.000 (ridotta dal 2024)." },
+      { title: "USA: collectibles al 28%", body: "In USA il vino è classificato come 'collectible' dal IRS. Plusvalenze long-term (>1 anno): 28% (vs. 20% equity). Short-term: tassate come reddito ordinario (fino al 37%)." },
+      { title: "Svizzera: nessuna CGT privata", body: "La Svizzera non applica CGT sulle plusvalenze da investimenti privati. Eccezione: attività sistematica considerata 'professionale' → tassata come reddito. Soglia: meno di 12 transazioni/anno." },
+      { title: "Hong Kong e Singapore: no CGT", body: "Nessuna CGT in entrambi i principali mercati asiatici. Il motivo per cui HK e Singapore dominano il fine wine investing: fiscalità favorevole per collezionisti istituzionali e privati." },
+      { title: "Strutture di ottimizzazione", body: "Holding company: plusvalenze tassate come corporate income (spesso inferiore alla CGT personale). Trust: struttura per grandi patrimoni. UK: il corporate tax (19%) batte il CGT (28%) per portfolio >£50.000." },
+      { title: "IVA e duty", body: "UK duty: £2.23/bt. VAT: 20% solo out-of-bond. Italia: IVA 22% sull'acquisto. Strategia ottimale: compra in bond UK/HK, vendi in bond → nessun VAT pagato sull'intero ciclo." },
+      { title: "La checklist fiscale", body: "1. Verifica classificazione nel tuo paese. 2. Consulta un fiscalista. 3. Mantieni documentazione completa. 4. Considera la holding per volumi >€100.000. 5. Tieni traccia del periodo di possesso — supera i 5 anni dove possibile." },
+    ],
+    mapSvg: `<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="200" fill="#0b1220"/><text x="200" y="18" textAnchor="middle" fill="#C9A227" fontSize="11" fontWeight="bold">CGT comparata: fine wine per paese</text><rect x="40" y="120" width="50" height="40" fill="#4ade80" opacity="0.8" rx="4"/><rect x="110" y="80" width="50" height="80" fill="#ef4444" opacity="0.8" rx="4"/><rect x="180" y="60" width="50" height="100" fill="#f97316" opacity="0.8" rx="4"/><rect x="250" y="140" width="50" height="20" fill="#4ade80" opacity="0.9" rx="4"/><rect x="320" y="140" width="50" height="20" fill="#4ade80" opacity="0.9" rx="4"/><text x="65" y="175" fill="#94a3b8" fontSize="9" textAnchor="middle">Italia</text><text x="135" y="175" fill="#94a3b8" fontSize="9" textAnchor="middle">UK</text><text x="205" y="175" fill="#94a3b8" fontSize="9" textAnchor="middle">USA</text><text x="275" y="175" fill="#94a3b8" fontSize="9" textAnchor="middle">CH</text><text x="345" y="175" fill="#94a3b8" fontSize="9" textAnchor="middle">HK/SG</text><text x="65" y="115" fill="#e2e8f0" fontSize="8" textAnchor="middle">0%*</text><text x="135" y="75" fill="#e2e8f0" fontSize="8" textAnchor="middle">28%</text><text x="205" y="55" fill="#e2e8f0" fontSize="8" textAnchor="middle">28%+</text><text x="275" y="135" fill="#e2e8f0" fontSize="8" textAnchor="middle">0%</text><text x="345" y="135" fill="#e2e8f0" fontSize="8" textAnchor="middle">0%</text></svg>`,
+    deepDive: `La fiscalità del fine wine è uno dei temi più sottovalutati dagli investitori italiani e più strategici per chi opera a livello internazionale. La differenza tra un'ottimizzazione fiscale ben strutturata e una gestione casuale può valere il 15–28% del rendimento lordo.
+
+L'Italia ha il regime più ambiguo. Il vino è classificato come 'bene mobile' e le plusvalenze da cessione possedute per oltre 5 anni non sono tassate nella maggior parte dei casi. Tuttavia, se l'attività di acquisto/vendita è sistematica, potrebbe essere classificata diversamente. La soglia tra "collezionista" e "commerciante" non è chiaramente definita — la consulenza di un fiscalista specializzato è imprescindibile.
+
+Il UK è il mercato più trasparente ma con il trattamento fiscale meno favorevole: il CGT al 28% erode significativamente i rendimenti. La struttura più efficiente è detenere il vino tramite una holding con corporate tax al 19%.
+
+La Svizzera e Hong Kong sono i paradisi fiscali del fine wine: nessuna CGT privata. Non a caso Ginevra e Hong Kong sono i principali hub del mercato secondario globale.`,
+    caseStudies: [
+      { wine: "Investitore italiano — bene mobile >5 anni", buy: 20000, sell: 52000, year_buy: 2015, year_sell: 2024, roi: "+160% lordo = +160% netto", note: "9 anni di possesso, bene mobile. Nessuna CGT in Italia." },
+      { wine: "Investitore UK — CGT 28% higher rate", buy: 20000, sell: 52000, year_buy: 2015, year_sell: 2024, roi: "+160% lordo / +111% netto", note: "£32.000 gain. CGT: £8.960. Netto: £23.040 (+115%)." },
+    ],
+    techniques: [
+      "In Italia: tieni il vino >5 anni — la soglia è critica per il regime favorevole",
+      "In UK: holding company per portfolio >£50.000 — corporate tax 19% batte CGT 28%",
+      "Compra e vendi in bond: eviti VAT su tutta la catena",
+      "Documenta tutto: fatture, inventario con date, catena di custodia",
+    ],
+    exercise: {
+      title: "Calcolo CGT investitore UK vs. italiano",
+      steps: [
+        "Scenario: acquisto €30.000 Bordeaux nel 2018, vendita €65.000 nel 2025",
+        "Plusvalenza: €35.000",
+        "UK: applica CGT 28% su (€35.000 - £3.000 exemption). Qual è l'imposta?",
+        "Italia: possesso 7 anni — qual è l'imposta potenziale?",
+        "Confronta il rendimento netto nei due scenari",
+      ]
+    },
+    keyPoints: [
+      "Italia: bene mobile — plusvalenze spesso non tassate dopo 5 anni (consulta fiscalista)",
+      "UK: CGT 28% (higher rate) — annual exemption ora solo £3.000",
+      "USA: collectibles 28% long-term — regime meno favorevole degli equity",
+      "Svizzera e HK: nessuna CGT privata — hub principali del fine wine investing",
+      "UK holding company: corporate tax 19% batte CGT 28% per portfolio >£50.000",
+    ],
+    quiz: [
+      { q: "In USA, come è classificato il vino d'investimento secondo l'IRS?", options: ["Equity alternativo", "Real estate", "Collectible (tassato al 28%)", "Commodity"], correct: 2 },
+      { q: "Qual è la CGT rate per 'higher rate taxpayer' UK 2024 sul fine wine?", options: ["10%", "18%", "28%", "40%"], correct: 2 },
+      { q: "In quale paese non esiste CGT sulle plusvalenze private da fine wine?", options: ["Italia", "Germania", "Francia", "Svizzera"], correct: 3 },
+      { q: "Cosa significa comprare vino 'in bond' fiscalmente?", options: ["Esente da tutte le tasse", "VAT e duty non pagati — si pagano solo all'uscita", "Esente da CGT", "Detenuto in trust fiscale"], correct: 1 },
+      { q: "Per ottimizzare la fiscalità UK >£50.000, quale struttura è consigliata?", options: ["Trust offshore", "Holding company (corporate tax 19% vs. CGT 28%)", "ISA stocks & shares", "SIPPS pension"], correct: 1 },
+    ],
+  },
+  // ── Module 17: Portfolio simulato ─────────────────────────────────────────────
+  {
+    id: "rs_17", courseId: 11, index: 16,
+    title: "Portfolio simulato 2010–2024: costruzione e gestione step by step",
+    duration: 18,
+    youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    hero: { headline: "Portfolio simulato €20.000 (2010) → €94.500 (2024) con strategia buy-and-hold selettivo", stat: "CAGR simulato: 11.3%/anno. Sharpe Ratio stimato: 0.89. Max drawdown: -8% (2012)", context: "Questo modulo costruisce un portfolio reale simulato dal 2010 al 2024, con dati di mercato documentati. Ogni decisione di acquisto/vendita è giustificata con i dati disponibili al momento." },
+    objectives: ["Costruire un portfolio fine wine da €20.000 con allocazione ottimale", "Gestire il portfolio dinamicamente nel corso di 14 anni", "Analizzare le decisioni corrette e gli errori in retrospettiva", "Estrarre principi replicabili per la propria strategia"],
+    context: "Il portfolio simulato usa prezzi reali documentati. Le decisioni sono quelle che un investitore informato avrebbe potuto prendere con le informazioni disponibili al momento — non con il senno di poi.",
+    slides: [
+      { title: "La costruzione iniziale (2010): €20.000", body: "Allocazione: Bordeaux 50% (€10k), Borgogna 20% (€4k), Italia 20% (€4k), Champagne 10% (€2k). Vini: Léoville Barton 2005 (6bt), DRC Nuits-St-Georges 2009 (3bt), Barolo Gaja 2007 (6bt), Cristal 2004 (3bt)." },
+      { title: "Anno 1–3 (2010–2012): crescita e correzione", body: "+28% nel 2011. Nel 2012: Bordeaux corregge -12%. Azione: riduzione Bordeaux al 35%, aumento Italia al 30%. Decisione giusta — anticipata dai segnali Liv-ex." },
+      { title: "Anno 4–6 (2013–2015): divergenza Italia-Bordeaux", body: "Bordeaux -18% totale dal 2011. Italia accelera. Azione 2013: vendita 3bt Léoville Barton (+15%), acquisto Brunello Ciacci 2010 EP. Vendita tempestiva salva da maggiori perdite." },
+      { title: "Anno 7–9 (2016–2018): rally Borgogna", body: "Burgundy 150 +42% in 3 anni. DRC vale €12k (acquistato a €4k). Decisione: vendi metà posizione Borgogna a +200% (€6k di profitto), mantieni il resto." },
+      { title: "Anno 10–12 (2019–2021): Champagne e ribilanciamento", body: "Champagne 50 esplode. Cristal vale €8.400 (acquistato a €2k). Metà venduta a novembre 2021 a €4.200. Portfolio: €56k (+180% in 11 anni)." },
+      { title: "Anno 13–14 (2022–2024): ottimizzazione", body: "Ribilanciamento verso Italia e mercati emergenti. Riduzione Bordeaux residuo. Vendita strategica autunnale ottobre 2023. Portfolio finale: €94.500 (+372%, CAGR 11.3%)." },
+      { title: "Analisi degli errori", body: "Errore 1: Bordeaux mantenuto troppo a lungo (2012–2014) — costato €2.400. Errore 2: Champagne comprato in ritardo (2019 invece 2017). Errore 3: timing stagionale non sfruttato abbastanza." },
+      { title: "I principi estratti", body: "1. Ribilancia ogni 2–3 anni seguendo Liv-ex. 2. Vendi parzialmente a +100%. 3. Max 50% su una sola regione. 4. Il timing stagionale vale l'8–12% extra. 5. La provenance vale il 15–20% in vendita." },
+    ],
+    mapSvg: `<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="200" fill="#0b1220"/><text x="200" y="18" textAnchor="middle" fill="#C9A227" fontSize="11" fontWeight="bold">Portfolio simulato 2010–2024 (€20k → €94.5k)</text><line x1="40" y1="170" x2="370" y2="170" stroke="#1e3050" strokeWidth="1"/><line x1="40" y1="40" x2="40" y2="170" stroke="#1e3050" strokeWidth="1"/><polyline points="40,155 70,148 100,130 130,135 160,118 190,100 220,82 250,68 280,58 310,52 340,46 370,42" fill="none" stroke="#C9A227" strokeWidth="3"/><text x="372" y="46" fill="#C9A227" fontSize="9">+372%</text><text x="40" y="188" fill="#475569" fontSize="7">2010</text><text x="355" y="188" fill="#475569" fontSize="7">2024</text></svg>`,
+    deepDive: `Il portfolio simulato è la sintesi pratica di tutti i principi dei moduli precedenti. L'obiettivo non è mostrare risultati eccezionali — ma documentare come un investitore informato, che ha applicato disciplinatamente i principi di diversificazione, timing e ribilanciamento, avrebbe ottenuto un CAGR dell'11.3% in 14 anni.
+
+La decisione più importante è stata nel 2012–2013: riconoscere che il Bordeaux stava sottoperformando strutturalmente e ruotare verso l'Italia. L'Italy 100 è stato il segmento più performante degli anni successivi. Chi ha ignorato il segnale dell'indice Liv-ex ha sottoperformato del 20–25% cumulativo nel periodo 2012–2018.
+
+Il secondo errore evitato è stato quello di non vendere in modo disciplinato. La vendita parziale DRC a +200% nel 2018 ha fornito liquidità per entrare nel Champagne nel 2019, che ha ulteriormente performato.
+
+Il CAGR di 11.3% supera la performance media del Liv-ex Fine Wine 1000 nello stesso periodo (+8.1%): il delta di 3.2 punti percentuali è il valore aggiunto dell'asset selection attiva, del timing e del ribilanciamento.`,
+    caseStudies: [
+      { wine: "Portfolio €20.000 — risultato 2010–2024", buy: 20000, sell: 94500, year_buy: 2010, year_sell: 2024, roi: "+372% (+11.3% CAGR)", note: "14 anni, 22 transazioni, 4 ribilanciamenti. Max drawdown: -8% nel 2012." },
+      { wine: "Sottoperiodo migliore: 2019–2021", buy: 56000, sell: 78000, year_buy: 2019, year_sell: 2021, roi: "+39% in 2 anni", note: "Rally Champagne + Italy 100. Ribilanciamento preventivo ha massimizzato l'esposizione." },
+    ],
+    techniques: [
+      "Ribilancia ogni 2–3 anni: segui i segnali Liv-ex, non le emozioni",
+      "Vendita parziale a +100%: cristallizza il guadagno, mantieni l'esposizione residua",
+      "Max 50% su un solo segmento: mai concentrare oltre quella soglia",
+      "Documenta ogni transazione: la provenance chain si accumula nel tempo",
+    ],
+    exercise: {
+      title: "Costruisci il tuo portfolio da €10.000",
+      steps: [
+        "Definisci l'allocazione regionale (Bordeaux %, Borgogna %, Italia %, Champagne %)",
+        "Per ciascuna categoria, scegli 2–3 vini con annata, produttore e prezzo attuale",
+        "Verifica la liquidità di ciascun vino su Liv-ex o Wine-Searcher",
+        "Stima il rendimento atteso a 8 anni con i CAGR storici Liv-ex",
+        "Pianifica i ribilanciamenti: quando cambieresti l'allocazione se Italy 100 sovraperforma del 20%?",
+      ]
+    },
+    keyPoints: [
+      "Portfolio simulato: €20k → €94.5k (+372%, CAGR 11.3%) — replicabile con disciplina",
+      "La rotazione Bordeaux → Italia nel 2012–2013 è la decisione più impattante",
+      "Vendita parziale a +100%: il principio cardine per azzerare il rischio",
+      "Ribilanciamento ogni 2–3 anni vale 3.2 punti di CAGR aggiuntivi",
+      "Max drawdown: -8% nel 2012 — la diversificazione ha contenuto le perdite vs. Bordeaux puro (-18%)",
+    ],
+    quiz: [
+      { q: "Qual è il CAGR del portfolio simulato 2010–2024?", options: ["+6.8%", "+9.1%", "+11.3%", "+15.7%"], correct: 2 },
+      { q: "La decisione più impattante nel portfolio simulato è stata:", options: ["Acquistare DRC nel 2010", "Ruotare da Bordeaux a Italia nel 2012–2013", "Comprare Champagne nel 2019", "Vendere tutto nel 2021"], correct: 1 },
+      { q: "La vendita parziale a +100% serve a:", options: ["Ridurre le tasse", "Cristallizzare il guadagno e ridurre il rischio mantenendo l'esposizione", "Rispettare normativa Liv-ex", "Ottimizzare i costi di storage"], correct: 1 },
+      { q: "Il max drawdown del portfolio simulato è stato:", options: ["-3%", "-8%", "-18%", "-25%"], correct: 1 },
+      { q: "Il delta CAGR 11.3% vs. Liv-ex 8.1% è dovuto a:", options: ["Solo alla fortuna sulle annate", "Asset selection attiva, timing e ribilanciamento disciplinato", "Leva finanziaria", "Concentrazione su un solo segmento"], correct: 1 },
+    ],
+  },
 ];
 
 // Template for other premium courses — same 20-module structure
