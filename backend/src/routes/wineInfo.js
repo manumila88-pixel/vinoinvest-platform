@@ -2,6 +2,7 @@ import { Router } from "express";
 import { fetchCellarTrackerPrice, fetchCellarTrackerNotes } from "../connectors/cellarTracker.js";
 import { getWikiSummary, getWikidataWine, getECBInflation, getAuctionIndexData } from "../services/freeDataService.js";
 import { getWineImage } from "../services/imageService.js";
+import { getProducerFromWikidata } from "../services/wikidataService.js";
 
 const router = Router();
 
@@ -133,6 +134,22 @@ router.get("/inflation", async (_req, res) => {
 router.get("/market-index", async (_req, res) => {
   const data = await getAuctionIndexData();
   res.json(data || { livex100_ytd: null, source: "unavailable" });
+});
+
+// GET /api/wine-info/producer/:producerName/wikidata — Wikidata producer info
+router.get("/producer/:producerName/wikidata", async (req, res) => {
+  const producerName = decodeURIComponent(req.params.producerName || "").trim();
+  if (!producerName || producerName.length < 2) {
+    return res.status(400).json({ error: "producerName required" });
+  }
+
+  res.set("Cache-Control", "public, max-age=604800");
+
+  const data = await getProducerFromWikidata(producerName);
+  if (!data) {
+    return res.json({ name: producerName, country: null, foundingYear: null, description: null, notableWines: [], awards: [], source: "not_found" });
+  }
+  return res.json({ ...data, source: "wikidata" });
 });
 
 export default router;

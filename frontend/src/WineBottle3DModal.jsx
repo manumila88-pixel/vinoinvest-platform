@@ -66,6 +66,57 @@ function AwardsBadges({ awards }) {
   );
 }
 
+function ProducerInfoCard({ producerName }) {
+  const [info, setInfo] = useState(null);
+
+  useEffect(() => {
+    if (!producerName) return;
+    fetch(`${API}/api/wine-info/producer/${encodeURIComponent(producerName)}/wikidata`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data && (data.foundingYear || data.description || data.country)) {
+          setInfo(data);
+        }
+      })
+      .catch(() => {});
+  }, [producerName]);
+
+  if (!info) return null;
+
+  const desc = info.description ? (info.description.length > 100 ? info.description.slice(0, 97) + "…" : info.description) : null;
+
+  return (
+    <div style={{
+      marginTop: 12,
+      padding: "10px 14px",
+      background: "#0a1218",
+      borderRadius: 10,
+      border: "1px solid #1e2d3d",
+    }}>
+      <p style={{ fontSize: 10, color: "#475569", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700 }}>
+        Produttore
+      </p>
+      <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+        {info.country && (
+          <span style={{ fontSize: 11, color: "#60a5fa", background: "rgba(96,165,250,0.08)", padding: "2px 8px", borderRadius: 999, border: "1px solid rgba(96,165,250,0.2)" }}>
+            {info.country}
+          </span>
+        )}
+        {info.foundingYear && (
+          <span style={{ fontSize: 11, color: "#c9a227", background: "rgba(201,162,39,0.08)", padding: "2px 8px", borderRadius: 999, border: "1px solid rgba(201,162,39,0.2)" }}>
+            Est. {info.foundingYear}
+          </span>
+        )}
+      </div>
+      {desc && (
+        <p style={{ fontSize: 11, color: "#94a3b8", marginTop: 6, lineHeight: 1.5, fontStyle: "italic" }}>
+          {desc}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export default function WineBottle3DModal({ wine, onClose }) {
   const placeholderImg = (() => {
     const t = `${wine.type || ""} ${wine.variety || ""} ${wine.region || ""} ${wine.name || ""}`.toLowerCase();
@@ -287,6 +338,9 @@ export default function WineBottle3DModal({ wine, onClose }) {
             </div>
             <span style={{ fontSize: 26, fontWeight: 800, color: "#c9a227", whiteSpace: "nowrap" }}>€ {wine.currentPrice}</span>
           </div>
+
+          {/* ── Wikidata Producer Info ───────────────────────────────── */}
+          {wine.producer && <ProducerInfoCard producerName={wine.producer} />}
 
           {/* ── Awards & Recognitions ─────────────────────────────────── */}
           <AwardsBadges awards={wineAwards} />
