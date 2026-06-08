@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import Bottle3D from "./components/Bottle3D";
 import PriceHistoryChart from "./components/PriceHistoryChart";
 import SourceBadge from "./components/SourceBadge";
+import { getWineAwards } from "./data/awards";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
@@ -12,6 +13,57 @@ function getWineType(wine) {
   if (t.includes("ros")) return "Rosé";
   if (t.includes("chardonnay") || t.includes("sauvignon") || t.includes("riesling") || t.includes("pinot grigio") || t.includes("bianco") || t.includes("blanc") || t.includes("white")) return "Bianco";
   return "Rosso";
+}
+
+const BADGE_STYLE = {
+  background: "linear-gradient(135deg, #C9A227, #F5D06D)",
+  color: "#1a0a00",
+  borderRadius: 6,
+  padding: "2px 8px",
+  fontSize: 11,
+  fontWeight: 700,
+  whiteSpace: "nowrap",
+  cursor: "default",
+};
+
+function AwardsBadges({ awards }) {
+  const [expanded, setExpanded] = useState(false);
+  if (!awards || awards.length === 0) return null;
+
+  const VISIBLE = 3;
+  const visible = expanded ? awards : awards.slice(0, VISIBLE);
+  const hasMore = awards.length > VISIBLE;
+
+  return (
+    <div style={{ marginTop: 10 }}>
+      <p style={{ fontSize: 10, color: "#c9a227", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6, fontWeight: 700 }}>
+        Premi &amp; Riconoscimenti
+      </p>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 5, alignItems: "center" }}>
+        {visible.map((aw, i) => (
+          <span key={i} style={BADGE_STYLE} title={`${aw.award} ${aw.year}`}>
+            {aw.emoji} {aw.award} {aw.year}
+          </span>
+        ))}
+        {hasMore && !expanded && (
+          <button
+            onClick={() => setExpanded(true)}
+            style={{ background: "none", border: "none", color: "#c9a227", fontSize: 11, fontWeight: 700, cursor: "pointer", padding: "2px 4px", textDecoration: "underline" }}
+          >
+            Vedi tutti ({awards.length})
+          </button>
+        )}
+        {expanded && hasMore && (
+          <button
+            onClick={() => setExpanded(false)}
+            style={{ background: "none", border: "none", color: "#64748b", fontSize: 11, cursor: "pointer", padding: "2px 4px", textDecoration: "underline" }}
+          >
+            Comprimi
+          </button>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default function WineBottle3DModal({ wine, onClose }) {
@@ -160,6 +212,9 @@ export default function WineBottle3DModal({ wine, onClose }) {
     ],
   };
 
+  // ── Awards ────────────────────────────────────────────────────────────
+  const wineAwards = getWineAwards(wine.name, wine.producer);
+
   return (
     <div className="bottle-overlay" onClick={onClose}>
       <Helmet>
@@ -232,6 +287,9 @@ export default function WineBottle3DModal({ wine, onClose }) {
             </div>
             <span style={{ fontSize: 26, fontWeight: 800, color: "#c9a227", whiteSpace: "nowrap" }}>€ {wine.currentPrice}</span>
           </div>
+
+          {/* ── Awards & Recognitions ─────────────────────────────────── */}
+          <AwardsBadges awards={wineAwards} />
 
           <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
             <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#0c1a2e", color: "#60a5fa", border: "1px solid #1e3a5f" }}>{wineType}</span>

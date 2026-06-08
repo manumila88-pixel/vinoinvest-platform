@@ -56,6 +56,12 @@ import { setNewsletterPool, setNewsletterWines, startNewsletterCron } from "./se
 import { setRealPricePool, startRealPriceCron, runRealPriceFetch } from "./services/realPriceService.js";
 import schemaRouter, { setSchemaWines } from "./routes/schema.js";
 import hubRouter, { setHubWines } from "./routes/hub.js";
+import emailFlowRouter, { setEmailFlowRoutePool } from "./routes/emailFlow.js";
+import marketProducersRouter from "./routes/marketProducers.js";
+import { setEmailFlowPool, setEmailFlowWines } from "./services/emailFlowService.js";
+import { setMarketResearchWines } from "./services/wineMarketResearch.js";
+import { segmentWines } from "./services/wineSegmentationService.js";
+import "./jobs/emailFlowJob.js";
 
 // Global in-memory cache
 const appCache = new NodeCache({ stdTTL: 0, checkperiod: 120 });
@@ -182,6 +188,8 @@ app.use("/api/label-scan", aiRateLimit, labelRouter);
 app.use("/api/sources", cacheFor(3600), sourcesRouter);
 app.use("/api/email-preferences", emailPrefRouter);
 app.use("/api/unsubscribe", emailPrefRouter);
+app.use("/api/email-flow", emailFlowRouter);
+app.use("/api/market/producers", cacheFor(3600), marketProducersRouter);
 app.use("/api/feedback", feedbackRouter);
 app.use("/api/academy", academyRouter);
 app.use("/api/subscriptions", subscriptionsRouter);
@@ -252,6 +260,8 @@ setWinesRef(allWines);
 setNewsletterWines(allWines);
 setSchemaWines(allWines);
 setHubWines(allWines);
+setEmailFlowWines(allWines);
+setMarketResearchWines(allWines);
 
 const marketplaceData = [
 
@@ -513,6 +523,7 @@ initDB().then(() => {
   if (pool) { setWelcomeEmailPool(pool); }
   if (pool) { setEmailFlowPool(pool); startEmailFlowService(); }
   if (pool) { setRealPricePool(pool); }
+  if (pool) { setEmailFlowPool(pool); setEmailFlowRoutePool(pool); }
   // Start scheduled agents
   startBlogAgent();
   startImageAgent();
@@ -743,6 +754,7 @@ app.get("/api/wines", cacheFor(300), (req, res) => {
   const search = (req.query.search || "").toString().trim();
   const page = Math.max(1, parseInt(req.query.page) || 1);
   const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 20));
+  const segment = (req.query.segment || "").toString().trim().toLowerCase();
 
   let filtered;
   if (search) {
@@ -752,6 +764,10 @@ app.get("/api/wines", cacheFor(300), (req, res) => {
     );
   } else {
     filtered = allWines;
+  }
+
+  if (segment === "b2b" || segment === "b2c") {
+    filtered = segmentWines(filtered, segment);
   }
 
   const total = filtered.length;
@@ -1266,6 +1282,22 @@ const order = {
 
 orders.push(order);
   await saveOrder(order);
+
+  // Behavioral email trigger: first_purchase
+  const userId = req.body.userId;
+  if (userId && pool) {
+    pool.query(`SELECT COUNT(*) FROM orders WHERE user_id = $1`, [userId])
+      .then(async ({ rows }) => {
+        if (parseInt(rows[0].count) === 1) {
+          // This is the first purchase — fire email
+          const { rows: u } = await pool.query(`SELECT email, first_name FROM users WHERE id = $1`, [userId]).catch(() => ({ rows: [] }));
+          if (u[0]?.email) {
+            const { triggerBehavioralEmail } = await import("./services/emailFlowService.js");
+            triggerBehavioralEmail(userId, u[0].email, u[0].first_name, "first_purchase", { wineName: wine.name }).catch(() => {});
+          }
+        }
+      }).catch(() => {});
+  }
 
 res.json({
   success: true,
