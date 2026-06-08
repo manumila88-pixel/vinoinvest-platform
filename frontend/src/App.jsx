@@ -72,6 +72,7 @@ const ClientDetail = lazy(() => import("./pages/ClientDetail"));
 const MarketIntelligence = lazy(() => import("./pages/MarketIntelligence"));
 const B2BOnboarding = lazy(() => import("./pages/B2BOnboarding"));
 const DataSources = lazy(() => import("./pages/DataSources"));
+const B2BGuide = lazy(() => import("./pages/B2BGuide"));
 import ThemeToggle from "./components/ThemeToggle";
 import CommandPalette from "./components/CommandPalette";
 import VoiceInterface from "./components/VoiceInterface";
@@ -1970,6 +1971,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="/security" element={<SecurityPage />} />
           <Route path="/data" element={<DataDownload />} />
           <Route path="/data-sources" element={<DataSources />} />
+          <Route path="/b2b/guide/:slug" element={<B2BGuide />} />
           <Route path="/org-dashboard" element={<OrgDashboard />} />
           <Route path="/clients/:clientId" element={<ClientDetail />} />
           <Route path="/market-intelligence" element={<MarketIntelligence />} />

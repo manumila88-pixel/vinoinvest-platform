@@ -671,6 +671,38 @@ export default function B2BPage() {
         </div>
       </section>
 
+      {/* Guide Professionali */}
+      <section style={{ padding: "72px 32px", maxWidth: 960, margin: "0 auto" }}>
+        <h2 style={{ textAlign: "center", fontSize: 26, fontWeight: 800, marginBottom: 12, color: "#e2e8f0" }}>
+          Guide per professionisti
+        </h2>
+        <p style={{ textAlign: "center", color: "#475569", fontSize: 15, marginBottom: 40 }}>
+          Contenuto istituzionale per wealth manager, family office e consulenti finanziari.
+        </p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
+          {[
+            { title: "Wine investment per family office: asset allocation ottimale", slug: "wine-investment-family-office", tag: "Family Office" },
+            { title: "Fine wine come hedge contro inflazione: analisi 2000-2026", slug: "fine-wine-hedge-inflazione", tag: "Analisi" },
+            { title: "Sharpe ratio nel wine investment: calcolo e interpretazione", slug: "sharpe-ratio-wine-investment", tag: "Risk Analytics" },
+            { title: "MiFID II e wine investment: framework legale completo", slug: "mifid-ii-wine-investment", tag: "Compliance" },
+            { title: "Suitability assessment per clienti wine: metodologia", slug: "suitability-assessment-wine", tag: "Compliance" },
+            { title: "Come presentare fine wine a un UHNWI in 20 minuti", slug: "presentare-fine-wine-uhnwi", tag: "Advisory" },
+          ].map(g => (
+            <a key={g.slug} href={`/b2b/guide/${g.slug}`} style={{
+              display: "block", background: "rgba(8,15,30,0.6)", border: "1px solid rgba(59,130,246,0.1)",
+              borderRadius: 12, padding: "20px 24px", textDecoration: "none", transition: "border-color 0.2s",
+            }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(201,162,39,0.3)"}
+              onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(59,130,246,0.1)"}
+            >
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#C9A227", marginBottom: 10, textTransform: "uppercase", letterSpacing: 1 }}>{g.tag}</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "#e2e8f0", lineHeight: 1.5 }}>{g.title}</div>
+              <div style={{ fontSize: 12, color: "#C9A227", marginTop: 12 }}>Leggi guida →</div>
+            </a>
+          ))}
+        </div>
+      </section>
+
       {/* Footer */}
       <footer style={{
         borderTop: "1px solid rgba(59,130,246,0.1)",
