@@ -306,6 +306,7 @@ function App() {
   const navigate = useNavigate();
   const toast = useToast();
   const { t, i18n } = useTranslation();
+  const [authChecked, setAuthChecked] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [accountType, setAccountType] = useState("b2c");
@@ -427,15 +428,21 @@ function App() {
         setAccountType(type);
         setIsLoggedIn(true);
         localStorage.setItem("vino_user", JSON.stringify({ email: session.user.email, account_type: type }));
+        localStorage.setItem("vino_user_id", session.user.id);
         if (!isOnboardingCompleted(type)) setTimeout(() => setShowOnboarding(true), 600);
       } else if (event === "SIGNED_OUT") {
         setIsLoggedIn(false);
         setUserEmail("");
         setAccountType("b2c");
         localStorage.removeItem("vino_user");
+        localStorage.removeItem("vino_user_id");
       }
+      // Mark auth check done after INITIAL_SESSION (fired even when no session)
+      if (event === "INITIAL_SESSION") setAuthChecked(true);
     });
-    return () => subscription.unsubscribe();
+    // Safety fallback: if INITIAL_SESSION never fires (placeholder keys), unblock UI
+    const fallback = setTimeout(() => setAuthChecked(true), 1500);
+    return () => { subscription.unsubscribe(); clearTimeout(fallback); };
   }, []);
 
   useEffect(() => { if (isLoggedIn) { loadData(); loadTrending(); } }, [isLoggedIn]);
@@ -826,6 +833,17 @@ function App() {
     onDeleteAlert: deleteAlert,
   }), [aiScores, alerts, alertInputs, watchlist, handleImageClick, handleAddToPortfolio, toggleWatchlist, onCardTilt, onCardTiltReset, createAlert, handleAlertInputChange, deleteAlert]);
 
+  // Spinner while Supabase checks existing session (prevents flash of landing page)
+  if (!authChecked) {
+    return (
+      <div style={{ minHeight: "100vh", background: "#0b1220", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 16 }}>
+        <div style={{ width: 48, height: 48, border: "3px solid rgba(201,162,39,0.2)", borderTopColor: "#C9A227", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        <div style={{ color: "#C9A227", fontFamily: "Inter, sans-serif", fontSize: 14, letterSpacing: "0.05em" }}>VinoInvest</div>
+      </div>
+    );
+  }
+
   if (!isLoggedIn) {
     return (
       <LandingPage
@@ -834,6 +852,7 @@ function App() {
           setAccountType(account_type);
           setIsLoggedIn(true);
           localStorage.setItem("vino_user", JSON.stringify({ email: user.email, account_type }));
+          localStorage.setItem("vino_user_id", user.id);
           if (!isOnboardingCompleted(account_type)) setTimeout(() => setShowOnboarding(true), 600);
         }}
       />

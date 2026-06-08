@@ -1,6 +1,15 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { COURSES, PREMIUM_COURSES, BADGES, XP_RULES } from "../data/academyContent";
+import AuthModal from "../components/AuthModal";
+
+const BACKEND = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
+
+// Stripe price IDs for Academy plans
+const ACADEMY_PLANS = {
+  ACADEMY_INVESTOR: { monthly: "price_1Tec4l15Hu1SBgIFa0PwZQvq", annual: "price_1TecAi15Hu1SBgIFmZfb4ZLU", label: "Academy Investor", price: 9.99, annual_price: 95.99 },
+  ACADEMY_PRO:      { monthly: "price_1Tec9R15Hu1SBgIFH99EfNSL", annual: "price_1TecAi15Hu1SBgIFmZfb4ZLU", label: "Academy Professional", price: 19.99, annual_price: 191.99 },
+};
 
 const BG = "#0b1220";
 const PROGRESS_KEY = "vino_academy_v1";
@@ -129,25 +138,74 @@ function LessonList({ lessons, progress, courseSlug, navigate }) {
 }
 
 function LockedCourse({ course }) {
+  const [annual, setAnnual] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
+  const plan = ACADEMY_PLANS[course.planId] || ACADEMY_PLANS.ACADEMY_INVESTOR;
+  const navigate = useNavigate();
+
+  async function handleCheckout() {
+    const user = JSON.parse(localStorage.getItem("vino_user") || "{}");
+    if (!user.email) { setShowAuth(true); return; }
+    setLoading(true);
+    try {
+      const priceId = annual ? plan.annual : plan.monthly;
+      const res = await fetch(`${BACKEND}/api/payments/create-checkout-session`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ priceId, email: user.email, successUrl: window.location.href + "?subscribed=1", cancelUrl: window.location.href }),
+      });
+      const { url } = await res.json();
+      if (url) window.location.href = url;
+    } catch { alert("Errore checkout. Riprova."); }
+    setLoading(false);
+  }
+
   return (
+    <>
+    {showAuth && <AuthModal reason="Accedi per sbloccare i corsi premium" onSuccess={() => setShowAuth(false)} onClose={() => setShowAuth(false)} />}
     <div style={{ background: "#1a2535", borderRadius: 20, padding: 40, textAlign: "center" }}>
-      <div style={{ fontSize: 48, marginBottom: 16 }}>🔒</div>
-      <div style={{ fontSize: 22, fontWeight: 700, marginBottom: 8 }}>Corso Premium</div>
-      <div style={{ color: "#94a3b8", marginBottom: 24, maxWidth: 400, margin: "0 auto 24px" }}>
-        Questo corso fa parte del piano {course.planId === "ACADEMY_INVESTOR" ? "Investor" : "Professional"}.
-        Sblocca l'accesso a tutti i corsi del percorso per €{course.price}/mese.
+      <div style={{ fontSize: 56, marginBottom: 16 }}>🔒</div>
+      <div style={{ fontSize: 24, fontWeight: 800, marginBottom: 8 }}>Corso Premium</div>
+      <div style={{ color: "#94a3b8", marginBottom: 28, maxWidth: 440, margin: "0 auto 28px", lineHeight: 1.6 }}>
+        Questo corso fa parte del piano <strong style={{ color: "#C9A227" }}>{plan.label}</strong>.<br />
+        Sblocca 10 corsi avanzati per €{plan.price}/mese.
       </div>
-      <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-        <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 12, padding: "12px 20px", textAlign: "left", minWidth: 200 }}>
-          <div style={{ fontSize: 12, color: "#64748b", marginBottom: 6 }}>INCLUSO NEL PIANO</div>
-          <div style={{ fontWeight: 700, color: "#C9A227" }}>€{course.price}/mese</div>
-          <div style={{ fontSize: 13, color: "#94a3b8" }}>o €{Math.round(course.price * 9.6)}/anno (-20%)</div>
+
+      {/* Toggle mensile/annuale */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginBottom: 24 }}>
+        <span style={{ fontSize: 14, color: annual ? "#64748b" : "#e2e8f0" }}>Mensile</span>
+        <div onClick={() => setAnnual(!annual)} style={{ width: 44, height: 24, background: annual ? "#C9A227" : "rgba(255,255,255,0.1)", borderRadius: 12, cursor: "pointer", position: "relative", transition: "background 0.2s" }}>
+          <div style={{ width: 18, height: 18, background: "#fff", borderRadius: 9, position: "absolute", top: 3, left: annual ? 23 : 3, transition: "left 0.2s" }} />
         </div>
-        <button style={{ background: "#C9A227", border: "none", borderRadius: 12, padding: "14px 28px", fontWeight: 700, color: "#0b1220", cursor: "pointer", fontSize: 16, alignSelf: "center" }}
-          onClick={() => window.location.href = "/pricing"}>
-          Sblocca ora →
+        <span style={{ fontSize: 14, color: annual ? "#e2e8f0" : "#64748b" }}>Annuale <span style={{ color: "#4ade80", fontSize: 12, fontWeight: 700 }}>-20%</span></span>
+      </div>
+
+      {/* Pricing card */}
+      <div style={{ background: "rgba(201,162,39,0.08)", border: "1px solid rgba(201,162,39,0.2)", borderRadius: 16, padding: "20px 28px", display: "inline-block", marginBottom: 24, textAlign: "center" }}>
+        <div style={{ fontSize: 36, fontWeight: 900, color: "#C9A227" }}>€{annual ? plan.annual_price : plan.price}</div>
+        <div style={{ fontSize: 14, color: "#94a3b8" }}>/{annual ? "anno" : "mese"} — {plan.label}</div>
+        {annual && <div style={{ fontSize: 12, color: "#4ade80", marginTop: 4 }}>Risparmio €{Math.round(plan.price * 12 - plan.annual_price)} rispetto al mensile</div>}
+      </div>
+
+      {/* What's included */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 10, marginBottom: 28, textAlign: "left" }}>
+        {["10 corsi avanzati video + slide", "Quiz e certificato inclusi", "Mappe e grafici dati reali", "Accesso a vita ai contenuti acquistati", "Supporto email prioritario"].map((f, i) => (
+          <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start", fontSize: 14, color: "#94a3b8" }}>
+            <span style={{ color: "#4ade80", flexShrink: 0 }}>✓</span>{f}
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+        <button onClick={() => navigate("/pricing")} style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, padding: "12px 20px", color: "#94a3b8", cursor: "pointer", fontSize: 14 }}>
+          Tutti i piani →
+        </button>
+        <button onClick={handleCheckout} disabled={loading} style={{ background: "#C9A227", border: "none", borderRadius: 12, padding: "14px 32px", fontWeight: 800, color: "#0b1220", cursor: loading ? "default" : "pointer", fontSize: 16, opacity: loading ? 0.7 : 1 }}>
+          {loading ? "Reindirizzamento..." : `Sblocca — €${annual ? plan.annual_price : plan.price}/${annual ? "anno" : "mese"} →`}
         </button>
       </div>
     </div>
+    </>
   );
 }
