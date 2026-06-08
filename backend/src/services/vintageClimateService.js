@@ -2,10 +2,39 @@
  * VintageClimateService — Open-Meteo historical weather → vintage quality score.
  * No API key required. Free forever.
  * Score 0-100 for each wine region × year from 2000 to present.
+ * Persists computed scores to the vintage_scores table in PostgreSQL.
  */
 import NodeCache from "node-cache";
 
 const cache = new NodeCache({ stdTTL: 86400 * 30 }); // 30 days (historical data doesn't change)
+
+// DB pool — injected at startup via setVintageScoresPool()
+let pool = null;
+export function setVintageScoresPool(p) { pool = p; }
+export function _getPool() { return pool; }
+
+export async function initVintageScoresTable() {
+  if (!pool) return;
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS vintage_scores (
+        id SERIAL PRIMARY KEY,
+        region VARCHAR NOT NULL,
+        year INTEGER NOT NULL,
+        score NUMERIC(5,2),
+        temp_avg NUMERIC(5,2),
+        rain_total NUMERIC(8,2),
+        data_source VARCHAR DEFAULT 'open-meteo',
+        computed_at TIMESTAMP DEFAULT NOW(),
+        UNIQUE(region, year)
+      )
+    `);
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_vintage_scores_region ON vintage_scores(region)`).catch(() => {});
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_vintage_scores_year ON vintage_scores(year)`).catch(() => {});
+  } catch (e) {
+    console.warn("[vintageClimate] initVintageScoresTable:", e.message);
+  }
+}
 
 const REGIONS = {
   bordeaux:    { lat: 44.8,   lon: -0.5,    label: "Bordeaux",   country: "FR" },
@@ -82,6 +111,25 @@ async function fetchOpenMeteo(lat, lon, year) {
   return r.json();
 }
 
+async function persistVintageScore(result) {
+  if (!pool) return;
+  try {
+    await pool.query(
+      `INSERT INTO vintage_scores (region, year, score, temp_avg, rain_total, data_source, computed_at)
+       VALUES ($1, $2, $3, $4, $5, 'open-meteo', NOW())
+       ON CONFLICT (region, year) DO UPDATE
+         SET score = EXCLUDED.score,
+             temp_avg = EXCLUDED.temp_avg,
+             rain_total = EXCLUDED.rain_total,
+             data_source = EXCLUDED.data_source,
+             computed_at = NOW()`,
+      [result.region, result.year, result.score, result.temp_mean, result.rain_total]
+    );
+  } catch (e) {
+    console.warn("[vintageClimate] persistVintageScore:", e.message);
+  }
+}
+
 export async function getVintageScore(regionKey, year) {
   const region = REGIONS[regionKey];
   if (!region) return null;
@@ -105,6 +153,7 @@ export async function getVintageScore(regionKey, year) {
     const score = scoreVintage(tempMean, rainTotal, regionKey);
     const result = {
       region: region.label,
+      regionKey,
       year,
       score,
       label: vintageLabel(score),
@@ -114,12 +163,71 @@ export async function getVintageScore(regionKey, year) {
     };
 
     cache.set(cacheKey, result);
+    // Persist to DB (fire-and-forget — don't block the response)
+    persistVintageScore(result).catch(() => {});
     return result;
   } catch (err) {
     console.warn(`[vintageClimate] ${regionKey} ${year}:`, err.message);
     cache.set(cacheKey, null);
     return null;
   }
+}
+
+/** Query the DB directly — returns null if the row doesn't exist yet. */
+export async function getVintageScoreFromDB(region, year) {
+  if (!pool) return null;
+  try {
+    // Accept both region key (e.g. "bordeaux") and label (e.g. "Bordeaux")
+    const { rows } = await pool.query(
+      `SELECT * FROM vintage_scores WHERE (LOWER(region) = LOWER($1)) AND year = $2 LIMIT 1`,
+      [region, year]
+    );
+    if (!rows.length) return null;
+    const r = rows[0];
+    return {
+      region: r.region,
+      year: r.year,
+      score: parseFloat(r.score),
+      label: vintageLabel(parseFloat(r.score)),
+      temp_mean: r.temp_avg !== null ? parseFloat(r.temp_avg) : null,
+      rain_total: r.rain_total !== null ? parseFloat(r.rain_total) : null,
+      source: r.data_source,
+      computed_at: r.computed_at,
+    };
+  } catch (e) {
+    console.warn("[vintageClimate] getVintageScoreFromDB:", e.message);
+    return null;
+  }
+}
+
+/**
+ * Seed all region × year combinations (2000-2024) into vintage_scores.
+ * This makes 25 years × 12 regions = 300 API calls — call on demand only.
+ */
+export async function seedAllVintageScores() {
+  const regionKeys = Object.keys(REGIONS);
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  for (let y = 2000; y < currentYear; y++) years.push(y);
+
+  let saved = 0;
+  let failed = 0;
+
+  for (const regionKey of regionKeys) {
+    for (const year of years) {
+      try {
+        const result = await getVintageScore(regionKey, year);
+        if (result) saved++;
+        else failed++;
+      } catch {
+        failed++;
+      }
+      // Small delay to be polite to Open-Meteo
+      await new Promise(r => setTimeout(r, 200));
+    }
+  }
+
+  return { saved, failed, total: regionKeys.length * years.length };
 }
 
 export async function getRegionVintageRange(regionKey, fromYear = 2010) {

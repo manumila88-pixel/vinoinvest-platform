@@ -7,6 +7,31 @@ import { getWineAwards } from "./data/awards";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
+// Region inference: map wine fields to a vintage score region key
+function inferRegionKey(wine) {
+  const hay = [wine.region, wine.producer, wine.country, wine.name]
+    .filter(Boolean).join(" ").toLowerCase();
+  if (hay.includes("bordeaux") || hay.includes("pomerol") || hay.includes("saint-emilion") || hay.includes("medoc") || hay.includes("pessac")) return "bordeaux";
+  if (hay.includes("bourgogne") || hay.includes("burgundy") || hay.includes("chablis") || hay.includes("nuit") || hay.includes("beaune") || hay.includes("gevrey") || hay.includes("volnay") || hay.includes("meursault")) return "burgundy";
+  if (hay.includes("champagne") || hay.includes("reims") || hay.includes("epernay")) return "champagne";
+  if (hay.includes("barolo") || hay.includes("barbaresco") || hay.includes("piemonte") || hay.includes("langhe")) return "barolo";
+  if (hay.includes("chianti") || hay.includes("brunello") || hay.includes("montalcino") || hay.includes("montepulciano")) return "chianti";
+  if (hay.includes("toscana") || hay.includes("tuscany") || hay.includes("sassicaia") || hay.includes("tignanello") || hay.includes("supertuscan") || hay.includes("bolgheri")) return "tuscany";
+  if (hay.includes("rioja") || hay.includes("ribera")) return "rioja";
+  if (hay.includes("priorat") || hay.includes("priorato")) return "priorat";
+  if (hay.includes("douro") || hay.includes("portugal") || hay.includes("porto")) return "douro";
+  if (hay.includes("napa") || hay.includes("california") || hay.includes("sonoma")) return "napa";
+  if (hay.includes("mendoza") || hay.includes("argentina") || hay.includes("malbec")) return "mendoza";
+  if (hay.includes("mosel") || hay.includes("moselle") || hay.includes("riesling") || hay.includes("germany") || hay.includes("deutschland")) return "mosel";
+  // Italy fallback
+  if (hay.includes("italia") || hay.includes("italy") || hay.includes("italian")) return "tuscany";
+  // France fallback
+  if (hay.includes("france") || hay.includes("french") || hay.includes("francese")) return "bordeaux";
+  // Spain fallback
+  if (hay.includes("spain") || hay.includes("spanish") || hay.includes("spagna")) return "rioja";
+  return null;
+}
+
 function getWineType(wine) {
   const t = [wine.variety, wine.name, wine.region].filter(Boolean).join(" ").toLowerCase();
   if (t.includes("champagne") || t.includes("prosecco") || t.includes("cava") || t.includes("spumante")) return "Bollicine";
@@ -160,6 +185,88 @@ function ProducerInfoCard({ producerName }) {
           {desc}
         </p>
       )}
+    </div>
+  );
+}
+
+function VintageQualityBadge({ wine }) {
+  const [vintageData, setVintageData] = useState(null);
+
+  useEffect(() => {
+    const year = wine.vintage ? parseInt(wine.vintage) : null;
+    if (!year || year < 2000) return;
+    const regionKey = inferRegionKey(wine);
+    if (!regionKey) return;
+
+    fetch(`${API}/api/vintage/scores/${encodeURIComponent(regionKey)}/${year}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data && typeof data.score === "number") setVintageData(data); })
+      .catch(() => {});
+  }, [wine]);
+
+  if (!vintageData) return null;
+
+  const { score, year, region } = vintageData;
+  let bg, border, color;
+  if (score > 85) {
+    bg = "rgba(74,222,128,0.08)"; border = "rgba(74,222,128,0.3)"; color = "#4ade80";
+  } else if (score > 70) {
+    bg = "rgba(250,204,21,0.08)"; border = "rgba(250,204,21,0.3)"; color = "#facc15";
+  } else {
+    bg = "rgba(248,113,113,0.08)"; border = "rgba(248,113,113,0.3)"; color = "#f87171";
+  }
+
+  return (
+    <div style={{
+      marginTop: 10,
+      padding: "10px 14px",
+      background: bg,
+      borderRadius: 10,
+      border: `1px solid ${border}`,
+    }}>
+      <p style={{ fontSize: 10, color: "#475569", marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700 }}>
+        Qualita Annata
+      </p>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+        <span style={{ fontSize: 13, fontWeight: 800, color }}>
+          Annata {year}: {score}/100
+        </span>
+        <span style={{ fontSize: 11, color, background: "rgba(0,0,0,0.2)", padding: "1px 7px", borderRadius: 999, border: `1px solid ${border}` }}>
+          {vintageData.label}
+        </span>
+      </div>
+      <p style={{ fontSize: 10, color: "#475569", marginTop: 4, fontStyle: "italic" }}>
+        Dati climatici Open-Meteo · {region}
+      </p>
+    </div>
+  );
+}
+
+function FoodPairings({ wineId }) {
+  const [pairings, setPairings] = useState(null);
+
+  useEffect(() => {
+    if (!wineId) return;
+    fetch(`${API}/api/pairing/${encodeURIComponent(wineId)}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data?.pairings?.length) setPairings(data.pairings); })
+      .catch(() => {});
+  }, [wineId]);
+
+  if (!pairings) return null;
+
+  return (
+    <div style={{ marginTop: 12, padding: "10px 14px", background: "#0a1218", borderRadius: 10, border: "1px solid #1e2d3d" }}>
+      <p style={{ fontSize: 10, color: "#475569", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700 }}>
+        Abbinamenti
+      </p>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+        {pairings.slice(0, 6).map((p, i) => (
+          <span key={i} style={{ fontSize: 11, color: "#c9a227", background: "rgba(201,162,39,0.08)", padding: "2px 8px", borderRadius: 999, border: "1px solid rgba(201,162,39,0.2)" }}>
+            {p}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
@@ -388,6 +495,9 @@ export default function WineBottle3DModal({ wine, onClose }) {
 
           {/* ── Wikidata Producer Info ───────────────────────────────── */}
           {wine.producer && <ProducerInfoCard producerName={wine.producer} />}
+
+          {/* ── Vintage Climate Quality ──────────────────────────────── */}
+          <VintageQualityBadge wine={wine} />
 
           {/* ── Awards & Recognitions ─────────────────────────────────── */}
           <AwardsBadges awards={wineAwards} />

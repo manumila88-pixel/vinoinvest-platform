@@ -25,6 +25,7 @@ import purchaseRouter, { setPurchasePool } from "./routes/purchase.js";
 import adminRouter, { setAdminPool } from "./routes/admin.js";
 import wineInfoRouter from "./routes/wineInfo.js";
 import vintageRouter from "./routes/vintage.js";
+import { setVintageScoresPool, initVintageScoresTable } from "./services/vintageClimateService.js";
 import currencyRouter from "./routes/currency.js";
 import gamificationRouter from "./routes/gamification.js";
 import marketRouter from "./routes/market.js";
@@ -523,6 +524,7 @@ initDB().then(() => {
   if (pool) { setWelcomeEmailPool(pool); }
   if (pool) { setEmailFlowPool(pool); startEmailFlowService(); }
   if (pool) { setRealPricePool(pool); }
+  if (pool) { setVintageScoresPool(pool); initVintageScoresTable(); }
   if (pool) { setEmailFlowPool(pool); setEmailFlowRoutePool(pool); }
   // Start scheduled agents
   startBlogAgent();
