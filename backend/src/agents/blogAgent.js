@@ -124,10 +124,52 @@ async function generateArticles() {
   console.log(`[blogAgent] Done — ${generated} new articles`);
 }
 
-// Run every Monday at 06:00
-export function startBlogAgent() {
-  cron.schedule("0 6 * * 1", generateArticles, { timezone: "Europe/Rome" });
-  console.log("[blogAgent] Scheduled — Mondays 06:00 Rome");
+// Weekly automation: generate 3 topic-driven articles every Monday at 06:30
+async function generateWeeklyArticles() {
+  const month = new Date().getMonth() + 1;
+  const seasonal = SEASONAL_TOPICS[month];
+  const trending = await getTrendingTopics();
+
+  // 3 articles: 1 market update, 1 deep dive on top wine, 1 rotating educational topic
+  const topics = [
+    trending[0] || `Analisi mercato vino: cosa comprare nella settimana ${new Date().toLocaleDateString('it-IT')}`,
+    trending[1] || `Deep dive: ${seasonal}`,
+    ...EVERGREEN_TOPICS.slice(0, 1),
+  ].slice(0, 3);
+
+  let generated = 0;
+  for (const title of topics) {
+    const slug = title.toLowerCase()
+      .replace(/[àáâãäå]/g, "a").replace(/[èéêë]/g, "e")
+      .replace(/[ìíîï]/g, "i").replace(/[òóôõö]/g, "o")
+      .replace(/[ùúûü]/g, "u")
+      .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80);
+
+    if (await postExists(slug)) continue;
+
+    const result = await cachedCall({
+      task: "blog_article",
+      data: { title },
+      complexity: "blog",
+      trackUsage: (u) => trackUsage({ ...u, endpoint: "blog_weekly" }),
+    });
+
+    if (result?.title) {
+      result.slug = result.slug || slug;
+      result.tokensUsed = 700;
+      await saveBlogPost(result);
+      generated++;
+      console.log(`[blogAgent] Weekly: ${result.title}`);
+    }
+    await new Promise(r => setTimeout(r, 800));
+  }
+  console.log(`[blogAgent] Weekly automation done — ${generated} new articles`);
 }
 
-export { generateArticles };
+// Run every Monday at 06:30 CET
+export function startBlogAgent() {
+  cron.schedule("30 6 * * 1", generateWeeklyArticles, { timezone: "Europe/Rome" });
+  console.log("[blogAgent] Scheduled — Mondays 06:30 Rome");
+}
+
+export { generateArticles, generateWeeklyArticles };
