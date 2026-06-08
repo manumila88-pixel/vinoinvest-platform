@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { getProducerScore, seededNoise } from "../data/producerScores.js";
 
 let pool = null;
 
@@ -79,21 +80,27 @@ function algorithmicScore(wine) {
   const risk = wine.risk || "Medio";
   const trend = wine.marketTrend || "Stable";
 
+  // Lookup real producer score instead of generic formula
+  const producerBase = getProducerScore(wine.producer || wine.name || "");
+
   const critic = Math.min(100, Math.max(0, Math.round((criticScore - 78) * 5)));
   const vintageScore = Math.min(100, Math.max(0, 30 + age * 4));
   const market = trend === "Bullish" ? 82 : trend === "Bearish" ? 28 : 52;
   const riskAdj = risk === "Basso" ? 80 : risk === "Medio" ? 60 : 35;
-  const producer = Math.min(100, Math.round(criticScore * 0.88));
 
-  const score = Math.min(100, Math.max(0, Math.round(
-    critic * 0.25 + vintageScore * 0.20 + market * 0.25 + riskAdj * 0.15 + producer * 0.15
-  )));
+  // Add deterministic per-wine noise (±4 points) — same wine always same score
+  const noise = Math.round((seededNoise(wine.id || wine.name || "", 42) - 0.5) * 8);
 
+  const score = Math.min(99, Math.max(1, Math.round(
+    critic * 0.25 + vintageScore * 0.20 + market * 0.20 + riskAdj * 0.15 + producerBase * 0.20
+  ) + noise));
+
+  const signal = score >= 82 ? "Strong Buy" : score >= 68 ? "Buy" : score >= 48 ? "Hold" : "Sell";
   return {
     score,
-    breakdown: { vintage: vintageScore, producer, market, critic, risk_adjusted: riskAdj },
-    signal: score >= 80 ? "Strong Buy" : score >= 65 ? "Buy" : score >= 45 ? "Hold" : "Sell",
-    reasoning: `Score basato su dati statici: critico ${criticScore}/100, annata ${vintage} (${age}a), trend ${trend}, rischio ${risk}.`,
+    breakdown: { vintage: vintageScore, producer: producerBase, market, critic, risk_adjusted: riskAdj },
+    signal,
+    reasoning: `Score basato su produttore (${wine.producer || "N/A"}: ${producerBase}/100), annata ${vintage} (${age}a), trend ${trend}, rischio ${risk}. Punteggio critico: ${criticScore}/100.`,
   };
 }
 

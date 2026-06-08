@@ -50,6 +50,9 @@ import AcademyVerify from "./pages/AcademyVerify";
 import AcademyModule from "./pages/AcademyModule";
 import AdminDashboard from "./pages/AdminDashboard";
 import PrivacySettings from "./pages/PrivacySettings";
+import Terms from "./pages/Terms";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Disclaimer from "./pages/Disclaimer";
 import ThemeToggle from "./components/ThemeToggle";
 import VoiceInterface from "./components/VoiceInterface";
 import { getSavedTheme, applyTheme } from "./lib/theme";
@@ -1356,9 +1359,9 @@ function App() {
                             <td style={{ textAlign: "center", padding: "4px 8px", verticalAlign: "middle" }}>
                               <PortfolioSparkline wineId={h.id} purchasePrice={h.purchasePrice} currentPrice={h.currentPrice} />
                             </td>
-                            <td style={{ textAlign: "right", padding: "11px 8px", color: "#C9A227" }}>€ {est1y}</td>
-                            <td style={{ textAlign: "right", padding: "11px 8px", color: "#C9A227" }}>€ {est5y}</td>
-                            <td style={{ textAlign: "right", padding: "11px 8px", color: "#C9A227" }}>€ {est10y}</td>
+                            <td style={{ textAlign: "right", padding: "11px 8px", color: "#C9A227" }}>€ {est1y}*</td>
+                            <td style={{ textAlign: "right", padding: "11px 8px", color: "#C9A227" }}>€ {est5y}*</td>
+                            <td style={{ textAlign: "right", padding: "11px 8px", color: "#C9A227" }}>€ {est10y}*</td>
                           </tr>
                         );
                       })}
@@ -1374,7 +1377,7 @@ function App() {
                       <Line type="monotone" dataKey="value" stroke="#C9A227" strokeWidth={2.5} dot={false} />
                     </LineChart>
                   </div>
-                  <p style={{ marginTop: 14, fontSize: 11, color: "#1e3050" }}>* Estimated values based on 8% average annual growth (wine market historical average)</p>
+                  <p style={{ marginTop: 14, fontSize: 11, color: "#1e3050" }}>* Stima basata su crescita media annua storica 8% (fonte: Liv-ex 100, 2001–2024). I rendimenti passati non garantiscono risultati futuri. Non costituisce consulenza finanziaria. <a href="/disclaimer" style={{ color: "#334155" }}>Disclaimer →</a></p>
 
                   {/* ── Diversification breakdown ─────────────────────────── */}
                   <div style={{ marginTop: 36 }}>
@@ -1469,9 +1472,9 @@ function App() {
                         <div className="wineCard-body" style={{ padding: 0 }}>
                           <h2>{item.wineName}</h2>
                           <p className="wineCard-producer">{item.region}</p>
-                          <p style={{ fontSize: 12, color: "#3a5a7a" }}>Signal: <span style={{ color: "#C9A227" }}>{item.signal}</span> · AI Score: {item.aiScore}</p>
+                          <p style={{ fontSize: 12, color: "#3a5a7a" }}>Signal: <span style={{ color: "#C9A227" }}>{item.signal}</span> <span style={{ fontSize: 10, color: "#475569" }}>(informativo)</span> · AI Score: {item.aiScore}</p>
                           <p style={{ fontSize: 12, color: "#3a5a7a" }}>Bottles: {item.estimatedBottles} · Allocation: <span style={{ color: "#e2e8f0" }}>€ {item.allocatedAmount}</span></p>
-                          <p style={{ fontSize: 12, color: "#3a5a7a" }}>Estimated Return: <span style={{ color: "#4ade80" }}>€ {item.estimatedReturn}</span></p>
+                          <p style={{ fontSize: 12, color: "#3a5a7a" }}>Estimated Return: <span style={{ color: "#4ade80" }}>€ {item.estimatedReturn}*</span></p>
                         </div>
                       </div>
                     ))}
@@ -1663,13 +1666,16 @@ function App() {
             </span>
           ))}
         </div>
-        VinoInvest fornisce dati e analisi a scopo informativo.{" "}
-        <strong style={{ color: "#64748b" }}>Non costituisce consulenza finanziaria.</strong>{" "}
-        I prezzi mostrati sono indicativi. Investire nel vino comporta rischi.
-        I rendimenti passati non garantiscono rendimenti futuri.{" "}
+        <div style={{ background: "rgba(201,162,39,0.06)", border: "1px solid rgba(201,162,39,0.15)", borderRadius: 8, padding: "10px 14px", marginBottom: 10, fontSize: 12, lineHeight: 1.6, color: "#94a3b8" }}>
+          <strong style={{ color: "#C9A227" }}>⚠️ Avvertenza:</strong> VinoInvest fornisce dati e analisi a scopo puramente informativo. Non costituisce consulenza finanziaria, raccomandazione di investimento o sollecitazione all'acquisto. I rendimenti passati non garantiscono risultati futuri. Investire nel vino comporta rischi di perdita del capitale. I prezzi mostrati sono stime algoritmiche salvo diversa indicazione. <a href="/disclaimer" style={{ color: "#C9A227" }}>Leggi il disclaimer completo →</a>
+        </div>
         <span style={{ color: "#334155" }}>
           © {new Date().getFullYear()} VinoInvest ·{" "}
-          <a href="/transparency" style={{ color: "#475569", textDecoration: "none" }}>Trasparenza dati</a>{" · "}
+          <a href="/terms" style={{ color: "#475569", textDecoration: "none" }}>Termini</a>{" · "}
+          <a href="/privacy" style={{ color: "#475569", textDecoration: "none" }}>Privacy</a>{" · "}
+          <a href="/cookies" style={{ color: "#475569", textDecoration: "none" }}>Cookie</a>{" · "}
+          <a href="/disclaimer" style={{ color: "#475569", textDecoration: "none" }}>Disclaimer</a>{" · "}
+          <a href="/transparency" style={{ color: "#475569", textDecoration: "none" }}>Trasparenza</a>{" · "}
           <a href="mailto:manumila88@gmail.com" style={{ color: "#475569", textDecoration: "none" }}>Contatti</a>
         </span>
       </footer>
@@ -1720,6 +1726,9 @@ createRoot(document.getElementById("root")).render(
           <Route path="/verify/:code" element={<AcademyVerify />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/settings/privacy" element={<PrivacySettings />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="*" element={<App />} />
         </Routes>
       </CurrencyProvider>
