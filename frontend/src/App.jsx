@@ -47,6 +47,7 @@ import Academy from "./pages/Academy";
 import AcademyCourse from "./pages/AcademyCourse";
 import AcademyLesson from "./pages/AcademyLesson";
 import AcademyVerify from "./pages/AcademyVerify";
+import AcademyModule from "./pages/AcademyModule";
 import AdminDashboard from "./pages/AdminDashboard";
 import ThemeToggle from "./components/ThemeToggle";
 import VoiceInterface from "./components/VoiceInterface";
@@ -1714,6 +1715,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="/academy" element={<Academy />} />
           <Route path="/academy/course/:slug" element={<AcademyCourse />} />
           <Route path="/academy/lesson/:lessonId" element={<AcademyLesson />} />
+          <Route path="/academy/module/:moduleId" element={<AcademyModule />} />
           <Route path="/verify/:code" element={<AcademyVerify />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="*" element={<App />} />
