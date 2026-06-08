@@ -1,6 +1,12 @@
 User-agent: *
 Allow: /
-Disallow: /api/
-Crawl-delay: 2
+Disallow: /admin
+Disallow: /settings/
+Disallow: /share/
+Crawl-delay: 1
 
+# Static sitemap (all SPA pages)
+Sitemap: https://vinoinvest-platform.vercel.app/sitemap.xml
+
+# Dynamic sitemap (wine catalog — 50k+ wines)
 Sitemap: https://vinoinvest-backend-2.onrender.com/api/sitemap.xml

@@ -1241,20 +1241,39 @@ app.get("/api/ai/proactive-analysis/:userId", (req, res) => {
   res.json({ available: true, ageMinutes: ageMin, ...result });
 });
 
-// GET /api/sitemap.xml — dynamic sitemap for SEO
+// GET /api/sitemap.xml — dynamic sitemap: all static routes + wine catalog
 app.get("/api/sitemap.xml", (_req, res) => {
   const base = "https://vinoinvest-platform.vercel.app";
-  const staticUrls = ["/", "/pricing", "/blog"].map(p =>
-    `<url><loc>${base}${p}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>`
+  const today = new Date().toISOString().slice(0, 10);
+  const staticPages = [
+    { p: "/",            freq: "daily",   pri: "1.0" },
+    { p: "/pricing",     freq: "weekly",  pri: "0.9" },
+    { p: "/b2b",         freq: "monthly", pri: "0.8" },
+    { p: "/academy",     freq: "weekly",  pri: "0.8" },
+    { p: "/learn",       freq: "weekly",  pri: "0.7" },
+    { p: "/market-index",freq: "daily",   pri: "0.7" },
+    { p: "/sentiment",   freq: "daily",   pri: "0.7" },
+    { p: "/en-primeur",  freq: "weekly",  pri: "0.6" },
+    { p: "/auctions",    freq: "daily",   pri: "0.6" },
+    { p: "/cellar",      freq: "weekly",  pri: "0.6" },
+    { p: "/goals",       freq: "monthly", pri: "0.5" },
+    { p: "/journal",     freq: "weekly",  pri: "0.5" },
+    { p: "/scan",        freq: "monthly", pri: "0.5" },
+    { p: "/press",       freq: "monthly", pri: "0.5" },
+    { p: "/transparency",freq: "monthly", pri: "0.5" },
+    { p: "/referral",    freq: "monthly", pri: "0.4" },
+    { p: "/terms",       freq: "yearly",  pri: "0.3" },
+    { p: "/privacy",     freq: "yearly",  pri: "0.3" },
+    { p: "/cookies",     freq: "yearly",  pri: "0.3" },
+    { p: "/disclaimer",  freq: "yearly",  pri: "0.3" },
+  ].map(({ p, freq, pri }) =>
+    `<url><loc>${base}${p}</loc><lastmod>${today}</lastmod><changefreq>${freq}</changefreq><priority>${pri}</priority></url>`
   );
   const wineUrls = allWines.slice(0, 10000).map(w => {
     const slug = (w.id || w.name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
     return `<url><loc>${base}/wine/${slug}</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>`;
   });
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${[...staticUrls, ...wineUrls].join("\n")}
-</urlset>`;
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...staticPages, ...wineUrls].join("\n")}\n</urlset>`;
   res.setHeader("Content-Type", "application/xml");
   res.send(xml);
 });
