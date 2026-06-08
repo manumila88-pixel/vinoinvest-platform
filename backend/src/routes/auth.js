@@ -1,6 +1,7 @@
 import express from "express";
 import rateLimit from "express-rate-limit";
 import { requireAuth, trackLoginAttempt, isLoginLocked, ADMIN_EMAIL } from "../middleware/auth.js";
+import { enqueueUserFlow } from "../jobs/emailFlowService.js";
 
 const router = express.Router();
 
@@ -43,11 +44,15 @@ router.post("/login-check", loginRateLimit, (req, res) => {
 // POST /api/auth/login-result — called after Supabase login to track success/failure
 router.post("/login-result", loginRateLimit, (req, res) => {
   const ip = req.ip || req.headers["x-forwarded-for"] || "unknown";
-  const { success, email } = req.body;
+  const { success, email, firstName, userType, isNew } = req.body;
   const entry = trackLoginAttempt(ip, success === true);
   if (!success) {
     logSecurityEvent("login_failure", ip, email, { attempts: entry.attempts });
     if (entry.locked) logSecurityEvent("login_locked", ip, email, { attempts: entry.attempts });
+  }
+  // On first registration, start the 180-day email flow
+  if (success && isNew && email) {
+    enqueueUserFlow(email, firstName || null, userType || "b2c").catch(() => {});
   }
   res.json({ ok: true, locked: entry.locked, attempts: entry.attempts });
 });

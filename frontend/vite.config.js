@@ -15,7 +15,9 @@ export default defineConfig({
           if (id.includes('react-dom') || id.includes('react-router')) return 'react-vendor';
           // i18n
           if (id.includes('i18next') || id.includes('react-i18next')) return 'i18n';
-          // Academy content (largest lazy chunk)
+          // Academy module deep content — split from main academy chunk
+          if (id.includes('premiumContent') || id.includes('/pages/AcademyModule')) return 'academy-modules';
+          // Academy content (free courses + index/course/lesson pages)
           if (id.includes('/pages/Academy') || id.includes('academyContent')) return 'academy';
           // B2B & Dashboard
           if (id.includes('/pages/B2B') || id.includes('/pages/Dashboard')) return 'b2b';

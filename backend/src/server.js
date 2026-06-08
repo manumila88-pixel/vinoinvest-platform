@@ -36,6 +36,7 @@ import "./jobs/alertsChecker.js";
 import "./jobs/cellarTrackerCron.js";
 import { proactiveResults, setAnalysisPool, setWinesRef } from "./jobs/portfolioAnalysisJob.js";
 import { setWelcomeEmailPool, queueWelcomeSequence } from "./jobs/welcomeEmailJob.js";
+import { setEmailFlowPool, startEmailFlowService, enqueueUserFlow } from "./jobs/emailFlowService.js";
 import { setGamificationPool, initGamificationTable } from "./services/gamificationService.js";
 import { initTelegramBot } from "./bots/telegramBot.js";
 import { getVinoInvestIndex } from "./services/vinoInvestIndex.js";
@@ -510,6 +511,7 @@ initDB().then(() => {
   if (pool) { setNewsletterPool(pool); }
   if (pool) { setAgentPool(pool); }
   if (pool) { setWelcomeEmailPool(pool); }
+  if (pool) { setEmailFlowPool(pool); startEmailFlowService(); }
   if (pool) { setRealPricePool(pool); }
   // Start scheduled agents
   startBlogAgent();
