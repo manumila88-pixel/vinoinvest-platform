@@ -256,6 +256,7 @@ app.use("/api/data", cacheFor(3600), dataExportRouter);
 app.use("/api/security", cacheFor(86400), securityRouter);
 app.use("/api/analytics", analyticsRouter);
 app.use("/api/organizations", orgsRouter);
+app.use("/api/org", orgsRouter);
 app.use("/api/client-portfolios", clientPortfoliosRouter);
 app.use("/api/demo", demoRequestRouter);
 app.use("/api/risk", riskMetricsRouter);
@@ -862,6 +863,7 @@ app.get("/api/wines", cacheFor(300), (req, res) => {
   const page = Math.max(1, parseInt(req.query.page) || 1);
   const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 20));
   const segment = (req.query.segment || "").toString().trim().toLowerCase();
+  const institutional = req.query.institutional === "true";
 
   let filtered;
   if (search) {
@@ -875,6 +877,15 @@ app.get("/api/wines", cacheFor(300), (req, res) => {
 
   if (segment === "b2b" || segment === "b2c") {
     filtered = segmentWines(filtered, segment);
+  }
+
+  if (institutional) {
+    filtered = filtered.filter(w => {
+      const price = Number(w.currentPrice || w.current_price || 0);
+      const score = Number(w.investmentScore || w.investment_score || w.ai_score || 0);
+      const risk = (w.risk || "").toLowerCase();
+      return price > 200 && score >= 80 && (risk === "basso" || risk === "medio" || risk === "low" || risk === "medium" || risk === "");
+    });
   }
 
   // Sort by investmentScore desc so best wines appear first by default

@@ -109,6 +109,18 @@ async function ensureOrgTables(pool) {
       created_at TIMESTAMPTZ DEFAULT NOW()
     );
   `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS advisor_notes (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      portfolio_id UUID REFERENCES client_portfolios(id) ON DELETE CASCADE,
+      advisor_id TEXT NOT NULL,
+      note TEXT NOT NULL,
+      is_private BOOLEAN DEFAULT FALSE,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+    );
+    CREATE INDEX IF NOT EXISTS idx_advisor_notes_portfolio ON advisor_notes(portfolio_id, created_at DESC);
+  `);
 }
 
 async function logAudit(pool, { orgId, userId, action, resource, resourceId, details, ip }) {
@@ -302,5 +314,118 @@ router.get("/:orgId/audit/export.csv", requireAuth, async (req, res) => {
   }
 });
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+async function assertMember(pool, orgId, userId) {
+  const { rows } = await pool.query(
+    `SELECT role FROM org_members WHERE org_id=$1 AND user_id=$2`,
+    [orgId, userId]
+  );
+  if (!rows.length) {
+    const err = new Error("Not a member of this organization");
+    err.status = 403;
+    throw err;
+  }
+  return rows[0];
+}
+
+// ── Client Invite ─────────────────────────────────────────────────────────────
+
+router.post("/invite-client", requireAuth, async (req, res) => {
+  try {
+    await ensureOrgTables(_pool);
+    const { advisor_id, client_name, client_email, org_id } = req.body;
+    if (!client_name || !client_email || !org_id) {
+      return res.status(400).json({ error: "client_name, client_email and org_id are required" });
+    }
+
+    const tempPassword = `TempPass_${Math.random().toString(36).slice(2, 10)}!`;
+
+    const { SUPABASE_URL, SUPABASE_ANON_KEY } = process.env;
+    const resp = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", apikey: SUPABASE_ANON_KEY },
+      body: JSON.stringify({
+        email: client_email,
+        password: tempPassword,
+        data: {
+          account_type: "client",
+          full_name: client_name,
+          advisor_id: advisor_id || req.user.id,
+        },
+      }),
+    });
+    const supaData = await resp.json();
+    const clientUserId = supaData.user?.id || supaData.id || null;
+
+    const { rows } = await _pool.query(
+      `INSERT INTO client_portfolios(org_id, client_name, client_email, advisor_id, notes)
+       VALUES($1, $2, $3, $4, 'Portfolio inizializzato dall''advisor')
+       ON CONFLICT DO NOTHING
+       RETURNING id`,
+      [org_id, client_name, client_email, advisor_id || req.user.id]
+    );
+    const portfolio_id = rows[0]?.id || null;
+
+    await logAudit(_pool, {
+      orgId: org_id,
+      userId: req.user.id,
+      action: "client.invite",
+      resource: "client_portfolio",
+      resourceId: portfolio_id,
+      details: { client_email, clientUserId },
+    });
+
+    res.json({ success: true, client_email, temp_password: tempPassword, portfolio_id, message: "Invito inviato" });
+  } catch (e) {
+    res.status(e.status || 500).json({ error: e.message });
+  }
+});
+
+// ── Advisor Notes ─────────────────────────────────────────────────────────────
+
+// GET /api/organizations/:orgId/notes/:portfolioId
+router.get("/:orgId/notes/:portfolioId", requireAuth, async (req, res) => {
+  try {
+    await ensureOrgTables(_pool);
+    await assertMember(_pool, req.params.orgId, req.user.id);
+    const { rows } = await _pool.query(
+      `SELECT * FROM advisor_notes WHERE portfolio_id=$1 ORDER BY created_at DESC`,
+      [req.params.portfolioId]
+    );
+    res.json(rows);
+  } catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
+// POST /api/organizations/:orgId/notes/:portfolioId
+router.post("/:orgId/notes/:portfolioId", requireAuth, async (req, res) => {
+  try {
+    await ensureOrgTables(_pool);
+    await assertMember(_pool, req.params.orgId, req.user.id);
+    const { note, is_private = false } = req.body;
+    if (!note) return res.status(400).json({ error: "note required" });
+    const { rows } = await _pool.query(
+      `INSERT INTO advisor_notes(portfolio_id,advisor_id,note,is_private) VALUES($1,$2,$3,$4) RETURNING *`,
+      [req.params.portfolioId, req.user.id, note, is_private]
+    );
+    res.status(201).json(rows[0]);
+  } catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
+// PATCH /api/organizations/:orgId/notes/:noteId/edit
+router.patch("/:orgId/notes/:noteId/edit", requireAuth, async (req, res) => {
+  try {
+    await ensureOrgTables(_pool);
+    const { note, is_private } = req.body;
+    const { rows } = await _pool.query(
+      `UPDATE advisor_notes SET note=COALESCE($1,note), is_private=COALESCE($2,is_private), updated_at=NOW()
+       WHERE id=$3 AND advisor_id=$4 RETURNING *`,
+      [note, is_private, req.params.noteId, req.user.id]
+    );
+    if (!rows.length) return res.status(404).json({ error: "Not found" });
+    res.json(rows[0]);
+  } catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
 export default router;
-export { ensureOrgTables, logAudit };
+export { ensureOrgTables, logAudit, assertMember };

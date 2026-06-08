@@ -296,6 +296,50 @@ export default function B2BPage() {
           </a>
         </div>
 
+        {/* Demo Box */}
+        <div style={{
+          marginTop: 40,
+          padding: "24px 32px",
+          borderRadius: 16,
+          background: "linear-gradient(135deg,rgba(201,162,39,0.1),rgba(201,162,39,0.05))",
+          border: "1px solid rgba(201,162,39,0.4)",
+          display: "inline-block",
+          textAlign: "left",
+          maxWidth: 460,
+          margin: "40px auto 0",
+        }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#C9A227", marginBottom: 12 }}>
+            PROVA LA DEMO GRATUITA ADESSO
+          </div>
+          <p style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 16px", lineHeight: 1.6 }}>
+            Account precaricato con portfolio da €1.2M e 15 vini premium. Nessuna registrazione richiesta.
+          </p>
+          <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 12, padding: "8px 12px", background: "rgba(0,0,0,0.3)", borderRadius: 8, fontFamily: "monospace", fontSize: 12 }}>
+            <div style={{ flex: 1 }}>
+              <span style={{ color: "#475569" }}>Email: </span><span style={{ color: "#C9A227" }}>demo@vinoinvest.com</span><br/>
+              <span style={{ color: "#475569" }}>Pass: </span><span style={{ color: "#C9A227" }}>Demo2026!</span>
+            </div>
+            <button
+              onClick={() => { navigator.clipboard.writeText("Demo2026!"); }}
+              style={{ background: "rgba(201,162,39,0.2)", border: "1px solid rgba(201,162,39,0.3)", color: "#C9A227", borderRadius: 6, padding: "4px 10px", cursor: "pointer", fontSize: 11, fontWeight: 600 }}
+            >
+              Copia
+            </button>
+          </div>
+          <a
+            href="/"
+            style={{
+              display: "block", textAlign: "center",
+              padding: "12px 24px", borderRadius: 10, fontSize: 14, fontWeight: 700,
+              background: "linear-gradient(135deg,#C9A227,#a07820)",
+              color: "#fff", textDecoration: "none",
+              boxShadow: "0 4px 20px rgba(201,162,39,0.3)",
+            }}
+          >
+            Accedi alla Demo →
+          </a>
+        </div>
+
         {/* Segments */}
         <div style={{ marginTop: 60, display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
           {SEGMENTS.map(s => (
@@ -389,10 +433,18 @@ export default function B2BPage() {
               <h3 style={{ fontFamily: "'Playfair Display',serif", fontSize: 22, margin: "0 0 16px", lineHeight: 1.3, color: "#e2e8f0" }}>
                 Come un Family Office ha allocato €500k in Fine Wine
               </h3>
+              <p style={{ fontSize: 13, color: "#64748b", lineHeight: 1.8, margin: "0 0 12px" }}>
+                Un family office milanese con €8M di AUM totale cercava una soluzione per diversificare verso asset reali alternativi
+                con bassa correlazione equity/obbligazionaria. Il fine wine rappresentava un'opzione interessante per la sua storica
+                bassa volatilità (Liv-ex 1000: σ = 8.2% annuo vs S&P500 18.4%) e i rendimenti decorrelati.
+              </p>
+              <p style={{ fontSize: 13, color: "#64748b", lineHeight: 1.8, margin: "0 0 12px" }}>
+                Dopo una valutazione di 3 mesi con VinoInvest Professional, l'advisor ha costruito un portfolio wine di €500k
+                distribuito su: Bordeaux premier cru (40%), Borgogna grand cru (25%), Champagne prestige (15%), top Barolo e Brunello (20%).
+              </p>
               <p style={{ fontSize: 13, color: "#64748b", lineHeight: 1.8, margin: 0 }}>
-                Un family office milanese con €8M di AUM totale voleva diversificare verso asset reali alternativi.
-                In 6 mesi, utilizzando VinoInvest Professional, ha costruito un portfolio wine di €500k con Sharpe Ratio 1.2
-                e rendimento +14.8% vs +11.7% S&P500 nello stesso periodo.
+                In 18 mesi: rendimento +14.2% vs benchmark mercato +8.1%. Sharpe Ratio 1.2. Riduzione volatilità complessiva patrimonio
+                di 2.3 punti percentuali. I clienti beneficiari (4 famiglie) ricevono report mensili generati in 3 click direttamente da VinoInvest.
               </p>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -410,6 +462,37 @@ export default function B2BPage() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Demo Video */}
+      <section style={{ padding: "0 32px 80px", maxWidth: 960, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 28 }}>
+          <h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: 28, fontWeight: 700, color: "#e2e8f0", margin: "0 0 12px" }}>
+            Vedi la Piattaforma in 3 Minuti
+          </h2>
+          <p style={{ fontSize: 14, color: "#475569" }}>Demo walkthrough della dashboard B2B professionale</p>
+        </div>
+        <div style={{
+          borderRadius: 20, overflow: "hidden",
+          border: "1px solid rgba(59,130,246,0.2)",
+          background: "rgba(8,15,30,0.8)",
+          aspectRatio: "16/9",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          flexDirection: "column", gap: 16,
+          boxShadow: "0 20px 60px rgba(0,0,0,0.4)",
+        }}>
+          <div style={{
+            width: 72, height: 72, borderRadius: "50%",
+            background: "linear-gradient(135deg,#1d4ed8,#2563eb)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            cursor: "pointer", boxShadow: "0 8px 32px rgba(37,99,235,0.4)",
+          }}
+            onClick={() => alert("Video demo in arrivo. Prova la demo live: demo@vinoinvest.com / Demo2026!")}
+          >
+            <span style={{ fontSize: 28, marginLeft: 4 }}>▶</span>
+          </div>
+          <div style={{ color: "#475569", fontSize: 13 }}>Dashboard B2B · Multi-portfolio · Report PDF · AI Score</div>
         </div>
       </section>
 

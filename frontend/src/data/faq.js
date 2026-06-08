@@ -233,6 +233,152 @@ export const FAQ = [
     tags: ["NAV", "calcolo", "portafoglio", "contabile", "export"],
   },
 
+  // ── B2B — Wealth Manager avanzato ────────────────────────────────────────
+  {
+    id: "b7", cat: "b2b",
+    q: "Come posso gestire portfolio separati per ogni cliente?",
+    a: "Con il piano Professional o Enterprise puoi creare portfolio dedicati per ogni cliente dalla sezione 'Clienti' della dashboard B2B. Ogni cliente vede solo il suo portfolio, con report personalizzati.",
+    tags: ["portfolio", "clienti", "separati", "wealth manager", "gestione"],
+  },
+  {
+    id: "b8", cat: "b2b",
+    q: "Il report PDF è personalizzabile con il mio logo?",
+    a: "Sì, nel piano Professional e Enterprise i report PDF includono il tuo logo e colori aziendali. Vai su Dashboard B2B → Impostazioni → Brand per caricare logo e scegliere il colore primario.",
+    tags: ["PDF", "logo", "brand", "personalizzabile", "report"],
+  },
+  {
+    id: "b9", cat: "b2b",
+    q: "Quali formati di export sono disponibili?",
+    a: "CSV (compatibile Excel e Bloomberg), PDF professionale con grafici, JSON via API REST. Excel XLSX in arrivo. Tutti gli export sono disponibili dal tab Portfolio → Esporta.",
+    tags: ["export", "CSV", "PDF", "Bloomberg", "formati", "Excel"],
+  },
+  {
+    id: "b10", cat: "b2b",
+    q: "Come funziona la fatturazione per più utenti?",
+    a: "La fatturazione è per organizzazione, non per utente. Un piano Professional a €200/mese include fino a 5 utenti advisor. Enterprise è illimitato. Fattura mensile o annuale (sconto 20%).",
+    tags: ["fatturazione", "utenti", "piano", "organizzazione", "costo"],
+  },
+  {
+    id: "b11", cat: "b2b",
+    q: "Posso integrare VinoInvest con il mio CRM?",
+    a: "Sì via API REST: endpoint /api/v1/clients e /api/v1/portfolios esportano tutti i dati in JSON. Compatibile con Salesforce, HubSpot, e qualsiasi CRM con webhook. Documentazione su /api/v1/docs.",
+    tags: ["CRM", "integrazione", "Salesforce", "API", "webhook"],
+  },
+  {
+    id: "b12", cat: "b2b",
+    q: "I dati dei miei clienti sono al sicuro?",
+    a: "Sì. I dati dei clienti sono isolati per organizzazione: un advisor non può vedere i clienti di un'altra org. Crittografia AES-256 a riposo, TLS 1.3 in transito. Data center EU. DPA disponibile.",
+    tags: ["sicurezza", "clienti", "dati", "isolamento", "crittografia"],
+  },
+  {
+    id: "b13", cat: "b2b",
+    q: "Qual è l'SLA garantito?",
+    a: "Piano Professional: 99.5% uptime, risposta support entro 4h lavorative. Piano Enterprise: 99.9% uptime garantito contrattualmente, account manager dedicato, supporto 24/7 per incidenti critici.",
+    tags: ["SLA", "uptime", "supporto", "garantito", "enterprise"],
+  },
+  {
+    id: "b14", cat: "b2b",
+    q: "Posso fare white label per i miei clienti?",
+    a: "Sì, nel piano Enterprise. White label completo: logo, colori, dominio personalizzato (es. wine.tuaazienda.com), report PDF completamente brandizzati senza riferimenti a VinoInvest.",
+    tags: ["white label", "dominio", "brand", "enterprise", "personalizzazione"],
+  },
+  {
+    id: "b15", cat: "b2b",
+    q: "Come funziona la suitability assessment?",
+    a: "Dal profilo cliente in Dashboard B2B → Clienti → Suitability. Compila il questionario MiFID II (rischio, orizzonte, esperienza, obiettivi). Il sistema calcola il profilo adeguato e genera il documento firmabile.",
+    tags: ["suitability", "assessment", "MiFID", "questionario", "cliente"],
+  },
+  {
+    id: "b16", cat: "b2b",
+    q: "Avete supporto per compliance MiFID II?",
+    a: "VinoInvest non è un gestore regolamentato, ma supporta la compliance del tuo processo: suitability assessment, audit trail completo, DPA GDPR, report documentati con fonti. Parlate con il vostro compliance officer.",
+    tags: ["MiFID II", "compliance", "suitability", "audit", "regolamentazione"],
+  },
+  {
+    id: "b17", cat: "b2b",
+    q: "Come invito un cliente a vedere il suo portfolio?",
+    a: "Dashboard B2B → Clienti → [cliente] → 'Invia Invito'. Il cliente riceve email con credenziali temporanee e accede a una vista dedicata che mostra SOLO il suo portfolio.",
+    tags: ["invito", "cliente", "credenziali", "portfolio", "accesso"],
+  },
+  {
+    id: "b18", cat: "b2b",
+    q: "Posso aggiungere note private su un cliente?",
+    a: "Sì, dalla scheda cliente in Dashboard B2B → Note Advisor. Le note sono visibili solo all'advisor e ai membri dell'organizzazione. Il cliente non le vede. Ideale per memo post-incontro e raccomandazioni.",
+    tags: ["note", "advisor", "privato", "cliente", "memo"],
+  },
+  {
+    id: "b19", cat: "b2b",
+    q: "Come funzionano i permessi multi-utente?",
+    a: "Nella tua organizzazione puoi assegnare ruoli: Owner (tutti i permessi), Analyst (legge e analisi), Advisor (gestione clienti). Ogni ruolo vede solo le funzioni appropriate.",
+    tags: ["permessi", "ruoli", "multi-utente", "organizzazione", "accesso"],
+  },
+  {
+    id: "b20", cat: "b2b",
+    q: "Quanto costa lo storage dei dati storici?",
+    a: "Incluso nel piano. Tutti i piani B2B includono accesso illimitato allo storico prezzi Liv-ex, price history 24+ mesi per ogni vino, e archivio report generati illimitato.",
+    tags: ["storage", "dati", "storico", "incluso", "costo"],
+  },
+  {
+    id: "b21", cat: "b2b",
+    q: "Posso generare un report in automatico ogni mese?",
+    a: "Sì, nel piano Professional e Enterprise puoi configurare report automatici mensili o trimestrali: Dashboard B2B → Impostazioni → Report Automatici. Il PDF viene inviato via email al cliente.",
+    tags: ["automatico", "report", "mensile", "trimestrale", "email"],
+  },
+  {
+    id: "b22", cat: "b2b",
+    q: "Come scarico i template professionali?",
+    a: "Vai su vinoinvest-platform.vercel.app/b2b/templates. Trovi 4 template scaricabili: Suitability Assessment, Due Diligence Checklist, Report Portfolio, Framework Allocazione Multi-Asset.",
+    tags: ["template", "scaricabili", "suitability", "due diligence", "framework"],
+  },
+  {
+    id: "b23", cat: "b2b",
+    q: "Qual è la differenza tra Professional ed Enterprise?",
+    a: "Professional (€200/mese): 20 clienti, report branded, API 10k req/giorno, support dedicato. Enterprise (€500/mese): clienti illimitati, white label completo, API illimitata, SLA 99.9%, account manager dedicato.",
+    tags: ["piano", "professional", "enterprise", "differenza", "funzionalità"],
+  },
+  {
+    id: "b24", cat: "b2b",
+    q: "Come funziona il benchmark nel report PDF?",
+    a: "Il report include confronto automatico con: Liv-ex 1000 (indice principale fine wine), S&P500, Gold, Inflazione EU. Evidenzia l'alpha generato dal portfolio wine rispetto agli indici standard.",
+    tags: ["benchmark", "Liv-ex", "S&P500", "report", "alpha"],
+  },
+  {
+    id: "b25", cat: "b2b",
+    q: "Posso esportare l'audit trail delle operazioni?",
+    a: "Sì, Dashboard B2B → Compliance → Audit Log esporta tutte le operazioni con timestamp, utente e dettaglio. Disponibile in CSV. Essenziale per audit interni e documentazione compliance.",
+    tags: ["audit", "trail", "operazioni", "compliance", "export"],
+  },
+  {
+    id: "b26", cat: "b2b",
+    q: "Come accede il cliente alla sua vista personalizzata?",
+    a: "Il cliente riceve email di invito con link e credenziali temporanee. Accede a un'interfaccia semplificata che mostra solo il suo portfolio, i report dell'advisor e le note visibili. Non vede altri clienti.",
+    tags: ["cliente", "accesso", "personalizzata", "interfaccia", "portale"],
+  },
+  {
+    id: "b27", cat: "b2b",
+    q: "Come calcolo il Sharpe Ratio del portfolio di un cliente?",
+    a: "Dashboard B2B → [Cliente] → Risk Metrics. Il sistema calcola automaticamente Sharpe Ratio, Volatilità, Max Drawdown e VaR usando i prezzi storici Liv-ex. Export disponibile per i report.",
+    tags: ["Sharpe", "rischio", "VaR", "drawdown", "metriche"],
+  },
+  {
+    id: "b28", cat: "b2b",
+    q: "Posso collegare VinoInvest a Bloomberg Terminal?",
+    a: "Sì, via API REST e export CSV compatibile con Bloomberg Data License. Il formato CSV segue gli standard Bloomberg per l'importazione diretta. Contatta support per la configurazione guidata.",
+    tags: ["Bloomberg", "Terminal", "integrazione", "CSV", "API"],
+  },
+  {
+    id: "b29", cat: "b2b",
+    q: "Come funziona la prova gratuita B2B?",
+    a: "30 giorni gratuiti senza carta di credito. Puoi creare fino a 3 portfolio clienti, generare report PDF, usare la dashboard completa. Al termine: converti in Professional (€200/mese) o Starter (gratis fino a 3 clienti).",
+    tags: ["prova", "gratuita", "trial", "30 giorni", "senza carta"],
+  },
+  {
+    id: "b30", cat: "b2b",
+    q: "Come gestisco i portfolio in più valute?",
+    a: "I prezzi dei vini vengono mostrati in EUR, USD e GBP. Il NAV totale del portfolio è calcolato nella valuta base scelta dall'advisor. I tassi di cambio si aggiornano ogni ora.",
+    tags: ["valuta", "EUR", "USD", "GBP", "multi-valuta", "NAV"],
+  },
+
   // ── B2B — Cantine e produttori ───────────────────────────────────────────
   {
     id: "c1", cat: "cantina",

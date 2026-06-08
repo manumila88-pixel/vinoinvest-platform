@@ -31,6 +31,7 @@ const PurchaseModal = lazy(() => import("./components/PurchaseModal"));
 const HelpBot = lazy(() => import("./components/HelpBot"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const B2BPage = lazy(() => import("./pages/B2B"));
+const CaseStudies = lazy(() => import("./pages/CaseStudies"));
 const DashboardB2B = lazy(() => import("./pages/Dashboard"));
 const Learn = lazy(() => import("./pages/Learn"));
 const MarketIndex = lazy(() => import("./pages/MarketIndex"));
@@ -51,6 +52,7 @@ const AcademyCourse = lazy(() => import("./pages/AcademyCourse"));
 const AcademyLesson = lazy(() => import("./pages/AcademyLesson"));
 const AcademyVerify = lazy(() => import("./pages/AcademyVerify"));
 const AcademyModule = lazy(() => import("./pages/AcademyModule"));
+const AcademyTemplates = lazy(() => import("./pages/AcademyTemplates"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const AdminEmailDashboard = lazy(() => import("./pages/AdminEmailDashboard"));
 const PrivacySettings = lazy(() => import("./pages/PrivacySettings"));
@@ -340,6 +342,7 @@ function App() {
   const [userEmail, setUserEmail] = useState("");
   const isAdmin = userEmail === ADMIN_EMAIL;
   const [accountType, setAccountType] = useState("b2c");
+  const [institutionalView, setInstitutionalView] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showTour, setShowTour] = useState(false);
   const [showCalculator, setShowCalculator] = useState(false);
@@ -506,8 +509,10 @@ function App() {
     try {
       const params = new URLSearchParams({ page, limit: 20 });
       if (search) params.set("search", search);
-      const seg = accountType && ["b2b", "wealth_manager", "cantina", "family_office"].includes(accountType) ? "b2b" : "";
+      const isB2BUser = accountType && ["b2b", "wealth_manager", "cantina", "family_office"].includes(accountType);
+      const seg = isB2BUser ? "b2b" : "";
       if (seg) params.set("segment", seg);
+      if (institutionalView && isB2BUser) params.set("institutional", "true");
       const res = await fetch(`${API}/api/wines?${params}`, { signal: mAbortRef.current.signal });
       const data = await res.json();
       setMarketWines(prev => append ? [...prev, ...data.results] : data.results);
@@ -534,6 +539,13 @@ function App() {
       loadMarketWines("", 1, false);
     }
   }, [tab]);
+
+  useEffect(() => {
+    if (tab === "market") {
+      mHasMoreRef.current = true;
+      loadMarketWines(mSearchRef.current, 1, false);
+    }
+  }, [institutionalView]);
 
   useEffect(() => {
     const sentinel = marketSentinelRef.current;
@@ -1204,6 +1216,28 @@ function App() {
                 value={marketSearch}
                 onChange={e => handleMarketSearch(e.target.value)}
               />
+              {accountType && ["b2b", "wealth_manager", "cantina", "family_office"].includes(accountType) && (
+                <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 8 }}>
+                  <button
+                    onClick={() => setInstitutionalView(v => !v)}
+                    style={{
+                      padding: "7px 14px", borderRadius: 8, cursor: "pointer",
+                      fontSize: 12, fontWeight: 600,
+                      background: institutionalView ? "rgba(201,162,39,0.15)" : "rgba(8,15,30,0.6)",
+                      border: institutionalView ? "1px solid rgba(201,162,39,0.5)" : "1px solid rgba(30,41,59,0.4)",
+                      color: institutionalView ? "#C9A227" : "#4a6a8a",
+                      transition: "all 0.15s",
+                    }}
+                  >
+                    {institutionalView ? "Vista Istituzionale" : "Vista Completa"}
+                  </button>
+                  {institutionalView && (
+                    <span style={{ fontSize: 11, color: "#C9A227", opacity: 0.7 }}>
+                      Prezzo {">"}€200 · Score 80+ · Rischio Basso/Medio
+                    </span>
+                  )}
+                </div>
+              )}
               <div ref={marketGridRef} style={{ width: "100%" }}>
                 {marketLoading && marketWines.length === 0 ? (
                   <section className="marketGrid">
@@ -1952,6 +1986,8 @@ createRoot(document.getElementById("root")).render(
           <Route path="/academy/course/:slug" element={<AcademyCourse />} />
           <Route path="/academy/lesson/:lessonId" element={<AcademyLesson />} />
           <Route path="/academy/module/:moduleId" element={<AcademyModule />} />
+          <Route path="/b2b/templates" element={<AcademyTemplates />} />
+          <Route path="/case-studies" element={<CaseStudies />} />
           <Route path="/verify/:code" element={<AcademyVerify />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/email" element={<AdminEmailDashboard />} />

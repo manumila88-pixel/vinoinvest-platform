@@ -121,9 +121,22 @@ async function run() {
     }
   }
 
-  // ── Step 2: Ensure wines table columns ───────────────────────────────────
+  // ── Step 2: Ensure wines table + columns ─────────────────────────────────
 
   console.log("\n── Step 2: wines table columns ──────────────────────────────");
+
+  // Create wines table first if it doesn't exist (mirrors init.js baseline)
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS wines (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      region TEXT,
+      current_price NUMERIC,
+      risk TEXT,
+      source TEXT DEFAULT 'demo'
+    )
+  `);
+  console.log("✓  Table wines ensured");
 
   const wineColumns = [
     ["producer",         "TEXT"],
