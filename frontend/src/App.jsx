@@ -47,6 +47,7 @@ import Academy from "./pages/Academy";
 import AcademyCourse from "./pages/AcademyCourse";
 import AcademyLesson from "./pages/AcademyLesson";
 import AcademyVerify from "./pages/AcademyVerify";
+import AdminDashboard from "./pages/AdminDashboard";
 import ThemeToggle from "./components/ThemeToggle";
 import VoiceInterface from "./components/VoiceInterface";
 import { getSavedTheme, applyTheme } from "./lib/theme";
@@ -306,9 +307,11 @@ function App() {
   const navigate = useNavigate();
   const toast = useToast();
   const { t, i18n } = useTranslation();
+  const ADMIN_EMAIL = "manumila88@gmail.com";
   const [authChecked, setAuthChecked] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState("");
+  const isAdmin = userEmail === ADMIN_EMAIL;
   const [accountType, setAccountType] = useState("b2c");
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showTour, setShowTour] = useState(false);
@@ -921,7 +924,12 @@ function App() {
           <CurrencySelector />
           <LangSelector />
           {userEmail && <span style={{ fontSize: 12, color: "#3a5a7a" }}>{userEmail}</span>}
-          {accountType && (
+          {isAdmin && (
+            <a href="/admin" style={{ fontSize: 10, color: "#C9A227", border: "1px solid rgba(201,162,39,0.5)", borderRadius: 4, padding: "2px 8px", textTransform: "uppercase", fontWeight: 800, letterSpacing: "0.08em", textDecoration: "none", background: "rgba(201,162,39,0.08)" }}>
+              ADMIN
+            </a>
+          )}
+          {accountType && !isAdmin && (
             <span style={{ fontSize: 10, color: "#C9A227", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 4, padding: "2px 7px", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.08em" }}>
               {accountType}
             </span>
@@ -1707,6 +1715,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="/academy/course/:slug" element={<AcademyCourse />} />
           <Route path="/academy/lesson/:lessonId" element={<AcademyLesson />} />
           <Route path="/verify/:code" element={<AcademyVerify />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="*" element={<App />} />
         </Routes>
       </CurrencyProvider>

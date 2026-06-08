@@ -4,6 +4,11 @@ import { COURSES, PREMIUM_COURSES, BADGES, XP_RULES } from "../data/academyConte
 import AuthModal from "../components/AuthModal";
 
 const BACKEND = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
+const ADMIN_EMAIL = "manumila88@gmail.com";
+
+function getStoredUser() {
+  try { return JSON.parse(localStorage.getItem("vino_user") || "{}"); } catch { return {}; }
+}
 
 // Stripe price IDs for Academy plans
 const ACADEMY_PLANS = {
@@ -37,7 +42,9 @@ export default function AcademyCourse() {
     );
   }
 
-  const isLocked = course.price && !course.free;
+  const storedUser = getStoredUser();
+  const isAdmin = storedUser.email === ADMIN_EMAIL;
+  const isLocked = course.price && !course.free && !isAdmin;
   const lessons = course.lessons || [];
   const completedCount = lessons.filter(l => progress[l.id]?.done).length;
   const pct = lessons.length ? Math.round((completedCount / lessons.length) * 100) : 0;
