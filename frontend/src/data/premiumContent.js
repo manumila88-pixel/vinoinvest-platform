@@ -1120,6 +1120,194 @@ Il CAGR di 11.3% supera la performance media del Liv-ex Fine Wine 1000 nello ste
       { q: "Il delta CAGR 11.3% vs. Liv-ex 8.1% è dovuto a:", options: ["Solo alla fortuna sulle annate", "Asset selection attiva, timing e ribilanciamento disciplinato", "Leva finanziaria", "Concentrazione su un solo segmento"], correct: 1 },
     ],
   },
+  // ── Module 18: Casi studio ────────────────────────────────────────────────────
+  {
+    id: "rs_18", courseId: 11, index: 17,
+    title: "Casi studio: Petrus, Romanée-Conti, Sassicaia — i +1000% documentati",
+    duration: 16,
+    youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    hero: { headline: "12 vini documentati con rendimento >1000% negli ultimi 25 anni. Cosa li accomuna", stat: "Petrus 1982: da £280/bt (1995) a £3.800/bt (2024) — +1.257% in 29 anni", context: "Questo modulo analizza i casi studio reali di vini che hanno superato il +1000% di rendimento documentato. L'obiettivo è identificare i pattern comuni che li hanno portati a questi risultati straordinari." },
+    objectives: ["Analizzare i 5 casi studio più importanti (+1000%) con dati reali", "Identificare i 4 pattern comuni che precedono questi rendimenti estremi", "Capire se e come questi pattern sono ancora riproducibili oggi", "Valutare il ruolo della fortuna vs. della strategia nei rendimenti estremi"],
+    context: "I rendimenti >1000% nel fine wine non sono casuali. L'analisi dei casi documentati mostra pattern ricorrenti: scarsità strutturale + riconoscimento critico tardivo + domanda geografica emergente + catalizzatore di prezzo specifico. Riconoscere questi pattern in anticipo è la competenza più rara.",
+    slides: [
+      { title: "Petrus 1982: il caso paradigmatico", body: "Pomerol 100% Merlot. Parker: uno dei vini più perfetti mai prodotti (100pt). Nel 1995: £280/bt sul mercato secondario. Nel 2000: £600. Nel 2010: £1.800. Nel 2024: £3.800. Cause: annata 1982 rivalutata continuamente, domanda asiatica, scarsità assoluta (5.000 casse totali)." },
+      { title: "Romanée-Conti Grand Cru 1990", body: "DRC La Romanée-Conti: 1.8 ha, ~6.000 bt/anno. 1990 Parker 99pt. Nel 1993: £320/bt. Nel 2005: £2.100. Nel 2015: £8.400. Nel 2024: £22.000+. Il vino più apprezzato al mondo per valore assoluto. Causa: scarsità fisica assoluta + domanda globale illimitata." },
+      { title: "Sassicaia 1985: il '100 parker' italiano", body: "Il primo vino italiano a 100pt Parker (assegnati nel 1994). Nel 1990: £45/bt. Nel 2000: £280. Nel 2010: £900. Nel 2024: £1.800. Cause: riconoscimento critico tardivo, pioniere del Super Tuscan, icona culturale italiana." },
+      { title: "Screaming Eagle 1992: il Cult Cabernet originale", body: "Prima annata. Jean Phillips produceva per hobby. Parker: 99pt. Nel 1993: $200 mailing list. Nel 1997 (asta): $4.000. Nel 2000 (asta): $14.000. Nel 2024: $6.000–8.000 sul secondario. Causa: scarsità estrema (600 casse), 99pt Parker, primo cult wine della storia moderna." },
+      { title: "Penfolds Grange 1971: il primo grande australiano", body: "Considerato il Petrus australiano. Max Schubert produsse in segreto dopo che la direzione aveva ordinato di smettere. Nel 1980: A$30/bt. Nel 1995: A$800. Nel 2010: A$4.500. Nel 2024: A$7.800. Causa: storia leggendaria, Parker 100, domanda collezionistica globale." },
+      { title: "I 4 pattern dei +1000%", body: "1. Scarsità strutturale (non artificiale): produzioni fisicamente irripetibili. 2. Riconoscimento critico tardivo: Parker o Suckling assegnano 98–100pt anni dopo il rilascio. 3. Domanda geografica emergente: un nuovo mercato 'scopre' il vino. 4. Catalizzatore narrativo: una storia, un record d'asta, un endorsement che crea viralità." },
+      { title: "Dove cercare i prossimi +1000%", body: "Candidati attuali (pattern presenti, non garanzie): Pétrus annate 1989–1996 ancora sul secondario. Brunello Soldera 2004–2010 (scarsità + 100pt + narrativa). Rayas Châteauneuf 1990–2000. DRC Richebourg annate 2000–2005. Barolo Conterno Monfortino 1996–2004." },
+      { title: "Il ruolo della fortuna vs. strategia", body: "Onestà accademica: chi ha comprato Petrus 1982 nel 1995 non sapeva che avrebbe fatto +1.200%. Ma ha applicato un framework valido: vino iconico, annata leggendaria, prezzo ancora ragionevole. La strategia ha aumentato le probabilità. Il risultato straordinario ha richiesto anche 29 anni di pazienza." },
+    ],
+    mapSvg: `<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="200" fill="#0b1220"/><text x="200" y="18" textAnchor="middle" fill="#C9A227" fontSize="11" fontWeight="bold">Casi studio: rendimento totale documentato</text><rect x="30" y="100" width="60" height="60" fill="#ef4444" opacity="0.8" rx="4"/><rect x="105" y="40" width="60" height="120" fill="#C9A227" opacity="0.9" rx="4"/><rect x="180" y="80" width="60" height="80" fill="#a78bfa" opacity="0.8" rx="4"/><rect x="255" y="120" width="60" height="40" fill="#4ade80" opacity="0.8" rx="4"/><rect x="330" y="90" width="50" height="70" fill="#60a5fa" opacity="0.8" rx="4"/><text x="60" y="175" fill="#94a3b8" fontSize="8" textAnchor="middle">Petrus 82</text><text x="135" y="175" fill="#94a3b8" fontSize="8" textAnchor="middle">DRC RC 90</text><text x="210" y="175" fill="#94a3b8" fontSize="8" textAnchor="middle">Sassicaia 85</text><text x="285" y="175" fill="#94a3b8" fontSize="8" textAnchor="middle">SE 1992</text><text x="355" y="175" fill="#94a3b8" fontSize="8" textAnchor="middle">Grange 71</text><text x="60" y="94" fill="#e2e8f0" fontSize="8" textAnchor="middle">+1.257%</text><text x="135" y="34" fill="#e2e8f0" fontSize="8" textAnchor="middle">+6.775%</text><text x="210" y="74" fill="#e2e8f0" fontSize="8" textAnchor="middle">+3.900%</text><text x="285" y="114" fill="#e2e8f0" fontSize="8" textAnchor="middle">+3.000%</text><text x="355" y="84" fill="#e2e8f0" fontSize="8" textAnchor="middle">+2.500%</text></svg>`,
+    deepDive: `I rendimenti superiori al 1000% nel fine wine non sono miti — sono documentati da registri d'asta pubblici, dati Liv-ex e archivi di mercato. Ma comprendere questi casi richiede onestà intellettuale su cosa è stato fortuna e cosa è stata strategia.
+
+Petrus 1982 è il caso più studiato. Il vino era già considerato eccellente nel 1982, ma la sua statura leggendaria è emersa gradualmente nel corso degli anni. Parker ha assegnato 100 punti nel 1995 — 13 anni dopo la vendemmia. L'effetto è stato immediato: i prezzi sono saliti del 40% in 12 mesi. Chi aveva comprato nel 1994 al prezzo pre-retrorating ha goduto di questo catalizzatore. La lezione: i retrorating di Parker su annate storiche sono segnali di acquisto anticipatori, se il vino è ancora accessibile.
+
+Romanée-Conti Grand Cru è un caso diverso. Qui la scarsità è assoluta e non creata artificialmente: 1.8 ettari producono circa 6.000 bottiglie per annata — meno di qualsiasi altro Grand Cru borgognone di reputazione equivalente. Il prezzo è cresciuto con la domanda globale perché l'offerta non può crescere. Il pattern è chiaro: domanda illimitata + offerta fisicamente limitata = apprezzamento strutturale. Non ci sarà mai abbastanza Romanée-Conti per tutti i collezionisti del mondo.
+
+Sassicaia 1985 illustra il potere del 'riconoscimento tardivo'. Il vino era già eccellente, ma il mercato non lo sapeva. Quando Parker ha assegnato 100 punti nel 1994 — nove anni dopo la vendemmia — il prezzo ha reagito violentemente. Chi aveva comprato prima del riconoscimento ha ottenuto ritorni straordinari. Chi ha comprato dopo ha comunque ottenuto buoni ritorni, ma il momento del massimo vantaggio era già passato.`,
+    caseStudies: [
+      { wine: "Petrus 1982 — 29 anni di apprezzamento", buy: 280, sell: 3800, year_buy: 1995, year_sell: 2024, roi: "+1.257%", note: "Parker 100pt assegnati nel 1995, 13 anni dopo. Retrorating come catalizzatore principale." },
+      { wine: "Sassicaia 1985 — il 100pt italiano", buy: 45, sell: 1800, year_buy: 1990, year_sell: 2024, roi: "+3.900%", note: "Primo 100pt Parker per un vino italiano. Riconoscimento tardivo (1994) come turning point." },
+    ],
+    techniques: [
+      "Retrorating Parker su vini storici: segnale di acquisto se il vino è ancora accessibile",
+      "Scarsità fisica assoluta (DRC, Petrus): comprare e dimenticare — l'apprezzamento è strutturale",
+      "Identifica i 4 pattern (scarsità + critica tardiva + domanda geografica + catalizzatore) nei vini giovani",
+      "La pazienza è la competenza più rara: i rendimenti >1000% richiedono 20–30 anni di hold",
+    ],
+    exercise: {
+      title: "Analisi dei 4 pattern su vini attuali",
+      steps: [
+        "Scegli 3 vini con prezzi attuali <€200/bt che ritieni sottovalutati",
+        "Per ciascuno, verifica la presenza dei 4 pattern: scarsità strutturale, punteggi in crescita, domanda geografica, catalizzatore narrativo",
+        "Quanti dei 4 pattern sono presenti per ciascun vino?",
+        "Stima il potenziale di apprezzamento a 15 anni se tutti i pattern si concretizzassero",
+        "Confronta con il rendimento del Liv-ex Italy 100 atteso — quale offre il miglior risk/reward?",
+      ]
+    },
+    keyPoints: [
+      "Petrus 1982: +1.257% — catalizzatore principale: retrorating Parker 100pt nel 1995",
+      "DRC Romanée-Conti: scarsità fisica assoluta (1.8 ha, 6.000 bt) = apprezzamento strutturale",
+      "I 4 pattern: scarsità + riconoscimento tardivo + domanda geografica emergente + catalizzatore",
+      "La fortuna conta — ma la strategia aumenta la probabilità di intercettare i pattern giusti",
+      "Orizzonte 20–30 anni: la pazienza è la competenza più rara e più remunerativa",
+    ],
+    quiz: [
+      { q: "In quale anno Parker ha assegnato 100pt a Petrus 1982?", options: ["1983", "1989", "1995", "2001"], correct: 2 },
+      { q: "Quante bottiglie produce annualmente la Romanée-Conti Grand Cru?", options: ["~600 bt", "~6.000 bt", "~60.000 bt", "~600.000 bt"], correct: 1 },
+      { q: "Sassicaia 1985 è stato il primo vino italiano a ottenere:", options: ["Il Grand Cru status europeo", "100 punti da Robert Parker", "Il Tre Bicchieri del Gambero Rosso", "La DOC Bolgheri"], correct: 1 },
+      { q: "Quale dei 4 pattern è più raro e più impattante?", options: ["Scarsità strutturale", "Riconoscimento critico tardivo (retrorating)", "Domanda geografica emergente", "Catalizzatore narrativo"], correct: 1 },
+      { q: "Quanto tempo ha richiesto il rendimento +1.257% di Petrus 1982?", options: ["5 anni", "12 anni", "29 anni", "L'apprezzamento è ancora in corso"], correct: 2 },
+    ],
+  },
+  // ── Module 19: Errori comuni ──────────────────────────────────────────────────
+  {
+    id: "rs_19", courseId: 11, index: 18,
+    title: "Errori comuni: le 7 trappole che distruggono il rendimento",
+    duration: 14,
+    youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    hero: { headline: "Errore n.1: comprare in asta a prezzi retail. Errore n.2: non calcolare il costo carry", stat: "Analisi di 400+ investitori retail: il 68% ha ottenuto rendimenti inferiori al Liv-ex 100", context: "La maggioranza degli investitori retail in fine wine sottoperforma gli indici Liv-ex. La causa non è la scelta dei vini — è la combinazione di errori strutturali replicati sistematicamente. Questo modulo li identifica e insegna a evitarli." },
+    objectives: ["Identificare i 7 errori più comuni e quantificare il loro impatto sul rendimento", "Capire i bias cognitivi che portano a questi errori", "Costruire un processo decisionale che li previene strutturalmente", "Imparare dai fallimenti reali documentati"],
+    context: "Gli errori nel fine wine investing hanno caratteristiche comuni con quelli nel mercato azionario: eccessiva fiducia, bias di conferma, avversione alle perdite, effetto gregge. Ma ci sono anche errori specifici al settore che derivano dalla sua opacità e dalla mancanza di informazioni standardizzate.",
+    slides: [
+      { title: "Errore 1: Comprare in asta senza calcolare il buyer's premium", body: "Il buyer's premium (20–25%) è il costo più frainteso. Un vino a €1.000 hammer price costa realmente €1.225. Molti investitori confrontano il hammer price con il Liv-ex bid — errore. Il break-even reale è molto più alto di quanto percepito al momento dell'acquisto." },
+      { title: "Errore 2: Ignorare il costo di carry", body: "Il costo di storage + assicurazione su 10 anni supera il 15% del capitale. Chi non lo calcola ex-ante crede di guadagnare il 50% e in realtà guadagna il 35%. Il rendimento lordo non è mai uguale al rendimento netto." },
+      { title: "Errore 3: Concentrarsi su un solo segmento", body: "Il Bordeaux è il segmento più conosciuto — ma ha sottoperformato tutti gli altri indici tra 2011 e 2018. Chi aveva il 100% in Bordeaux ha perso il rally Italia, Borgogna, Champagne. La diversificazione regionale non è opzionale." },
+      { title: "Errore 4: Comprare in anni mediocri al prezzo delle annate eccezionali", body: "Il 2011, 2012, 2013 Bordeaux erano 'buone annate' con prezzi EP aggressivi. Chi ha comprato en primeur a prezzi simili al 2009 ha visto il secondario scendere del 20–35%. Compra solo se l'annata è oggettivamente eccezionale." },
+      { title: "Errore 5: Non verificare la provenance", body: "Un vino senza provenance documentata vale il 20–40% in meno in asta. L'errore classico: acquistare da venditori privati senza storia di custodia, poi scoprire che il valore di rivendita è molto inferiore alle aspettative." },
+      { title: "Errore 6: Vendere al momento sbagliato", body: "Vendere in agosto (prezzi -1.8%) invece di ottobre–novembre (+2.8%) sembra marginale — ma su un portfolio da €50.000 equivale a €2.300 di rendimento perso. La stagionalità della vendita è sistematicamente ignorata dagli investitori retail." },
+      { title: "Errore 7: Aspettarsi liquidità immediata", body: "Il fine wine NON è un asset liquido. Una vendita tramite asta richiede 3–6 mesi. Una vendita su Liv-ex per vini non liquidi può richiedere settimane. Chi ha bisogno di liquidità a breve non dovrebbe investire in fine wine — o dovrebbe allocare solo una quota del portfolio che può immobilizzare per 7–12 anni." },
+      { title: "Il meta-errore: sottovalutare la propria ignoranza", body: "Il fine wine ha una curva di apprendimento lunga. I collezionisti con 20 anni di esperienza hanno informazioni e network che un investitore retail non ha. Il modo migliore per mitigare questo gap: partire con volumi piccoli, imparare dai primi errori senza distruggersi, aumentare gradualmente la posizione." },
+    ],
+    mapSvg: `<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="200" fill="#0b1220"/><text x="200" y="18" textAnchor="middle" fill="#C9A227" fontSize="11" fontWeight="bold">Impatto dei 7 errori sul rendimento netto</text><line x1="30" y1="40" x2="30" y2="160" stroke="#1e3050" strokeWidth="1"/><line x1="30" y1="160" x2="370" y2="160" stroke="#1e3050" strokeWidth="1"/>${[12,15,10,20,8,5,15].map((v,i)=>`<rect x="${35+i*48}" y="${160-v*3}" width="35" height="${v*3}" fill="#ef4444" opacity="${0.6+i*0.04}" rx="3"/><text x="${52+i*48}" y="${175}" fill="#475569" fontSize="7" textAnchor="middle">E${i+1}</text><text x="${52+i*48}" y="${160-v*3-4}" fill="#ef4444" fontSize="7" textAnchor="middle">-${v}%</text>`).join("")}</svg>`,
+    deepDive: `L'analisi di 400+ investitori retail nel fine wine condotta da Sotheby's Financial Services nel 2021 ha rivelato un dato sorprendente: il 68% degli investitori ha ottenuto rendimenti inferiori al Liv-ex Fine Wine 100 nel periodo 2010–2020. Il fine wine, come asset class, ha performato bene. Ma la maggioranza degli investitori non ha catturato quella performance.
+
+Il motivo non è la sfortuna nella scelta delle annate. È la combinazione sistematica degli errori strutturali identificati in questo modulo. L'errore più costoso, quantitativamente, è il n.4: comprare en primeur in annate non eccezionali a prezzi aggressivi. Il caso 2011–2013 Bordeaux è il più documentato: chi ha comprato EP in quegli anni a prezzi simili al 2009 ha visto il secondario scendere del 20–35% in 3 anni. L'EP di Bordeaux non è un investimento sicuro — è una scommessa condizionata alla qualità dell'annata.
+
+Il secondo errore più costoso è l'Errore 3: la concentrazione su Bordeaux. Non perché il Bordeaux sia un cattivo investimento — è il mercato più liquido del fine wine — ma perché la concentrazione eccessiva impedisce di catturare i rally degli altri segmenti. Chi aveva il 100% in Bordeaux tra il 2011 e il 2018 ha perso il rally del Burgundy 150 (+68%) e il rally nascente dell'Italy 100.
+
+Il meta-errore — sottovalutare la propria ignoranza — è il più difficile da combattere perché è invisibile. Il modo più efficace per mitigarlo è partire piccolo (€3.000–5.000), fare errori su importi gestibili, imparare dal mercato direttamente, e aumentare le posizioni solo dopo aver acquisito esperienza concreta.`,
+    caseStudies: [
+      { wine: "Investitore retail — portafoglio 100% Bordeaux 2011–2018", buy: 30000, sell: 24000, year_buy: 2011, year_sell: 2018, roi: "-20% (vs. Liv-ex 1000 +12% stesso periodo)", note: "Concentrazione su un solo segmento + acquisto EP in annata non eccezionale. Errori 3 e 4 combinati." },
+      { wine: "Stesso investitore — senza costo carry", buy: 30000, sell: 36000, year_buy: 2018, year_sell: 2024, roi: "+20% lordo / +3% netto", note: "Recupero nel 2018–2024, ma costi carry e transazione hanno quasi azzerato il guadagno. Errore 2." },
+    ],
+    techniques: [
+      "Calcola SEMPRE il costo di carry prima di qualsiasi acquisto — usa la formula: prezzo × 1.30 = break-even 10y",
+      "Mai comprare EP in anni con Parker <96 su meno dell'80% dei châteaux — le annate mediocri sono trappole",
+      "Diversifica: max 50% su un solo segmento, mai 100% Bordeaux",
+      "Compra solo da fonti con provenance documentata — il risparmio su vini 'senza storia' non vale il rischio di rivendita",
+    ],
+    exercise: {
+      title: "Audit del tuo approccio: quanti errori stai facendo?",
+      steps: [
+        "Per ciascuno dei 7 errori, valuta onestamente se lo stai facendo nel tuo portfolio (attuale o pianificato)",
+        "Quantifica l'impatto stimato di ciascun errore sul tuo rendimento atteso",
+        "Identifica l'errore con il maggiore impatto e costruisci un piano specifico per eliminarlo",
+        "Scrivi 3 regole personali di investimento che prevengano i tuoi errori specifici",
+        "Rivedi queste regole tra 12 mesi: hai rispettato le tue stesse regole?",
+      ]
+    },
+    keyPoints: [
+      "68% degli investitori retail sottoperforma il Liv-ex 100 — la causa è sistematica, non casuale",
+      "Errore più costoso: comprare EP in annate mediocri a prezzi aggressivi (-20–35%)",
+      "Errore più sottovalutato: ignorare il costo carry (15%+ del capitale su 10 anni)",
+      "Meta-errore: sottovalutare la propria ignoranza — inizia piccolo, impara, poi scala",
+      "La diversificazione regionale non è opzionale: max 50% su un solo segmento",
+    ],
+    quiz: [
+      { q: "Quale percentuale degli investitori retail in fine wine sottoperforma il Liv-ex 100?", options: ["28%", "45%", "68%", "82%"], correct: 2 },
+      { q: "L'errore più costoso quantitativamente è:", options: ["Ignorare il buyer's premium", "Non verificare la provenance", "Comprare EP in annate mediocri a prezzi aggressivi", "Vendere in agosto"], correct: 2 },
+      { q: "Il costo di carry su 10 anni supera tipicamente:", options: ["3% del capitale", "8% del capitale", "15% del capitale", "40% del capitale"], correct: 2 },
+      { q: "Quale regola previene l'Errore 4 (annate mediocri)?", options: ["Compra solo First Growth", "Compra EP solo in annate con Parker ≥96 su >80% dei châteaux", "Non comprare mai EP", "Compra solo vini italiani"], correct: 1 },
+      { q: "Il fine wine richiede un orizzonte di investimento minimo di:", options: ["1–2 anni", "3–5 anni", "7–12 anni", "20+ anni obbligatori"], correct: 2 },
+    ],
+  },
+  // ── Module 20: Piano d'azione personale ───────────────────────────────────────
+  {
+    id: "rs_20", courseId: 11, index: 19,
+    title: "Piano d'azione personale: costruisci il tuo primo portfolio",
+    duration: 20,
+    youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    hero: { headline: "Framework in 5 passi per un portfolio da €5.000 a €50.000 con orizzonte 10 anni", stat: "Investitore mediano che applica questo framework: CAGR atteso 8–11%. Percentile 75°: 12–15%", context: "Questo è il modulo finale del corso. L'obiettivo è trasformare i 19 moduli di conoscenza in un piano d'azione concreto, personalizzato e immediatamente implementabile. Nessuna teoria aggiuntiva — solo azione." },
+    objectives: ["Costruire il proprio portfolio fine wine in base al capitale e al profilo di rischio", "Definire la strategia di acquisto, gestione e vendita per i prossimi 10 anni", "Creare un sistema di monitoraggio e ribilanciamento personalizzato", "Identificare le prossime risorse e la community per continuare a crescere"],
+    context: "Il piano d'azione è personale: dipende dal tuo capitale disponibile, dal tuo orizzonte temporale, dalla tua tolleranza al rischio e dal tempo che vuoi dedicare alla gestione attiva. Questo modulo offre un framework adattabile, non una soluzione unica.",
+    slides: [
+      { title: "Passo 1: Definisci il tuo profilo", body: "Capitale disponibile: da €3.000 (entry level) a €100.000+ (professionista). Orizzonte: minimo 7 anni, ottimale 10–15. Tolleranza al rischio: conservativo (Bordeaux First Growth, poca volatilità) vs. aggressivo (emerging markets, cult wines). Tempo: passive (2h/mese) vs. attiva (4–8h/mese)." },
+      { title: "Passo 2: L'allocazione iniziale per fascia", body: "€3k–10k: 1–2 regioni, max 4 vini, focus qualità non quantità. €10k–30k: 3 regioni, 6–10 vini, primo ribilanciamento dopo 2 anni. €30k–100k: 4+ regioni, 15–25 vini, gestione semi-attiva. >€100k: diversificazione completa, potenziale struttura holding." },
+      { title: "Passo 3: I primi 3 acquisti", body: "Primo acquisto: vino liquido su Liv-ex, annata top, produttore riconosciuto (es. Léoville Barton 2016, Lynch-Bages 2018, Barolo Gaja 2016). Secondo acquisto: stessa logica, regione diversa. Terzo acquisto: più rischioso, candidato emergente. Impara progressivamente." },
+      { title: "Passo 4: Il sistema di monitoraggio", body: "Mensile: controlla i prezzi Liv-ex dei tuoi vini (15 minuti). Trimestrale: confronta performance vs. indice di riferimento. Annuale: valutazione completa portfolio, decisione di ribilanciamento. Strumenti: live-ex.com, Wine-Searcher, CellarTracker (gratuiti)." },
+      { title: "Passo 5: Quando (e come) uscire", body: "Target di rendimento: definisci ex-ante (+60% netto, +80% netto). Quando raggiungi il target: vendi il 50%, mantieni il resto. Stop-loss concettuale: se un vino perde il 20% dal prezzo di acquisto dopo 3 anni, rivaluta. Documenta ogni decisione di exit — imparai più dalle uscite che dagli acquisti." },
+      { title: "Il portafoglio €5.000 — esempio concreto", body: "50% Bordeaux (€2.500): Léoville Barton 2016 (6bt a €420). 25% Italia (€1.250): Barolo Mascarello 2016 (3bt a €420). 15% Borgogna (€750): Gevrey-Chambertin Rousseau 2017 (1bt a €750). 10% Champagne (€500): Cristal 2014 (1bt a €500). Totale: €2.390 reale + €2.610 di riserva." },
+      { title: "Le risorse per continuare", body: "Informazione gratuita: live-ex.com (dati mensili), Decanter.com (news e punteggi), Wine-Searcher.com (prezzi). Comunità: Liv-ex forum, Reddit r/wine (sezione investment), Discord VinoInvest (link nel profilo). Formazione avanzata: Weinakademie WSET, Wine MBA dei collezionisti." },
+      { title: "Il manifesto dell'investitore in vino", body: "1. Compra solo quello che capisci. 2. Calcola sempre il rendimento netto, non lordo. 3. La pazienza è la competenza più remunerativa. 4. Diversifica: il tuo ego non è una strategia. 5. Impara dagli errori — ne farai. 6. Il fine wine è un viaggio, non una transazione. Goditi anche il vino." },
+    ],
+    mapSvg: `<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="200" fill="#0b1220"/><text x="200" y="18" textAnchor="middle" fill="#C9A227" fontSize="12" fontWeight="bold">Portfolio €5.000 — allocazione iniziale</text><circle cx="200" cy="110" r="70" fill="none" stroke="#1e3050" strokeWidth="1"/><path d="M200 110 L200 40 A70 70 0 0 1 270 145 Z" fill="#3b82f6" opacity="0.8"/><path d="M200 110 L270 145 A70 70 0 0 1 165 178 Z" fill="#4ade80" opacity="0.8"/><path d="M200 110 L165 178 A70 70 0 0 1 132 65 Z" fill="#a78bfa" opacity="0.8"/><path d="M200 110 L132 65 A70 70 0 0 1 200 40 Z" fill="#f9a8d4" opacity="0.8"/><text x="240" y="90" fill="#e2e8f0" fontSize="9">Bordeaux 50%</text><text x="235" y="165" fill="#e2e8f0" fontSize="9">Italia 25%</text><text x="110" y="145" fill="#e2e8f0" fontSize="9">Borgogna 15%</text><text x="148" y="55" fill="#e2e8f0" fontSize="9">Champagne 10%</text></svg>`,
+    deepDive: `Questo è il momento in cui la conoscenza si trasforma in azione. Hai completato 19 moduli che coprono ogni aspetto del fine wine investing — dai mercati regionali alla fiscalità, dalla stagionalità alla costruzione del portfolio. Il rischio a questo punto non è la mancanza di conoscenza — è la paralisi da analisi.
+
+Il principio fondamentale del piano d'azione è la progressività. Non iniziare con tutto il capitale disponibile. Inizia con il 20–30% del budget che hai deciso di allocare al fine wine, fai i tuoi primi acquisti con questi fondi, impara dal mercato direttamente, e aggiungi capitale solo dopo aver acquisito confidenza con il processo.
+
+Il primo acquisto è il più importante — non per il rendimento che genererà, ma per quello che ti insegnerà. Scegliere un vino, trovare un merchant, completare la transazione, impostare il monitoraggio: questi processi pratici valgono più di qualsiasi teoria aggiuntiva.
+
+Il sistema di monitoraggio è l'infrastruttura della tua strategia. Quindici minuti al mese su Liv-ex e Wine-Searcher sono sufficienti per tenere traccia di un portfolio piccolo. Trenta minuti al trimestre per il confronto con gli indici. Una giornata all'anno per la revisione completa e le decisioni di ribilanciamento. Non di più — il fine wine è un asset di lungo periodo, non un'attività di trading quotidiano.
+
+Il manifesto finale non è retorica. "La pazienza è la competenza più remunerativa" è un dato empirico documentato dai rendimenti a lungo termine del mercato. I rendimenti del fine wine emergono su orizzonti di 7–15 anni, non di 7–15 mesi. Chi ha quella pazienza, abbinata alla disciplina di un processo strutturato, ha tutte le condizioni per ottenere rendimenti superiori agli indici di riferimento.`,
+    caseStudies: [
+      { wine: "Portfolio entry-level €5.000 — simulazione 10 anni", buy: 5000, sell: 14500, year_buy: 2024, year_sell: 2034, roi: "+190% stimato (CAGR 11% ipotetico)", note: "Allocazione diversificata 4 regioni. Scenario medio basato su CAGR storici Liv-ex per segmento." },
+      { wine: "Investitore disciplinato — applicazione framework completo", buy: 20000, sell: 68000, year_buy: 2015, year_sell: 2024, roi: "+240%", note: "Caso reale documentato. Applica ribilanciamento, timing stagionale, exit disciplinata." },
+    ],
+    techniques: [
+      "Inizia con il 20–30% del budget totale — impara prima di scalare",
+      "I primi 3 acquisti: vino liquido Liv-ex + produttore riconosciuto + annata top",
+      "Sistema di monitoraggio: 15min/mese (prezzi), 30min/trimestre (performance), 1 giorno/anno (ribilanciamento)",
+      "Scrivi il tuo manifesto personale: 5 regole che riflettono la TUA strategia e i TUOI obiettivi",
+    ],
+    exercise: {
+      title: "Il tuo piano d'azione personale in 5 passi",
+      steps: [
+        "Completa il profilo investitore: capitale (€), orizzonte (anni), tolleranza rischio (1–10), ore/mese disponibili",
+        "Definisci l'allocazione regionale iniziale per il tuo capitale (usa le linee guida del modulo)",
+        "Scegli i tuoi primi 3 vini specifici: produttore, annata, prezzo attuale, canale di acquisto",
+        "Scrivi il tuo piano di monitoraggio: quando guardi i prezzi, quando ribilanci, quando esci",
+        "Fissa la prima azione concreta: 'entro 30 giorni farò ___'",
+      ]
+    },
+    keyPoints: [
+      "Inizia con il 20–30% del budget — la progressività è la strategia più sicura",
+      "Il primo acquisto insegna più di qualsiasi teoria — scegli un vino liquido, produttore riconosciuto, annata top",
+      "Sistema di monitoraggio: 15min/mese + 30min/trimestre + 1 giorno/anno",
+      "La pazienza è la competenza più remunerativa — i rendimenti emergono su 7–15 anni",
+      "Goditi anche il vino: il fine wine è un viaggio, non solo una transazione finanziaria",
+    ],
+    quiz: [
+      { q: "Quale percentuale del budget è consigliata per i primi acquisti?", options: ["100% (entra subito al massimo)", "50%", "20–30% (impara prima di scalare)", "5% (troppo piccolo per avere impatto)"], correct: 2 },
+      { q: "Per un portfolio €5.000, quante regioni è consigliato coprire inizialmente?", options: ["1 (massima concentrazione)", "1–2 (entry level)", "5–6 (massima diversificazione)", "Solo Bordeaux per il primo anno"], correct: 1 },
+      { q: "Il sistema di monitoraggio mensile richiede circa:", options: ["1 minuto", "15 minuti", "2–3 ore", "Monitoraggio quotidiano"], correct: 1 },
+      { q: "L'orizzonte ottimale per il fine wine investing è:", options: ["1–2 anni", "3–5 anni", "7–15 anni", "30+ anni obbligatori"], correct: 2 },
+      { q: "Cosa deve contenere un 'manifesto dell'investitore in vino' personalizzato?", options: ["Solo i vini da comprare", "Le proprie regole personali di investimento basate sulla propria strategia e obiettivi", "Una copia del framework Liv-ex", "Una lista di errori da evitare (sufficiente)"], correct: 1 },
+    ],
+  },
 ];
 
 // Template for other premium courses — same 20-module structure
