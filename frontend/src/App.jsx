@@ -894,7 +894,6 @@ function App() {
             onMouseEnter={e => { e.currentTarget.style.color = "#C9A227"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.5)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.25)"; }}
           >📊 Index</button>
-          <ThemeToggle />
           <a href="/scan" title="Scan wine label" style={{ padding: "6px 10px", border: "1px solid rgba(30,41,59,0.7)", borderRadius: 8, background: "transparent", color: "#4a6a8a", fontSize: 15, cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center" }}>📷</a>
           <CurrencySelector />
           <LangSelector />

@@ -119,6 +119,9 @@
       #root{min-height:100vh}
     </style>
 
+    <!-- Force dark theme before React loads — prevents light flash -->
+    <script>document.documentElement.setAttribute('data-theme','dark');try{localStorage.setItem('vino_theme','dark');}catch(_){}</script>
+
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
