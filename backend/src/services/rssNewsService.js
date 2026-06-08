@@ -13,16 +13,21 @@ const parser = new Parser({
 });
 
 const RSS_FEEDS = [
-  { url: "https://www.decanter.com/feed/",             source: "Decanter",         country: "UK" },
-  { url: "https://www.wineenthusiast.com/feed/",       source: "Wine Enthusiast",  country: "US" },
-  { url: "https://www.thedrinksbusiness.com/feed/",    source: "Drinks Business",  country: "UK" },
-  { url: "https://winefolly.com/feed/",                source: "Wine Folly",       country: "US" },
-  { url: "https://www.wine-searcher.com/rss/news",     source: "Wine-Searcher",    country: "UK" },
-  { url: "https://www.thewinesociety.com/blog/feed",   source: "The Wine Society", country: "UK" },
-  { url: "https://www.decanter.com/wine-news/feed/",   source: "Decanter News",    country: "UK" },
-  { url: "https://vinepair.com/feed/",                 source: "VinePair",         country: "US" },
-  { url: "https://www.wine-searcher.com/rss/articles", source: "Wine-Searcher",    country: "UK" },
-  { url: "https://www.thewinehub.net/feed/",           source: "Wine Hub",         country: "UK" },
+  // Primary wine investment news
+  { url: "https://www.decanter.com/feed/",                    source: "Decanter",          country: "UK" },
+  { url: "https://www.decanter.com/wine-news/feed/",          source: "Decanter News",     country: "UK" },
+  { url: "https://www.thedrinksbusiness.com/feed/",           source: "Drinks Business",   country: "UK" },
+  { url: "https://www.wineenthusiast.com/feed/",              source: "Wine Enthusiast",   country: "US" },
+  { url: "https://www.wine-searcher.com/rss/news",            source: "Wine-Searcher",     country: "UK" },
+  { url: "https://www.wine-searcher.com/rss/articles",        source: "Wine-Searcher",     country: "UK" },
+  // Italian wine news
+  { url: "https://winenews.it/feed/",                         source: "WineNews.it",       country: "IT" },
+  { url: "https://www.gamberorosso.it/category/vini/feed/",   source: "Gambero Rosso",     country: "IT" },
+  // Broader wine content
+  { url: "https://vinepair.com/feed/",                        source: "VinePair",          country: "US" },
+  { url: "https://winefolly.com/feed/",                       source: "Wine Folly",        country: "US" },
+  { url: "https://www.thewinesociety.com/blog/feed",          source: "The Wine Society",  country: "UK" },
+  { url: "https://www.thewinehub.net/feed/",                  source: "Wine Hub",          country: "UK" },
 ];
 
 function detectCategory(title = "", desc = "") {

@@ -12,9 +12,9 @@ import { authFetch } from "./lib/authFetch";
 import LandingPage from "./LandingPage";
 import { supabase } from "./lib/supabase";
 import WineBottle3DModal from "./WineBottle3DModal";
-import Pricing from "./pages/Pricing";
-import B2BPage from "./pages/B2B";
-import DashboardB2B from "./pages/Dashboard";
+const Pricing = lazy(() => import("./pages/Pricing"));
+const B2BPage = lazy(() => import("./pages/B2B"));
+const DashboardB2B = lazy(() => import("./pages/Dashboard"));
 import WinePriceCompare from "./components/WinePriceCompare";
 import LangSelector from "./components/LangSelector";
 import AgentChat from "./components/AgentChat";
@@ -1494,7 +1494,7 @@ function App() {
             </section>
           )}
 
-          {tab === "b2b" && <DashboardB2B />}
+          {tab === "b2b" && <Suspense fallback={null}><DashboardB2B /></Suspense>}
 
           {/* ── Notifications ─────────────────────────────────────────────── */}
           {tab === "notifications" && (

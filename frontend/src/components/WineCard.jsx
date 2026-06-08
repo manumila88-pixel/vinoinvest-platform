@@ -63,6 +63,7 @@ function WineCardImage({ wine }) {
           setFailed(true);
         }
       }}
+      width={80} height={160}
       style={{ height: 160, width: "auto", objectFit: "contain", filter: "drop-shadow(0 8px 20px rgba(0,0,0,0.75))" }}
     />
   );

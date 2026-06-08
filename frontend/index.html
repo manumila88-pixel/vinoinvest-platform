@@ -107,9 +107,12 @@
     <link rel="alternate" hreflang="x-default" href="https://vinoinvest-platform.vercel.app/">
 
     <!-- Preconnects for performance -->
-    <link rel="preconnect" href="https://vinoinvest-backend-2.onrender.com">
-    <link rel="preconnect" href="https://images.unsplash.com">
-    <!-- Fonts loaded locally via @fontsource — no external CDN requests -->
+    <link rel="preconnect" href="https://vinoinvest-backend-2.onrender.com" crossorigin>
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+    <link rel="preconnect" href="https://xghuyfgftvrhnmuezbbz.supabase.co" crossorigin>
+    <link rel="dns-prefetch" href="https://www.cellartracker.com">
+    <link rel="dns-prefetch" href="https://www.decanter.com">
+    <!-- Fonts loaded locally via @fontsource — font-display:swap set by fontsource -->
 
     <!-- Critical inline CSS — prevents render-blocking flash -->
     <style>
@@ -129,7 +132,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="VinoInvest">
     <meta name="theme-color" content="#C9A227">
-    <link rel="apple-touch-icon" href="/icon.svg">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png">
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/icon.svg">
 

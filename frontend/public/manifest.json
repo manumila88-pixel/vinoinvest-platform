@@ -3,9 +3,10 @@
   "short_name": "VinoInvest",
   "description": "AI-powered fine wine investment platform. 50,000+ wines tracked with real-time AI scores, portfolio builder and price history.",
   "start_url": "/",
+  "id": "/",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone"],
-  "background_color": "#060d1a",
+  "background_color": "#0b1220",
   "theme_color": "#C9A227",
   "orientation": "portrait-primary",
   "scope": "/",
@@ -14,22 +15,34 @@
   "categories": ["finance", "lifestyle", "food"],
   "icons": [
     {
-      "src": "/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon.svg",
+      "src": "/icon-192.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "maskable"
     },
     {
       "src": "/icon.svg",
-      "sizes": "512x512",
+      "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ],
   "screenshots": [
@@ -37,6 +50,7 @@
       "src": "/og-image.jpg",
       "sizes": "1200x630",
       "type": "image/jpeg",
+      "form_factor": "wide",
       "label": "VinoInvest Market View"
     }
   ],
@@ -46,28 +60,28 @@
       "short_name": "Market",
       "description": "Browse 50,000+ investment wines",
       "url": "/?section=market",
-      "icons": [{ "src": "/icon.svg", "sizes": "any" }]
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "My Portfolio",
       "short_name": "Portfolio",
       "description": "View your wine portfolio",
       "url": "/?section=portfolio",
-      "icons": [{ "src": "/icon.svg", "sizes": "any" }]
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "Wine Cellar",
       "short_name": "Cellar",
       "description": "Manage your wine cellar",
       "url": "/cellar",
-      "icons": [{ "src": "/icon.svg", "sizes": "any" }]
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "Price Alerts",
       "short_name": "Alerts",
       "description": "Your price alerts",
       "url": "/?section=alerts",
-      "icons": [{ "src": "/icon.svg", "sizes": "any" }]
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ],
   "share_target": {

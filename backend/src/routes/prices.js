@@ -1,5 +1,6 @@
 import express from "express";
 import { getPrices, getPriceHistory, refreshPrice } from "../services/priceService.js";
+import { fetchCellarTrackerPrice } from "../connectors/cellarTracker.js";
 
 const router = express.Router();
 
@@ -36,6 +37,18 @@ router.get("/:wineId/history", async (req, res) => {
   } catch (err) {
     console.error("GET /api/prices/:wineId/history error:", err.message);
     res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/prices/:wineId/cellartracker?name=X&vintage=Y — community price from CellarTracker
+router.get("/:wineId/cellartracker", async (req, res) => {
+  const { name, vintage } = req.query;
+  if (!name) return res.status(400).json({ error: "name is required" });
+  try {
+    const data = await fetchCellarTrackerPrice(name, vintage || null);
+    res.json({ wineId: req.params.wineId, ...data });
+  } catch (err) {
+    res.status(502).json({ error: "CellarTracker unavailable", detail: err.message });
   }
 });
 
