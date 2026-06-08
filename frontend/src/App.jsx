@@ -53,8 +53,10 @@ import PrivacySettings from "./pages/PrivacySettings";
 import Terms from "./pages/Terms";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Disclaimer from "./pages/Disclaimer";
+import Cookies from "./pages/Cookies";
 import ThemeToggle from "./components/ThemeToggle";
 import VoiceInterface from "./components/VoiceInterface";
+import ExitIntentPopup from "./components/ExitIntentPopup";
 import { getSavedTheme, applyTheme } from "./lib/theme";
 import "./style.css";
 
@@ -1638,6 +1640,9 @@ function App() {
       {/* ── Cookie Banner GDPR ──────────────────────────────────────────── */}
       <CookieBanner />
 
+      {/* ── Exit Intent Popup ───────────────────────────────────────────── */}
+      <ExitIntentPopup userEmail={userEmail} />
+
       {/* ── PWA Install Banner ──────────────────────────────────────────── */}
       <PWAInstallBanner />
 
@@ -1736,6 +1741,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
+          <Route path="/cookies" element={<Cookies />} />
           <Route path="*" element={<App />} />
         </Routes>
       </CurrencyProvider>

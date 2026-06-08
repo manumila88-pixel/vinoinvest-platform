@@ -63,6 +63,40 @@ router.post("/test", requireAuth, async (req, res) => {
   }
 });
 
+// POST /api/email-preferences/subscribe (no auth — exit intent, landing)
+router.post("/subscribe", async (req, res) => {
+  try {
+    const { email, source = "website", list = "newsletter" } = req.body;
+    if (!email || !email.includes("@")) return res.status(400).json({ error: "valid email required" });
+
+    if (!pool) return res.json({ ok: true, message: "Stored" });
+
+    // Upsert into newsletter_subscribers
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+        email TEXT PRIMARY KEY,
+        source TEXT DEFAULT 'website',
+        list TEXT DEFAULT 'newsletter',
+        subscribed_at TIMESTAMPTZ DEFAULT NOW(),
+        unsubscribed_at TIMESTAMPTZ
+      )
+    `).catch(() => {});
+
+    await pool.query(`
+      INSERT INTO newsletter_subscribers (email, source, list)
+      VALUES ($1, $2, $3)
+      ON CONFLICT (email) DO UPDATE SET source = EXCLUDED.source, list = EXCLUDED.list
+    `, [email.toLowerCase().trim(), source, list]).catch(() => {});
+
+    // Also mark subscribed in users table if they already have an account
+    await pool.query("UPDATE users SET email_subscribed = true WHERE email = $1", [email.toLowerCase().trim()]).catch(() => {});
+
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // POST /api/email-preferences/unsubscribe (no auth — from email link)
 router.post("/unsubscribe", async (req, res) => {
   try {

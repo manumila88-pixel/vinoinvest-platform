@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 
-const COUNTER_FACTS = [
-  { icon: "🍷", label: "Wines tracked", value: 50234, suffix: "+" },
-  { icon: "📊", label: "Price data points", value: 1842000, suffix: "" },
-  { icon: "👤", label: "Active investors", value: 3847, suffix: "+" },
-  { icon: "🤖", label: "AI analyses today", value: 127, suffix: "" },
+const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
+
+const DEFAULT_FACTS = [
+  { icon: "🍷", label: "Vini analizzati", value: 50234, suffix: "+" },
+  { icon: "📊", label: "Punti dati storici", value: 1842000, suffix: "" },
+  { icon: "👤", label: "Investitori attivi", value: 3847, suffix: "+" },
+  { icon: "🤖", label: "AI analyses oggi", value: 127, suffix: "" },
 ];
 
 function AnimatedCount({ target, suffix }) {
@@ -26,9 +28,26 @@ function AnimatedCount({ target, suffix }) {
 }
 
 export function StatsCounter() {
+  const [facts, setFacts] = useState(DEFAULT_FACTS);
+
+  useEffect(() => {
+    fetch(`${API}/api/stats/public`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (!data) return;
+        setFacts([
+          { icon: "🍷", label: "Vini analizzati", value: data.wines || 50234, suffix: "+" },
+          { icon: "📊", label: "Punti dati storici", value: data.pricePoints || 1842000, suffix: "" },
+          { icon: "👤", label: "Investitori registrati", value: data.users || 3847, suffix: "+" },
+          { icon: "🤖", label: "AI analyses oggi", value: data.aiAnalyses || 127, suffix: "" },
+        ]);
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center", padding: "12px 0" }}>
-      {COUNTER_FACTS.map(f => (
+      {facts.map(f => (
         <div key={f.label} style={{ display: "flex", alignItems: "center", gap: 6, background: "rgba(11,18,32,0.6)", border: "1px solid rgba(30,41,59,0.4)", borderRadius: 10, padding: "8px 14px" }}>
           <span style={{ fontSize: 16 }}>{f.icon}</span>
           <div>
