@@ -47,6 +47,7 @@ import labelRouter from "./routes/labelScan.js";
 import sourcesRouter from "./routes/sources.js";
 import emailPrefRouter, { setEmailPrefPool } from "./routes/emailPreferences.js";
 import feedbackRouter, { setFeedbackPool } from "./routes/feedback.js";
+import academyRouter from "./routes/academy.js";
 
 // Global in-memory cache
 const appCache = new NodeCache({ stdTTL: 0, checkperiod: 120 });
@@ -166,6 +167,7 @@ app.use("/api/sources", cacheFor(3600), sourcesRouter);
 app.use("/api/email-preferences", emailPrefRouter);
 app.use("/api/unsubscribe", emailPrefRouter);
 app.use("/api/feedback", feedbackRouter);
+app.use("/api/academy", academyRouter);
 
 const __filename =
   fileURLToPath(import.meta.url);

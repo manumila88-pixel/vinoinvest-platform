@@ -43,6 +43,10 @@ import MarketSentiment from "./pages/MarketSentiment";
 import InvestmentGoals from "./pages/InvestmentGoals";
 import Transparency from "./pages/Transparency";
 import NotificationSettings from "./pages/NotificationSettings";
+import Academy from "./pages/Academy";
+import AcademyCourse from "./pages/AcademyCourse";
+import AcademyLesson from "./pages/AcademyLesson";
+import AcademyVerify from "./pages/AcademyVerify";
 import ThemeToggle from "./components/ThemeToggle";
 import VoiceInterface from "./components/VoiceInterface";
 import { getSavedTheme, applyTheme } from "./lib/theme";
@@ -881,7 +885,7 @@ function App() {
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.25)"; }}
           >🧮 Calc</button>
           <button
-            onClick={() => navigate("/learn")}
+            onClick={() => navigate("/academy")}
             title="Wine Investment Academy"
             style={{ padding: "5px 10px", border: "1px solid rgba(74,222,128,0.25)", borderRadius: 8, background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "'Inter',Arial,sans-serif" }}
             onMouseEnter={e => { e.currentTarget.style.color = "#4ade80"; e.currentTarget.style.borderColor = "rgba(74,222,128,0.5)"; }}
@@ -1680,6 +1684,10 @@ createRoot(document.getElementById("root")).render(
           <Route path="/goals" element={<InvestmentGoals />} />
           <Route path="/transparency" element={<Transparency />} />
           <Route path="/settings/notifications" element={<NotificationSettings />} />
+          <Route path="/academy" element={<Academy />} />
+          <Route path="/academy/course/:slug" element={<AcademyCourse />} />
+          <Route path="/academy/lesson/:lessonId" element={<AcademyLesson />} />
+          <Route path="/verify/:code" element={<AcademyVerify />} />
           <Route path="*" element={<App />} />
         </Routes>
       </CurrencyProvider>
