@@ -242,6 +242,107 @@ function VintageQualityBadge({ wine }) {
   );
 }
 
+function CellarTrackerNotes({ wineName }) {
+  const [notes, setNotes] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const loadNotes = () => {
+    if (notes !== null || loading) { setOpen(o => !o); return; }
+    setLoading(true);
+    fetch(`${API}/api/cellar/notes/${encodeURIComponent(wineName)}`)
+      .then(r => r.ok ? r.json() : { notes: [] })
+      .then(data => {
+        setNotes(data.notes || []);
+        setLoading(false);
+        setOpen(true);
+      })
+      .catch(() => { setNotes([]); setLoading(false); setOpen(true); });
+  };
+
+  if (!wineName) return null;
+
+  return (
+    <div style={{ marginTop: 12, borderTop: "1px solid #1e293b", paddingTop: 12 }}>
+      <button
+        onClick={loadNotes}
+        style={{
+          background: "none",
+          border: "none",
+          color: "#c9a227",
+          fontSize: 12,
+          fontWeight: 700,
+          cursor: "pointer",
+          padding: "4px 0",
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          letterSpacing: "0.04em",
+          textTransform: "uppercase",
+        }}
+      >
+        {loading ? "Caricamento..." : `Note dalla Community ${open ? "↑" : "↓"}`}
+      </button>
+
+      {open && notes !== null && (
+        <div style={{ marginTop: 10 }}>
+          {notes.length === 0 ? (
+            <p style={{ fontSize: 11, color: "#475569", fontStyle: "italic" }}>
+              Nessuna nota disponibile su CellarTracker.
+            </p>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {notes.map((note, i) => (
+                <div
+                  key={i}
+                  style={{
+                    padding: "10px 12px",
+                    background: "#0a1218",
+                    borderRadius: 10,
+                    border: "1px solid #1e2d3d",
+                    borderLeft: "3px solid #c9a227",
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5, flexWrap: "wrap", gap: 4 }}>
+                    {note.score > 0 && (
+                      <span style={{
+                        background: "linear-gradient(135deg, #C9A227, #F5D06D)",
+                        color: "#1a0a00",
+                        borderRadius: 6,
+                        padding: "1px 8px",
+                        fontSize: 11,
+                        fontWeight: 800,
+                      }}>
+                        {note.score} pt
+                      </span>
+                    )}
+                    {note.reviewer && (
+                      <span style={{ fontSize: 10, color: "#64748b", fontStyle: "italic" }}>
+                        {note.reviewer}
+                      </span>
+                    )}
+                    {note.noteDate && (
+                      <span style={{ fontSize: 10, color: "#475569" }}>
+                        {note.noteDate}
+                      </span>
+                    )}
+                  </div>
+                  <p style={{ fontSize: 12, color: "#94a3b8", lineHeight: 1.55, fontStyle: "italic", margin: 0 }}>
+                    "{note.noteText.length > 120 ? note.noteText.slice(0, 117) + "…" : note.noteText}"
+                  </p>
+                </div>
+              ))}
+              <p style={{ fontSize: 9, color: "#334155", marginTop: 2, textAlign: "right" }}>
+                Fonte: CellarTracker Community
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function FoodPairings({ wineId }) {
   const [pairings, setPairings] = useState(null);
 
@@ -577,6 +678,9 @@ export default function WineBottle3DModal({ wine, onClose }) {
 
           {/* ── Food Pairings ───────────────────────────────────────────── */}
           <FoodPairings wineId={wine.id} />
+
+          {/* ── CellarTracker Community Notes ───────────────────────────── */}
+          <CellarTrackerNotes wineName={wine.name} />
 
           {/* ── Source attribution ──────────────────────────────────────── */}
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 14, flexWrap: "wrap" }}>

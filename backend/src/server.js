@@ -532,6 +532,21 @@ async function initDB() {
       )
     `).catch(() => {});
 
+    // CellarTracker community notes cache
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS community_notes (
+        id SERIAL PRIMARY KEY,
+        wine_name VARCHAR NOT NULL,
+        note_text TEXT,
+        score INTEGER,
+        reviewer VARCHAR,
+        note_date DATE,
+        source VARCHAR DEFAULT 'cellartracker',
+        fetched_at TIMESTAMP DEFAULT NOW()
+      )
+    `).catch(() => {});
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_community_notes_wine ON community_notes(wine_name)`).catch(() => {});
+
     // Seed sources if empty
     await pool.query(`
       INSERT INTO sources (name, url, type, reliability_score) VALUES

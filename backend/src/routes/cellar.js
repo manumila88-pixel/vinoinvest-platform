@@ -1,5 +1,6 @@
 import express from "express";
 import { requireAuth } from "../middleware/auth.js";
+import { getCellarTrackerNotes } from "../services/cellarTrackerService.js";
 
 const router = express.Router();
 let pool;
@@ -80,6 +81,21 @@ router.delete("/:id", requireAuth, async (req, res) => {
     res.json({ ok: true });
   } catch (e) {
     res.status(500).json({ error: e.message });
+  }
+});
+
+// GET /api/cellar/notes/:wineName — CellarTracker community tasting notes (public)
+router.get("/notes/:wineName", async (req, res) => {
+  try {
+    const { wineName } = req.params;
+    if (!wineName || wineName.trim().length < 2) {
+      return res.status(400).json({ error: "wineName required" });
+    }
+    const notes = await getCellarTrackerNotes(decodeURIComponent(wineName));
+    res.json({ notes, source: "cellartracker" });
+  } catch (e) {
+    console.error("cellar notes GET", e);
+    res.json({ notes: [], source: "cellartracker" });
   }
 });
 

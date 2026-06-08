@@ -5,11 +5,101 @@
  * Runs every 6 hours. Updates price_cache and price_history with source="cellartracker".
  */
 
+import NodeCache from "node-cache";
+
 let pool = null;
 export const setCellarTrackerPool = (p) => { pool = p; };
 
 const CT_BASE = "https://www.cellartracker.com/api.asp";
 const CACHE_TTL_HOURS = 6;
+
+// Notes cache: 24h TTL
+const notesCache = new NodeCache({ stdTTL: 86400, checkperiod: 3600 });
+
+/**
+ * Parse tab-separated CellarTracker response into array of objects.
+ * First line contains column headers.
+ */
+function parseTSV(text) {
+  const lines = text.trim().split("\n");
+  if (lines.length < 2) return [];
+  const headers = lines[0].split("\t").map(h => h.trim());
+  return lines.slice(1).map(line => {
+    const cols = line.split("\t");
+    const obj = {};
+    headers.forEach((h, i) => { obj[h] = (cols[i] || "").trim(); });
+    return obj;
+  });
+}
+
+/**
+ * Fetch CellarTracker community tasting notes for a wine by name.
+ * Returns top 3 notes sorted by score desc. Returns [] on any error.
+ */
+export async function getCellarTrackerNotes(wineName) {
+  if (!wineName) return [];
+
+  const cacheKey = `ct_notes:${wineName.toLowerCase()}`;
+  const cached = notesCache.get(cacheKey);
+  if (cached !== undefined) return cached;
+
+  try {
+    // Step 1: Search for wine to get iWine ID
+    const searchUrl = `${CT_BASE}?q=list&type=List&User=wine&Password=wine&szSearch=${encodeURIComponent(wineName)}&format=tab`;
+    const searchRes = await fetch(searchUrl, {
+      headers: { "Accept": "text/plain" },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!searchRes.ok) { notesCache.set(cacheKey, []); return []; }
+
+    const searchText = await searchRes.text();
+    const searchRows = parseTSV(searchText);
+    if (!searchRows.length) { notesCache.set(cacheKey, []); return []; }
+
+    // Find best match — prefer exact name match, fall back to first result
+    const nameLower = wineName.toLowerCase();
+    const match = searchRows.find(r =>
+      (r.Wine || r.iWine || "").toLowerCase().includes(nameLower.slice(0, 10))
+    ) || searchRows[0];
+
+    const iWineId = match.iWine || match.wine_id || match.WineId;
+    if (!iWineId) { notesCache.set(cacheKey, []); return []; }
+
+    // Step 2: Fetch notes for that iWine
+    const notesUrl = `${CT_BASE}?q=list&type=Notes&User=wine&Password=wine&iWine=${encodeURIComponent(iWineId)}&format=tab`;
+    const notesRes = await fetch(notesUrl, {
+      headers: { "Accept": "text/plain" },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!notesRes.ok) { notesCache.set(cacheKey, []); return []; }
+
+    const notesText = await notesRes.text();
+    const noteRows = parseTSV(notesText);
+    if (!noteRows.length) { notesCache.set(cacheKey, []); return []; }
+
+    // Step 3: Parse into standardized objects
+    const notes = noteRows
+      .map(row => {
+        const rawScore = parseInt(row.Score || row.score || row.Rating || "0", 10);
+        return {
+          noteText: (row.Note || row.note || row.Notes || "").trim(),
+          score: isNaN(rawScore) ? 0 : rawScore,
+          reviewer: (row.Reviewer || row.reviewer || row.Author || row.User || "").trim(),
+          noteDate: (row.NoteDate || row.note_date || row.Date || "").trim(),
+        };
+      })
+      .filter(n => n.noteText.length > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3);
+
+    notesCache.set(cacheKey, notes);
+    return notes;
+  } catch (err) {
+    console.warn("[cellarTracker] getCellarTrackerNotes error:", err.message);
+    notesCache.set(cacheKey, []);
+    return [];
+  }
+}
 
 async function fetchCTPrice(wineName, vintage) {
   const name = encodeURIComponent(`${wineName} ${vintage || ""}`.trim());
