@@ -3,6 +3,26 @@ import { createRequire } from "module";
 import { runAgent, executeTool } from "../agents/portfolioAgent.js";
 import { translateText } from "../services/translationService.js";
 
+let agentPool = null;
+export const setAgentPool = (p) => { agentPool = p; };
+
+async function searchWinesFromDB(query, limit = 12) {
+  if (!agentPool) return [];
+  try {
+    const q = `%${query.toLowerCase()}%`;
+    const { rows } = await agentPool.query(`
+      SELECT id, name, producer, vintage, current_price, investment_score,
+             risk, market_trend, type, region, image_url
+      FROM wines
+      WHERE LOWER(name) LIKE $1 OR LOWER(producer) LIKE $1
+        OR LOWER(region) LIKE $1 OR LOWER(type) LIKE $1
+      ORDER BY investment_score DESC NULLS LAST, current_price DESC
+      LIMIT $2
+    `, [q, limit]);
+    return rows;
+  } catch { return []; }
+}
+
 const router = Router();
 
 // Fallback wine catalog — used when req._allWines is not injected by server.js
@@ -39,6 +59,7 @@ router.post("/chat", async (req, res) => {
       conversationHistory: history,
       holdings,
       allWines,
+      searchWinesFromDB,
       API_URL: process.env.BACKEND_URL || "https://vinoinvest-backend-2.onrender.com",
       lang: detectedLang,
     });

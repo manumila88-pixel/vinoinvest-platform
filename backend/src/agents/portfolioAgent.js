@@ -79,7 +79,7 @@ const TOOLS = [
 ];
 
 // ── Tool execution ─────────────────────────────────────────────────────────
-export async function executeTool(name, input, { allWines, API_URL }) {
+export async function executeTool(name, input, { allWines, API_URL, searchWinesFromDB }) {
   switch (name) {
     case "get_wine_price_history": {
       try {
@@ -105,11 +105,20 @@ export async function executeTool(name, input, { allWines, API_URL }) {
     case "search_wines": {
       const limit = input.limit || 5;
       const q = (input.query || "").toLowerCase();
+      // Try DB first for live data, fall back to in-memory catalog
+      if (searchWinesFromDB) {
+        try {
+          const dbResults = await searchWinesFromDB(q, limit);
+          if (dbResults.length > 0) {
+            return { results: dbResults.map(w => ({ id: w.id, name: w.name, producer: w.producer, region: w.region, vintage: w.vintage, price: w.current_price, score: w.investment_score, risk: w.risk, type: w.type })), total: dbResults.length, source: "db" };
+          }
+        } catch {}
+      }
       const results = allWines
         .filter(w => `${w.name} ${w.producer} ${w.region} ${w.type || ""} ${w.variety || ""}`.toLowerCase().includes(q))
         .slice(0, limit)
         .map(w => ({ id: w.id, name: w.name, producer: w.producer, region: w.region, vintage: w.vintage, price: w.currentPrice || w.current_price, score: w.investmentScore || w.investment_score, risk: w.risk, type: w.type }));
-      return { results, total: results.length };
+      return { results, total: results.length, source: "memory" };
     }
     case "calculate_portfolio_metrics": {
       const h = input.holdings || [];
@@ -263,7 +272,7 @@ function getLang(lang) {
 }
 
 // ── Algorithmic agent (no API key needed) ─────────────────────────────────
-async function runAlgorithmicAgent({ message, conversationHistory, holdings, allWines, API_URL, lang }) {
+async function runAlgorithmicAgent({ message, conversationHistory, holdings, allWines, searchWinesFromDB, API_URL, lang }) {
   const t = getLang(lang);
   const intent = detectIntent(message);
   const budget = extractBudget(message);
@@ -348,7 +357,7 @@ async function runAlgorithmicAgent({ message, conversationHistory, holdings, all
 
     case "similar":
     case "region": {
-      const searchResult = await executeTool("search_wines", { query: searchTerm, limit: 6 }, { allWines, API_URL });
+      const searchResult = await executeTool("search_wines", { query: searchTerm, limit: 6 }, { allWines, API_URL, searchWinesFromDB });
       toolsUsed.push("search_wines");
       suggestedWines = searchResult.results || [];
       if (!suggestedWines.length) {
@@ -433,7 +442,7 @@ async function runAlgorithmicAgent({ message, conversationHistory, holdings, all
 }
 
 // ── Claude-powered agent ───────────────────────────────────────────────────
-async function runClaudeAgent({ message, conversationHistory, holdings, allWines, API_URL, lang }) {
+async function runClaudeAgent({ message, conversationHistory, holdings, allWines, searchWinesFromDB, API_URL, lang }) {
   const client = getClient();
   const systemPrompt = `You are VinoInvest AI Agent, an expert fine wine investment advisor with access to real-time market data and tools.
 
@@ -480,7 +489,7 @@ Always end with 2-3 relevant resource links.`;
       for (const block of resp.content) {
         if (block.type !== "tool_use") continue;
         toolsUsed.push(block.name);
-        const result = await executeTool(block.name, block.input, { allWines, API_URL });
+        const result = await executeTool(block.name, block.input, { allWines, API_URL, searchWinesFromDB });
         // Extract wine suggestions from tool results
         if (block.name === "search_wines") suggestedWines = result.results || [];
         if (block.name === "get_top_opportunities") suggestedWines = result.opportunities || [];
@@ -501,16 +510,15 @@ Always end with 2-3 relevant resource links.`;
 }
 
 // ── Public API ─────────────────────────────────────────────────────────────
-export async function runAgent({ message, conversationHistory = [], holdings = [], allWines = [], API_URL = "https://vinoinvest-backend-2.onrender.com", lang = "it" }) {
+export async function runAgent({ message, conversationHistory = [], holdings = [], allWines = [], searchWinesFromDB, API_URL = "https://vinoinvest-backend-2.onrender.com", lang = "it" }) {
   if (process.env.ANTHROPIC_API_KEY) {
     try {
-      return await runClaudeAgent({ message, conversationHistory, holdings, allWines, API_URL, lang });
+      return await runClaudeAgent({ message, conversationHistory, holdings, allWines, searchWinesFromDB, API_URL, lang });
     } catch (err) {
       console.error("[agent] Claude API error, falling back to algorithmic:", err.message);
-      // Fall through to algorithmic
     }
   }
-  return runAlgorithmicAgent({ message, conversationHistory, holdings, allWines, API_URL, lang });
+  return runAlgorithmicAgent({ message, conversationHistory, holdings, allWines, searchWinesFromDB, API_URL, lang });
 }
 
 export { buildResourceLinks };

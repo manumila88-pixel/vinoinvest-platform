@@ -20,7 +20,7 @@ import newsRouter from "./routes/news.js";
 import aiMarketRouter from "./routes/aiMarket.js";
 import aiPortfolioRouter from "./routes/aiPortfolio.js";
 import blogRouter, { setBlogPool } from "./routes/blog.js";
-import agentRouter from "./routes/agent.js";
+import agentRouter, { setAgentPool } from "./routes/agent.js";
 import purchaseRouter, { setPurchasePool } from "./routes/purchase.js";
 import adminRouter, { setAdminPool } from "./routes/admin.js";
 import wineInfoRouter from "./routes/wineInfo.js";
@@ -491,6 +491,7 @@ initDB().then(() => {
   if (pool) { setCellarPool(pool); setJournalPool(pool); setGoalsPool(pool); setReferralPool(pool); }
   if (pool) { setEmailPrefPool(pool); setFeedbackPool(pool); setAuthPool(pool); }
   if (pool) { setNewsletterPool(pool); }
+  if (pool) { setAgentPool(pool); }
   // Start scheduled agents
   startBlogAgent();
   startImageAgent();
