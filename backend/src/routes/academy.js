@@ -1,6 +1,7 @@
 import express from "express";
 import pg from "pg";
 import crypto from "crypto";
+import { ADMIN_EMAIL, checkCourseAccess } from "../middleware/auth.js";
 
 const router = express.Router();
 const { Pool } = pg;
@@ -14,7 +15,7 @@ async function initAcademyTables() {
         user_id VARCHAR(255) NOT NULL,
         course_id INTEGER NOT NULL,
         lesson_id INTEGER NOT NULL,
-        completed BOOLEAN DEFAULT false,
+        done BOOLEAN DEFAULT false,
         quiz_score INTEGER DEFAULT 0,
         xp_earned INTEGER DEFAULT 0,
         completed_at TIMESTAMP,
@@ -38,11 +39,23 @@ async function initAcademyTables() {
 }
 initAcademyTables();
 
+// GET /api/academy/access?email=&courseLevel=  — check if user can access a course tier
+router.get("/access", async (req, res) => {
+  const { email, courseLevel } = req.query;
+  if (!email) return res.json({ hasAccess: false });
+  try {
+    const hasAccess = await checkCourseAccess(email, courseLevel || "investor", pool);
+    res.json({ hasAccess, isAdmin: email === ADMIN_EMAIL });
+  } catch (e) {
+    res.json({ hasAccess: false });
+  }
+});
+
 // GET /api/academy/progress/:userId
 router.get("/progress/:userId", async (req, res) => {
   try {
     const r = await pool.query(
-      "SELECT course_id, lesson_id, completed, quiz_score, xp_earned, completed_at FROM academy_progress WHERE user_id = $1",
+      "SELECT course_id, lesson_id, done, quiz_score, xp_earned, completed_at FROM academy_progress WHERE user_id = $1",
       [req.params.userId]
     );
     res.json({ progress: r.rows });
@@ -57,10 +70,10 @@ router.post("/progress", async (req, res) => {
     const { userId, courseId, lessonId, quizScore, xpEarned } = req.body;
     if (!userId || !courseId || !lessonId) return res.status(400).json({ error: "Missing fields" });
     await pool.query(`
-      INSERT INTO academy_progress (user_id, course_id, lesson_id, completed, quiz_score, xp_earned, completed_at)
+      INSERT INTO academy_progress (user_id, course_id, lesson_id, done, quiz_score, xp_earned, completed_at)
       VALUES ($1, $2, $3, true, $4, $5, NOW())
       ON CONFLICT (user_id, lesson_id) DO UPDATE
-        SET completed = true,
+        SET done = true,
             quiz_score = GREATEST(academy_progress.quiz_score, $4),
             xp_earned = $5, completed_at = NOW()
     `, [userId, courseId, lessonId, quizScore || 0, xpEarned || 0]);

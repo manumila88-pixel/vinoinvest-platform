@@ -6,7 +6,7 @@ import rateLimit from "express-rate-limit";
 import NodeCache from "node-cache";
 import pg from "pg";
 import cors from "cors";
-import { requireAuth, optionalAuth } from "./middleware/auth.js";
+import { requireAuth, requireAdmin, optionalAuth } from "./middleware/auth.js";
 import { initUsageTable, trackUsage } from "./middleware/tokenTracker.js";
 import paymentsRouter from "./routes/payments.js";
 import pricesRouter from "./routes/prices.js";
@@ -48,6 +48,7 @@ import sourcesRouter from "./routes/sources.js";
 import emailPrefRouter, { setEmailPrefPool } from "./routes/emailPreferences.js";
 import feedbackRouter, { setFeedbackPool } from "./routes/feedback.js";
 import academyRouter from "./routes/academy.js";
+import subscriptionsRouter from "./routes/subscriptions.js";
 
 // Global in-memory cache
 const appCache = new NodeCache({ stdTTL: 0, checkperiod: 120 });
@@ -151,7 +152,7 @@ app.use("/api/ai", aiRateLimit, aiPortfolioRouter);
 app.use("/api/blog", cacheFor(7200), blogRouter);        // 2h
 app.use("/api/agent", aiRateLimit, agentRouter);
 app.use("/api/purchase", purchaseRouter);
-app.use("/api/admin", requireAuth, adminRouter);
+app.use("/api/admin", requireAdmin, adminRouter);
 app.use("/api/wine-info", cacheFor(86400), wineInfoRouter); // 24h cache
 app.use("/api/vintage", cacheFor(86400 * 7), vintageRouter); // 7 days — historical doesn't change
 app.use("/api/currency", cacheFor(21600), currencyRouter);   // 6h — exchange rates
@@ -168,6 +169,7 @@ app.use("/api/email-preferences", emailPrefRouter);
 app.use("/api/unsubscribe", emailPrefRouter);
 app.use("/api/feedback", feedbackRouter);
 app.use("/api/academy", academyRouter);
+app.use("/api/subscriptions", subscriptionsRouter);
 
 const __filename =
   fileURLToPath(import.meta.url);
