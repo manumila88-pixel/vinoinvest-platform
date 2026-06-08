@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getModuleById, getModulesForCourse, QUIZ_PASS_THRESHOLD, ADMIN_EMAIL } from "../data/premiumContent";
+import VideoLesson from "../components/VideoLesson";
+import { getModuleVideo } from "../data/academyVideos";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 const BG = "#0b1220";
@@ -310,20 +312,19 @@ export default function AcademyModule() {
           </Section>
         )}
 
-        {/* SECTION 6: YouTube */}
-        {module.youtube && (
-          <Section emoji="🎬" title="Video Lezione">
-            <div style={{ background: "#1a2535", borderRadius: 14, overflow: "hidden", aspectRatio: "16/9", position: "relative" }}>
-              <iframe
-                src={module.youtube}
-                style={{ width: "100%", height: "100%", border: "none" }}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                title={module.title}
+        {/* SECTION 6: Video Lezione */}
+        <Section emoji="🎬" title="Video Lezione">
+          {(() => {
+            const vid = getModuleVideo(moduleId);
+            return (
+              <VideoLesson
+                embedUrl={module.youtube || vid.embedUrl}
+                topic={module.title}
+                searchQuery={vid.searchQuery}
               />
-            </div>
-          </Section>
-        )}
+            );
+          })()}
+        </Section>
 
         {/* SECTION 7: Approfondimento 600+ words */}
         <Section emoji="🔬" title="Approfondimento">

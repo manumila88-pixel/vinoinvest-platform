@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useRef, useCallback } from "react";
+import React, { useEffect, useState, useMemo, useRef, useCallback, lazy, Suspense } from "react";
 import "./i18n";
 import { useTranslation } from "react-i18next";
 import { createRoot } from "react-dom/client";
@@ -12,18 +12,11 @@ import { fetchWithRetry } from "./lib/fetchWithRetry";
 import { authFetch } from "./lib/authFetch";
 import LandingPage from "./LandingPage";
 import { supabase } from "./lib/supabase";
-import WineBottle3DModal from "./WineBottle3DModal";
-const Pricing = lazy(() => import("./pages/Pricing"));
-const B2BPage = lazy(() => import("./pages/B2B"));
-const DashboardB2B = lazy(() => import("./pages/Dashboard"));
 import WinePriceCompare from "./components/WinePriceCompare";
 import LangSelector from "./components/LangSelector";
-import AgentChat from "./components/AgentChat";
-import PurchaseModal from "./components/PurchaseModal";
 import WineCard from "./components/WineCard";
 import VirtualWineGrid from "./components/VirtualWineGrid";
 import OnboardingModal, { isOnboardingCompleted, resetOnboarding } from "./components/OnboardingModal";
-import HelpBot from "./components/HelpBot";
 import GuidedTour, { isTourCompleted, resetTour } from "./components/GuidedTour";
 import InfoTooltip from "./components/InfoTooltip";
 import CookieBanner from "./components/CookieBanner";
@@ -31,7 +24,13 @@ import DisclaimerBar from "./components/DisclaimerBar";
 import CurrencySelector, { CurrencyProvider, usePrice } from "./components/CurrencySelector";
 import VintageScore from "./components/VintageScore";
 import InvestmentCalculator from "./components/InvestmentCalculator";
-import { lazy, Suspense } from "react";
+const WineBottle3DModal = lazy(() => import("./WineBottle3DModal"));
+const AgentChat = lazy(() => import("./components/AgentChat"));
+const PurchaseModal = lazy(() => import("./components/PurchaseModal"));
+const HelpBot = lazy(() => import("./components/HelpBot"));
+const Pricing = lazy(() => import("./pages/Pricing"));
+const B2BPage = lazy(() => import("./pages/B2B"));
+const DashboardB2B = lazy(() => import("./pages/Dashboard"));
 const Learn = lazy(() => import("./pages/Learn"));
 const MarketIndex = lazy(() => import("./pages/MarketIndex"));
 const WineCellar = lazy(() => import("./pages/WineCellar"));
@@ -344,6 +343,7 @@ function App() {
   const mPageRef = useRef(1);
   const mSearchRef = useRef("");
   const mDebounceRef = useRef(null);
+  const mAbortRef = useRef(null);
   const [portfolio, setPortfolio] = useState(null);
   const [chartData, setChartData] = useState([]);
   const [selectedWine, setSelectedWine] = useState(null);
@@ -368,6 +368,7 @@ function App() {
   const [marketGridW, setMarketGridW] = useState(900);
   const [floatChatOpen, setFloatChatOpen] = useState(false);
   const [floatUnread, setFloatUnread] = useState(0);
+  const [showNotifDropdown, setShowNotifDropdown] = useState(false);
 
   // ── Premium features state ───────────────────────────────────────────────
   const [news, setNews] = useState([]);
@@ -474,20 +475,22 @@ function App() {
   }
 
   async function loadMarketWines(search, page, append) {
-    if (mLoadingRef.current) return;
+    if (mLoadingRef.current && !append) return;
+    if (mAbortRef.current) { mAbortRef.current.abort(); }
+    mAbortRef.current = new AbortController();
     mLoadingRef.current = true;
     setMarketLoading(true);
     try {
       const params = new URLSearchParams({ page, limit: 20 });
       if (search) params.set("search", search);
-      const res = await fetch(`${API}/api/wines?${params}`);
+      const res = await fetch(`${API}/api/wines?${params}`, { signal: mAbortRef.current.signal });
       const data = await res.json();
       setMarketWines(prev => append ? [...prev, ...data.results] : data.results);
       setMarketPage(data.page);
       mPageRef.current = data.page;
       setMarketHasMore(data.hasMore);
       mHasMoreRef.current = data.hasMore;
-    } catch (e) { console.error(e); }
+    } catch (e) { if (e.name !== "AbortError") console.error(e); }
     finally { mLoadingRef.current = false; setMarketLoading(false); }
   }
 
@@ -498,7 +501,7 @@ function App() {
     mDebounceRef.current = setTimeout(() => {
       mHasMoreRef.current = true;
       loadMarketWines(value, 1, false);
-    }, 400);
+    }, 300);
   }
 
   useEffect(() => {
@@ -971,7 +974,8 @@ function App() {
           )}
           <div style={{ position: "relative" }}>
             <button
-              onClick={() => { setTab("notifications"); markAllRead(); }}
+              aria-label={`Notifiche${unreadCount > 0 ? ` (${unreadCount} non lette)` : ""}`}
+              onClick={() => setShowNotifDropdown(o => !o)}
               style={{ padding: "6px 10px", border: "1px solid rgba(30,41,59,0.7)", borderRadius: 8, background: "transparent", color: "#4a6a8a", fontSize: 15, cursor: "pointer", position: "relative", transition: "border-color 0.2s" }}
             >🔔
               {unreadCount > 0 && (
@@ -980,6 +984,47 @@ function App() {
                 </span>
               )}
             </button>
+            {showNotifDropdown && (
+              <>
+                <div style={{ position: "fixed", inset: 0, zIndex: 299 }} onClick={() => setShowNotifDropdown(false)} />
+                <div style={{ position: "absolute", top: "calc(100% + 8px)", right: 0, zIndex: 300, width: 320, maxHeight: 400, overflowY: "auto", background: "#0b1220", border: "1px solid rgba(30,41,59,0.9)", borderRadius: 14, boxShadow: "0 16px 48px rgba(0,0,0,0.6)", padding: "12px 0" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px 10px", borderBottom: "1px solid rgba(30,41,59,0.5)" }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: "#e2e8f0" }}>Notifiche</span>
+                    {unreadCount > 0 && (
+                      <button onClick={() => { markAllRead(); }} style={{ background: "none", border: "none", color: "#64748b", fontSize: 11, cursor: "pointer", padding: 0 }}>Segna tutte come lette</button>
+                    )}
+                  </div>
+                  {notifications.length === 0 ? (
+                    <div style={{ padding: "24px 16px", textAlign: "center", color: "#3a5a7a", fontSize: 13 }}>
+                      <div style={{ fontSize: 24, marginBottom: 8 }}>🔕</div>
+                      Nessuna notifica
+                    </div>
+                  ) : (
+                    notifications.slice(0, 8).map(n => (
+                      <div
+                        key={n.id}
+                        style={{ padding: "10px 16px", display: "flex", gap: 10, alignItems: "flex-start", background: n.read ? "transparent" : "rgba(12,26,46,0.6)", borderBottom: "1px solid rgba(30,41,59,0.3)", cursor: "pointer" }}
+                        onClick={async () => {
+                          if (!n.read) {
+                            try { await fetch(`${API}/api/notifications/${n.id}/read`, { method: "PUT" }); } catch {}
+                            setNotifications(prev => prev.map(x => x.id === n.id ? { ...x, read: true } : x));
+                          }
+                        }}
+                      >
+                        {!n.read && <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#60a5fa", flexShrink: 0, marginTop: 4 }} />}
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: 12, color: "#e2e8f0", lineHeight: 1.4 }}>{n.message}</div>
+                          <div style={{ fontSize: 10, color: "#3a5a7a", marginTop: 3 }}>{new Date(n.created_at).toLocaleString("it-IT")}</div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                  <div style={{ padding: "8px 16px 4px" }}>
+                    <button onClick={() => { setShowNotifDropdown(false); setTab("notifications"); }} style={{ background: "none", border: "none", color: "#60a5fa", fontSize: 12, cursor: "pointer", padding: 0 }}>Vedi tutte →</button>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
           <button
             onClick={async () => { await supabase.auth.signOut(); }}
@@ -1022,7 +1067,6 @@ function App() {
 
         {/* ── Content ─────────────────────────────────────────────────────── */}
         <section className="content">
-          <ErrorBoundary>
           {/* ── Dashboard ─────────────────────────────────────────────────── */}
           {tab === "dashboard" && (
             <>
@@ -1121,6 +1165,7 @@ function App() {
 
           {/* ── Market ──────────────────────────────────────────────────────── */}
           {tab === "market" && (
+            <ErrorBoundary>
             <>
               <input
                 className="searchInput"
@@ -1178,6 +1223,7 @@ function App() {
                 </div>
               )}
             </>
+            </ErrorBoundary>
           )}
 
           {/* ── Wine News ─────────────────────────────────────────────────── */}
@@ -1355,12 +1401,12 @@ function App() {
                 return (
                   <div>
                     {/* DEMO banner */}
-                    <div style={{ background: "linear-gradient(135deg,rgba(201,162,39,0.15),rgba(201,162,39,0.05))", border: "1px solid rgba(201,162,39,0.4)", borderRadius: 12, padding: "14px 20px", marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
+                    <div style={{ background: "linear-gradient(135deg,rgba(234,179,8,0.18),rgba(234,179,8,0.06))", border: "2px solid rgba(234,179,8,0.5)", borderRadius: 12, padding: "14px 20px", marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                        <span style={{ background: "#C9A227", color: "#020617", fontSize: 10, fontWeight: 900, letterSpacing: "0.12em", padding: "3px 8px", borderRadius: 4, textTransform: "uppercase" }}>DEMO</span>
-                        <span style={{ fontSize: 13, color: "#94a3b8" }}>This is a sample portfolio — add real wines from the Market to track your investments</span>
+                        <span style={{ fontSize: 18 }}>📊</span>
+                        <span style={{ fontSize: 13, color: "#fef08a", fontWeight: 600 }}>Stai vedendo un portfolio DEMO</span>
                       </div>
-                      <button onClick={() => setTab("market")} style={{ background: "#C9A227", border: "none", borderRadius: 8, padding: "8px 16px", fontWeight: 700, color: "#0b1220", cursor: "pointer", fontSize: 12, whiteSpace: "nowrap" }}>Add Real Wines →</button>
+                      <button onClick={() => setTab("market")} style={{ background: "#C9A227", border: "none", borderRadius: 8, padding: "8px 16px", fontWeight: 700, color: "#0b1220", cursor: "pointer", fontSize: 12, whiteSpace: "nowrap" }}>Aggiungi il tuo primo vino reale →</button>
                     </div>
                     {/* Demo stats */}
                     <div className="statsGrid" style={{ marginBottom: 28 }}>
@@ -1378,7 +1424,7 @@ function App() {
                     </div>
                     {/* Demo table */}
                     <div style={{ overflowX: "auto" }}>
-                      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, opacity: 0.85 }}>
+                      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, opacity: 0.7 }}>
                         <thead>
                           <tr style={{ borderBottom: "1px solid #0f1a2e", color: "#3a5a7a" }}>
                             {["Wine", "Bottles", "Buy Price", "Current", "Value", "ROI"].map(h => (
@@ -1532,7 +1578,9 @@ function App() {
                 <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 22, fontWeight: 800, marginBottom: 4 }}>AI Wine Advisor</h2>
                 <p style={{ color: "#64748b", fontSize: 13, marginBottom: 16 }}>Chatta con il tuo consulente AI — analisi portafoglio, notizie mercato, opportunità.</p>
                 <div style={{ background: "rgba(11,18,32,0.85)", border: "1px solid rgba(30,41,59,0.7)", borderRadius: 16, overflow: "hidden" }}>
-                  <AgentChat holdings={holdings} onAddToPortfolio={handleAddToPortfolio} />
+                  <Suspense fallback={<div style={{ minHeight: 200, display: "flex", alignItems: "center", justifyContent: "center", color: "#3a5a7a", fontSize: 13 }}>Caricamento chat...</div>}>
+                    <AgentChat holdings={holdings} onAddToPortfolio={handleAddToPortfolio} />
+                  </Suspense>
                 </div>
               </div>
 
@@ -1631,32 +1679,37 @@ function App() {
               )}
             </section>
           )}
-          </ErrorBoundary>
         </section>
       </main>
 
       {modalWine && (
         <ErrorBoundary>
-          <WineBottle3DModal wine={modalWine} onClose={() => setModalWine(null)} />
+          <Suspense fallback={null}>
+            <WineBottle3DModal wine={modalWine} onClose={() => setModalWine(null)} />
+          </Suspense>
         </ErrorBoundary>
       )}
 
       {purchaseWine && (
-        <PurchaseModal
-          wine={purchaseWine}
-          onClose={() => setPurchaseWine(null)}
-          onImport={() => { loadData(); setPurchaseWine(null); }}
-        />
+        <Suspense fallback={null}>
+          <PurchaseModal
+            wine={purchaseWine}
+            onClose={() => setPurchaseWine(null)}
+            onImport={() => { loadData(); setPurchaseWine(null); }}
+          />
+        </Suspense>
       )}
 
       {/* ── HelpBot FAQ ─────────────────────────────────────────────────── */}
-      <HelpBot
-        onAskAI={(msg) => {
-          setChatInitMsg(msg);
-          setFloatChatOpen(true);
-          setFloatUnread(0);
-        }}
-      />
+      <Suspense fallback={null}>
+        <HelpBot
+          onAskAI={(msg) => {
+            setChatInitMsg(msg);
+            setFloatChatOpen(true);
+            setFloatUnread(0);
+          }}
+        />
+      </Suspense>
 
       {/* ── Floating AI Chat Button ──────────────────────────────────────── */}
       <button
@@ -1696,13 +1749,15 @@ function App() {
             boxShadow: "0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,162,39,0.2)",
             animation: "floatIn 0.2s ease-out",
           }}>
-            <AgentChat
-              holdings={holdings}
-              onAddToPortfolio={handleAddToPortfolio}
-              compact={true}
-              initialMessage={chatInitMsg}
-              onInitialMessageSent={() => setChatInitMsg("")}
-            />
+            <Suspense fallback={<div style={{ minHeight: 200, display: "flex", alignItems: "center", justifyContent: "center", color: "#3a5a7a", fontSize: 13 }}>Caricamento...</div>}>
+              <AgentChat
+                holdings={holdings}
+                onAddToPortfolio={handleAddToPortfolio}
+                compact={true}
+                initialMessage={chatInitMsg}
+                onInitialMessageSent={() => setChatInitMsg("")}
+              />
+            </Suspense>
           </div>
         </>
       )}
