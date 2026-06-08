@@ -175,7 +175,7 @@ export default function B2BPage() {
   return (
     <div style={{
       minHeight: "100vh",
-      background: "linear-gradient(160deg,#020617 0%,#040810 50%,#020617 100%)",
+      background: "linear-gradient(160deg,#0b1220 0%,#040810 50%,#0b1220 100%)",
       color: "#e2e8f0",
       fontFamily: "'Inter',Arial,sans-serif",
     }}>

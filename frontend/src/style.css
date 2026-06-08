@@ -9,9 +9,9 @@
 
 /* ── CSS Variables — Dark (default) ───────────────── */
 :root, [data-theme="dark"] {
-  --bg-base: #020617;
+  --bg-base: #0b1220;
   --bg-card: rgba(11,18,32,0.85);
-  --bg-header: rgba(2,6,23,0.78);
+  --bg-header: rgba(11,18,32,0.78);
   --text-primary: #e2e8f0;
   --text-secondary: #94a3b8;
   --text-muted: #475569;

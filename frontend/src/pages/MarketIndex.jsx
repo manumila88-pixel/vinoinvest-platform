@@ -17,13 +17,13 @@ export default function MarketIndex() {
   }, []);
 
   if (loading) return (
-    <div style={{ minHeight: "100vh", background: "#060d1a", display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ minHeight: "100vh", background: "#0b1220", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <span style={{ color: "#475569", fontSize: 14 }}>Caricamento indice...</span>
     </div>
   );
 
   if (!index) return (
-    <div style={{ minHeight: "100vh", background: "#060d1a", padding: 32, color: "#f87171" }}>
+    <div style={{ minHeight: "100vh", background: "#0b1220", padding: 32, color: "#f87171" }}>
       Indice non disponibile.
     </div>
   );
@@ -36,7 +36,7 @@ export default function MarketIndex() {
   const RANGES = ["1M", "3M", "6M", "1Y", "3Y"];
 
   return (
-    <div style={{ minHeight: "100vh", background: "#060d1a", padding: "32px 24px", maxWidth: 1000, margin: "0 auto" }}>
+    <div style={{ minHeight: "100vh", background: "#0b1220", padding: "32px 24px", maxWidth: 1000, margin: "0 auto" }}>
       {/* Header */}
       <div style={{ marginBottom: 32 }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 16, flexWrap: "wrap", marginBottom: 8 }}>

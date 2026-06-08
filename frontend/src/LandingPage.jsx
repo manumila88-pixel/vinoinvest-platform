@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "./lib/supabase";
 
 const GOLD = "#C9A227";
-const BG = "#020617";
+const BG = "#0b1220";
 const CARD = "#0c1426";
 
 const CAROUSEL_SLIDES = [

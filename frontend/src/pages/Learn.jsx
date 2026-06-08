@@ -433,7 +433,7 @@ export default function Learn() {
     const isPassed = completed[activeId]?.passed;
 
     return (
-      <div style={{ minHeight: "100vh", background: "#060d1a", padding: "32px 24px", maxWidth: 860, margin: "0 auto" }}>
+      <div style={{ minHeight: "100vh", background: "#0b1220", padding: "32px 24px", maxWidth: 860, margin: "0 auto" }}>
         <button
           onClick={() => setActiveId(null)}
           style={{ background: "none", border: "1px solid rgba(30,41,59,0.6)", color: "#94a3b8", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontSize: 13, marginBottom: 28, fontFamily: "inherit" }}
@@ -539,7 +539,7 @@ export default function Learn() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#060d1a", padding: "32px 24px", maxWidth: 1000, margin: "0 auto" }}>
+    <div style={{ minHeight: "100vh", background: "#0b1220", padding: "32px 24px", maxWidth: 1000, margin: "0 auto" }}>
       {/* Header */}
       <div style={{ marginBottom: 32 }}>
         <h1 style={{ color: GOLD, fontSize: 30, fontWeight: 900, margin: "0 0 6px" }}>🎓 Wine Investment Academy</h1>
