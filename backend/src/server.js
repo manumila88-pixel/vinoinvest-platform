@@ -68,12 +68,17 @@ import reportsRouter, { setReportsPool } from "./routes/reports.js";
 import { setEmailFlowPool, setEmailFlowWines } from "./services/emailFlowService.js";
 import { setMarketResearchWines } from "./services/wineMarketResearch.js";
 import { segmentWines } from "./services/wineSegmentationService.js";
+import { setUserTaggingPool, ensureUserTagTables, startUserTaggingCron } from "./services/userTaggingService.js";
 import "./jobs/emailFlowJob.js";
 import v1Router, { setV1Wines, setV1MarketIndex, setV1NewsService } from "./routes/v1/index.js";
 import knowledgeBaseRouter from "./routes/knowledgeBase.js";
 import dataExportRouter, { setDataExportWines } from "./routes/dataExport.js";
 import securityRouter from "./routes/security.js";
 import analyticsRouter from "./routes/analytics.js";
+import orgsRouter, { setOrgsPool } from "./routes/organizations.js";
+import clientPortfoliosRouter, { setClientPortfoliosPool } from "./routes/clientPortfolios.js";
+import demoRequestRouter, { setDemoPool } from "./routes/demoRequest.js";
+import riskMetricsRouter, { setRiskPool } from "./routes/riskMetrics.js";
 
 // Global in-memory cache
 const appCache = new NodeCache({ stdTTL: 0, checkperiod: 120 });
@@ -250,6 +255,10 @@ app.use("/api/knowledge-base", cacheFor(86400), knowledgeBaseRouter);
 app.use("/api/data", cacheFor(3600), dataExportRouter);
 app.use("/api/security", cacheFor(86400), securityRouter);
 app.use("/api/analytics", analyticsRouter);
+app.use("/api/organizations", orgsRouter);
+app.use("/api/client-portfolios", clientPortfoliosRouter);
+app.use("/api/demo", demoRequestRouter);
+app.use("/api/risk", riskMetricsRouter);
 
 // ── Public API v1 + Swagger UI ───────────────────────────────────────────────
 app.use("/api/v1", v1Router);
@@ -619,10 +628,12 @@ initDB().then(() => {
   if (pool) { setRealPricePool(pool); }
   if (pool) { setVintageScoresPool(pool); initVintageScoresTable(); }
   if (pool) { setEmailFlowPool(pool); setEmailFlowRoutePool(pool); }
+  if (pool) { setUserTaggingPool(pool); ensureUserTagTables(); }
   // Start scheduled agents
   startBlogAgent();
   startImageAgent();
   startNewsletterCron();
+  startUserTaggingCron();
   startRealPriceCron();
   // Seed first 50 real prices 60s after startup
   if (pool) setTimeout(() => runRealPriceFetch(50), 60000);
