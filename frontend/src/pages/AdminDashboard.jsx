@@ -401,6 +401,11 @@ export default function AdminDashboard() {
                 </button>
               </div>
             )}
+            <div style={{ marginTop: 20, textAlign: "center" }}>
+              <a href="/admin/email" style={{ color: "#C9A227", fontSize: 13, textDecoration: "none", fontWeight: 700 }}>
+                📊 Apri Email Dashboard completa →
+              </a>
+            </div>
           </div>
         )}
 

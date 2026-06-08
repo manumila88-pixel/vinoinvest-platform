@@ -52,6 +52,7 @@ const AcademyLesson = lazy(() => import("./pages/AcademyLesson"));
 const AcademyVerify = lazy(() => import("./pages/AcademyVerify"));
 const AcademyModule = lazy(() => import("./pages/AcademyModule"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const AdminEmailDashboard = lazy(() => import("./pages/AdminEmailDashboard"));
 const PrivacySettings = lazy(() => import("./pages/PrivacySettings"));
 const Terms = lazy(() => import("./pages/Terms"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
@@ -1941,6 +1942,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="/academy/module/:moduleId" element={<AcademyModule />} />
           <Route path="/verify/:code" element={<AcademyVerify />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/email" element={<AdminEmailDashboard />} />
           <Route path="/settings/privacy" element={<PrivacySettings />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
