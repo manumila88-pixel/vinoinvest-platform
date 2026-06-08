@@ -73,6 +73,7 @@ const MarketIntelligence = lazy(() => import("./pages/MarketIntelligence"));
 const B2BOnboarding = lazy(() => import("./pages/B2BOnboarding"));
 const DataSources = lazy(() => import("./pages/DataSources"));
 import ThemeToggle from "./components/ThemeToggle";
+import CommandPalette from "./components/CommandPalette";
 import VoiceInterface from "./components/VoiceInterface";
 import ExitIntentPopup from "./components/ExitIntentPopup";
 import ProactiveBriefing from "./components/ProactiveBriefing";
@@ -1813,6 +1814,11 @@ function App() {
 
       {/* ── Disclaimer Bar finanziario ──────────────────────────────────── */}
       <DisclaimerBar />
+
+      {/* ── Command Palette (⌘K) ───────────────────────────────────────── */}
+      <CommandPalette onSelectWine={(wine) => {
+        setModalWine(wine);
+      }} />
 
       {/* ── Cookie Banner GDPR ──────────────────────────────────────────── */}
       <CookieBanner />
