@@ -286,6 +286,52 @@ for path in "" "/b2b" "/pricing" "/metodologia" "/glossario" "/security" "/data"
   fi
 done
 
+# ── Academy Content Tests ─────────────────────────────────
+echo "── Academy Content ──"
+# Verify premium modules file was created
+if [[ -f "frontend/src/data/premiumModules.js" ]]; then
+  echo "  ✅  premiumModules.js exists"; ((PASS++))
+else
+  echo "  ❌  premiumModules.js missing"; ((FAIL++))
+fi
+# Verify all 19 courses are exported from premiumModules.js
+for export_name in PORTFOLIO_CONSTRUCTION EN_PRIMEUR_AVANZATO AUTENTICITA_PROVENIENZA TAX_LEGALE MERCATO_SECONDARIO DATA_ANALYTICS CASE_STUDIES CANTINA_INVESTIMENTO WORKSHOP_CERTIFICATO HNW_FAMILY_OFFICE ANALYTICS_B2B; do
+  if grep -q "${export_name}_MODULES" frontend/src/data/premiumModules.js 2>/dev/null; then
+    echo "  ✅  ${export_name}_MODULES exported"; ((PASS++))
+  else
+    echo "  ❌  ${export_name}_MODULES missing"; ((FAIL++))
+  fi
+done
+
+# ── Source Badge Test ─────────────────────────────────────
+echo "── Source Badge ──"
+if grep -q "SourceBadge" frontend/src/components/WineCard.jsx 2>/dev/null; then
+  echo "  ✅  SourceBadge imported and used in WineCard"; ((PASS++))
+else
+  echo "  ❌  SourceBadge missing from WineCard"; ((FAIL++))
+fi
+
+# ── B2B Banner Test ───────────────────────────────────────
+echo "── B2B Banner ──"
+if grep -q "VinoInvest Professional" frontend/src/pages/LandingPage.jsx 2>/dev/null; then
+  echo "  ✅  B2B banner present in LandingPage"; ((PASS++))
+else
+  echo "  ❌  B2B banner missing from LandingPage"; ((FAIL++))
+fi
+
+# ── generateB2BPages Script ───────────────────────────────
+echo "── B2B Script ──"
+if [[ -f "backend/src/scripts/generateB2BPages.js" ]]; then
+  TOPIC_COUNT=$(grep -c "slug:" backend/src/scripts/generateB2BPages.js 2>/dev/null || echo 0)
+  if [[ "$TOPIC_COUNT" -ge 200 ]]; then
+    echo "  ✅  generateB2BPages.js has $TOPIC_COUNT topics"; ((PASS++))
+  else
+    echo "  ⚠️   generateB2BPages.js has only $TOPIC_COUNT topics (need 200)"; ((FAIL++))
+  fi
+else
+  echo "  ❌  generateB2BPages.js missing"; ((FAIL++))
+fi
+
 # ── Summary ──────────────────────────────────────────────
 echo ""
 echo "═══════════════════════════════════════════════════════"

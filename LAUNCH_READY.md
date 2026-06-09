@@ -1,6 +1,6 @@
 # VinoInvest — Launch Ready Checklist
 
-> Updated: 2026-06-09 GOD MODE session — istituzionale + B2B Professional
+> Updated: 2026-06-09 — Audit completo + Academy 12-30 + B2B professional + SourceBadge
 
 ---
 
@@ -73,14 +73,26 @@
 - [x] Swagger API docs (/api/docs)
 - [x] Public API v1 (/api/v1/wines)
 
+### Academy (questa sessione)
+- [x] Corsi Premium 12-20: 20 moduli ciascuno, quiz, deepDive, slides (premiumModules.js)
+- [x] Corsi B2B 21-30: 20 moduli ciascuno con titoli professionali reali
+- [x] Video search queries per tutti i moduli c12_xx → c30_xx (academyVideos.js)
+- [x] SourceBadge in WineCard.jsx con fonte Liv-ex est. e confidence score
+- [x] AI score noise deterministico ±2 per distribuzione realistica (wine_id % 5)
+- [x] Banner B2B fisso in LandingPage con link /b2b, /methodology, /data-sources
+- [x] Script generateB2BPages.js (200 topic, Claude Haiku, batch mode, dry-run)
+- [x] test-all.sh aggiornato con test Academy, SourceBadge, B2B Banner
+
 ## ❌ ROSSO — Mancante
 
-- [ ] **Stripe test mode banner su /pricing** — visibile solo in /admin, aggiungere su pagina prezzi
-- [ ] **200 pagine B2B** `/b2b/guide/:slug` — script pronto, non eseguito
+- [ ] **200 pagine B2B** `/b2b/guide/:slug` — `node backend/src/scripts/generateB2BPages.js` (usa ANTHROPIC_API_KEY)
 - [ ] **Stripe webhook live** — necessario per abbonamenti real-time
 - [ ] **Dominio custom** — vinoinvest.com non acquistato
 
 ## ⚠️ GIALLO — Da verificare / configurare
+
+- [ ] Video YouTube nei moduli Academy — i placeholder search queries funzionano ma inserire URL reali per produzione
+- [ ] Score noise ±2 — verificare visivamente su WineCard in produzione
 
 ## 🔵 BLU — Azioni manuali (solo Manoel)
 
