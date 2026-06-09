@@ -90,32 +90,32 @@ export default function LabelScanner({ onResult, onClose }) {
   const isMobile = /iPhone|Android|iPad/i.test(navigator.userAgent);
 
   return (
-    <div style={{ background: "#0f172a", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 20, overflow: "hidden", width: "100%", maxWidth: 480 }}>
+    <div style={{ background: "var(--vi-bg-elev)", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 20, overflow: "hidden", width: "100%", maxWidth: 480 }}>
       {/* Header */}
-      <div style={{ padding: "16px 20px", borderBottom: "1px solid rgba(30,41,59,0.5)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <div style={{ padding: "16px 20px", borderBottom: `1px solid var(--vi-border)`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
-          <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, margin: 0 }}>Label Scanner</h3>
-          <p style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>Powered by Claude Vision AI</p>
+          <h3 style={{ fontFamily: "var(--vi-font-display)", fontSize: 18, margin: 0 }}>Label Scanner</h3>
+          <p style={{ fontSize: 11, color: "var(--vi-text-dim)", marginTop: 2 }}>Powered by Claude Vision AI</p>
         </div>
-        {onClose && <button onClick={() => { stopCamera(); onClose(); }} aria-label="Close scanner" style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 20 }}>×</button>}
+        {onClose && <button onClick={() => { stopCamera(); onClose(); }} aria-label="Close scanner" style={{ background: "none", border: "none", color: "var(--vi-text-dim)", cursor: "pointer", fontSize: 20 }}>×</button>}
       </div>
 
       <div style={{ padding: 20 }}>
         {/* Idle state */}
         {phase === "idle" && (
           <div style={{ textAlign: "center" }}>
-            <div style={{ fontSize: 56, marginBottom: 16 }}>🍷</div>
-            <p style={{ color: "#94a3b8", fontSize: 14, marginBottom: 24, lineHeight: 1.6 }}>
+            <div style={{ width: 48, height: 48, borderRadius: 12, background: "rgba(201,162,39,0.15)", margin: "0 auto 16px" }} />
+            <p style={{ color: "var(--vi-text-dim)", fontSize: 14, marginBottom: 24, lineHeight: 1.6 }}>
               Point your camera at a wine label or upload a photo.<br />Our AI will identify the wine instantly.
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {isMobile && (
-                <button onClick={startCamera} style={{ padding: "12px", background: "#C9A227", color: "#020617", border: "none", borderRadius: 10, fontWeight: 700, cursor: "pointer", fontSize: 15 }}>
+                <button onClick={startCamera} style={{ padding: "12px", background: "var(--vi-accent)", color: "var(--vi-bg)", border: "none", borderRadius: 10, fontWeight: 700, cursor: "pointer", fontSize: 15 }}>
                   Open Camera
                 </button>
               )}
-              <label style={{ padding: "12px", background: "rgba(201,162,39,0.1)", color: "#C9A227", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 10, fontWeight: 600, cursor: "pointer", fontSize: 14, textAlign: "center", display: "block" }}>
-                📁 Upload Photo
+              <label style={{ padding: "12px", background: "rgba(201,162,39,0.1)", color: "var(--vi-accent)", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 10, fontWeight: 600, cursor: "pointer", fontSize: 14, textAlign: "center", display: "block" }}>
+                Upload Photo
                 <input type="file" accept="image/*" onChange={handleFile} style={{ display: "none" }} />
               </label>
             </div>
@@ -129,11 +129,11 @@ export default function LabelScanner({ onResult, onClose }) {
               <video ref={videoRef} playsInline muted style={{ width: "100%", display: "block", maxHeight: 300, objectFit: "cover" }} />
               {/* Overlay guide */}
               <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none" }}>
-                <div style={{ width: 200, height: 120, border: "2px solid #C9A227", borderRadius: 8, opacity: 0.7 }} />
+                <div style={{ width: 200, height: 120, border: "2px solid var(--vi-accent)", borderRadius: 8, opacity: 0.7 }} />
               </div>
             </div>
-            <p style={{ color: "#94a3b8", fontSize: 12, marginBottom: 16 }}>Center the wine label in the frame</p>
-            <button onClick={capturePhoto} style={{ padding: "14px 32px", background: "#C9A227", color: "#020617", border: "none", borderRadius: 30, fontWeight: 700, cursor: "pointer", fontSize: 16 }}>
+            <p style={{ color: "var(--vi-text-dim)", fontSize: 12, marginBottom: 16 }}>Center the wine label in the frame</p>
+            <button onClick={capturePhoto} style={{ padding: "14px 32px", background: "var(--vi-accent)", color: "var(--vi-bg)", border: "none", borderRadius: 30, fontWeight: 700, cursor: "pointer", fontSize: 16 }}>
               Capture
             </button>
             <canvas ref={canvasRef} style={{ display: "none" }} />
@@ -144,11 +144,11 @@ export default function LabelScanner({ onResult, onClose }) {
         {phase === "scanning" && (
           <div style={{ textAlign: "center", padding: 24 }}>
             {preview && <img src={preview} alt="Captured" style={{ width: "100%", maxHeight: 180, objectFit: "contain", borderRadius: 10, marginBottom: 16, opacity: 0.6 }} />}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, color: "#C9A227" }}>
-              <span style={{ width: 18, height: 18, borderRadius: "50%", border: "2px solid rgba(201,162,39,0.3)", borderTopColor: "#C9A227", display: "inline-block", animation: "spin 0.8s linear infinite" }} />
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, color: "var(--vi-accent)" }}>
+              <span style={{ width: 18, height: 18, borderRadius: "50%", border: "2px solid rgba(201,162,39,0.3)", borderTopColor: "var(--vi-accent)", display: "inline-block", animation: "spin 0.8s linear infinite" }} />
               <span style={{ fontSize: 14 }}>AI analysing label...</span>
             </div>
-            <p style={{ fontSize: 12, color: "#475569", marginTop: 8 }}>Claude Vision is reading the label</p>
+            <p style={{ fontSize: 12, color: "var(--vi-text-dim)", marginTop: 8 }}>Claude Vision is reading the label</p>
           </div>
         )}
 
@@ -158,8 +158,8 @@ export default function LabelScanner({ onResult, onClose }) {
             {preview && <img src={preview} alt="Label" style={{ width: "100%", maxHeight: 140, objectFit: "contain", borderRadius: 10, marginBottom: 16 }} />}
             <div style={{ background: "rgba(74,222,128,0.08)", border: "1px solid rgba(74,222,128,0.2)", borderRadius: 12, padding: 16, marginBottom: 16 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-                <span style={{ color: "#4ade80", fontWeight: 700, fontSize: 13 }}>✓ Label identified</span>
-                <span style={{ fontSize: 11, color: "#64748b" }}>Confidence: {result.confidence}%</span>
+                <span style={{ color: "var(--vi-positive)", fontWeight: 700, fontSize: 13 }}>✓ Label identified</span>
+                <span style={{ fontSize: 11, color: "var(--vi-text-dim)" }}>Confidence: {result.confidence}%</span>
               </div>
               {[
                 { label: "Wine", value: result.wine_name },
@@ -170,21 +170,21 @@ export default function LabelScanner({ onResult, onClose }) {
                 { label: "Country", value: result.country },
               ].map(f => f.value && (
                 <div key={f.label} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-                  <span style={{ fontSize: 12, color: "#64748b", minWidth: 60 }}>{f.label}</span>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0" }}>{f.value}</span>
+                  <span style={{ fontSize: 12, color: "var(--vi-text-dim)", minWidth: 60 }}>{f.label}</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: "var(--vi-text)" }}>{f.value}</span>
                 </div>
               ))}
             </div>
 
             <div style={{ display: "flex", gap: 8 }}>
-              <button onClick={reset} style={{ flex: 1, padding: 10, background: "rgba(30,41,59,0.5)", color: "#94a3b8", border: "1px solid rgba(30,41,59,0.6)", borderRadius: 8, cursor: "pointer" }}>
+              <button onClick={reset} style={{ flex: 1, padding: 10, background: "rgba(30,41,59,0.5)", color: "var(--vi-text-dim)", border: `1px solid var(--vi-border)`, borderRadius: 8, cursor: "pointer" }}>
                 Scan Another
               </button>
               {result.search_query && (
                 <a
                   href={`/?search=${encodeURIComponent(result.search_query)}`}
                   onClick={() => onResult?.(result)}
-                  style={{ flex: 2, padding: 10, background: "#C9A227", color: "#020617", border: "none", borderRadius: 8, fontWeight: 700, cursor: "pointer", textDecoration: "none", textAlign: "center", fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center" }}
+                  style={{ flex: 2, padding: 10, background: "var(--vi-accent)", color: "var(--vi-bg)", border: "none", borderRadius: 8, fontWeight: 700, cursor: "pointer", textDecoration: "none", textAlign: "center", fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center" }}
                 >
                   Find in Database →
                 </a>
@@ -196,9 +196,9 @@ export default function LabelScanner({ onResult, onClose }) {
         {/* Error */}
         {phase === "error" && (
           <div style={{ textAlign: "center", padding: 16 }}>
-            <div style={{ fontSize: 40, marginBottom: 12 }}>⚠️</div>
-            <p style={{ color: "#f87171", fontSize: 14, marginBottom: 16 }}>{error}</p>
-            <button onClick={reset} style={{ padding: "10px 24px", background: "#C9A227", color: "#020617", border: "none", borderRadius: 8, fontWeight: 700, cursor: "pointer" }}>Try Again</button>
+            <div style={{ width: 40, height: 40, borderRadius: "50%", border: "2px solid var(--vi-negative)", margin: "0 auto 12px", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--vi-negative)", fontSize: 18 }}>!</div>
+            <p style={{ color: "var(--vi-negative)", fontSize: 14, marginBottom: 16 }}>{error}</p>
+            <button onClick={reset} style={{ padding: "10px 24px", background: "var(--vi-accent)", color: "var(--vi-bg)", border: "none", borderRadius: 8, fontWeight: 700, cursor: "pointer" }}>Try Again</button>
           </div>
         )}
       </div>
