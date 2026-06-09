@@ -4,10 +4,16 @@ import { supabase } from "../lib/supabase";
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
 function ROIBadge({ roi }) {
-  const color = roi >= 0 ? "#4ade80" : "#f87171";
+  const positive = roi >= 0;
   return (
-    <span style={{ color, fontSize: 12, fontWeight: 700, background: `${color}15`, borderRadius: 4, padding: "1px 6px" }}>
-      {roi >= 0 ? "+" : ""}{roi.toFixed(1)}%
+    <span style={{
+      color: positive ? "var(--vi-positive)" : "var(--vi-negative)",
+      fontSize: "var(--vi-fs-xs)", fontWeight: 700,
+      background: positive ? "rgba(74,222,128,0.1)" : "rgba(248,113,113,0.1)",
+      borderRadius: 4, padding: "1px 6px",
+      fontVariantNumeric: "tabular-nums"
+    }}>
+      {positive ? "+" : ""}{roi.toFixed(1)}%
     </span>
   );
 }
@@ -48,7 +54,6 @@ export default function SharePortfolio() {
 
   async function loadPublicPortfolio(id) {
     setLoading(false);
-    // Public portfolios would be stored with a share token; for now show placeholder
     setHoldings([]);
     setStats(null);
   }
@@ -60,36 +65,61 @@ export default function SharePortfolio() {
     setTimeout(() => setShared(false), 3000);
   }
 
-  if (loading) return <div style={{ minHeight: "100vh", background: "#020617", display: "flex", alignItems: "center", justifyContent: "center", color: "#64748b" }}>Loading...</div>;
+  if (loading) return (
+    <div style={{ minHeight: "100vh", background: "var(--vi-bg)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--vi-text-dim)" }}>
+      Loading...
+    </div>
+  );
 
   return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #020617 0%, #0a1628 50%, #020617 100%)", color: "#e2e8f0" }}>
-      <div style={{ maxWidth: 760, margin: "0 auto", padding: "40px 24px" }}>
-        {!isPublicView && <a href="/" style={{ color: "#64748b", fontSize: 13, textDecoration: "none" }}>← Back</a>}
+    <div style={{ minHeight: "100vh", background: "var(--vi-bg)", color: "var(--vi-text)" }}>
+      <style>{`
+        .sp-holding { transition: background var(--vi-dur-fast) linear; }
+        .sp-holding:hover { background: var(--vi-bg-elev) !important; }
+      `}</style>
+
+      <div style={{ maxWidth: 760, margin: "0 auto", padding: "clamp(24px,4vw,40px) 24px" }}>
+        {!isPublicView && (
+          <a href="/" style={{ color: "var(--vi-text-dim)", fontSize: "var(--vi-fs-sm)", textDecoration: "none" }}>← Back</a>
+        )}
 
         {/* Header */}
         <div style={{ textAlign: "center", margin: "32px 0 40px" }}>
-          <div style={{ fontSize: 14, color: "#64748b", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 12 }}>
+          <div style={{
+            fontSize: "var(--vi-fs-xs)", color: "var(--vi-text-dim)", fontWeight: 600,
+            letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 12
+          }}>
             VinoInvest Portfolio
           </div>
-          <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 36, marginBottom: 12 }}>
-            🍷 Fine Wine Portfolio
+          <h1 style={{ fontFamily: "var(--vi-font-display)", fontSize: "var(--vi-fs-2xl)", fontWeight: 800, marginBottom: 12 }}>
+            Fine Wine Portfolio
           </h1>
           {stats && (
             <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap", marginTop: 16 }}>
-              <div style={{ background: "rgba(201,162,39,0.1)", border: "1px solid rgba(201,162,39,0.2)", borderRadius: 12, padding: "12px 20px" }}>
-                <div style={{ fontSize: 22, fontWeight: 800, color: "#C9A227" }}>€{stats.totalValue.toLocaleString("it-IT", { minimumFractionDigits: 0 })}</div>
-                <div style={{ fontSize: 11, color: "#64748b" }}>Portfolio Value</div>
+              <div className="vi-card" style={{
+                border: "1px solid rgba(201,162,39,0.2)", padding: "12px 20px", borderRadius: "var(--vi-radius-md)"
+              }}>
+                <div style={{ fontSize: "var(--vi-fs-xl)", fontWeight: 800, color: "var(--vi-accent)", fontVariantNumeric: "tabular-nums" }}>
+                  €{stats.totalValue.toLocaleString("it-IT", { minimumFractionDigits: 0 })}
+                </div>
+                <div style={{ fontSize: "var(--vi-fs-xs)", color: "var(--vi-text-dim)" }}>Portfolio Value</div>
               </div>
-              <div style={{ background: stats.roi >= 0 ? "rgba(74,222,128,0.08)" : "rgba(248,113,113,0.08)", border: `1px solid ${stats.roi >= 0 ? "rgba(74,222,128,0.2)" : "rgba(248,113,113,0.2)"}`, borderRadius: 12, padding: "12px 20px" }}>
-                <div style={{ fontSize: 22, fontWeight: 800, color: stats.roi >= 0 ? "#4ade80" : "#f87171" }}>
+              <div className="vi-card" style={{
+                border: `1px solid ${stats.roi >= 0 ? "rgba(74,222,128,0.2)" : "rgba(248,113,113,0.2)"}`,
+                padding: "12px 20px", borderRadius: "var(--vi-radius-md)"
+              }}>
+                <div style={{
+                  fontSize: "var(--vi-fs-xl)", fontWeight: 800,
+                  color: stats.roi >= 0 ? "var(--vi-positive)" : "var(--vi-negative)",
+                  fontVariantNumeric: "tabular-nums"
+                }}>
                   {stats.roi >= 0 ? "+" : ""}{stats.roi.toFixed(1)}%
                 </div>
-                <div style={{ fontSize: 11, color: "#64748b" }}>Total Return</div>
+                <div style={{ fontSize: "var(--vi-fs-xs)", color: "var(--vi-text-dim)" }}>Total Return</div>
               </div>
-              <div style={{ background: "rgba(129,140,248,0.08)", border: "1px solid rgba(129,140,248,0.2)", borderRadius: 12, padding: "12px 20px" }}>
-                <div style={{ fontSize: 22, fontWeight: 800, color: "#818cf8" }}>{stats.count}</div>
-                <div style={{ fontSize: 11, color: "#64748b" }}>Wines</div>
+              <div className="vi-card" style={{ padding: "12px 20px", borderRadius: "var(--vi-radius-md)" }}>
+                <div style={{ fontSize: "var(--vi-fs-xl)", fontWeight: 800, fontVariantNumeric: "tabular-nums" }}>{stats.count}</div>
+                <div style={{ fontSize: "var(--vi-fs-xs)", color: "var(--vi-text-dim)" }}>Wines</div>
               </div>
             </div>
           )}
@@ -98,23 +128,25 @@ export default function SharePortfolio() {
         {/* Holdings */}
         {holdings.length > 0 ? (
           <div style={{ marginBottom: 32 }}>
-            <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 16, color: "#94a3b8" }}>Holdings</h3>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <h3 style={{ fontSize: "var(--vi-fs-sm)", fontWeight: 600, marginBottom: 16, color: "var(--vi-text-dim)", textTransform: "uppercase", letterSpacing: "0.06em" }}>Holdings</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {holdings.map(h => {
                 const invested = parseFloat(h.purchase_price || 0) * (h.quantity || 1);
                 const value = parseFloat(h.current_market_price || h.purchase_price || 0) * (h.quantity || 1);
                 const roi = invested > 0 ? ((value - invested) / invested) * 100 : 0;
                 return (
-                  <div key={h.id} style={{
-                    background: "rgba(11,18,32,0.9)", border: "1px solid rgba(30,41,59,0.5)", borderRadius: 12, padding: "16px 20px",
+                  <div key={h.id} className="sp-holding vi-card" style={{
+                    borderRadius: "var(--vi-radius-md)", padding: "16px 20px",
                     display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap"
                   }}>
                     <div>
-                      <div style={{ fontWeight: 700, fontFamily: "'Playfair Display', serif" }}>{h.wineName}</div>
-                      <div style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}>{h.quantity}x · Purchased {h.purchaseDate ? new Date(h.purchaseDate).getFullYear() : "–"}</div>
+                      <div style={{ fontWeight: 700, fontFamily: "var(--vi-font-display)" }}>{h.wineName}</div>
+                      <div style={{ fontSize: "var(--vi-fs-xs)", color: "var(--vi-text-dim)", marginTop: 2 }}>
+                        {h.quantity}x · Purchased {h.purchaseDate ? new Date(h.purchaseDate).getFullYear() : "-"}
+                      </div>
                     </div>
                     <div style={{ textAlign: "right" }}>
-                      <div style={{ fontWeight: 700 }}>€{value.toLocaleString()}</div>
+                      <div style={{ fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>€{value.toLocaleString()}</div>
                       <ROIBadge roi={roi} />
                     </div>
                   </div>
@@ -123,34 +155,48 @@ export default function SharePortfolio() {
             </div>
           </div>
         ) : !isPublicView ? (
-          <div style={{ textAlign: "center", padding: "40px 24px", color: "#475569" }}>
-            <div style={{ fontSize: 48, marginBottom: 12 }}>📊</div>
+          <div style={{ textAlign: "center", padding: "40px 24px", color: "var(--vi-text-dim)" }}>
+            <div style={{
+              width: 64, height: 64, margin: "0 auto 12px",
+              background: "var(--vi-surface)", borderRadius: "var(--vi-radius-md)",
+              display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28
+            }}>📊</div>
             <p>Add wines to your portfolio to share it</p>
           </div>
         ) : null}
 
         {/* CTA */}
-        <div style={{ background: "linear-gradient(135deg, rgba(201,162,39,0.15), rgba(201,162,39,0.05))", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 20, padding: "28px 24px", textAlign: "center" }}>
-          <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, marginBottom: 8 }}>Build Your Wine Portfolio</h3>
-          <p style={{ color: "#94a3b8", fontSize: 14, marginBottom: 20 }}>
+        <div style={{
+          background: "linear-gradient(135deg, rgba(201,162,39,0.12), rgba(201,162,39,0.04))",
+          border: "1px solid rgba(201,162,39,0.25)",
+          borderRadius: "var(--vi-radius-lg)", padding: "clamp(20px,3vw,28px) 24px", textAlign: "center"
+        }}>
+          <h3 style={{ fontFamily: "var(--vi-font-display)", fontSize: "var(--vi-fs-lg)", fontWeight: 700, marginBottom: 8 }}>
+            Build Your Wine Portfolio
+          </h3>
+          <p style={{ color: "var(--vi-text-dim)", fontSize: "var(--vi-fs-sm)", marginBottom: 20, lineHeight: 1.6 }}>
             Track 50,000+ fine wines with AI-powered scoring and price intelligence
           </p>
           <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
-            <a href="/" style={{ padding: "12px 24px", background: "#C9A227", color: "#020617", borderRadius: 10, fontWeight: 700, textDecoration: "none", fontSize: 14 }}>
-              Start Free →
+            <a href="/" className="vi-btn" style={{ textDecoration: "none" }}>
+              Start Free
             </a>
             {!isPublicView && (
               <button onClick={sharePortfolio} style={{
-                padding: "12px 24px", background: "rgba(201,162,39,0.1)", color: "#C9A227",
-                border: "1px solid rgba(201,162,39,0.3)", borderRadius: 10, fontWeight: 600, cursor: "pointer", fontSize: 14
+                padding: "10px 22px",
+                background: shared ? "rgba(74,222,128,0.15)" : "rgba(201,162,39,0.1)",
+                color: shared ? "var(--vi-positive)" : "var(--vi-accent)",
+                border: `1px solid ${shared ? "rgba(74,222,128,0.3)" : "rgba(201,162,39,0.3)"}`,
+                borderRadius: "var(--vi-radius-md)", fontWeight: 600, cursor: "pointer",
+                fontSize: "var(--vi-fs-sm)"
               }}>
-                {shared ? "✓ Link Copied!" : "Share My Portfolio"}
+                {shared ? "Link Copied" : "Share My Portfolio"}
               </button>
             )}
           </div>
         </div>
 
-        <div style={{ textAlign: "center", marginTop: 24, fontSize: 11, color: "#334155" }}>
+        <div style={{ textAlign: "center", marginTop: 24, fontSize: "var(--vi-fs-xs)", color: "var(--vi-text-dim)", opacity: 0.6 }}>
           VinoInvest · Past performance does not guarantee future results · Not financial advice
         </div>
       </div>
