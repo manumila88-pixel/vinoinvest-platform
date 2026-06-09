@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
+import { reportError } from "../lib/errorReporting";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 const SHELF_COLS = 8;
@@ -28,6 +29,7 @@ export default function WineCellar() {
   const [bottles, setBottles] = useState([]);
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
   const [activeShelf, setActiveShelf] = useState(1);
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -53,7 +55,10 @@ export default function WineCellar() {
       const sData = await sRes.json();
       setBottles(bData.bottles || []);
       setStats(sData);
-    } catch (e) { console.error(e); }
+    } catch (e) {
+      reportError(e, { component: "WineCellar" });
+      setFetchError("Impossibile caricare la cantina. Controlla la connessione e riprova.");
+    }
     setLoading(false);
   }
 
@@ -124,8 +129,16 @@ export default function WineCellar() {
           </button>
         </div>
 
+        {/* Error state */}
+        {fetchError && (
+          <div style={{ padding: "16px 20px", borderRadius: 10, background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.2)", color: "var(--vi-negative)", fontSize: 13, marginBottom: 24, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+            <span>{fetchError}</span>
+            <button onClick={() => { setFetchError(null); loadCellar(); }} style={{ background: "var(--vi-bg-elev)", border: "none", borderRadius: 6, padding: "5px 12px", color: "var(--vi-text-dim)", cursor: "pointer", fontSize: 12 }}>Riprova</button>
+          </div>
+        )}
+
         {/* Stats */}
-        {!loading && (
+        {!loading && !fetchError && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 16, marginBottom: 32 }}>
             {[
               { label: "Total Bottles", value: stats.total_quantity || 0, color: "var(--vi-accent)" },
