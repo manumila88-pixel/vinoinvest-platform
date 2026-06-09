@@ -24,7 +24,7 @@ export default function Bottle3D({ wine, height = 300, interactive = false }) {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      background: "linear-gradient(180deg, #060e1c 0%, #0a1628 100%)",
+      background: "var(--vi-bg)",
       perspective: interactive ? "600px" : "none",
     }}>
       <div style={interactive ? {
