@@ -21,7 +21,7 @@ const NAME_MAP = {
   vi: "Tiếng Việt", id: "Bahasa Indonesia", ms: "Melayu", uk: "Українська",
   ca: "Català", sk: "Slovenčina", bg: "Български", hr: "Hrvatski",
   sl: "Slovenščina", et: "Eesti", lv: "Latviešu", lt: "Lietuvių",
-  sr: "Српски", mk: "Македонски", sq: "Shqip",
+  sr: "Српски", mk: "Македонski", sq: "Shqip",
 };
 
 export default function LangSelector() {
@@ -35,8 +35,8 @@ export default function LangSelector() {
         onClick={() => setOpen(o => !o)}
         style={{
           padding: "5px 10px",
-          border: "1px solid rgba(30,41,59,0.7)",
-          borderRadius: 8,
+          border: "1px solid var(--vi-border)",
+          borderRadius: "var(--vi-radius-sm)",
           background: "transparent",
           color: "#4a6a8a",
           fontSize: 13,
@@ -44,7 +44,7 @@ export default function LangSelector() {
           display: "flex",
           alignItems: "center",
           gap: 5,
-          fontFamily: "'Inter', Arial, sans-serif",
+          fontFamily: "var(--vi-font-sans)",
         }}
         aria-label="Language"
       >
@@ -56,9 +56,9 @@ export default function LangSelector() {
           position: "absolute",
           top: "calc(100% + 6px)",
           right: 0,
-          background: "#0b1220",
-          border: "1px solid rgba(201,162,39,0.2)",
-          borderRadius: 12,
+          background: "var(--vi-bg)",
+          border: "1px solid var(--vi-accent-glow)",
+          borderRadius: "var(--vi-radius-md)",
           overflow: "hidden auto",
           maxHeight: 320,
           width: 180,
@@ -77,11 +77,11 @@ export default function LangSelector() {
                 padding: "8px 14px",
                 border: "none",
                 background: current === lang ? "rgba(201,162,39,0.1)" : "transparent",
-                color: current === lang ? "#C9A227" : "#94a3b8",
+                color: current === lang ? "var(--vi-accent)" : "var(--vi-text-dim)",
                 fontSize: 12,
                 cursor: "pointer",
                 textAlign: "left",
-                fontFamily: "'Inter', Arial, sans-serif",
+                fontFamily: "var(--vi-font-sans)",
                 fontWeight: current === lang ? 700 : 400,
               }}
             >

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
 const RELIABILITY_COLOR = (score) => {
-  if (score >= 95) return "#4ade80";
-  if (score >= 80) return "#C9A227";
-  return "#94a3b8";
+  if (score >= 95) return "var(--vi-positive)";
+  if (score >= 80) return "var(--vi-accent)";
+  return "var(--vi-text-dim)";
 };
 
 export default function SourceBadge({ source, url, date, confidence = 90, compact = false }) {
@@ -40,7 +40,7 @@ export default function SourceBadge({ source, url, date, confidence = 90, compac
           padding: compact ? "1px 4px" : "2px 6px",
           whiteSpace: "nowrap",
           cursor: "pointer",
-          transition: "opacity 0.15s",
+          transition: `opacity var(--vi-dur-fast) var(--vi-ease)`,
         }}
       >
         {!compact && <span style={{ opacity: 0.7 }}>Fonte:</span>}
@@ -55,9 +55,9 @@ export default function SourceBadge({ source, url, date, confidence = 90, compac
             bottom: "calc(100% + 6px)",
             left: "50%",
             transform: "translateX(-50%)",
-            background: "#0f172a",
-            border: "1px solid rgba(201,162,39,0.2)",
-            borderRadius: 8,
+            background: "var(--vi-bg-elev)",
+            border: "1px solid var(--vi-accent-glow)",
+            borderRadius: "var(--vi-radius-sm)",
             padding: "8px 12px",
             fontSize: 11,
             whiteSpace: "nowrap",
@@ -66,12 +66,12 @@ export default function SourceBadge({ source, url, date, confidence = 90, compac
             pointerEvents: "none",
           }}
         >
-          <div style={{ color: "#e2e8f0", fontWeight: 600 }}>{source}</div>
-          <div style={{ color: "#94a3b8", marginTop: 2 }}>
+          <div style={{ color: "var(--vi-text)", fontWeight: 600 }}>{source}</div>
+          <div style={{ color: "var(--vi-text-dim)", marginTop: 2 }}>
             Reliability: <span style={{ color }}>{confidence}%</span>
           </div>
           {formattedDate && (
-            <div style={{ color: "#94a3b8", marginTop: 1 }}>Updated: {formattedDate}</div>
+            <div style={{ color: "var(--vi-text-dim)", marginTop: 1 }}>Updated: {formattedDate}</div>
           )}
           <div style={{ color: "#64748b", marginTop: 2, fontSize: 10 }}>Click to visit source ↗</div>
         </div>

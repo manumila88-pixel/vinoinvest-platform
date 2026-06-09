@@ -96,7 +96,7 @@ const WineCard = memo(function WineCard({
 
   return (
     <div
-      className="wineCard fade-up"
+      className="wineCard fade-up vi-interactive"
       onMouseMove={onCardTilt}
       onMouseLeave={onCardTiltReset}
     >
@@ -121,7 +121,7 @@ const WineCard = memo(function WineCard({
             <div className="score-fill" style={{ width: (displayScore ?? 75) + "%" }} />
           </div>
           <InfoTooltip tip={SIGNAL_TIPS[aiScore?.signal] || "Segnale AI basato su fondamentali, trend e momentum di mercato."} placement="top">
-            <span style={{ fontSize: 10, color: aiScore?.signal === "Strong Buy" ? "#4ade80" : aiScore?.signal ? "#C9A227" : "#3a5a7a", cursor: "help" }}>
+            <span style={{ fontSize: 10, color: aiScore?.signal === "Strong Buy" ? "var(--vi-positive)" : aiScore?.signal ? "var(--vi-accent)" : "#3a5a7a", cursor: "help" }}>
               {aiScore?.signal ?? "AI Score"}
             </span>
           </InfoTooltip>
@@ -140,7 +140,7 @@ const WineCard = memo(function WineCard({
           {alerts.map(a => (
             <div key={a.id} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10, color: "#60a5fa", marginBottom: 3 }}>
               <span>🔔 Alert ≤ €{Number(a.target_price).toFixed(0)}</span>
-              <button onClick={() => onDeleteAlert(a.id)} aria-label="Delete alert" style={{ background: "none", border: "none", color: "#f87171", cursor: "pointer", fontSize: 12, padding: 0 }}>×</button>
+              <button onClick={() => onDeleteAlert(a.id)} aria-label="Delete alert" style={{ background: "none", border: "none", color: "var(--vi-negative)", cursor: "pointer", fontSize: 12, padding: 0 }}>×</button>
             </div>
           ))}
           <div style={{ display: "flex", gap: 4 }}>
@@ -149,10 +149,10 @@ const WineCard = memo(function WineCard({
               placeholder={`Alert < €${wine.currentPrice}`}
               value={alertInput || ""}
               onChange={e => onAlertInputChange(wine.id, e.target.value)}
-              style={{ flex: 1, padding: "5px 8px", borderRadius: 7, border: "1px solid rgba(30,41,59,0.7)", background: "#0b1220", color: "#94a3b8", fontSize: 11, outline: "none", minWidth: 0, fontFamily: "'Inter', Arial, sans-serif" }}
+              style={{ flex: 1, padding: "5px 8px", borderRadius: "var(--vi-radius-sm)", border: "1px solid var(--vi-border)", background: "var(--vi-bg)", color: "var(--vi-text-dim)", fontSize: 11, outline: "none", minWidth: 0, fontFamily: "var(--vi-font-sans)" }}
               onKeyDown={e => e.key === "Enter" && onCreateAlert(wine)}
             />
-            <button onClick={() => onCreateAlert(wine)} aria-label="Set price alert" style={{ padding: "5px 8px", borderRadius: 7, border: "1px solid rgba(30,58,95,0.6)", background: "#0c1a2e", color: "#60a5fa", fontSize: 11, cursor: "pointer" }}>🔔</button>
+            <button onClick={() => onCreateAlert(wine)} aria-label="Set price alert" style={{ padding: "5px 8px", borderRadius: "var(--vi-radius-sm)", border: "1px solid rgba(30,58,95,0.6)", background: "#0c1a2e", color: "#60a5fa", fontSize: 11, cursor: "pointer" }}>🔔</button>
           </div>
         </div>
         <div className="wineCard-actions">
@@ -162,20 +162,20 @@ const WineCard = memo(function WineCard({
             {inWatchlist ? "★" : "☆"}
           </button>
         </div>
-        <div style={{ display: "flex", borderTop: "1px solid rgba(30,41,59,0.4)", marginTop: 4 }}>
+        <div style={{ display: "flex", borderTop: "1px solid var(--vi-border)" , marginTop: 4 }}>
           <a
             href={`https://www.wine-searcher.com/find/${encodeURIComponent(wine.name)}${wine.vintage ? `/${wine.vintage}` : ""}`}
             target="_blank"
             rel="noopener noreferrer sponsored"
-            style={{ flex: 1, textAlign: "center", fontSize: 10, color: "#3a5a7a", textDecoration: "none", padding: "6px 0 4px", transition: "color 0.2s", borderRight: "1px solid rgba(30,41,59,0.4)" }}
-            onMouseEnter={e => e.currentTarget.style.color = "#C9A227"}
+            style={{ flex: 1, textAlign: "center", fontSize: 10, color: "#3a5a7a", textDecoration: "none", padding: "6px 0 4px", transition: `color var(--vi-dur) var(--vi-ease)`, borderRight: "1px solid var(--vi-border)" }}
+            onMouseEnter={e => e.currentTarget.style.color = "var(--vi-accent)"}
             onMouseLeave={e => e.currentTarget.style.color = "#3a5a7a"}
           >Wine-Searcher ↗</a>
           <a
             href={`https://www.vivino.com/search/wines?q=${encodeURIComponent(wine.name)}`}
             target="_blank"
             rel="noopener noreferrer sponsored"
-            style={{ flex: 1, textAlign: "center", fontSize: 10, color: "#3a5a7a", textDecoration: "none", padding: "6px 0 4px", transition: "color 0.2s" }}
+            style={{ flex: 1, textAlign: "center", fontSize: 10, color: "#3a5a7a", textDecoration: "none", padding: "6px 0 4px", transition: `color var(--vi-dur) var(--vi-ease)` }}
             onMouseEnter={e => e.currentTarget.style.color = "#aa4466"}
             onMouseLeave={e => e.currentTarget.style.color = "#3a5a7a"}
           >Vivino ↗</a>

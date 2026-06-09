@@ -22,12 +22,11 @@ const TOOL_LABELS = {
   get_top_opportunities: "💎 Opportunità AI",
 };
 
-// Simple sparkline SVG for wine price trend indicator
 function Sparkline({ trend }) {
   if (!trend) return null;
   const isUp = trend === "Crescita" || trend === "bullish" || trend === "up";
   const isDown = trend === "Calo" || trend === "bearish" || trend === "down";
-  const color = isUp ? "#4ade80" : isDown ? "#f87171" : "#C9A227";
+  const color = isUp ? "var(--vi-positive)" : isDown ? "var(--vi-negative)" : "var(--vi-accent)";
   const path = isUp ? "M2,10 L6,7 L10,5 L14,4 L18,2" : isDown ? "M2,2 L6,5 L10,7 L14,8 L18,10" : "M2,6 L6,5 L10,6 L14,5 L18,6";
   return (
     <svg width="20" height="12" viewBox="0 0 20 12" style={{ verticalAlign: "middle" }}>
@@ -43,7 +42,7 @@ function parseMd(text) {
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/\*(.+?)\*/g, "<em>$1</em>")
     .replace(/`(.+?)`/g, '<code style="background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:4px;font-size:11px;font-family:monospace">$1</code>')
-    .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color:#C9A227;text-decoration:underline">$1</a>')
+    .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color:var(--vi-accent);text-decoration:underline">$1</a>')
     .replace(/^#{1,3}\s+(.+)$/gm, "<strong>$1</strong>")
     .replace(/\n/g, "<br/>");
 }
@@ -53,27 +52,28 @@ const WineRecommendationCard = memo(function WineRecommendationCard({ wine, onAd
     <div
       style={{
         display: "flex", alignItems: "center", gap: 10, padding: "8px 12px",
-        background: "rgba(5,10,20,0.7)", border: "1px solid rgba(201,162,39,0.2)",
-        borderRadius: 10, marginTop: 6, cursor: "pointer", transition: "border-color 0.2s",
+        background: "var(--vi-surface)", border: "1px solid var(--vi-accent-glow)",
+        borderRadius: "var(--vi-radius-sm)", marginTop: 6, cursor: "pointer",
+        transition: `border-color var(--vi-dur) var(--vi-ease)`,
       }}
       onClick={() => onViewDetail && onViewDetail(wine)}
       onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(201,162,39,0.5)"}
-      onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(201,162,39,0.2)"}
+      onMouseLeave={e => e.currentTarget.style.borderColor = "var(--vi-accent-glow)"}
     >
       <div style={{ fontSize: 22, flexShrink: 0 }}>🍷</div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: "#e2e8f0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{wine.name}</div>
+        <div style={{ fontSize: 12, fontWeight: 700, color: "var(--vi-text)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{wine.name}</div>
         <div style={{ fontSize: 10, color: "#64748b" }}>{wine.producer || wine.region} · {wine.vintage || ""}</div>
         <div style={{ display: "flex", gap: 6, marginTop: 2, alignItems: "center" }}>
-          <span style={{ fontSize: 11, color: "#C9A227", fontWeight: 700 }}>€{wine.price}</span>
-          {wine.score && <span style={{ fontSize: 10, color: "#4ade80" }}>⭐ {wine.score}/100</span>}
-          {wine.risk && <span style={{ fontSize: 9, color: "#94a3b8", border: "1px solid rgba(148,163,184,0.2)", borderRadius: 4, padding: "1px 5px" }}>{wine.risk}</span>}
+          <span style={{ fontSize: 11, color: "var(--vi-accent)", fontWeight: 700 }}>€{wine.price}</span>
+          {wine.score && <span style={{ fontSize: 10, color: "var(--vi-positive)" }}>⭐ {wine.score}/100</span>}
+          {wine.risk && <span style={{ fontSize: 9, color: "var(--vi-text-dim)", border: "1px solid var(--vi-border)", borderRadius: 4, padding: "1px 5px" }}>{wine.risk}</span>}
           {wine.trend && <Sparkline trend={wine.trend} />}
         </div>
       </div>
       <button
         onClick={e => { e.stopPropagation(); onAdd && onAdd(wine); }}
-        style={{ fontSize: 9, padding: "4px 8px", borderRadius: 6, border: "1px solid rgba(201,162,39,0.4)", background: "rgba(201,162,39,0.1)", color: "#C9A227", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
+        style={{ fontSize: 9, padding: "4px 8px", borderRadius: "var(--vi-radius-sm)", border: "1px solid rgba(201,162,39,0.4)", background: "rgba(201,162,39,0.1)", color: "var(--vi-accent)", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
       >+ Portfolio</button>
     </div>
   );
@@ -85,7 +85,7 @@ const ResourceLinks = memo(function ResourceLinks({ links }) {
     <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
       {links.map(l => (
         <a key={l.url} href={l.url} target="_blank" rel="noopener noreferrer"
-          style={{ fontSize: 10, padding: "3px 9px", borderRadius: 20, border: "1px solid rgba(96,165,250,0.3)", color: "#60a5fa", textDecoration: "none", background: "rgba(96,165,250,0.05)", transition: "background 0.15s" }}
+          style={{ fontSize: 10, padding: "3px 9px", borderRadius: 20, border: "1px solid rgba(96,165,250,0.3)", color: "#60a5fa", textDecoration: "none", background: "rgba(96,165,250,0.05)", transition: `background var(--vi-dur-fast) var(--vi-ease)` }}
           onMouseEnter={e => e.currentTarget.style.background = "rgba(96,165,250,0.12)"}
           onMouseLeave={e => e.currentTarget.style.background = "rgba(96,165,250,0.05)"}
         >
@@ -102,9 +102,9 @@ const FollowUpChips = memo(function FollowUpChips({ suggestions, onSelect }) {
     <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginTop: 8, marginLeft: 36 }}>
       {suggestions.map(s => (
         <button key={s} onClick={() => onSelect(s)}
-          style={{ fontSize: 10, padding: "3px 10px", borderRadius: 999, border: "1px solid rgba(201,162,39,0.2)", background: "rgba(201,162,39,0.05)", color: "#94a3b8", cursor: "pointer", transition: "all 0.15s" }}
-          onMouseEnter={e => { e.currentTarget.style.background = "rgba(201,162,39,0.12)"; e.currentTarget.style.color = "#C9A227"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.4)"; }}
-          onMouseLeave={e => { e.currentTarget.style.background = "rgba(201,162,39,0.05)"; e.currentTarget.style.color = "#94a3b8"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.2)"; }}
+          style={{ fontSize: 10, padding: "3px 10px", borderRadius: "var(--vi-radius-full)", border: "1px solid var(--vi-accent-glow)", background: "rgba(201,162,39,0.05)", color: "var(--vi-text-dim)", cursor: "pointer", transition: `all var(--vi-dur-fast) var(--vi-ease)` }}
+          onMouseEnter={e => { e.currentTarget.style.background = "rgba(201,162,39,0.12)"; e.currentTarget.style.color = "var(--vi-accent)"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.4)"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "rgba(201,162,39,0.05)"; e.currentTarget.style.color = "var(--vi-text-dim)"; e.currentTarget.style.borderColor = "var(--vi-accent-glow)"; }}
         >
           {s}
         </button>
@@ -243,26 +243,26 @@ export default function AgentChat({ holdings = [], onAddToPortfolio, onViewWine,
   const maxH = compact ? 420 : 600;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: maxH, background: "rgba(2,6,23,0.6)", borderRadius: compact ? 16 : 0, border: compact ? "1px solid rgba(30,41,59,0.7)" : "none" }}>
+    <div style={{ display: "flex", flexDirection: "column", height: maxH, background: "var(--vi-surface)", borderRadius: compact ? "var(--vi-radius-md)" : 0, border: compact ? "1px solid var(--vi-border)" : "none" }}>
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 16px", borderBottom: "1px solid rgba(30,41,59,0.5)", flexShrink: 0 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 16px", borderBottom: "1px solid var(--vi-border)", flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div style={{ width: 30, height: 30, borderRadius: "50%", background: "linear-gradient(135deg,#9b1c4a,#C9A227)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15 }}>🍷</div>
+          <div style={{ width: 30, height: 30, borderRadius: "50%", background: "linear-gradient(135deg,#9b1c4a,var(--vi-accent))", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15 }}>🍷</div>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#e2e8f0", fontFamily: "'Playfair Display',serif" }}>AI Wine Advisor</div>
-            <div style={{ fontSize: 10, color: "#4ade80" }}>● Online</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "var(--vi-text)", fontFamily: "var(--vi-font-display)" }}>AI Wine Advisor</div>
+            <div style={{ fontSize: 10, color: "var(--vi-positive)" }}>● Online</div>
           </div>
         </div>
         <div style={{ display: "flex", gap: 5 }}>
-          <button onClick={shareChat} title="Condividi" style={{ fontSize: 11, padding: "3px 9px", borderRadius: 8, border: "1px solid rgba(30,41,59,0.6)", background: "transparent", color: "#64748b", cursor: "pointer" }}>⎘ Share</button>
-          <button onClick={exportChat} title="Esporta chat" style={{ fontSize: 11, padding: "3px 9px", borderRadius: 8, border: "1px solid rgba(30,41,59,0.6)", background: "transparent", color: "#64748b", cursor: "pointer" }}>↓ Export</button>
-          <button onClick={clearChat} title="Nuova chat" style={{ fontSize: 11, padding: "3px 9px", borderRadius: 8, border: "1px solid rgba(30,41,59,0.6)", background: "transparent", color: "#64748b", cursor: "pointer" }}>✕ Reset</button>
+          <button onClick={shareChat} title="Condividi" style={{ fontSize: 11, padding: "3px 9px", borderRadius: "var(--vi-radius-sm)", border: "1px solid var(--vi-border)", background: "transparent", color: "#64748b", cursor: "pointer" }}>⎘ Share</button>
+          <button onClick={exportChat} title="Esporta chat" style={{ fontSize: 11, padding: "3px 9px", borderRadius: "var(--vi-radius-sm)", border: "1px solid var(--vi-border)", background: "transparent", color: "#64748b", cursor: "pointer" }}>↓ Export</button>
+          <button onClick={clearChat} title="Nuova chat" style={{ fontSize: 11, padding: "3px 9px", borderRadius: "var(--vi-radius-sm)", border: "1px solid var(--vi-border)", background: "transparent", color: "#64748b", cursor: "pointer" }}>✕ Reset</button>
         </div>
       </div>
 
       {/* Continue banner */}
       {showContinueBanner && (
-        <div style={{ padding: "6px 14px", background: "rgba(201,162,39,0.06)", borderBottom: "1px solid rgba(201,162,39,0.12)", fontSize: 11, color: "#C9A227", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
+        <div style={{ padding: "6px 14px", background: "rgba(201,162,39,0.06)", borderBottom: "1px solid var(--vi-accent-glow)", fontSize: 11, color: "var(--vi-accent)", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
           <span>💬 Stai continuando la conversazione precedente</span>
           <button onClick={clearChat} style={{ fontSize: 10, color: "#64748b", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}>Nuova chat</button>
         </div>
@@ -274,14 +274,14 @@ export default function AgentChat({ holdings = [], onAddToPortfolio, onViewWine,
           <div key={i}>
             <div style={{ display: "flex", justifyContent: msg.role === "user" ? "flex-end" : "flex-start", gap: 8 }}>
               {msg.role === "assistant" && (
-                <div style={{ width: 28, height: 28, borderRadius: "50%", background: "linear-gradient(135deg,#9b1c4a,#C9A227)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, flexShrink: 0, marginTop: 2 }}>🍷</div>
+                <div style={{ width: 28, height: 28, borderRadius: "50%", background: "linear-gradient(135deg,#9b1c4a,var(--vi-accent))", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, flexShrink: 0, marginTop: 2 }}>🍷</div>
               )}
               <div style={{ maxWidth: compact ? "88%" : "78%" }}>
                 {/* Tool badges */}
                 {msg.toolsUsed?.length > 0 && (
                   <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 5 }}>
                     {[...new Set(msg.toolsUsed)].map(t => (
-                      <span key={t} style={{ fontSize: 9, padding: "2px 7px", borderRadius: 999, background: "rgba(201,162,39,0.1)", color: "#C9A227", border: "1px solid rgba(201,162,39,0.2)" }}>
+                      <span key={t} style={{ fontSize: 9, padding: "2px 7px", borderRadius: "var(--vi-radius-full)", background: "rgba(201,162,39,0.1)", color: "var(--vi-accent)", border: "1px solid var(--vi-accent-glow)" }}>
                         {TOOL_LABELS[t] || t}
                       </span>
                     ))}
@@ -291,12 +291,12 @@ export default function AgentChat({ holdings = [], onAddToPortfolio, onViewWine,
                   padding: "10px 14px",
                   borderRadius: msg.role === "user" ? "18px 18px 4px 18px" : "4px 18px 18px 18px",
                   background: msg.role === "user"
-                    ? "linear-gradient(135deg,#C9A227,#a07820)"
-                    : msg.error ? "rgba(127,29,29,0.4)" : "rgba(11,18,32,0.9)",
-                  border: msg.role === "assistant" ? `1px solid ${msg.error ? "rgba(239,68,68,0.3)" : "rgba(30,41,59,0.8)"}` : "none",
+                    ? "linear-gradient(135deg,var(--vi-accent),#a07820)"
+                    : msg.error ? "rgba(127,29,29,0.4)" : "var(--vi-surface)",
+                  border: msg.role === "assistant" ? `1px solid ${msg.error ? "rgba(239,68,68,0.3)" : "var(--vi-border)"}` : "none",
                   fontSize: 13,
                   lineHeight: 1.65,
-                  color: msg.role === "user" ? "#0a0a0a" : "#e2e8f0",
+                  color: msg.role === "user" ? "#0a0a0a" : "var(--vi-text)",
                   wordBreak: "break-word",
                 }}>
                   <div dangerouslySetInnerHTML={{ __html: parseMd(msg.content) }} />
@@ -305,7 +305,7 @@ export default function AgentChat({ holdings = [], onAddToPortfolio, onViewWine,
                 <ResourceLinks links={msg.resourceLinks} />
               </div>
               {msg.role === "user" && (
-                <div style={{ width: 28, height: 28, borderRadius: "50%", background: "rgba(201,162,39,0.2)", border: "1px solid rgba(201,162,39,0.3)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, flexShrink: 0, marginTop: 2, color: "#C9A227", fontWeight: 700 }}>Tu</div>
+                <div style={{ width: 28, height: 28, borderRadius: "50%", background: "rgba(201,162,39,0.2)", border: "1px solid rgba(201,162,39,0.3)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, flexShrink: 0, marginTop: 2, color: "var(--vi-accent)", fontWeight: 700 }}>Tu</div>
               )}
             </div>
             {/* Wine recommendations */}
@@ -327,11 +327,11 @@ export default function AgentChat({ holdings = [], onAddToPortfolio, onViewWine,
         {/* Typing indicator */}
         {loading && (
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ width: 28, height: 28, borderRadius: "50%", background: "linear-gradient(135deg,#9b1c4a,#C9A227)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, flexShrink: 0 }}>🍷</div>
-            <div style={{ padding: "10px 16px", borderRadius: "4px 18px 18px 18px", background: "rgba(11,18,32,0.9)", border: "1px solid rgba(30,41,59,0.8)" }}>
+            <div style={{ width: 28, height: 28, borderRadius: "50%", background: "linear-gradient(135deg,#9b1c4a,var(--vi-accent))", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, flexShrink: 0 }}>🍷</div>
+            <div style={{ padding: "10px 16px", borderRadius: "4px 18px 18px 18px", background: "var(--vi-surface)", border: "1px solid var(--vi-border)" }}>
               <span style={{ display: "inline-flex", gap: 5, alignItems: "center" }}>
                 {[0, 1, 2].map(d => (
-                  <span key={d} style={{ width: 7, height: 7, borderRadius: "50%", background: "#C9A227", display: "inline-block", animation: `vi-pulse 1.2s ${d * 0.2}s ease-in-out infinite` }} />
+                  <span key={d} style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--vi-accent)", display: "inline-block", animation: `vi-pulse 1.2s ${d * 0.2}s ease-in-out infinite` }} />
                 ))}
               </span>
             </div>
@@ -345,7 +345,7 @@ export default function AgentChat({ holdings = [], onAddToPortfolio, onViewWine,
         <div style={{ padding: "0 12px 8px", display: "flex", gap: 6, flexWrap: "wrap", flexShrink: 0 }}>
           {QUICK_SUGGESTIONS.map(s => (
             <button key={s.label} onClick={() => sendMessage(s.label)}
-              style={{ fontSize: 11, padding: "5px 11px", borderRadius: 999, border: "1px solid rgba(201,162,39,0.25)", background: "rgba(201,162,39,0.07)", color: "#C9A227", cursor: "pointer", display: "flex", alignItems: "center", gap: 4, transition: "background 0.15s, border-color 0.15s" }}
+              style={{ fontSize: 11, padding: "5px 11px", borderRadius: "var(--vi-radius-full)", border: "1px solid rgba(201,162,39,0.25)", background: "rgba(201,162,39,0.07)", color: "var(--vi-accent)", cursor: "pointer", display: "flex", alignItems: "center", gap: 4, transition: `background var(--vi-dur-fast) var(--vi-ease), border-color var(--vi-dur-fast) var(--vi-ease)` }}
               onMouseEnter={e => { e.currentTarget.style.background = "rgba(201,162,39,0.15)"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.5)"; }}
               onMouseLeave={e => { e.currentTarget.style.background = "rgba(201,162,39,0.07)"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.25)"; }}
             >
@@ -356,7 +356,7 @@ export default function AgentChat({ holdings = [], onAddToPortfolio, onViewWine,
       )}
 
       {/* Input */}
-      <div style={{ padding: "8px 12px 10px", borderTop: "1px solid rgba(30,41,59,0.4)", flexShrink: 0 }}>
+      <div style={{ padding: "8px 12px 10px", borderTop: "1px solid var(--vi-border)", flexShrink: 0 }}>
         <div style={{ display: "flex", gap: 8 }}>
           <textarea
             ref={inputRef}
@@ -365,15 +365,15 @@ export default function AgentChat({ holdings = [], onAddToPortfolio, onViewWine,
             onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
             placeholder="Scrivi un messaggio... (Invio per inviare)"
             rows={compact ? 1 : 2}
-            style={{ flex: 1, padding: "9px 12px", borderRadius: 12, border: "1px solid rgba(30,41,59,0.8)", background: "rgba(11,18,32,0.9)", color: "#e2e8f0", fontSize: "max(14px,16px)", resize: "none", outline: "none", fontFamily: "inherit", lineHeight: 1.5, transition: "border-color 0.2s" }}
+            style={{ flex: 1, padding: "9px 12px", borderRadius: "var(--vi-radius-md)", border: "1px solid var(--vi-border)", background: "var(--vi-surface)", color: "var(--vi-text)", fontSize: "max(14px,16px)", resize: "none", outline: "none", fontFamily: "inherit", lineHeight: 1.5, transition: `border-color var(--vi-dur) var(--vi-ease)` }}
             onFocus={e => e.target.style.borderColor = "rgba(201,162,39,0.4)"}
-            onBlur={e => e.target.style.borderColor = "rgba(30,41,59,0.8)"}
+            onBlur={e => e.target.style.borderColor = "var(--vi-border)"}
           />
           <button
             onClick={() => sendMessage()}
             disabled={loading || !input.trim()}
             aria-label="Send message"
-            style={{ padding: "0 16px", borderRadius: 12, border: "none", background: loading || !input.trim() ? "rgba(201,162,39,0.15)" : "linear-gradient(135deg,#C9A227,#a07820)", color: loading || !input.trim() ? "#64748b" : "#000", fontWeight: 800, cursor: loading || !input.trim() ? "default" : "pointer", fontSize: 20, transition: "all 0.15s", flexShrink: 0 }}
+            style={{ padding: "0 16px", borderRadius: "var(--vi-radius-md)", border: "none", background: loading || !input.trim() ? "rgba(201,162,39,0.15)" : "linear-gradient(135deg,var(--vi-accent),#a07820)", color: loading || !input.trim() ? "#64748b" : "#000", fontWeight: 800, cursor: loading || !input.trim() ? "default" : "pointer", fontSize: 20, transition: `all var(--vi-dur-fast) var(--vi-ease)`, flexShrink: 0 }}
           >↑</button>
         </div>
         <p style={{ fontSize: 9, color: "#334155", margin: "5px 0 0", textAlign: "center" }}>

@@ -61,12 +61,12 @@ export default function PurchaseModal({ wine, onClose, onImport }) {
 
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: "16px" }} onClick={onClose}>
-      <div style={{ background: "#0a1120", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 20, width: "100%", maxWidth: 520, maxHeight: "90vh", overflowY: "auto", padding: 28 }} onClick={e => e.stopPropagation()}>
+      <div className="vi-card" style={{ background: "var(--vi-bg)", borderColor: "rgba(201,162,39,0.3)", borderRadius: 20, width: "100%", maxWidth: 520, maxHeight: "90vh", overflowY: "auto", padding: 28 }} onClick={e => e.stopPropagation()}>
 
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
           <div>
-            <h2 style={{ fontSize: 20, fontWeight: 800, color: "#e2e8f0", margin: 0 }}>{wine.name}</h2>
+            <h2 style={{ fontSize: 20, fontWeight: 800, color: "var(--vi-text)", margin: 0 }}>{wine.name}</h2>
             <p style={{ color: "#64748b", fontSize: 13, marginTop: 4 }}>{wine.producer} {wine.vintage && `· ${wine.vintage}`}</p>
           </div>
           <button onClick={onClose} aria-label="Close" style={{ background: "none", border: "none", color: "#64748b", fontSize: 22, cursor: "pointer", lineHeight: 1 }}>×</button>
@@ -75,19 +75,19 @@ export default function PurchaseModal({ wine, onClose, onImport }) {
         {/* Wine image + price */}
         <div style={{ display: "flex", gap: 16, marginBottom: 20, alignItems: "center" }}>
           {wine.imageUrl && (
-            <img src={wine.imageUrl} alt={wine.name} loading="lazy" style={{ width: 64, height: 96, objectFit: "cover", borderRadius: 8 }} onError={e => e.currentTarget.style.display = "none"} />
+            <img src={wine.imageUrl} alt={wine.name} loading="lazy" style={{ width: 64, height: 96, objectFit: "cover", borderRadius: "var(--vi-radius-sm)" }} onError={e => e.currentTarget.style.display = "none"} />
           )}
           <div>
-            <div style={{ fontSize: 28, fontWeight: 800, color: "#C9A227" }}>€ {(wine.currentPrice || 0).toLocaleString("it-IT")}</div>
-            <div style={{ fontSize: 12, color: "#4ade80", marginTop: 2 }}>AI Score: {wine.investmentScore || "—"}/100</div>
+            <div style={{ fontSize: 28, fontWeight: 800, color: "var(--vi-accent)" }}>€ {(wine.currentPrice || 0).toLocaleString("it-IT")}</div>
+            <div style={{ fontSize: 12, color: "var(--vi-positive)", marginTop: 2 }}>AI Score: {wine.investmentScore || "—"}/100</div>
             <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>Risk: {wine.risk || "—"}</div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div style={{ display: "flex", gap: 4, marginBottom: 20, borderBottom: "1px solid rgba(30,41,59,0.6)", paddingBottom: 0 }}>
+        <div style={{ display: "flex", gap: 4, marginBottom: 20, borderBottom: "1px solid var(--vi-border)", paddingBottom: 0 }}>
           {[{ id: "buy", label: "Where to buy" }, { id: "import", label: "Already purchased" }].map(t => (
-            <button key={t.id} onClick={() => setTab(t.id)} style={{ padding: "8px 16px", border: "none", background: "none", color: tab === t.id ? "#C9A227" : "#475569", fontSize: 13, fontWeight: tab === t.id ? 700 : 400, cursor: "pointer", borderBottom: tab === t.id ? "2px solid #C9A227" : "2px solid transparent" }}>
+            <button key={t.id} onClick={() => setTab(t.id)} style={{ padding: "8px 16px", border: "none", background: "none", color: tab === t.id ? "var(--vi-accent)" : "#475569", fontSize: 13, fontWeight: tab === t.id ? 700 : 400, cursor: "pointer", borderBottom: tab === t.id ? "2px solid var(--vi-accent)" : "2px solid transparent" }}>
               {t.label}
             </button>
           ))}
@@ -105,18 +105,19 @@ export default function PurchaseModal({ wine, onClose, onImport }) {
                 target="_blank"
                 rel="noopener noreferrer sponsored"
                 onClick={() => trackClick(p.id)}
-                style={{ display: "flex", alignItems: "center", gap: 14, padding: "12px 16px", borderRadius: 12, background: "rgba(15,23,42,0.8)", border: `1px solid ${PLATFORM_COLORS[p.id] || "#1e293b"}22`, textDecoration: "none", transition: "all 0.15s" }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = PLATFORM_COLORS[p.id] || "#C9A227"; e.currentTarget.style.background = "rgba(201,162,39,0.05)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = `${PLATFORM_COLORS[p.id] || "#1e293b"}22`; e.currentTarget.style.background = "rgba(15,23,42,0.8)"; }}
+                className="vi-interactive"
+                style={{ display: "flex", alignItems: "center", gap: 14, padding: "12px 16px", borderRadius: "var(--vi-radius-md)", background: "var(--vi-surface)", border: `1px solid ${PLATFORM_COLORS[p.id] || "var(--vi-border)"}22`, textDecoration: "none", transition: `all var(--vi-dur) var(--vi-ease)` }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = PLATFORM_COLORS[p.id] || "var(--vi-accent)"; e.currentTarget.style.background = "rgba(201,162,39,0.05)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = `${PLATFORM_COLORS[p.id] || "var(--vi-border)"}22`; e.currentTarget.style.background = "var(--vi-surface)"; }}
               >
-                <div style={{ width: 40, height: 40, borderRadius: 8, background: `${PLATFORM_COLORS[p.id] || "#334155"}22`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>
+                <div style={{ width: 40, height: 40, borderRadius: "var(--vi-radius-sm)", background: `${PLATFORM_COLORS[p.id] || "#334155"}22`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>
                   {p.name[0]}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 700, fontSize: 14, color: "#e2e8f0" }}>{p.name}</div>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: "var(--vi-text)" }}>{p.name}</div>
                   <div style={{ fontSize: 11, color: "#475569", marginTop: 2 }}>{p.description}</div>
                 </div>
-                <span style={{ color: "#C9A227", fontSize: 18 }}>→</span>
+                <span style={{ color: "var(--vi-accent)", fontSize: 18 }}>→</span>
               </a>
             ))}
             <p style={{ fontSize: 10, color: "#334155", textAlign: "center", marginTop: 8 }}>
@@ -150,7 +151,7 @@ export default function PurchaseModal({ wine, onClose, onImport }) {
             ))}
 
             {importMsg && (
-              <div style={{ padding: "8px 12px", borderRadius: 8, fontSize: 13, background: importMsg.type === "success" ? "rgba(5,46,22,0.5)" : "rgba(69,10,10,0.5)", color: importMsg.type === "success" ? "#4ade80" : "#f87171" }}>
+              <div style={{ padding: "8px 12px", borderRadius: "var(--vi-radius-sm)", fontSize: 13, background: importMsg.type === "success" ? "rgba(5,46,22,0.5)" : "rgba(69,10,10,0.5)", color: importMsg.type === "success" ? "var(--vi-positive)" : "var(--vi-negative)" }}>
                 {importMsg.text}
               </div>
             )}

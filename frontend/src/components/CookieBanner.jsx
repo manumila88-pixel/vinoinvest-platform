@@ -31,7 +31,7 @@ export default function CookieBanner() {
   return (
     <div style={{
       position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 9999,
-      background: "rgba(2,6,23,0.97)", borderTop: "1px solid rgba(201,162,39,0.3)",
+      background: "var(--vi-bg)", borderTop: "1px solid rgba(201,162,39,0.3)",
       backdropFilter: "blur(12px)", padding: "16px 24px",
       display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap",
       animation: "slideUpCookie 0.4s ease",
@@ -44,18 +44,18 @@ export default function CookieBanner() {
       `}</style>
 
       <div style={{ flex: 1, minWidth: 260 }}>
-        <span style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.5 }}>
+        <span style={{ fontSize: 13, color: "var(--vi-text-dim)", lineHeight: 1.5 }}>
           🍪 Utilizziamo cookie tecnici essenziali per il funzionamento del sito.{" "}
           <a
             href="/privacy"
-            style={{ color: "#C9A227", textDecoration: "underline", fontSize: 12 }}
+            style={{ color: "var(--vi-accent)", textDecoration: "underline", fontSize: 12 }}
           >
             Privacy Policy
           </a>
           {" · "}
           <a
             href="/cookies"
-            style={{ color: "#C9A227", textDecoration: "underline", fontSize: 12 }}
+            style={{ color: "var(--vi-accent)", textDecoration: "underline", fontSize: 12 }}
           >
             Cookie Policy
           </a>
@@ -66,7 +66,7 @@ export default function CookieBanner() {
         <button
           onClick={decline}
           style={{
-            padding: "8px 16px", borderRadius: 8, border: "1px solid rgba(100,116,139,0.4)",
+            padding: "8px 16px", borderRadius: "var(--vi-radius-sm)", border: "1px solid rgba(100,116,139,0.4)",
             background: "transparent", color: "#64748b", fontSize: 12, cursor: "pointer",
             fontFamily: "inherit",
           }}
@@ -75,12 +75,8 @@ export default function CookieBanner() {
         </button>
         <button
           onClick={accept}
-          style={{
-            padding: "8px 20px", borderRadius: 8, border: "none",
-            background: "linear-gradient(135deg, #C9A227, #a37e1a)",
-            color: "#0a0f1e", fontSize: 12, fontWeight: 700, cursor: "pointer",
-            fontFamily: "inherit",
-          }}
+          className="vi-btn"
+          style={{ padding: "8px 20px", fontSize: 12 }}
         >
           Accetta
         </button>

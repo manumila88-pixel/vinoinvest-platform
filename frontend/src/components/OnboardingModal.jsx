@@ -12,7 +12,7 @@ const STEPS_B2B = [
     subtitle: "La piattaforma professionale per investitori istituzionali",
     content: (
       <div>
-        <p style={{ marginBottom: 16, lineHeight: 1.7, fontSize: 13, color: "#94a3b8" }}>
+        <p style={{ marginBottom: 16, lineHeight: 1.7, fontSize: 13, color: "var(--vi-text-dim)" }}>
           Hai accesso alla suite professionale VinoInvest. Ecco cosa puoi fare:
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
@@ -24,10 +24,10 @@ const STEPS_B2B = [
           ].map(f => (
             <div key={f.label} style={{
               background: "rgba(59,130,246,0.06)", border: "1px solid rgba(59,130,246,0.15)",
-              borderRadius: 12, padding: "14px 16px",
+              borderRadius: "var(--vi-radius-md)", padding: "14px 16px",
             }}>
               <div style={{ fontSize: 22, marginBottom: 6 }}>{f.icon}</div>
-              <div style={{ fontWeight: 700, fontSize: 13, color: "#e2e8f0", marginBottom: 3 }}>{f.label}</div>
+              <div style={{ fontWeight: 700, fontSize: 13, color: "var(--vi-text)", marginBottom: 3 }}>{f.label}</div>
               <div style={{ fontSize: 11, color: "#3a5a7a" }}>{f.desc}</div>
             </div>
           ))}
@@ -51,14 +51,14 @@ const STEPS_B2B = [
             <div key={i} style={{
               display: "flex", alignItems: "center", gap: 12,
               background: "rgba(8,15,30,0.6)", border: "1px solid rgba(59,130,246,0.12)",
-              borderRadius: 10, padding: "11px 14px",
+              borderRadius: "var(--vi-radius-sm)", padding: "11px 14px",
             }}>
               <span style={{ fontSize: 18, flexShrink: 0 }}>{s.icon}</span>
-              <span style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.5 }}>{s.text}</span>
+              <span style={{ fontSize: 13, color: "var(--vi-text-dim)", lineHeight: 1.5 }}>{s.text}</span>
             </div>
           ))}
         </div>
-        <div style={{ background: "rgba(59,130,246,0.06)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: 10, padding: "12px 16px", fontSize: 12, color: "#60a5fa" }}>
+        <div style={{ background: "rgba(59,130,246,0.06)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: "var(--vi-radius-sm)", padding: "12px 16px", fontSize: 12, color: "#60a5fa" }}>
           🏦 La tab "B2B Dashboard" nel menu principale ti dà accesso completo all'analytics professionale.
         </div>
       </div>
@@ -84,7 +84,7 @@ const STEPS_B2B = [
                 display: "flex", alignItems: "center", justifyContent: "center",
                 fontSize: 13, fontWeight: 800, color: "#fff",
               }}>{s.step}</div>
-              <div style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.5 }}>{s.text}</div>
+              <div style={{ fontSize: 13, color: "var(--vi-text-dim)", lineHeight: 1.5 }}>{s.text}</div>
             </div>
           ))}
         </div>
@@ -97,7 +97,7 @@ const STEPS_B2B = [
     subtitle: "Report professionali pronti in un click",
     content: (
       <div>
-        <p style={{ marginBottom: 16, lineHeight: 1.7, fontSize: 13, color: "#94a3b8" }}>
+        <p style={{ marginBottom: 16, lineHeight: 1.7, fontSize: 13, color: "var(--vi-text-dim)" }}>
           Genera report brandizzati per i tuoi clienti finali:
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 16 }}>
@@ -110,11 +110,11 @@ const STEPS_B2B = [
             <div key={r.label} style={{
               display: "flex", alignItems: "center", gap: 14,
               background: "rgba(8,15,30,0.6)", border: "1px solid rgba(59,130,246,0.12)",
-              borderRadius: 10, padding: "11px 14px",
+              borderRadius: "var(--vi-radius-sm)", padding: "11px 14px",
             }}>
               <span style={{ fontSize: 18, flexShrink: 0 }}>{r.icon}</span>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0" }}>{r.label}</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--vi-text)" }}>{r.label}</div>
                 <div style={{ fontSize: 11, color: "#3a5a7a" }}>{r.desc}</div>
               </div>
             </div>
@@ -139,14 +139,14 @@ const STEPS_B2B = [
             <div key={i} style={{
               display: "flex", alignItems: "center", gap: 12,
               background: "rgba(8,15,30,0.6)", border: "1px solid rgba(59,130,246,0.12)",
-              borderRadius: 10, padding: "11px 14px",
+              borderRadius: "var(--vi-radius-sm)", padding: "11px 14px",
             }}>
               <span style={{ fontSize: 18, flexShrink: 0 }}>{s.icon}</span>
-              <span style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.5 }}>{s.text}</span>
+              <span style={{ fontSize: 13, color: "var(--vi-text-dim)", lineHeight: 1.5 }}>{s.text}</span>
             </div>
           ))}
         </div>
-        <div style={{ background: "rgba(59,130,246,0.06)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: 10, padding: "12px 16px", fontSize: 12, color: "#60a5fa" }}>
+        <div style={{ background: "rgba(59,130,246,0.06)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: "var(--vi-radius-sm)", padding: "12px 16px", fontSize: 12, color: "#60a5fa" }}>
           💡 Per DPA, SLA personalizzati o integrazioni custom: <strong>sales@vinoinvest.com</strong>
         </div>
       </div>
@@ -168,17 +168,17 @@ const STEPS_B2B = [
             <div key={s.label} style={{
               display: "flex", alignItems: "center", gap: 14,
               background: "rgba(8,15,30,0.6)", border: "1px solid rgba(59,130,246,0.12)",
-              borderRadius: 10, padding: "11px 14px",
+              borderRadius: "var(--vi-radius-sm)", padding: "11px 14px",
             }}>
               <span style={{ fontSize: 18, flexShrink: 0 }}>{s.icon}</span>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0" }}>{s.label}</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--vi-text)" }}>{s.label}</div>
                 <div style={{ fontSize: 11, color: "#3a5a7a" }}>{s.desc}</div>
               </div>
             </div>
           ))}
         </div>
-        <div style={{ background: "rgba(59,130,246,0.06)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: 10, padding: "12px 16px", fontSize: 12, color: "#60a5fa" }}>
+        <div style={{ background: "rgba(59,130,246,0.06)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: "var(--vi-radius-sm)", padding: "12px 16px", fontSize: 12, color: "#60a5fa" }}>
           🚀 Sei pronto! Il team ti contatterà presto per il setup iniziale.
         </div>
       </div>
@@ -194,7 +194,7 @@ const STEPS = [
     content: (
       <div>
         <p style={{ marginBottom: 16, lineHeight: 1.7 }}>
-          VinoInvest aggrega dati da <strong style={{ color: "#C9A227" }}>50.000+ vini</strong> in tempo reale:
+          VinoInvest aggrega dati da <strong style={{ color: "var(--vi-accent)" }}>50.000+ vini</strong> in tempo reale:
           prezzi storici, rating critici, trend di mercato e segnali AI.
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
@@ -206,10 +206,10 @@ const STEPS = [
           ].map(f => (
             <div key={f.label} style={{
               background: "rgba(201,162,39,0.06)", border: "1px solid rgba(201,162,39,0.15)",
-              borderRadius: 12, padding: "14px 16px",
+              borderRadius: "var(--vi-radius-md)", padding: "14px 16px",
             }}>
               <div style={{ fontSize: 22, marginBottom: 6 }}>{f.icon}</div>
-              <div style={{ fontWeight: 700, fontSize: 13, color: "#e2e8f0", marginBottom: 3 }}>{f.label}</div>
+              <div style={{ fontWeight: 700, fontSize: 13, color: "var(--vi-text)", marginBottom: 3 }}>{f.label}</div>
               <div style={{ fontSize: 11, color: "#3a5a7a" }}>{f.desc}</div>
             </div>
           ))}
@@ -226,7 +226,7 @@ const STEPS = [
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {[
             {
-              badge: <span style={{ background: "rgba(74,222,128,0.15)", color: "#4ade80", border: "1px solid rgba(74,222,128,0.3)", borderRadius: 6, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>Strong Buy</span>,
+              badge: <span style={{ background: "rgba(74,222,128,0.15)", color: "var(--vi-positive)", border: "1px solid rgba(74,222,128,0.3)", borderRadius: 6, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>Strong Buy</span>,
               desc: "Ottimo momento di acquisto — momentum e fondamentali eccellenti",
             },
             {
@@ -234,22 +234,22 @@ const STEPS = [
               desc: "Buone prospettive di crescita nel medio-lungo termine",
             },
             {
-              badge: <span style={{ background: "rgba(201,162,39,0.15)", color: "#C9A227", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 6, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>Hold</span>,
+              badge: <span style={{ background: "rgba(201,162,39,0.15)", color: "var(--vi-accent)", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 6, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>Hold</span>,
               desc: "Mantieni senza comprare altro — aspetta migliori condizioni",
             },
             {
-              badge: <span style={{ background: "rgba(248,113,113,0.15)", color: "#f87171", border: "1px solid rgba(248,113,113,0.3)", borderRadius: 6, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>Sell</span>,
+              badge: <span style={{ background: "rgba(248,113,113,0.15)", color: "var(--vi-negative)", border: "1px solid rgba(248,113,113,0.3)", borderRadius: 6, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>Sell</span>,
               desc: "Considera di liquidare la posizione o ridurla",
             },
           ].map((s, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, padding: "10px 14px", background: "rgba(11,18,32,0.6)", borderRadius: 10, border: "1px solid rgba(30,41,59,0.5)" }}>
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, padding: "10px 14px", background: "var(--vi-surface)", borderRadius: "var(--vi-radius-sm)", border: "1px solid var(--vi-border)" }}>
               <div style={{ flexShrink: 0 }}>{s.badge}</div>
-              <div style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.5 }}>{s.desc}</div>
+              <div style={{ fontSize: 13, color: "var(--vi-text-dim)", lineHeight: 1.5 }}>{s.desc}</div>
             </div>
           ))}
         </div>
         <p style={{ marginTop: 16, fontSize: 12, color: "#3a5a7a" }}>
-          💡 L'<strong style={{ color: "#e2e8f0" }}>AI Score</strong> (0-100) riassume: rating critico, annata, produttore, trend e rischio.
+          💡 L'<strong style={{ color: "var(--vi-text)" }}>AI Score</strong> (0-100) riassume: rating critico, annata, produttore, trend e rischio.
           Score &gt; 80 = elevato potenziale di investimento.
         </p>
       </div>
@@ -271,15 +271,15 @@ const STEPS = [
             <div key={s.step} style={{ display: "flex", alignItems: "center", gap: 14 }}>
               <div style={{
                 width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
-                background: "linear-gradient(135deg,#9b1c4a,#C9A227)",
+                background: `linear-gradient(135deg,#9b1c4a,var(--vi-accent))`,
                 display: "flex", alignItems: "center", justifyContent: "center",
                 fontSize: 13, fontWeight: 800, color: "#fff",
               }}>{s.step}</div>
-              <div style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.5 }}>{s.text}</div>
+              <div style={{ fontSize: 13, color: "var(--vi-text-dim)", lineHeight: 1.5 }}>{s.text}</div>
             </div>
           ))}
         </div>
-        <div style={{ background: "rgba(201,162,39,0.06)", border: "1px solid rgba(201,162,39,0.2)", borderRadius: 10, padding: "12px 16px", fontSize: 12, color: "#C9A227" }}>
+        <div style={{ background: "rgba(201,162,39,0.06)", border: "1px solid rgba(201,162,39,0.2)", borderRadius: "var(--vi-radius-sm)", padding: "12px 16px", fontSize: 12, color: "var(--vi-accent)" }}>
           📌 Hai già comprato vini su altre piattaforme? Usa "Ho già comprato" per importare le tue posizioni.
         </div>
       </div>
@@ -291,7 +291,7 @@ const STEPS = [
     subtitle: "Il tuo consulente personale per il wine investment",
     content: (
       <div>
-        <p style={{ marginBottom: 16, lineHeight: 1.7, fontSize: 13, color: "#94a3b8" }}>
+        <p style={{ marginBottom: 16, lineHeight: 1.7, fontSize: 13, color: "var(--vi-text-dim)" }}>
           La chat AI in basso a destra può rispondere a qualsiasi domanda sui tuoi investimenti:
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 16 }}>
@@ -303,8 +303,8 @@ const STEPS = [
           ].map((ex, i) => (
             <div key={i} style={{
               display: "flex", alignItems: "center", gap: 10,
-              background: "rgba(11,18,32,0.8)", border: "1px solid rgba(30,58,95,0.5)",
-              borderRadius: 10, padding: "10px 14px",
+              background: "var(--vi-surface)", border: "1px solid rgba(30,58,95,0.5)",
+              borderRadius: "var(--vi-radius-sm)", padding: "10px 14px",
             }}>
               <span style={{ fontSize: 16 }}>{ex.icon}</span>
               <span style={{ fontSize: 12, color: "#60a5fa", fontStyle: "italic" }}>{ex.msg}</span>
@@ -312,7 +312,7 @@ const STEPS = [
           ))}
         </div>
         <p style={{ fontSize: 12, color: "#3a5a7a" }}>
-          🍷 Il bottone <strong style={{ color: "#e2e8f0" }}>🍷</strong> in basso a destra apre la chat in qualsiasi momento.
+          🍷 Il bottone <strong style={{ color: "var(--vi-text)" }}>🍷</strong> in basso a destra apre la chat in qualsiasi momento.
           Funziona anche senza API key con il motore algoritmico.
         </p>
       </div>
@@ -330,7 +330,7 @@ const STEPS = [
     subtitle: "Non perdere mai il momento giusto per comprare",
     content: (
       <div>
-        <p style={{ marginBottom: 16, lineHeight: 1.7, fontSize: 13, color: "#94a3b8" }}>
+        <p style={{ marginBottom: 16, lineHeight: 1.7, fontSize: 13, color: "var(--vi-text-dim)" }}>
           Imposta avvisi di prezzo su qualsiasi vino. Ti notifichiamo quando il prezzo scende sotto la tua soglia target.
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 16 }}>
@@ -342,11 +342,11 @@ const STEPS = [
           ].map(s => (
             <div key={s.step} style={{ display: "flex", alignItems: "center", gap: 14 }}>
               <span style={{ fontSize: 20 }}>{s.icon}</span>
-              <div style={{ fontSize: 13, color: "#94a3b8" }}>{s.text}</div>
+              <div style={{ fontSize: 13, color: "var(--vi-text-dim)" }}>{s.text}</div>
             </div>
           ))}
         </div>
-        <div style={{ background: "rgba(201,162,39,0.06)", border: "1px solid rgba(201,162,39,0.2)", borderRadius: 10, padding: "12px 16px", fontSize: 12, color: "#C9A227" }}>
+        <div style={{ background: "rgba(201,162,39,0.06)", border: "1px solid rgba(201,162,39,0.2)", borderRadius: "var(--vi-radius-sm)", padding: "12px 16px", fontSize: 12, color: "var(--vi-accent)" }}>
           🎉 Ora sei pronto! Esplora il Mercato e inizia a costruire il tuo portfolio di vino.
         </div>
       </div>
@@ -379,10 +379,10 @@ function PreferencesForm({ onSave }) {
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
           {["< €1.000", "€1k–5k", "€5k–20k", "€20k–50k", "> €50k"].map(b => (
             <button key={b} onClick={() => setBudget(b)} style={{
-              padding: "7px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer", border: "1px solid",
-              borderColor: budget === b ? "#C9A227" : "rgba(71,85,105,0.4)",
-              background: budget === b ? "rgba(201,162,39,0.12)" : "rgba(30,41,59,0.5)",
-              color: budget === b ? "#C9A227" : "#94a3b8",
+              padding: "7px 14px", borderRadius: "var(--vi-radius-sm)", fontSize: 12, fontWeight: 600, cursor: "pointer", border: "1px solid",
+              borderColor: budget === b ? "var(--vi-accent)" : "rgba(71,85,105,0.4)",
+              background: budget === b ? "rgba(201,162,39,0.12)" : "var(--vi-surface)",
+              color: budget === b ? "var(--vi-accent)" : "var(--vi-text-dim)",
             }}>{b}</button>
           ))}
         </div>
@@ -391,12 +391,12 @@ function PreferencesForm({ onSave }) {
       <div>
         <div style={{ fontSize: 12, color: "#64748b", marginBottom: 8, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Tolleranza al rischio</div>
         <div style={{ display: "flex", gap: 8 }}>
-          {[{ v: "low", l: "Bassa", c: "#4ade80" }, { v: "medium", l: "Media", c: "#C9A227" }, { v: "high", l: "Alta", c: "#f87171" }].map(({ v, l, c }) => (
+          {[{ v: "low", l: "Bassa", c: "var(--vi-positive)" }, { v: "medium", l: "Media", c: "var(--vi-accent)" }, { v: "high", l: "Alta", c: "var(--vi-negative)" }].map(({ v, l, c }) => (
             <button key={v} onClick={() => setRisk(v)} style={{
-              flex: 1, padding: "8px 0", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: "pointer", border: "1px solid",
+              flex: 1, padding: "8px 0", borderRadius: "var(--vi-radius-sm)", fontSize: 12, fontWeight: 700, cursor: "pointer", border: "1px solid",
               borderColor: risk === v ? c : "rgba(71,85,105,0.4)",
-              background: risk === v ? `${c}18` : "rgba(30,41,59,0.5)",
-              color: risk === v ? c : "#94a3b8",
+              background: risk === v ? `rgba(0,0,0,0.1)` : "var(--vi-surface)",
+              color: risk === v ? c : "var(--vi-text-dim)",
             }}>{l}</button>
           ))}
         </div>
@@ -407,10 +407,10 @@ function PreferencesForm({ onSave }) {
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
           {REGIONS.map(r => (
             <button key={r} onClick={() => toggleRegion(r)} style={{
-              padding: "5px 12px", borderRadius: 20, fontSize: 11, fontWeight: 600, cursor: "pointer", border: "1px solid",
+              padding: "5px 12px", borderRadius: "var(--vi-radius-full)", fontSize: 11, fontWeight: 600, cursor: "pointer", border: "1px solid",
               borderColor: regions.includes(r) ? "rgba(201,162,39,0.5)" : "rgba(71,85,105,0.3)",
-              background: regions.includes(r) ? "rgba(201,162,39,0.1)" : "rgba(30,41,59,0.4)",
-              color: regions.includes(r) ? "#C9A227" : "#64748b",
+              background: regions.includes(r) ? "rgba(201,162,39,0.1)" : "var(--vi-surface)",
+              color: regions.includes(r) ? "var(--vi-accent)" : "#64748b",
             }}>{r}</button>
           ))}
         </div>
@@ -422,11 +422,8 @@ function PreferencesForm({ onSave }) {
           localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
           onSave(prefs);
         }}
-        style={{
-          padding: "11px 20px", borderRadius: 10, fontSize: 13, fontWeight: 700,
-          background: "linear-gradient(135deg,#C9A227,#a07d1a)", border: "none",
-          color: "#0b1220", cursor: "pointer",
-        }}
+        className="vi-btn"
+        style={{ padding: "11px 20px", fontSize: 13 }}
       >
         Salva preferenze →
       </button>
@@ -444,7 +441,7 @@ export default function OnboardingModal({ onClose, accountType }) {
   const isLast = step === steps.length - 1;
 
   const accentFrom = isB2B ? "#1d4ed8" : "#9b1c4a";
-  const accentTo = isB2B ? "#2563eb" : "#C9A227";
+  const accentTo = isB2B ? "#2563eb" : "var(--vi-accent)";
   const borderColor = isB2B ? "rgba(59,130,246,0.25)" : "rgba(201,162,39,0.25)";
 
   function handleComplete() {
@@ -474,22 +471,22 @@ export default function OnboardingModal({ onClose, accountType }) {
         padding: "20px",
       }}>
         {/* Modal */}
-        <div style={{
+        <div className="vi-card" style={{
           width: "min(560px, 100%)",
-          background: isB2B ? "linear-gradient(160deg,#060d1e 0%,#040810 100%)" : "linear-gradient(160deg,#0c1524 0%,#080f1c 100%)",
-          border: `1px solid ${borderColor}`,
-          borderRadius: 24,
+          background: "var(--vi-bg)",
+          borderColor,
+          borderRadius: "var(--vi-radius-lg)",
           boxShadow: `0 24px 80px rgba(0,0,0,0.8), 0 0 0 1px ${isB2B ? "rgba(59,130,246,0.08)" : "rgba(201,162,39,0.1)"}`,
           overflow: "hidden",
           animation: "onboardIn 0.25s ease-out",
         }}>
           {/* Progress bar */}
-          <div style={{ height: 3, background: "rgba(30,41,59,0.6)" }}>
+          <div style={{ height: 3, background: "var(--vi-border)" }}>
             <div style={{
               height: "100%",
               width: `${((step + 1) / steps.length) * 100}%`,
               background: `linear-gradient(90deg,${accentFrom},${accentTo})`,
-              transition: "width 0.35s ease",
+              transition: "width var(--vi-dur-slow) var(--vi-ease)",
             }} />
           </div>
 
@@ -499,7 +496,7 @@ export default function OnboardingModal({ onClose, accountType }) {
               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                 <div style={{ fontSize: 36 }}>{current.icon}</div>
                 <div>
-                  <h2 style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: 22, fontWeight: 700, color: "#e2e8f0", margin: 0, lineHeight: 1.2 }}>
+                  <h2 style={{ fontFamily: "var(--vi-font-display)", fontSize: 22, fontWeight: 700, color: "var(--vi-text)", margin: 0, lineHeight: 1.2 }}>
                     {current.title}
                   </h2>
                   <p style={{ fontSize: 12, color: "#3a5a7a", margin: "4px 0 0" }}>{current.subtitle}</p>
@@ -507,8 +504,8 @@ export default function OnboardingModal({ onClose, accountType }) {
               </div>
               <button
                 onClick={handleSkip}
-                style={{ background: "none", border: "none", color: "#3a5a7a", cursor: "pointer", fontSize: 20, lineHeight: 1, padding: 4, transition: "color 0.2s" }}
-                onMouseEnter={e => e.currentTarget.style.color = "#e2e8f0"}
+                style={{ background: "none", border: "none", color: "#3a5a7a", cursor: "pointer", fontSize: 20, lineHeight: 1, padding: 4, transition: `color var(--vi-dur) var(--vi-ease)` }}
+                onMouseEnter={e => e.currentTarget.style.color = "var(--vi-text)"}
                 onMouseLeave={e => e.currentTarget.style.color = "#3a5a7a"}
                 title="Salta tour"
                 aria-label="Skip tour"
@@ -524,7 +521,7 @@ export default function OnboardingModal({ onClose, accountType }) {
                   aria-label={`Go to step ${i + 1}`}
                   style={{
                     width: i === step ? 20 : 8, height: 8, borderRadius: 4,
-                    background: i === step ? accentTo : i < step ? `${accentTo}66` : "rgba(30,41,59,0.6)",
+                    background: i === step ? "var(--vi-accent)" : i < step ? "rgba(201,162,39,0.4)" : "var(--vi-border)",
                     border: "none", cursor: "pointer", padding: 0,
                     transition: "all 0.3s ease",
                   }}
@@ -543,7 +540,7 @@ export default function OnboardingModal({ onClose, accountType }) {
           {/* Footer — hidden while showing preferences form (has its own CTA) */}
           {!current.isPreferences && <div style={{
             padding: "16px 32px 24px",
-            borderTop: "1px solid rgba(30,41,59,0.5)",
+            borderTop: "1px solid var(--vi-border)",
             display: "flex", justifyContent: "space-between", alignItems: "center",
           }}>
             <div style={{ fontSize: 12, color: "#3a5a7a" }}>
@@ -554,12 +551,12 @@ export default function OnboardingModal({ onClose, accountType }) {
                 <button
                   onClick={() => setStep(s => s - 1)}
                   style={{
-                    padding: "9px 20px", borderRadius: 10, border: "1px solid rgba(30,41,59,0.6)",
-                    background: "transparent", color: "#94a3b8", cursor: "pointer", fontSize: 13, fontWeight: 600,
-                    transition: "all 0.2s",
+                    padding: "9px 20px", borderRadius: "var(--vi-radius-sm)", border: "1px solid var(--vi-border)",
+                    background: "transparent", color: "var(--vi-text-dim)", cursor: "pointer", fontSize: 13, fontWeight: 600,
+                    transition: `all var(--vi-dur) var(--vi-ease)`,
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(201,162,39,0.4)"; e.currentTarget.style.color = "#e2e8f0"; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(30,41,59,0.6)"; e.currentTarget.style.color = "#94a3b8"; }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(201,162,39,0.4)"; e.currentTarget.style.color = "var(--vi-text)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--vi-border)"; e.currentTarget.style.color = "var(--vi-text-dim)"; }}
                 >
                   ← Indietro
                 </button>
@@ -568,11 +565,11 @@ export default function OnboardingModal({ onClose, accountType }) {
                 <button
                   onClick={() => setStep(s => s + 1)}
                   style={{
-                    padding: "9px 24px", borderRadius: 10, border: "none",
+                    padding: "9px 24px", borderRadius: "var(--vi-radius-sm)", border: "none",
                     background: `linear-gradient(135deg,${accentFrom},${accentTo})`,
                     color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 700,
-                    boxShadow: `0 4px 16px ${isB2B ? "rgba(37,99,235,0.3)" : "rgba(201,162,39,0.3)"}`,
-                    transition: "transform 0.2s, box-shadow 0.2s",
+                    boxShadow: `0 4px 16px ${isB2B ? "rgba(37,99,235,0.3)" : "var(--vi-accent-glow)"}`,
+                    transition: `transform var(--vi-dur) var(--vi-ease), box-shadow var(--vi-dur) var(--vi-ease)`,
                   }}
                   onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; }}
                   onMouseLeave={e => { e.currentTarget.style.transform = ""; }}
@@ -583,11 +580,11 @@ export default function OnboardingModal({ onClose, accountType }) {
                 <button
                   onClick={handleComplete}
                   style={{
-                    padding: "9px 28px", borderRadius: 10, border: "none",
-                    background: isB2B ? "linear-gradient(135deg,#1d4ed8,#2563eb)" : "linear-gradient(135deg,#4ade80,#16a34a)",
+                    padding: "9px 28px", borderRadius: "var(--vi-radius-sm)", border: "none",
+                    background: isB2B ? "linear-gradient(135deg,#1d4ed8,#2563eb)" : `linear-gradient(135deg,var(--vi-positive),#16a34a)`,
                     color: isB2B ? "#fff" : "#000", cursor: "pointer", fontSize: 13, fontWeight: 800,
                     boxShadow: isB2B ? "0 4px 16px rgba(37,99,235,0.35)" : "0 4px 16px rgba(74,222,128,0.3)",
-                    transition: "transform 0.2s, box-shadow 0.2s",
+                    transition: `transform var(--vi-dur) var(--vi-ease), box-shadow var(--vi-dur) var(--vi-ease)`,
                   }}
                   onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; }}
                   onMouseLeave={e => { e.currentTarget.style.transform = ""; }}

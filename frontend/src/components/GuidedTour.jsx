@@ -60,8 +60,8 @@ function Highlight({ rect, padding = 8 }) {
         left: left - padding,
         width: width + padding * 2,
         height: height + padding * 2,
-        borderRadius: 12,
-        border: "2px solid #C9A227",
+        borderRadius: "var(--vi-radius-md)",
+        border: "2px solid var(--vi-accent)",
         boxShadow: "0 0 0 4000px rgba(2,6,23,0.82), 0 0 24px rgba(201,162,39,0.5)",
         pointerEvents: "none",
         zIndex: 10001,
@@ -106,11 +106,10 @@ function Tooltip({ rect, step, stepIndex, totalSteps, onNext, onPrev, onSkip, pl
   const isLast = stepIndex === totalSteps - 1;
 
   return (
-    <div style={{
+    <div className="vi-card" style={{
       position: "fixed", top, left, width: TIP_W, zIndex: 10002,
-      background: "linear-gradient(160deg,#0c1524 0%,#080f1c 100%)",
-      border: "1px solid rgba(201,162,39,0.35)",
-      borderRadius: 16,
+      background: "var(--vi-bg)",
+      borderRadius: "var(--vi-radius-md)",
       boxShadow: "0 16px 48px rgba(0,0,0,0.8), 0 0 0 1px rgba(201,162,39,0.1)",
       padding: 18,
       animation: "tourTooltipIn 0.22s ease-out",
@@ -120,16 +119,16 @@ function Tooltip({ rect, step, stepIndex, totalSteps, onNext, onPrev, onSkip, pl
         {Array.from({ length: totalSteps }).map((_, i) => (
           <div key={i} style={{
             flex: 1, height: 3, borderRadius: 2,
-            background: i <= stepIndex ? "#C9A227" : "rgba(30,41,59,0.6)",
+            background: i <= stepIndex ? "var(--vi-accent)" : "var(--vi-border)",
             transition: "background 0.3s",
           }} />
         ))}
       </div>
 
-      <div style={{ fontWeight: 700, fontSize: 14, color: "#e2e8f0", marginBottom: 8, lineHeight: 1.3 }}>
+      <div style={{ fontWeight: 700, fontSize: 14, color: "var(--vi-text)", marginBottom: 8, lineHeight: 1.3 }}>
         {step.title}
       </div>
-      <div style={{ fontSize: 12, color: "#94a3b8", lineHeight: 1.6, marginBottom: 14 }}>
+      <div style={{ fontSize: 12, color: "var(--vi-text-dim)", lineHeight: 1.6, marginBottom: 14 }}>
         {rect ? step.text : (step.fallbackText || step.text)}
       </div>
 
@@ -146,16 +145,16 @@ function Tooltip({ rect, step, stepIndex, totalSteps, onNext, onPrev, onSkip, pl
               onClick={onPrev}
               aria-label="Previous step"
               style={{
-                padding: "6px 14px", borderRadius: 8, border: "1px solid rgba(30,41,59,0.7)",
-                background: "transparent", color: "#94a3b8", cursor: "pointer", fontSize: 12, fontWeight: 600,
+                padding: "6px 14px", borderRadius: "var(--vi-radius-sm)", border: "1px solid var(--vi-border)",
+                background: "transparent", color: "var(--vi-text-dim)", cursor: "pointer", fontSize: 12, fontWeight: 600,
               }}
             >←</button>
           )}
           <button
             onClick={onNext}
             style={{
-              padding: "6px 16px", borderRadius: 8, border: "none",
-              background: isLast ? "linear-gradient(135deg,#4ade80,#16a34a)" : "linear-gradient(135deg,#9b1c4a,#C9A227)",
+              padding: "6px 16px", borderRadius: "var(--vi-radius-sm)", border: "none",
+              background: isLast ? `linear-gradient(135deg,var(--vi-positive),#16a34a)` : `linear-gradient(135deg,#9b1c4a,var(--vi-accent))`,
               color: isLast ? "#000" : "#fff", cursor: "pointer", fontSize: 12, fontWeight: 700,
             }}
           >

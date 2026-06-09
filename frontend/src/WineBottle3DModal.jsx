@@ -41,9 +41,9 @@ function getWineType(wine) {
 }
 
 const BADGE_STYLE = {
-  background: "linear-gradient(135deg, #C9A227, #F5D06D)",
+  background: "linear-gradient(135deg, var(--vi-accent), var(--vi-accent-2))",
   color: "#1a0a00",
-  borderRadius: 6,
+  borderRadius: "var(--vi-radius-sm)",
   padding: "2px 8px",
   fontSize: 11,
   fontWeight: 700,
@@ -61,7 +61,7 @@ function AwardsBadges({ awards }) {
 
   return (
     <div style={{ marginTop: 10 }}>
-      <p style={{ fontSize: 10, color: "#c9a227", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6, fontWeight: 700 }}>
+      <p style={{ fontSize: 10, color: "var(--vi-accent)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6, fontWeight: 700 }}>
         Premi &amp; Riconoscimenti
       </p>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 5, alignItems: "center" }}>
@@ -73,7 +73,7 @@ function AwardsBadges({ awards }) {
         {hasMore && !expanded && (
           <button
             onClick={() => setExpanded(true)}
-            style={{ background: "none", border: "none", color: "#c9a227", fontSize: 11, fontWeight: 700, cursor: "pointer", padding: "2px 4px", textDecoration: "underline" }}
+            style={{ background: "none", border: "none", color: "var(--vi-accent)", fontSize: 11, fontWeight: 700, cursor: "pointer", padding: "2px 4px", textDecoration: "underline" }}
           >
             Vedi tutti ({awards.length})
           </button>
@@ -161,9 +161,9 @@ function ProducerInfoCard({ producerName }) {
     <div style={{
       marginTop: 12,
       padding: "10px 14px",
-      background: "#0a1218",
-      borderRadius: 10,
-      border: "1px solid #1e2d3d",
+      background: "var(--vi-bg)",
+      borderRadius: "var(--vi-radius-sm)",
+      border: "1px solid var(--vi-border)",
     }}>
       <p style={{ fontSize: 10, color: "#475569", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700 }}>
         Produttore
@@ -175,13 +175,13 @@ function ProducerInfoCard({ producerName }) {
           </span>
         )}
         {info.foundingYear && (
-          <span style={{ fontSize: 11, color: "#c9a227", background: "rgba(201,162,39,0.08)", padding: "2px 8px", borderRadius: 999, border: "1px solid rgba(201,162,39,0.2)" }}>
+          <span style={{ fontSize: 11, color: "var(--vi-accent)", background: "rgba(201,162,39,0.08)", padding: "2px 8px", borderRadius: 999, border: "1px solid rgba(201,162,39,0.2)" }}>
             Est. {info.foundingYear}
           </span>
         )}
       </div>
       {desc && (
-        <p style={{ fontSize: 11, color: "#94a3b8", marginTop: 6, lineHeight: 1.5, fontStyle: "italic" }}>
+        <p style={{ fontSize: 11, color: "var(--vi-text-dim)", marginTop: 6, lineHeight: 1.5, fontStyle: "italic" }}>
           {desc}
         </p>
       )}
@@ -263,13 +263,13 @@ function CellarTrackerNotes({ wineName }) {
   if (!wineName) return null;
 
   return (
-    <div style={{ marginTop: 12, borderTop: "1px solid #1e293b", paddingTop: 12 }}>
+    <div style={{ marginTop: 12, borderTop: "1px solid var(--vi-border)", paddingTop: 12 }}>
       <button
         onClick={loadNotes}
         style={{
           background: "none",
           border: "none",
-          color: "#c9a227",
+          color: "var(--vi-accent)",
           fontSize: 12,
           fontWeight: 700,
           cursor: "pointer",
@@ -297,18 +297,18 @@ function CellarTrackerNotes({ wineName }) {
                   key={i}
                   style={{
                     padding: "10px 12px",
-                    background: "#0a1218",
-                    borderRadius: 10,
-                    border: "1px solid #1e2d3d",
-                    borderLeft: "3px solid #c9a227",
+                    background: "var(--vi-bg)",
+                    borderRadius: "var(--vi-radius-sm)",
+                    border: "1px solid var(--vi-border)",
+                    borderLeft: "3px solid var(--vi-accent)",
                   }}
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5, flexWrap: "wrap", gap: 4 }}>
                     {note.score > 0 && (
                       <span style={{
-                        background: "linear-gradient(135deg, #C9A227, #F5D06D)",
+                        background: "linear-gradient(135deg, var(--vi-accent), var(--vi-accent-2))",
                         color: "#1a0a00",
-                        borderRadius: 6,
+                        borderRadius: "var(--vi-radius-sm)",
                         padding: "1px 8px",
                         fontSize: 11,
                         fontWeight: 800,
@@ -327,7 +327,7 @@ function CellarTrackerNotes({ wineName }) {
                       </span>
                     )}
                   </div>
-                  <p style={{ fontSize: 12, color: "#94a3b8", lineHeight: 1.55, fontStyle: "italic", margin: 0 }}>
+                  <p style={{ fontSize: 12, color: "var(--vi-text-dim)", lineHeight: 1.55, fontStyle: "italic", margin: 0 }}>
                     "{note.noteText.length > 120 ? note.noteText.slice(0, 117) + "…" : note.noteText}"
                   </p>
                 </div>
@@ -357,13 +357,13 @@ function FoodPairings({ wineId }) {
   if (!pairings) return null;
 
   return (
-    <div style={{ marginTop: 12, padding: "10px 14px", background: "#0a1218", borderRadius: 10, border: "1px solid #1e2d3d" }}>
+    <div style={{ marginTop: 12, padding: "10px 14px", background: "var(--vi-bg)", borderRadius: "var(--vi-radius-sm)", border: "1px solid var(--vi-border)" }}>
       <p style={{ fontSize: 10, color: "#475569", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700 }}>
         Abbinamenti
       </p>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
         {pairings.slice(0, 6).map((p, i) => (
-          <span key={i} style={{ fontSize: 11, color: "#c9a227", background: "rgba(201,162,39,0.08)", padding: "2px 8px", borderRadius: 999, border: "1px solid rgba(201,162,39,0.2)" }}>
+          <span key={i} style={{ fontSize: 11, color: "var(--vi-accent)", background: "rgba(201,162,39,0.08)", padding: "2px 8px", borderRadius: 999, border: "1px solid rgba(201,162,39,0.2)" }}>
             {p}
           </span>
         ))}
@@ -591,7 +591,7 @@ export default function WineBottle3DModal({ wine, onClose }) {
               <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 3, lineHeight: 1.3 }}>{wine.name}</h3>
               <p style={{ color: "#64748b", fontSize: 12 }}>{wine.producer} · {wine.vintage} · {wine.region}</p>
             </div>
-            <span style={{ fontSize: 26, fontWeight: 800, color: "#c9a227", whiteSpace: "nowrap" }}>€ {wine.currentPrice}</span>
+            <span style={{ fontSize: 26, fontWeight: 800, color: "var(--vi-accent)", whiteSpace: "nowrap" }}>€ {wine.currentPrice}</span>
           </div>
 
           {/* ── Wikidata Producer Info ───────────────────────────────── */}
@@ -608,14 +608,14 @@ export default function WineBottle3DModal({ wine, onClose }) {
 
           <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
             <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#0c1a2e", color: "#60a5fa", border: "1px solid #1e3a5f" }}>{wineType}</span>
-            <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#1a1207", color: "#c9a227", border: "1px solid #5a400d" }}>AI Score {aiScore}</span>
-            {aiSignal && <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#0d1f0d", color: aiSignal === "Strong Buy" ? "#4ade80" : "#86efac", border: "1px solid #166534" }}>{aiSignal}</span>}
-            {wine.risk && <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#0d1f0d", color: "#4ade80", border: "1px solid #166534" }}>{wine.risk}</span>}
+            <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#1a1207", color: "var(--vi-accent)", border: "1px solid #5a400d" }}>AI Score {aiScore}</span>
+            {aiSignal && <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#0d1f0d", color: aiSignal === "Strong Buy" ? "var(--vi-positive)" : "#86efac", border: "1px solid #166534" }}>{aiSignal}</span>}
+            {wine.risk && <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#0d1f0d", color: "var(--vi-positive)", border: "1px solid #166534" }}>{wine.risk}</span>}
             {wine.marketTrend && <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, background: "#131a0d", color: "#86efac", border: "1px solid #166534" }}>{wine.marketTrend}</span>}
           </div>
 
           {wine.aiScoreData?.breakdown && (
-            <div style={{ marginTop: 14, padding: "12px 14px", background: "#0a1628", borderRadius: 10, border: "1px solid #1e293b" }}>
+            <div style={{ marginTop: 14, padding: "12px 14px", background: "var(--vi-bg)", borderRadius: "var(--vi-radius-sm)", border: "1px solid var(--vi-border)" }}>
               <p style={{ fontSize: 10, color: "#475569", marginBottom: 10, textTransform: "uppercase", letterSpacing: "0.08em" }}>AI Score Breakdown</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
                 {[
@@ -629,10 +629,10 @@ export default function WineBottle3DModal({ wine, onClose }) {
                   return (
                     <div key={key} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <span style={{ fontSize: 10, color: "#64748b", width: 64, flexShrink: 0 }}>{label}</span>
-                      <div style={{ flex: 1, background: "#1e293b", borderRadius: 4, height: 5 }}>
-                        <div style={{ width: val + "%", height: "100%", background: "#c9a227", borderRadius: 4 }} />
+                      <div style={{ flex: 1, background: "var(--vi-border)", borderRadius: 4, height: 5 }}>
+                        <div style={{ width: val + "%", height: "100%", background: "var(--vi-accent)", borderRadius: 4 }} />
                       </div>
-                      <span style={{ fontSize: 10, color: "#c9a227", width: 24, textAlign: "right" }}>{val}</span>
+                      <span style={{ fontSize: 10, color: "var(--vi-accent)", width: 24, textAlign: "right" }}>{val}</span>
                     </div>
                   );
                 })}
@@ -645,7 +645,7 @@ export default function WineBottle3DModal({ wine, onClose }) {
             </div>
           )}
 
-          <div style={{ marginTop: 16, borderTop: "1px solid #1e293b", paddingTop: 14 }}>
+          <div style={{ marginTop: 16, borderTop: "1px solid var(--vi-border)", paddingTop: 14 }}>
             <p style={{ fontSize: 10, color: "#475569", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>
               Storico Prezzi · 12 mesi
             </p>
@@ -653,12 +653,12 @@ export default function WineBottle3DModal({ wine, onClose }) {
           </div>
 
           {/* ── Affiliate buy links ─────────────────────────────────────── */}
-          <div style={{ marginTop: 16, borderTop: "1px solid #1e293b", paddingTop: 14, display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <div style={{ marginTop: 16, borderTop: "1px solid var(--vi-border)", paddingTop: 14, display: "flex", gap: 8, flexWrap: "wrap" }}>
             <a
               href={`https://www.wine-searcher.com/find/${encodeURIComponent(wine.name)}${wine.vintage ? `/${wine.vintage}` : ""}`}
               target="_blank"
               rel="noopener noreferrer sponsored"
-              style={{ flex: 1, minWidth: 140, display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "10px 14px", background: "rgba(201,162,39,0.1)", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 10, color: "#C9A227", fontSize: 12, fontWeight: 700, textDecoration: "none", transition: "background 0.2s" }}
+              style={{ flex: 1, minWidth: 140, display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "10px 14px", background: "rgba(201,162,39,0.1)", border: "1px solid rgba(201,162,39,0.3)", borderRadius: "var(--vi-radius-sm)", color: "var(--vi-accent)", fontSize: 12, fontWeight: 700, textDecoration: "none", transition: `background var(--vi-dur) var(--vi-ease)` }}
               onMouseEnter={e => e.currentTarget.style.background = "rgba(201,162,39,0.18)"}
               onMouseLeave={e => e.currentTarget.style.background = "rgba(201,162,39,0.1)"}
             >
@@ -668,7 +668,7 @@ export default function WineBottle3DModal({ wine, onClose }) {
               href={`https://www.vivino.com/search/wines?q=${encodeURIComponent(wine.name)}`}
               target="_blank"
               rel="noopener noreferrer sponsored"
-              style={{ flex: 1, minWidth: 140, display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "10px 14px", background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.25)", borderRadius: 10, color: "#60a5fa", fontSize: 12, fontWeight: 700, textDecoration: "none", transition: "background 0.2s" }}
+              style={{ flex: 1, minWidth: 140, display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "10px 14px", background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.25)", borderRadius: "var(--vi-radius-sm)", color: "#60a5fa", fontSize: 12, fontWeight: 700, textDecoration: "none", transition: `background var(--vi-dur) var(--vi-ease)` }}
               onMouseEnter={e => e.currentTarget.style.background = "rgba(96,165,250,0.15)"}
               onMouseLeave={e => e.currentTarget.style.background = "rgba(96,165,250,0.08)"}
             >

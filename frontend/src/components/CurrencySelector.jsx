@@ -72,8 +72,8 @@ export default function CurrencySelector() {
       <button
         onClick={() => setOpen(o => !o)}
         style={{
-          background: "rgba(15,23,42,0.8)", border: "1px solid rgba(30,41,59,0.6)",
-          color: "#94a3b8", borderRadius: 8, padding: "5px 10px", cursor: "pointer",
+          background: "var(--vi-surface)", border: "1px solid var(--vi-border)",
+          color: "var(--vi-text-dim)", borderRadius: "var(--vi-radius-sm)", padding: "5px 10px", cursor: "pointer",
           fontSize: 12, fontFamily: "inherit", display: "flex", alignItems: "center", gap: 4,
         }}
         title="Cambia valuta"
@@ -83,7 +83,7 @@ export default function CurrencySelector() {
       {open && (
         <div style={{
           position: "absolute", top: "calc(100% + 4px)", right: 0, zIndex: 1000,
-          background: "#0a1120", border: "1px solid rgba(30,41,59,0.7)", borderRadius: 10,
+          background: "var(--vi-bg)", border: "1px solid var(--vi-border)", borderRadius: "var(--vi-radius-sm)",
           boxShadow: "0 8px 32px rgba(0,0,0,0.5)", minWidth: 140, overflow: "hidden",
         }}>
           {CURRENCIES.map(c => (
@@ -93,7 +93,7 @@ export default function CurrencySelector() {
               style={{
                 width: "100%", padding: "8px 14px", border: "none", cursor: "pointer",
                 background: c.code === currency ? "rgba(201,162,39,0.15)" : "transparent",
-                color: c.code === currency ? "#C9A227" : "#94a3b8", textAlign: "left",
+                color: c.code === currency ? "var(--vi-accent)" : "var(--vi-text-dim)", textAlign: "left",
                 fontSize: 12, fontFamily: "inherit", display: "flex", gap: 8,
               }}
             >

@@ -18,10 +18,10 @@ export function ToastProvider({ children }) {
         {toasts.map(t => (
           <div key={t.id} style={{
             padding: "12px 20px",
-            background: t.type === "success" ? "#052e16" : t.type === "error" ? "#2d0606" : "#0b1220",
+            background: t.type === "success" ? "#052e16" : t.type === "error" ? "#2d0606" : "var(--vi-bg)",
             border: `1px solid ${t.type === "success" ? "#166534" : t.type === "error" ? "#7f1d1d" : "#1e3a5f"}`,
-            borderRadius: 12,
-            color: t.type === "success" ? "#4ade80" : t.type === "error" ? "#f87171" : "#93c5fd",
+            borderRadius: "var(--vi-radius-md)",
+            color: t.type === "success" ? "var(--vi-positive)" : t.type === "error" ? "var(--vi-negative)" : "#93c5fd",
             fontSize: 13,
             fontWeight: 600,
             boxShadow: "0 4px 24px rgba(0,0,0,0.5)",

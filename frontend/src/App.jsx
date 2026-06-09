@@ -122,13 +122,13 @@ function AIPortfolioAnalysis({ holdings, totalValue, totalInvested, userId }) {
     setLoading(false);
   }
 
-  const signalColor = { "Strong Buy": "#4ade80", "Buy": "#86efac", "Hold": "#C9A227", "Reduce": "#fb923c", "Sell": "#f87171" };
+  const signalColor = { "Strong Buy": "var(--vi-positive)", "Buy": "#86efac", "Hold": "var(--vi-accent)", "Reduce": "#fb923c", "Sell": "var(--vi-negative)" };
 
   return (
-    <div style={{ marginBottom: 32, background: "rgba(11,18,32,0.85)", border: "1px solid rgba(31,41,55,0.7)", borderRadius: 18, padding: 24 }}>
+    <div style={{ marginBottom: 32, background: "var(--vi-surface)", border: "1px solid var(--vi-border)", borderRadius: "var(--vi-radius-lg)", padding: 24 }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 10 }}>
         <div>
-          <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 18, fontWeight: 700, margin: 0 }}>AI Portfolio Analysis</h3>
+          <h3 style={{ fontFamily: "var(--vi-font-display)", fontSize: 18, fontWeight: 700, margin: 0 }}>AI Portfolio Analysis</h3>
           <p style={{ fontSize: 12, color: "#3a5a7a", marginTop: 3 }}>Claude AI analysis based on your real positions</p>
         </div>
         <button className="btn-primary" style={{ width: "auto", padding: "9px 18px", fontSize: 12 }} onClick={runAnalysis} disabled={loading}>
@@ -144,7 +144,7 @@ function AIPortfolioAnalysis({ holdings, totalValue, totalInvested, userId }) {
 
       {loading && (
         <div style={{ display: "flex", alignItems: "center", gap: 10, color: "#3a5a7a", padding: 16 }}>
-          <span style={{ width: 14, height: 14, borderRadius: "50%", border: "2px solid #3a5a7a", borderTopColor: "#C9A227", display: "inline-block", animation: "spin 0.8s linear infinite" }} />
+          <span style={{ width: 14, height: 14, borderRadius: "50%", border: "2px solid #3a5a7a", borderTopColor: "var(--vi-accent)", display: "inline-block", animation: "spin 0.8s linear infinite" }} />
           AI is analyzing your portfolio...
         </div>
       )}
@@ -154,12 +154,12 @@ function AIPortfolioAnalysis({ holdings, totalValue, totalInvested, userId }) {
           {/* Summary row */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px,1fr))", gap: 10, marginBottom: 18 }}>
             {[
-              { label: "Segnale", value: analysis.overallSignal, color: signalColor[analysis.overallSignal] || "#C9A227" },
-              { label: "Risk Score", value: `${analysis.riskScore}/10`, color: analysis.riskScore > 6 ? "#f87171" : "#4ade80" },
+              { label: "Segnale", value: analysis.overallSignal, color: signalColor[analysis.overallSignal] || "var(--vi-accent)" },
+              { label: "Risk Score", value: `${analysis.riskScore}/10`, color: analysis.riskScore > 6 ? "var(--vi-negative)" : "var(--vi-positive)" },
               { label: "Diversificazione", value: `${analysis.diversificationScore}/10`, color: "#60a5fa" },
-              { label: "Outlook", value: analysis.marketOutlook, color: analysis.marketOutlook === "Bullish" ? "#4ade80" : analysis.marketOutlook === "Bearish" ? "#f87171" : "#C9A227" },
+              { label: "Outlook", value: analysis.marketOutlook, color: analysis.marketOutlook === "Bullish" ? "var(--vi-positive)" : analysis.marketOutlook === "Bearish" ? "var(--vi-negative)" : "var(--vi-accent)" },
             ].map(s => (
-              <div key={s.label} style={{ background: "rgba(5,10,20,0.6)", borderRadius: 12, padding: "12px 14px", border: "1px solid rgba(30,41,59,0.6)" }}>
+              <div key={s.label} style={{ background: "var(--vi-surface)", borderRadius: "var(--vi-radius-md)", padding: "12px 14px", border: "1px solid var(--vi-border)" }}>
                 <div style={{ fontSize: 10, color: "#3a5a7a", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 5 }}>{s.label}</div>
                 <div style={{ fontSize: 16, fontWeight: 800, color: s.color }}>{s.value}</div>
               </div>
@@ -167,7 +167,7 @@ function AIPortfolioAnalysis({ holdings, totalValue, totalInvested, userId }) {
           </div>
 
           {/* Summary text */}
-          <p style={{ fontSize: 13, color: "#94a3b8", marginBottom: 16, lineHeight: 1.65 }}>{analysis.summary}</p>
+          <p style={{ fontSize: 13, color: "var(--vi-text-dim)", marginBottom: 16, lineHeight: 1.65 }}>{analysis.summary}</p>
 
           {/* Recommendations */}
           {analysis.recommendations?.length > 0 && (
@@ -175,8 +175,8 @@ function AIPortfolioAnalysis({ holdings, totalValue, totalInvested, userId }) {
               <p style={{ fontSize: 11, color: "#3a5a7a", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>Raccomandazioni</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
                 {analysis.recommendations.slice(0, 5).map(r => (
-                  <div key={r.wineId} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", background: "rgba(5,10,20,0.5)", borderRadius: 10, border: "1px solid rgba(30,41,59,0.5)" }}>
-                    <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 5, background: r.action === "Sell" ? "rgba(69,10,10,0.6)" : r.action === "Buy More" ? "rgba(5,46,22,0.6)" : "rgba(12,26,46,0.6)", color: r.action === "Sell" ? "#f87171" : r.action === "Buy More" ? "#4ade80" : "#C9A227", whiteSpace: "nowrap" }}>{r.action}</span>
+                  <div key={r.wineId} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", background: "var(--vi-surface)", borderRadius: "var(--vi-radius-sm)", border: "1px solid var(--vi-border)" }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: "var(--vi-radius-sm)", background: r.action === "Sell" ? "rgba(69,10,10,0.6)" : r.action === "Buy More" ? "rgba(5,46,22,0.6)" : "rgba(12,26,46,0.6)", color: r.action === "Sell" ? "var(--vi-negative)" : r.action === "Buy More" ? "var(--vi-positive)" : "var(--vi-accent)", whiteSpace: "nowrap" }}>{r.action}</span>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 12, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{holdings.find(h => h.id === r.wineId)?.name || r.wineId}</div>
                       <div style={{ fontSize: 11, color: "#64748b" }}>{r.reason}</div>
@@ -191,8 +191,8 @@ function AIPortfolioAnalysis({ holdings, totalValue, totalInvested, userId }) {
           {/* Concerns */}
           {analysis.concerns?.length > 0 && (
             <div style={{ marginTop: 12, padding: "10px 14px", background: "rgba(69,10,10,0.2)", borderRadius: 10, border: "1px solid rgba(153,27,27,0.3)" }}>
-              <p style={{ fontSize: 11, color: "#f87171", fontWeight: 700, marginBottom: 6 }}>Rischi identificati</p>
-              {analysis.concerns.map((c, i) => <p key={i} style={{ fontSize: 12, color: "#94a3b8" }}>• {c}</p>)}
+              <p style={{ fontSize: 11, color: "var(--vi-negative)", fontWeight: 700, marginBottom: 6 }}>Rischi identificati</p>
+              {analysis.concerns.map((c, i) => <p key={i} style={{ fontSize: 12, color: "var(--vi-text-dim)" }}>• {c}</p>)}
             </div>
           )}
 
@@ -294,7 +294,7 @@ function PortfolioSparkline({ wineId, purchasePrice, currentPrice }) {
     });
   }, [wineId, purchasePrice, currentPrice]);
 
-  const color = currentPrice >= purchasePrice ? "#4ade80" : "#f87171";
+  const color = currentPrice >= purchasePrice ? "var(--vi-positive)" : "var(--vi-negative)";
   return (
     <LineChart width={80} height={30} data={sparkData} margin={{ top: 2, right: 2, left: 2, bottom: 2 }}>
       <Line type="monotone" dataKey="v" stroke={color} strokeWidth={1.5} dot={false} />
@@ -318,7 +318,7 @@ function PWAInstallBanner() {
   return (
     <div style={{
       position: "fixed", bottom: 100, left: 16, right: 16, zIndex: 8888,
-      background: "#0f172a", border: "1px solid rgba(201,162,39,0.4)", borderRadius: 14,
+      background: "var(--vi-bg-elev)", border: "1px solid rgba(201,162,39,0.4)", borderRadius: "var(--vi-radius-md)",
       padding: "14px 18px", display: "flex", alignItems: "center", gap: 12,
       boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
       maxWidth: 400, margin: "0 auto",
@@ -328,7 +328,7 @@ function PWAInstallBanner() {
         <div style={{ fontWeight: 700, fontSize: 13 }}>Install VinoInvest</div>
         <div style={{ fontSize: 11, color: "#64748b" }}>Add to home screen for quick access</div>
       </div>
-      <button onClick={async () => { deferredPrompt?.prompt(); setVisible(false); }} style={{ background: "#C9A227", color: "#020617", border: "none", borderRadius: 8, padding: "7px 14px", fontWeight: 700, cursor: "pointer", fontSize: 12 }}>Install</button>
+      <button onClick={async () => { deferredPrompt?.prompt(); setVisible(false); }} style={{ background: "var(--vi-accent)", color: "#020617", border: "none", borderRadius: "var(--vi-radius-sm)", padding: "7px 14px", fontWeight: 700, cursor: "pointer", fontSize: 12 }}>Install</button>
       <button onClick={() => setVisible(false)} aria-label="Dismiss" style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 20, padding: 0 }}>×</button>
     </div>
   );
@@ -891,10 +891,10 @@ function App() {
   // Spinner while Supabase checks existing session (prevents flash of landing page)
   if (!authChecked) {
     return (
-      <div style={{ minHeight: "100vh", background: "#0b1220", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 16 }}>
-        <div style={{ width: 48, height: 48, border: "3px solid rgba(201,162,39,0.2)", borderTopColor: "#C9A227", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+      <div style={{ minHeight: "100vh", background: "var(--vi-bg)", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 16 }}>
+        <div style={{ width: 48, height: 48, border: "3px solid var(--vi-accent-glow)", borderTopColor: "var(--vi-accent)", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-        <div style={{ color: "#C9A227", fontFamily: "Inter, sans-serif", fontSize: 14, letterSpacing: "0.05em" }}>VinoInvest</div>
+        <div style={{ color: "var(--vi-accent)", fontFamily: "var(--vi-font-sans)", fontSize: 14, letterSpacing: "0.05em" }}>VinoInvest</div>
       </div>
     );
   }
@@ -947,8 +947,8 @@ function App() {
       </Helmet>
       {/* ── Offline banner ───────────────────────────────────────────────── */}
       {backendWaking && (
-        <div style={{ background: "#1c1400", color: "#C9A227", padding: "8px 20px", fontSize: 12, fontWeight: 600, textAlign: "center", zIndex: 999, borderBottom: "1px solid rgba(201,162,39,0.2)", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-          <span style={{ width: 10, height: 10, borderRadius: "50%", border: "2px solid #C9A227", borderTopColor: "transparent", display: "inline-block", animation: "spin 0.8s linear infinite", flexShrink: 0 }} />
+        <div style={{ background: "#1c1400", color: "var(--vi-accent)", padding: "8px 20px", fontSize: 12, fontWeight: 600, textAlign: "center", zIndex: 999, borderBottom: "1px solid rgba(201,162,39,0.2)", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+          <span style={{ width: 10, height: 10, borderRadius: "50%", border: "2px solid var(--vi-accent)", borderTopColor: "transparent", display: "inline-block", animation: "spin 0.8s linear infinite", flexShrink: 0 }} />
           ⏳ {t("auth.serverStarting")} (prima connessione può richiedere 30s)
         </div>
       )}
@@ -968,49 +968,49 @@ function App() {
           <button
             onClick={() => { resetOnboarding(); setShowOnboarding(true); }}
             title="Riapri guida"
-            style={{ padding: "5px 10px", border: "1px solid rgba(201,162,39,0.25)", borderRadius: 8, background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "'Inter',Arial,sans-serif", transition: "all 0.2s" }}
-            onMouseEnter={e => { e.currentTarget.style.color = "#C9A227"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.5)"; }}
+            style={{ padding: "5px 10px", border: "1px solid rgba(201,162,39,0.25)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "var(--vi-font-sans)", transition: `all var(--vi-dur) var(--vi-ease)` }}
+            onMouseEnter={e => { e.currentTarget.style.color = "var(--vi-accent)"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.5)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.25)"; }}
           >📖 Guida</button>
           <button
             onClick={() => { resetTour(); setShowTour(true); }}
             title="Fai il tour guidato"
-            style={{ padding: "5px 10px", border: "1px solid rgba(30,58,95,0.5)", borderRadius: 8, background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "'Inter',Arial,sans-serif", transition: "all 0.2s" }}
+            style={{ padding: "5px 10px", border: "1px solid rgba(30,58,95,0.5)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "var(--vi-font-sans)", transition: `all var(--vi-dur) var(--vi-ease)` }}
             onMouseEnter={e => { e.currentTarget.style.color = "#60a5fa"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.4)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(30,58,95,0.5)"; }}
           >🗺 Tour</button>
           <button
             onClick={() => setShowCalculator(true)}
             title="Investment Calculator"
-            style={{ padding: "5px 10px", border: "1px solid rgba(96,165,250,0.25)", borderRadius: 8, background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "'Inter',Arial,sans-serif" }}
+            style={{ padding: "5px 10px", border: "1px solid rgba(96,165,250,0.25)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "var(--vi-font-sans)" }}
             onMouseEnter={e => { e.currentTarget.style.color = "#60a5fa"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.5)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.25)"; }}
           >🧮 Calc</button>
           <button
             onClick={() => navigate("/academy")}
             title="Wine Investment Academy"
-            style={{ padding: "5px 10px", border: "1px solid rgba(74,222,128,0.25)", borderRadius: 8, background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "'Inter',Arial,sans-serif" }}
-            onMouseEnter={e => { e.currentTarget.style.color = "#4ade80"; e.currentTarget.style.borderColor = "rgba(74,222,128,0.5)"; }}
+            style={{ padding: "5px 10px", border: "1px solid rgba(74,222,128,0.25)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "var(--vi-font-sans)" }}
+            onMouseEnter={e => { e.currentTarget.style.color = "var(--vi-positive)"; e.currentTarget.style.borderColor = "rgba(74,222,128,0.5)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(74,222,128,0.25)"; }}
           >🎓 Academy</button>
           <button
             onClick={() => navigate("/market-index")}
             title="VinoInvest Index"
-            style={{ padding: "5px 10px", border: "1px solid rgba(201,162,39,0.25)", borderRadius: 8, background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "'Inter',Arial,sans-serif" }}
-            onMouseEnter={e => { e.currentTarget.style.color = "#C9A227"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.5)"; }}
+            style={{ padding: "5px 10px", border: "1px solid rgba(201,162,39,0.25)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "var(--vi-font-sans)" }}
+            onMouseEnter={e => { e.currentTarget.style.color = "var(--vi-accent)"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.5)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.25)"; }}
           >📊 Index</button>
-          <a href="/scan" title="Scan wine label" aria-label="Scansiona etichetta vino" style={{ padding: "6px 10px", border: "1px solid rgba(30,41,59,0.7)", borderRadius: 8, background: "transparent", color: "#4a6a8a", fontSize: 11, cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center", fontWeight: 600 }}>Scan</a>
+          <a href="/scan" title="Scan wine label" aria-label="Scansiona etichetta vino" style={{ padding: "6px 10px", border: "1px solid var(--vi-border)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#4a6a8a", fontSize: 11, cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center", fontWeight: 600 }}>Scan</a>
           <CurrencySelector />
           <LangSelector />
           {userEmail && <span style={{ fontSize: 12, color: "#3a5a7a" }}>{userEmail}</span>}
           {isAdmin && (
-            <a href="/admin" style={{ fontSize: 10, color: "#C9A227", border: "1px solid rgba(201,162,39,0.5)", borderRadius: 4, padding: "2px 8px", textTransform: "uppercase", fontWeight: 800, letterSpacing: "0.08em", textDecoration: "none", background: "rgba(201,162,39,0.08)" }}>
+            <a href="/admin" style={{ fontSize: 10, color: "var(--vi-accent)", border: "1px solid rgba(201,162,39,0.5)", borderRadius: 4, padding: "2px 8px", textTransform: "uppercase", fontWeight: 800, letterSpacing: "0.08em", textDecoration: "none", background: "rgba(201,162,39,0.08)" }}>
               ADMIN
             </a>
           )}
           {accountType && !isAdmin && (
-            <span style={{ fontSize: 10, color: "#C9A227", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 4, padding: "2px 7px", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.08em" }}>
+            <span style={{ fontSize: 10, color: "var(--vi-accent)", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 4, padding: "2px 7px", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.08em" }}>
               {accountType}
             </span>
           )}
@@ -1029,9 +1029,9 @@ function App() {
             {showNotifDropdown && (
               <>
                 <div style={{ position: "fixed", inset: 0, zIndex: 299 }} onClick={() => setShowNotifDropdown(false)} />
-                <div style={{ position: "absolute", top: "calc(100% + 8px)", right: 0, zIndex: 300, width: 320, maxHeight: 400, overflowY: "auto", background: "#0b1220", border: "1px solid rgba(30,41,59,0.9)", borderRadius: 14, boxShadow: "0 16px 48px rgba(0,0,0,0.6)", padding: "12px 0" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px 10px", borderBottom: "1px solid rgba(30,41,59,0.5)" }}>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: "#e2e8f0" }}>Notifiche</span>
+                <div style={{ position: "absolute", top: "calc(100% + 8px)", right: 0, zIndex: 300, width: 320, maxHeight: 400, overflowY: "auto", background: "var(--vi-bg)", border: "1px solid var(--vi-border)", borderRadius: "var(--vi-radius-md)", boxShadow: "0 16px 48px rgba(0,0,0,0.6)", padding: "12px 0" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px 10px", borderBottom: "1px solid var(--vi-border)" }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: "var(--vi-text)" }}>Notifiche</span>
                     {unreadCount > 0 && (
                       <button onClick={() => { markAllRead(); }} style={{ background: "none", border: "none", color: "#64748b", fontSize: 11, cursor: "pointer", padding: 0 }}>Segna tutte come lette</button>
                     )}
@@ -1045,7 +1045,7 @@ function App() {
                     notifications.slice(0, 8).map(n => (
                       <div
                         key={n.id}
-                        style={{ padding: "10px 16px", display: "flex", gap: 10, alignItems: "flex-start", background: n.read ? "transparent" : "rgba(12,26,46,0.6)", borderBottom: "1px solid rgba(30,41,59,0.3)", cursor: "pointer" }}
+                        style={{ padding: "10px 16px", display: "flex", gap: 10, alignItems: "flex-start", background: n.read ? "transparent" : "rgba(12,26,46,0.6)", borderBottom: "1px solid var(--vi-border)", cursor: "pointer" }}
                         onClick={async () => {
                           if (!n.read) {
                             try { await fetch(`${API}/api/notifications/${n.id}/read`, { method: "PUT" }); } catch {}
@@ -1055,7 +1055,7 @@ function App() {
                       >
                         {!n.read && <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#60a5fa", flexShrink: 0, marginTop: 4 }} />}
                         <div style={{ flex: 1 }}>
-                          <div style={{ fontSize: 12, color: "#e2e8f0", lineHeight: 1.4 }}>{n.message}</div>
+                          <div style={{ fontSize: 12, color: "var(--vi-text)", lineHeight: 1.4 }}>{n.message}</div>
                           <div style={{ fontSize: 10, color: "#3a5a7a", marginTop: 3 }}>{new Date(n.created_at).toLocaleString("it-IT")}</div>
                         </div>
                       </div>
@@ -1070,9 +1070,9 @@ function App() {
           </div>
           <button
             onClick={async () => { await supabase.auth.signOut(); }}
-            style={{ padding: "6px 14px", border: "1px solid rgba(30,41,59,0.7)", borderRadius: 8, background: "transparent", color: "#4a6a8a", fontSize: 12, cursor: "pointer", fontFamily: "'Inter', Arial, sans-serif", transition: "border-color 0.2s, color 0.2s" }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(201,162,39,0.4)"; e.currentTarget.style.color = "#C9A227"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(30,41,59,0.7)"; e.currentTarget.style.color = "#4a6a8a"; }}
+            style={{ padding: "6px 14px", border: "1px solid var(--vi-border)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#4a6a8a", fontSize: 12, cursor: "pointer", fontFamily: "var(--vi-font-sans)", transition: `border-color var(--vi-dur) var(--vi-ease), color var(--vi-dur) var(--vi-ease)` }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(201,162,39,0.4)"; e.currentTarget.style.color = "var(--vi-accent)"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--vi-border)"; e.currentTarget.style.color = "#4a6a8a"; }}
           >{t("auth.signOut")}</button>
         </div>
       </header>
@@ -1168,7 +1168,7 @@ function App() {
                     </div>
                     <button
                       onClick={loadTrending}
-                      style={{ fontSize: 11, color: "#C9A227", background: "none", border: "1px solid rgba(201,162,39,0.25)", borderRadius: 6, padding: "4px 10px", cursor: "pointer", fontFamily: "'Inter', Arial, sans-serif" }}
+                      style={{ fontSize: 11, color: "var(--vi-accent)", background: "none", border: "1px solid rgba(201,162,39,0.25)", borderRadius: "var(--vi-radius-sm)", padding: "4px 10px", cursor: "pointer", fontFamily: "var(--vi-font-sans)" }}
                     >Refresh</button>
                   </div>
                   <div className="trending-list">

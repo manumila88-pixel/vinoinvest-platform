@@ -16,16 +16,17 @@ export default function ThemeToggle() {
       onClick={toggle}
       title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
       aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+      className="vi-interactive"
       style={{
         background: "rgba(255,255,255,0.06)",
         border: "1px solid rgba(255,255,255,0.1)",
-        borderRadius: 8,
+        borderRadius: "var(--vi-radius-sm)",
         padding: "6px 10px",
         cursor: "pointer",
         fontSize: 16,
         lineHeight: 1,
-        color: "var(--text-primary, #e2e8f0)",
-        transition: "background 0.2s",
+        color: "var(--vi-text)",
+        transition: "background var(--vi-dur) var(--vi-ease)",
         display: "flex",
         alignItems: "center",
         gap: 4,

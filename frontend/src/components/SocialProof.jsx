@@ -47,10 +47,10 @@ export function StatsCounter() {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center", padding: "12px 0" }}>
       {facts.map(f => (
-        <div key={f.label} style={{ display: "flex", alignItems: "center", gap: 6, background: "rgba(11,18,32,0.6)", border: "1px solid rgba(30,41,59,0.4)", borderRadius: 10, padding: "8px 14px" }}>
+        <div key={f.label} className="vi-card vi-reveal" style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 14px" }}>
           <span style={{ fontSize: 16 }}>{f.icon}</span>
           <div>
-            <div style={{ fontSize: 14, fontWeight: 800, color: "#C9A227" }}>
+            <div style={{ fontSize: 14, fontWeight: 800, color: "var(--vi-accent)" }}>
               <AnimatedCount target={f.value} suffix={f.suffix} />
             </div>
             <div style={{ fontSize: 10, color: "#64748b" }}>{f.label}</div>
@@ -72,8 +72,8 @@ export function WatcherCount({ wineId }) {
   }
 
   return (
-    <span style={{ fontSize: 11, color: "#94a3b8", display: "inline-flex", alignItems: "center", gap: 4 }}>
-      <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#4ade80", display: "inline-block", animation: "pulse 2s ease-in-out infinite" }} />
+    <span style={{ fontSize: 11, color: "var(--vi-text-dim)", display: "inline-flex", alignItems: "center", gap: 4 }}>
+      <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--vi-positive)", display: "inline-block", animation: "pulse 2s ease-in-out infinite" }} />
       {count} watching now
     </span>
   );
@@ -101,10 +101,10 @@ export function ActivityTicker({ holdings = [] }) {
   const item = items[idx];
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 14px", background: "rgba(11,18,32,0.5)", borderRadius: 8, fontSize: 12, color: "#94a3b8", overflow: "hidden" }}>
-      <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#4ade80", flexShrink: 0, animation: "pulse 2s infinite" }} />
+    <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 14px", background: "var(--vi-surface)", borderRadius: "var(--vi-radius-sm)", fontSize: 12, color: "var(--vi-text-dim)", overflow: "hidden" }}>
+      <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--vi-positive)", flexShrink: 0, animation: "pulse 2s infinite" }} />
       <span style={{ animation: "fadeSlide 0.4s ease" }} key={idx}>
-        Someone <span style={{ color: "#C9A227" }}>{item.action}</span> <strong style={{ color: "#e2e8f0" }}>{item.wine}</strong> — {item.ago}
+        Someone <span style={{ color: "var(--vi-accent)" }}>{item.action}</span> <strong style={{ color: "var(--vi-text)" }}>{item.wine}</strong> — {item.ago}
       </span>
       <style>{`@keyframes fadeSlide { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } } @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }`}</style>
     </div>

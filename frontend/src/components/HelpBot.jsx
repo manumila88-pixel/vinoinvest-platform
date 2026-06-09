@@ -45,10 +45,10 @@ function FAQItem({ item, defaultOpen = false, b2bMode = false }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
     <div style={{
-      border: `1px solid ${b2bMode ? "rgba(59,130,246,0.2)" : "rgba(30,41,59,0.6)"}`,
-      borderRadius: 12,
+      border: `1px solid ${b2bMode ? "rgba(59,130,246,0.2)" : "var(--vi-border)"}`,
+      borderRadius: "var(--vi-radius-md)",
       overflow: "hidden",
-      transition: "border-color 0.2s",
+      transition: `border-color var(--vi-dur) var(--vi-ease)`,
       ...(open ? { borderColor: b2bMode ? "rgba(59,130,246,0.5)" : "rgba(201,162,39,0.3)" } : {}),
     }}>
       <button
@@ -58,16 +58,16 @@ function FAQItem({ item, defaultOpen = false, b2bMode = false }) {
           alignItems: "center", gap: 10, padding: "12px 16px",
           background: open
             ? (b2bMode ? "rgba(59,130,246,0.08)" : "rgba(201,162,39,0.05)")
-            : (b2bMode ? "rgba(8,15,30,0.8)" : "rgba(11,18,32,0.6)"),
-          border: "none", cursor: "pointer", color: "#e2e8f0",
+            : (b2bMode ? "rgba(8,15,30,0.8)" : "var(--vi-surface)"),
+          border: "none", cursor: "pointer", color: "var(--vi-text)",
           fontSize: 13, fontWeight: open ? 600 : 500, lineHeight: 1.4,
-          transition: "background 0.2s",
+          transition: `background var(--vi-dur) var(--vi-ease)`,
         }}
       >
         <span style={{ flex: 1 }}>{item.q}</span>
         <span style={{
           fontSize: 18,
-          color: b2bMode ? "#60a5fa" : "#C9A227",
+          color: b2bMode ? "#60a5fa" : "var(--vi-accent)",
           transition: "transform 0.25s",
           transform: open ? "rotate(180deg)" : "rotate(0deg)",
           flexShrink: 0,
@@ -76,9 +76,9 @@ function FAQItem({ item, defaultOpen = false, b2bMode = false }) {
       {open && (
         <div style={{
           padding: "14px 16px",
-          background: b2bMode ? "rgba(4,8,20,0.9)" : "rgba(6,13,26,0.8)",
-          fontSize: 13, color: "#94a3b8", lineHeight: 1.7,
-          borderTop: `1px solid ${b2bMode ? "rgba(59,130,246,0.15)" : "rgba(30,41,59,0.4)"}`,
+          background: "var(--vi-bg)",
+          fontSize: 13, color: "var(--vi-text-dim)", lineHeight: 1.7,
+          borderTop: `1px solid ${b2bMode ? "rgba(59,130,246,0.15)" : "var(--vi-border)"}`,
           animation: "helpExpand 0.2s ease-out",
         }}>
           {item.a}
@@ -137,10 +137,7 @@ export default function HelpBot({ onAskAI }) {
     setOpen(false);
   }
 
-  const accentColor = b2bMode ? "#60a5fa" : "#C9A227";
-  const bgGradient = b2bMode
-    ? "linear-gradient(160deg,#060d1e 0%,#040810 100%)"
-    : "linear-gradient(160deg,#0c1524 0%,#080f1c 100%)";
+  const accentColor = b2bMode ? "#60a5fa" : "var(--vi-accent)";
   const borderColor = b2bMode ? "rgba(59,130,246,0.25)" : "rgba(201,162,39,0.2)";
 
   return (
@@ -149,18 +146,19 @@ export default function HelpBot({ onAskAI }) {
         onClick={() => setOpen(o => !o)}
         title="Centro assistenza FAQ"
         aria-label={open ? "Close help" : "Open help"}
+        className="vi-interactive"
         style={{
           position: "fixed", bottom: 96, right: 28, zIndex: 9000,
           width: 44, height: 44, borderRadius: "50%",
           background: open
             ? "linear-gradient(135deg,#1e3a5f,#0c2a4a)"
-            : "rgba(11,18,32,0.92)",
+            : "var(--vi-bg)",
           border: `1.5px solid ${open ? "rgba(201,162,39,0.6)" : "rgba(201,162,39,0.35)"}`,
           cursor: "pointer", fontSize: 18, fontWeight: 800,
           display: "flex", alignItems: "center", justifyContent: "center",
-          color: "#C9A227",
+          color: "var(--vi-accent)",
           boxShadow: "0 4px 16px rgba(0,0,0,0.5)",
-          transition: "all 0.2s",
+          transition: `all var(--vi-dur) var(--vi-ease)`,
         }}
         onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(201,162,39,0.7)"; e.currentTarget.style.transform = "scale(1.1)"; }}
         onMouseLeave={e => { e.currentTarget.style.borderColor = open ? "rgba(201,162,39,0.6)" : "rgba(201,162,39,0.35)"; e.currentTarget.style.transform = "scale(1)"; }}
@@ -171,6 +169,7 @@ export default function HelpBot({ onAskAI }) {
       {open && (
         <div
           ref={panelRef}
+          className="vi-card"
           style={{
             position: "fixed",
             bottom: 152,
@@ -178,9 +177,9 @@ export default function HelpBot({ onAskAI }) {
             zIndex: 9001,
             width: "min(420px, calc(100vw - 32px))",
             maxHeight: "min(640px, calc(100vh - 180px))",
-            background: bgGradient,
-            border: `1px solid ${borderColor}`,
-            borderRadius: 18,
+            background: "var(--vi-bg)",
+            borderColor,
+            borderRadius: "var(--vi-radius-lg)",
             boxShadow: `0 20px 60px rgba(0,0,0,0.7), 0 0 0 1px ${b2bMode ? "rgba(59,130,246,0.06)" : "rgba(201,162,39,0.08)"}`,
             display: "flex", flexDirection: "column",
             overflow: "hidden",
@@ -188,11 +187,11 @@ export default function HelpBot({ onAskAI }) {
           }}
         >
           {/* Header */}
-          <div style={{ padding: "16px 18px 12px", borderBottom: `1px solid ${b2bMode ? "rgba(59,130,246,0.15)" : "rgba(30,41,59,0.5)"}`, flexShrink: 0 }}>
+          <div style={{ padding: "16px 18px 12px", borderBottom: `1px solid ${b2bMode ? "rgba(59,130,246,0.15)" : "var(--vi-border)"}`, flexShrink: 0 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
               <span style={{ fontSize: 20 }}>{b2bMode ? "🏦" : "💬"}</span>
               <div style={{ flex: 1 }}>
-                <div style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: 15, fontWeight: 700, color: "#e2e8f0" }}>
+                <div style={{ fontFamily: "var(--vi-font-display)", fontSize: 15, fontWeight: 700, color: "var(--vi-text)" }}>
                   {b2bMode ? "Assistenza Professionale" : "Centro Assistenza"}
                 </div>
                 <div style={{ fontSize: 11, color: "#3a5a7a", marginTop: 1 }}>
@@ -202,7 +201,7 @@ export default function HelpBot({ onAskAI }) {
             </div>
 
             {/* Mode toggle */}
-            <div style={{ display: "flex", gap: 4, marginBottom: 12, background: "rgba(11,18,32,0.6)", borderRadius: 10, padding: 3 }}>
+            <div style={{ display: "flex", gap: 4, marginBottom: 12, background: "var(--vi-bg)", borderRadius: "var(--vi-radius-sm)", padding: 3 }}>
               {[
                 { key: "b2c", label: "Consumer", icon: "👤" },
                 { key: "b2b", label: "B2B / Pro", icon: "🏦" },
@@ -211,16 +210,16 @@ export default function HelpBot({ onAskAI }) {
                   key={m.key}
                   onClick={() => switchMode(m.key)}
                   style={{
-                    flex: 1, padding: "6px 10px", borderRadius: 8, cursor: "pointer",
+                    flex: 1, padding: "6px 10px", borderRadius: "var(--vi-radius-sm)", cursor: "pointer",
                     fontSize: 11, fontWeight: 700,
                     border: "none",
                     background: mode === m.key
                       ? (m.key === "b2b" ? "rgba(59,130,246,0.2)" : "rgba(201,162,39,0.15)")
                       : "transparent",
                     color: mode === m.key
-                      ? (m.key === "b2b" ? "#60a5fa" : "#C9A227")
+                      ? (m.key === "b2b" ? "#60a5fa" : "var(--vi-accent)")
                       : "#4a6a8a",
-                    transition: "all 0.15s",
+                    transition: `all var(--vi-dur-fast) var(--vi-ease)`,
                   }}
                 >
                   {m.icon} {m.label}
@@ -239,15 +238,15 @@ export default function HelpBot({ onAskAI }) {
                 placeholder={b2bMode ? "Cerca nelle FAQ B2B..." : "Cerca nelle FAQ..."}
                 style={{
                   width: "100%", padding: "9px 12px 9px 34px",
-                  background: "rgba(11,18,32,0.8)",
-                  border: `1px solid ${b2bMode ? "rgba(59,130,246,0.2)" : "rgba(30,41,59,0.7)"}`,
-                  borderRadius: 10, color: "#e2e8f0", fontSize: 13,
-                  outline: "none", fontFamily: "'Inter',Arial,sans-serif",
+                  background: "var(--vi-surface)",
+                  border: `1px solid ${b2bMode ? "rgba(59,130,246,0.2)" : "var(--vi-border)"}`,
+                  borderRadius: "var(--vi-radius-sm)", color: "var(--vi-text)", fontSize: 13,
+                  outline: "none", fontFamily: "var(--vi-font-sans)",
                   boxSizing: "border-box",
-                  transition: "border-color 0.2s",
+                  transition: `border-color var(--vi-dur) var(--vi-ease)`,
                 }}
                 onFocus={e => e.currentTarget.style.borderColor = b2bMode ? "rgba(59,130,246,0.6)" : "rgba(201,162,39,0.5)"}
-                onBlur={e => e.currentTarget.style.borderColor = b2bMode ? "rgba(59,130,246,0.2)" : "rgba(30,41,59,0.7)"}
+                onBlur={e => e.currentTarget.style.borderColor = b2bMode ? "rgba(59,130,246,0.2)" : "var(--vi-border)"}
               />
               {query && (
                 <button onClick={() => setQuery("")} aria-label="Clear search" style={{
@@ -263,7 +262,7 @@ export default function HelpBot({ onAskAI }) {
             <div style={{
               display: "flex", gap: 5, padding: "10px 16px",
               overflowX: "auto", flexShrink: 0,
-              borderBottom: `1px solid ${b2bMode ? "rgba(59,130,246,0.1)" : "rgba(30,41,59,0.4)"}`,
+              borderBottom: `1px solid ${b2bMode ? "rgba(59,130,246,0.1)" : "var(--vi-border)"}`,
               scrollbarWidth: "none",
             }}>
               {catList.map(c => (
@@ -271,16 +270,16 @@ export default function HelpBot({ onAskAI }) {
                   key={c.id}
                   onClick={() => setActiveCat(c.id)}
                   style={{
-                    whiteSpace: "nowrap", padding: "5px 10px", borderRadius: 8, cursor: "pointer",
+                    whiteSpace: "nowrap", padding: "5px 10px", borderRadius: "var(--vi-radius-sm)", cursor: "pointer",
                     fontSize: 11, fontWeight: 600,
                     border: activeCat === c.id
                       ? `1px solid ${b2bMode ? "rgba(59,130,246,0.5)" : "rgba(201,162,39,0.5)"}`
-                      : "1px solid rgba(30,41,59,0.5)",
+                      : "1px solid var(--vi-border)",
                     background: activeCat === c.id
                       ? (b2bMode ? "rgba(59,130,246,0.12)" : "rgba(201,162,39,0.12)")
-                      : "rgba(11,18,32,0.5)",
+                      : "var(--vi-surface)",
                     color: activeCat === c.id ? accentColor : "#4a6a8a",
-                    transition: "all 0.15s",
+                    transition: `all var(--vi-dur-fast) var(--vi-ease)`,
                   }}
                 >
                   {c.icon} {c.label}
@@ -303,14 +302,14 @@ export default function HelpBot({ onAskAI }) {
                       key={s}
                       onClick={() => setQuery(s)}
                       style={{
-                        padding: "5px 10px", borderRadius: 8,
-                        background: b2bMode ? "rgba(8,15,30,0.8)" : "rgba(11,18,32,0.8)",
-                        border: `1px solid ${b2bMode ? "rgba(59,130,246,0.2)" : "rgba(30,58,95,0.5)"}`,
+                        padding: "5px 10px", borderRadius: "var(--vi-radius-sm)",
+                        background: "var(--vi-surface)",
+                        border: `1px solid ${b2bMode ? "rgba(59,130,246,0.2)" : "var(--vi-border)"}`,
                         color: accentColor, fontSize: 11, cursor: "pointer",
-                        transition: "all 0.15s",
+                        transition: `all var(--vi-dur-fast) var(--vi-ease)`,
                       }}
                       onMouseEnter={e => { e.currentTarget.style.background = b2bMode ? "rgba(59,130,246,0.1)" : "rgba(30,58,95,0.4)"; }}
-                      onMouseLeave={e => { e.currentTarget.style.background = b2bMode ? "rgba(8,15,30,0.8)" : "rgba(11,18,32,0.8)"; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "var(--vi-surface)"; }}
                     >
                       {s}
                     </button>
@@ -340,13 +339,8 @@ export default function HelpBot({ onAskAI }) {
                 {!b2bMode && (
                   <button
                     onClick={handleAskAI}
-                    style={{
-                      padding: "10px 20px", borderRadius: 10,
-                      background: "linear-gradient(135deg,#9b1c4a,#C9A227)",
-                      border: "none", color: "#fff", cursor: "pointer",
-                      fontSize: 13, fontWeight: 700,
-                      boxShadow: "0 4px 16px rgba(201,162,39,0.3)",
-                    }}
+                    className="vi-btn"
+                    style={{ padding: "10px 20px", fontSize: 13 }}
                   >
                     🤖 Chiedi all'AI Advisor →
                   </button>
@@ -360,7 +354,7 @@ export default function HelpBot({ onAskAI }) {
                 marginTop: 14, padding: "16px",
                 background: "rgba(59,130,246,0.06)",
                 border: "1px solid rgba(59,130,246,0.2)",
-                borderRadius: 12,
+                borderRadius: "var(--vi-radius-md)",
               }}>
                 <div style={{ fontSize: 12, fontWeight: 700, color: "#93c5fd", marginBottom: 6 }}>
                   Hai bisogno di supporto dedicato?
@@ -372,12 +366,12 @@ export default function HelpBot({ onAskAI }) {
                   href="mailto:sales@vinoinvest.com?subject=Richiesta%20supporto%20B2B"
                   style={{
                     display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                    padding: "9px 16px", borderRadius: 10,
+                    padding: "9px 16px", borderRadius: "var(--vi-radius-sm)",
                     background: "linear-gradient(135deg,#1d4ed8,#2563eb)",
                     border: "none", color: "#fff", cursor: "pointer",
                     fontSize: 12, fontWeight: 700, textDecoration: "none",
                     boxShadow: "0 4px 16px rgba(37,99,235,0.3)",
-                    transition: "transform 0.2s",
+                    transition: `transform var(--vi-dur) var(--vi-ease)`,
                   }}
                   onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; }}
                   onMouseLeave={e => { e.currentTarget.style.transform = ""; }}
@@ -398,18 +392,18 @@ export default function HelpBot({ onAskAI }) {
 
             {/* B2C: Ask AI shortcut */}
             {!b2bMode && query.trim() && results.length > 0 && (
-              <div style={{ marginTop: 14, paddingTop: 12, borderTop: "1px solid rgba(30,41,59,0.4)" }}>
+              <div style={{ marginTop: 14, paddingTop: 12, borderTop: "1px solid var(--vi-border)" }}>
                 <button
                   onClick={handleAskAI}
                   style={{
-                    width: "100%", padding: "10px 16px", borderRadius: 10,
-                    background: "rgba(11,18,32,0.8)", border: "1px solid rgba(30,58,95,0.5)",
+                    width: "100%", padding: "10px 16px", borderRadius: "var(--vi-radius-sm)",
+                    background: "var(--vi-surface)", border: "1px solid rgba(30,58,95,0.5)",
                     color: "#60a5fa", cursor: "pointer", fontSize: 12,
                     display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                    transition: "all 0.2s",
+                    transition: `all var(--vi-dur) var(--vi-ease)`,
                   }}
                   onMouseEnter={e => { e.currentTarget.style.background = "rgba(30,58,95,0.3)"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.5)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = "rgba(11,18,32,0.8)"; e.currentTarget.style.borderColor = "rgba(30,58,95,0.5)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "var(--vi-surface)"; e.currentTarget.style.borderColor = "rgba(30,58,95,0.5)"; }}
                 >
                   🤖 <span>Non trovi risposta? Chiedi all'AI Advisor</span> →
                 </button>

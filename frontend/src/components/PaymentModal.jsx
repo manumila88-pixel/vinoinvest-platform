@@ -111,7 +111,7 @@ export default function PaymentModal({ plan, userEmail, onClose }) {
   }[tab];
 
   const btnColor = {
-    card: "#c9a227",
+    card: "var(--vi-accent)",
     paypal: "#0070ba",
     crypto: "#1652f0",
   }[tab];
@@ -123,40 +123,41 @@ export default function PaymentModal({ plan, userEmail, onClose }) {
     >
       <div
         onClick={e => e.stopPropagation()}
-        style={{ background: "#0b1220", border: "1px solid #1f2937", borderRadius: 24, width: "min(94vw,480px)", overflow: "hidden", position: "relative" }}
+        className="vi-card"
+        style={{ width: "min(94vw,480px)", overflow: "hidden", position: "relative", background: "var(--vi-bg)", borderRadius: "var(--vi-radius-lg)" }}
       >
         {/* Close */}
         <button
           onClick={onClose}
           aria-label="Close"
-          style={{ position: "absolute", top: 14, right: 14, width: 32, height: 32, borderRadius: "50%", background: "rgba(30,41,59,0.9)", border: "1px solid #334155", color: "#94a3b8", fontSize: 20, lineHeight: "32px", textAlign: "center", cursor: "pointer" }}
+          style={{ position: "absolute", top: 14, right: 14, width: 32, height: 32, borderRadius: "50%", background: "var(--vi-bg-elev)", border: "1px solid #334155", color: "var(--vi-text-dim)", fontSize: 20, lineHeight: "32px", textAlign: "center", cursor: "pointer" }}
         >
           ×
         </button>
 
         {/* Header */}
-        <div style={{ padding: "28px 28px 20px", borderBottom: "1px solid #1e293b" }}>
+        <div style={{ padding: "28px 28px 20px", borderBottom: "1px solid var(--vi-border)" }}>
           <div style={{ fontSize: 11, color: "#64748b", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 6 }}>Piano selezionato</div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
               <span style={{ fontWeight: 800, fontSize: 20 }}>{plan.name}</span>
               <span style={{ marginLeft: 10, fontSize: 12, color: "#64748b" }}>{plan.audience}</span>
             </div>
-            <span style={{ fontWeight: 800, fontSize: 24, color: "#c9a227" }}>€{plan.price}<span style={{ fontSize: 13, color: "#64748b", fontWeight: 400 }}>/mese</span></span>
+            <span style={{ fontWeight: 800, fontSize: 24, color: "var(--vi-accent)" }}>€{plan.price}<span style={{ fontSize: 13, color: "#64748b", fontWeight: 400 }}>/mese</span></span>
           </div>
         </div>
 
         {/* Tabs */}
-        <div style={{ display: "flex", borderBottom: "1px solid #1e293b" }}>
+        <div style={{ display: "flex", borderBottom: "1px solid var(--vi-border)" }}>
           {TABS.map(t => (
             <button
               key={t.id}
               onClick={() => { setTab(t.id); setError(""); }}
               style={{
                 flex: 1, padding: "13px 0", border: "none", background: "transparent", cursor: "pointer", fontSize: 13, fontWeight: 600,
-                color: tab === t.id ? "#c9a227" : "#64748b",
-                borderBottom: tab === t.id ? "2px solid #c9a227" : "2px solid transparent",
-                transition: "0.18s",
+                color: tab === t.id ? "var(--vi-accent)" : "#64748b",
+                borderBottom: tab === t.id ? "2px solid var(--vi-accent)" : "2px solid transparent",
+                transition: `var(--vi-dur-fast) var(--vi-ease)`,
               }}
             >
               {t.label}
@@ -167,33 +168,33 @@ export default function PaymentModal({ plan, userEmail, onClose }) {
         {/* Tab content */}
         <div style={{ padding: "24px 28px 28px" }}>
           {tab === "card" && (
-            <div style={{ color: "#94a3b8", fontSize: 13, lineHeight: 1.7, marginBottom: 20 }}>
-              Sarai reindirizzato alla pagina di pagamento sicura di <strong style={{ color: "white" }}>Stripe</strong>.<br />
+            <div style={{ color: "var(--vi-text-dim)", fontSize: 13, lineHeight: 1.7, marginBottom: 20 }}>
+              Sarai reindirizzato alla pagina di pagamento sicura di <strong style={{ color: "var(--vi-text)" }}>Stripe</strong>.<br />
               Accettiamo Visa, Mastercard, American Express e altri metodi.
               <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
                 {["VISA", "MC", "AMEX", "SEPA"].map(c => (
-                  <span key={c} style={{ padding: "3px 8px", background: "#1e293b", borderRadius: 6, fontSize: 10, fontWeight: 700, color: "#94a3b8", letterSpacing: "0.05em" }}>{c}</span>
+                  <span key={c} style={{ padding: "3px 8px", background: "var(--vi-bg-elev)", borderRadius: "var(--vi-radius-sm)", fontSize: 10, fontWeight: 700, color: "var(--vi-text-dim)", letterSpacing: "0.05em" }}>{c}</span>
                 ))}
               </div>
             </div>
           )}
 
           {tab === "paypal" && (
-            <div style={{ color: "#94a3b8", fontSize: 13, lineHeight: 1.7, marginBottom: 20 }}>
+            <div style={{ color: "var(--vi-text-dim)", fontSize: 13, lineHeight: 1.7, marginBottom: 20 }}>
               Sarai reindirizzato al checkout sicuro di <strong style={{ color: "#0070ba" }}>PayPal</strong>.<br />
               Puoi pagare con il saldo PayPal o con la tua carta tramite PayPal.
             </div>
           )}
 
           {tab === "crypto" && (
-            <div style={{ color: "#94a3b8", fontSize: 13, lineHeight: 1.7, marginBottom: 20 }}>
-              Paga con <strong style={{ color: "#f7931a" }}>Bitcoin, Ethereum, USDT, USDC</strong> o altra crypto tramite <strong style={{ color: "white" }}>NOWPayments</strong>.<br />
+            <div style={{ color: "var(--vi-text-dim)", fontSize: 13, lineHeight: 1.7, marginBottom: 20 }}>
+              Paga con <strong style={{ color: "#f7931a" }}>Bitcoin, Ethereum, USDT, USDC</strong> o altra crypto tramite <strong style={{ color: "var(--vi-text)" }}>NOWPayments</strong>.<br />
               Sarai reindirizzato alla pagina di pagamento sicura.
             </div>
           )}
 
           {error && (
-            <div style={{ background: "#1c0707", border: "1px solid #991b1b", borderRadius: 8, padding: "10px 14px", marginBottom: 16, color: "#f87171", fontSize: 13 }}>
+            <div style={{ background: "#1c0707", border: "1px solid #991b1b", borderRadius: "var(--vi-radius-sm)", padding: "10px 14px", marginBottom: 16, color: "var(--vi-negative)", fontSize: 13 }}>
               {error}
             </div>
           )}
@@ -202,10 +203,10 @@ export default function PaymentModal({ plan, userEmail, onClose }) {
             onClick={handlePrimary}
             disabled={loading}
             style={{
-              width: "100%", padding: "14px", borderRadius: 12, border: "none", cursor: loading ? "not-allowed" : "pointer",
+              width: "100%", padding: "14px", borderRadius: "var(--vi-radius-md)", border: "none", cursor: loading ? "not-allowed" : "pointer",
               background: loading ? "#334155" : btnColor,
-              color: tab === "card" ? "#000" : "white",
-              fontWeight: 700, fontSize: 14, transition: "0.2s",
+              color: tab === "card" ? "var(--vi-bg)" : "white",
+              fontWeight: 700, fontSize: 14, transition: `var(--vi-dur) var(--vi-ease)`,
               opacity: loading ? 0.7 : 1,
             }}
           >

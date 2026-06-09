@@ -20,17 +20,17 @@ export default class ErrorBoundary extends Component {
         <div style={{
           padding: "24px 32px",
           margin: "16px 0",
-          background: "#0b1220",
-          border: "1px solid #ef444433",
-          borderRadius: 14,
-          color: "#f87171",
+          background: "var(--vi-bg)",
+          border: "1px solid rgba(248,113,113,0.2)",
+          borderRadius: "var(--vi-radius-md)",
+          color: "var(--vi-negative)",
           fontSize: 13,
         }}>
           <div style={{ fontWeight: 700, marginBottom: 6 }}>Qualcosa è andato storto</div>
-          <div style={{ color: "#64748b", fontSize: 12 }}>{this.state.error?.message}</div>
+          <div style={{ color: "var(--vi-text-dim)", fontSize: 12 }}>{this.state.error?.message}</div>
           <button
             onClick={() => this.setState({ hasError: false, error: null })}
-            style={{ marginTop: 12, padding: "6px 16px", background: "#1e293b", border: "none", borderRadius: 8, color: "#94a3b8", cursor: "pointer", fontSize: 12 }}
+            style={{ marginTop: 12, padding: "6px 16px", background: "var(--vi-bg-elev)", border: "none", borderRadius: "var(--vi-radius-sm)", color: "var(--vi-text-dim)", cursor: "pointer", fontSize: 12 }}
           >Riprova</button>
         </div>
       );
