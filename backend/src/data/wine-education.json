@@ -1,0 +1,673 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-06-09",
+  "description": "Educational content for wine authentication and investment knowledge. No market data or price estimates.",
+
+  "modules": [
+
+    {
+      "id": "authenticity",
+      "slug": "autentico-vs-falso",
+      "title": "Riconoscere un vino autentico vs contraffatto",
+      "titleEn": "Authentic vs Counterfeit Wine",
+      "difficulty": "intermedio",
+      "estimatedMinutes": 12,
+      "summary": "Ogni anno migliaia di bottiglie contraffatte entrano nel mercato. Prima di acquistare un vino pregiato, verifica sempre questi 5 elementi fisici.",
+      "topics": [
+
+        {
+          "id": "label",
+          "title": "Etichetta",
+          "icon": "🏷️",
+          "description": "L'etichetta è il primo punto di controllo. Le etichette originali dei grandi châteaux e produttori hanno caratteristiche precise che le contraffazioni raramente replicano perfettamente.",
+          "checklist": [
+            { "id": "lbl-1", "text": "La carta è spessa e leggermente ruvida al tatto, non patinata o plastificata", "weight": "critical" },
+            { "id": "lbl-2", "text": "I colori sono uniformi, senza sfumature irregolari o bande di stampa", "weight": "high" },
+            { "id": "lbl-3", "text": "Il testo non presenta aloni, bavature o caratteri sfocati", "weight": "critical" },
+            { "id": "lbl-4", "text": "L'adesione alla bottiglia è piatta e senza bolle d'aria o angoli sollevati", "weight": "medium" },
+            { "id": "lbl-5", "text": "I loghi e i caratteri tipografici corrispondono al millimetro alle immagini ufficiali del produttore", "weight": "critical" },
+            { "id": "lbl-6", "text": "Il numero di lotto e la data di imbottigliamento sono presenti e leggibili", "weight": "high" },
+            { "id": "lbl-7", "text": "La retroetichetta (se presente) riporta l'indirizzo del produttore, il numero di bottiglie e il codice a barre corrispondente", "weight": "high" }
+          ],
+          "redFlags": [
+            "Carta eccessivamente bianca e uniforme (segnale di stampa moderna)",
+            "Adesivo trasparente visibile ai bordi",
+            "Testo in un carattere tipografico leggermente diverso dal solito",
+            "Anno di vendemmia non allineato con le caratteristiche fisiche del vino (colore, sedimento)",
+            "Etichetta staccata o rifissata",
+            "Numeri di serie non verificabili sul sito del produttore"
+          ],
+          "tips": [
+            "Confronta sempre l'etichetta con foto ad alta risoluzione sul sito ufficiale del produttore.",
+            "Per i Bordeaux, i Grand Cru Classé aggiornano periodicamente l'etichetta: verifica la versione corretta per ogni annata.",
+            "Châteaux come Pétrus e DRC usano carta di qualità pregiata con texture distinguibili."
+          ]
+        },
+
+        {
+          "id": "capsule",
+          "title": "Capsula",
+          "icon": "🍾",
+          "description": "La capsula (o muselet per gli spumanti) protegge il tappo ed è uno dei punti più difficili da falsificare perfettamente. I dettagli rivelatori sono spesso qui.",
+          "checklist": [
+            { "id": "cap-1", "text": "La capsula è in stagno vero (pesante, morbido) o materiale dichiarato dal produttore, non plastica sottile", "weight": "high" },
+            { "id": "cap-2", "text": "Il punzone o la goffratura sul bordo superiore è nitida e profonda", "weight": "high" },
+            { "id": "cap-3", "text": "Non ci sono rotture, graffi o segni di rimozione e riapplicazione", "weight": "critical" },
+            { "id": "cap-4", "text": "Il sigillo fiscale (se previsto dalla legge del paese di importazione) è intatto e corrispondente all'annata", "weight": "high" },
+            { "id": "cap-5", "text": "Il colore è uniforme; le capsule metalliche dei grandi vini non mostrano ossidazione irregolare", "weight": "medium" },
+            { "id": "cap-6", "text": "Per i vini cerati, la ceralacca è applicata in modo uniforme senza bolle o colature irregolari", "weight": "medium" }
+          ],
+          "redFlags": [
+            "Capsula che gira liberamente (indica che il tappo è stato aperto e richiuso)",
+            "Linea di taglio irregolare o multipla (tentativo di apertura precedente)",
+            "Ceralacca troppo uniforme o con marchi diversi da quelli del produttore",
+            "Capsula con punzonatura diversa o assente rispetto alla bottiglia originale della stessa annata",
+            "Capsula in alluminio sottile su vini che storicamente usano stagno pesante"
+          ],
+          "tips": [
+            "Per Bourgogne di alta gamma, la capsula di stagno con punzonatura a mano è ancora standard.",
+            "Alcune case come Krug e Dom Pérignon usano capsule molto specifiche: documenta le differenze per annata.",
+            "Una capsula che emette un suono metallico morbido quando premuta è generalmente positiva."
+          ]
+        },
+
+        {
+          "id": "cork",
+          "title": "Sughero",
+          "icon": "🔍",
+          "description": "Il sughero è la prova fisica più diretta dell'autenticità. I grandi produttori imprimono il proprio marchio direttamente sul tappo.",
+          "checklist": [
+            { "id": "crk-1", "text": "Il marchio del produttore è impresso sul sughero (non scritto a penna o stampato su carta)", "weight": "critical" },
+            { "id": "crk-2", "text": "L'annata incisa sul sughero corrisponde all'etichetta", "weight": "critical" },
+            { "id": "crk-3", "text": "Il sughero è elastico, non eccessivamente secco o friabile", "weight": "medium" },
+            { "id": "crk-4", "text": "La macchiatura da vino risale dal basso verso l'alto in modo uniforme, coerente con gli anni di invecchiamento", "weight": "high" },
+            { "id": "crk-5", "text": "Non ci sono segni di muffa attiva sulla superficie esterna del sughero", "weight": "medium" },
+            { "id": "crk-6", "text": "La lunghezza del sughero è appropriata per il tipo di vino (i grandi rossi usano sugherici da 49-54mm)", "weight": "medium" }
+          ],
+          "redFlags": [
+            "Anno sul sughero diverso dall'etichetta",
+            "Sughero senza marchio del produttore su vini che ne prevedono uno",
+            "Macchiatura eccessiva che sale fino alla sommità (possibile riempimento post-apertura)",
+            "Sughero di sintesi su vini che storicamente usano sughero naturale",
+            "Sughero nuovo o troppo integro su una bottiglia dichiarata di oltre 20 anni",
+            "Sughero tagliato in modo irregolare o con tracce di ricollatura"
+          ],
+          "tips": [
+            "Per vini antichi (>20 anni), il sughero viene spesso ri-tappato ('re-corked') dai châteaux stessi: questo è legittimo se certificato.",
+            "DRC, Pétrus e altri Bordeaux top incidono sia il produttore che l'annata sul sughero.",
+            "Un sughero umido all'esterno ma con il vino in ottime condizioni non è necessariamente un problema — dipende dalle condizioni di conservazione."
+          ]
+        },
+
+        {
+          "id": "fill-level",
+          "title": "Livello di riempimento",
+          "icon": "📏",
+          "description": "Il livello del vino nella bottiglia è indicativo dell'età e delle condizioni di conservazione. Ogni livello ha un nome specifico nel gergo del vino.",
+          "checklist": [
+            { "id": "fll-1", "text": "Il livello corrisponde allo stato atteso per l'annata (vedi tabella di riferimento)", "weight": "high" },
+            { "id": "fll-2", "text": "Il vino è limpido o con sedimento coerente con l'età (i vini giovani devono essere limpidi)", "weight": "medium" },
+            { "id": "fll-3", "text": "Non ci sono bolle d'aria anomale nel collo della bottiglia", "weight": "high" },
+            { "id": "fll-4", "text": "Il colore del vino, osservabile dal vetro, è coerente con l'annata (i rossi invecchiati virano al granata/marrone)", "weight": "medium" }
+          ],
+          "levels": [
+            { "name": "Into the neck (INT)", "desc": "Massima pienezza, collo pieno. Standard per vini fino a 5 anni.", "acceptableAge": "0-10 anni" },
+            { "name": "Base of neck (BN)", "desc": "Base del collo. Ancora eccellente.", "acceptableAge": "5-20 anni" },
+            { "name": "Very top shoulder (VTS)", "desc": "Limite superiore della spalla. Accettabile per vini maturi.", "acceptableAge": "10-30 anni" },
+            { "name": "Top shoulder (TS)", "desc": "Spalla alta. Normale per grandi vini con 20-40 anni.", "acceptableAge": "20-40 anni" },
+            { "name": "Upper shoulder (US)", "desc": "Spalla superiore. Ancora vendibile ma sconto sul prezzo.", "acceptableAge": "30-50 anni" },
+            { "name": "Mid shoulder (MS)", "desc": "Metà spalla. Rischio elevato di ossidazione. Solo per collezionisti.", "acceptableAge": "40+ anni" },
+            { "name": "Low shoulder (LS)", "desc": "Spalla bassa. Alta probabilità di deterioramento.", "acceptableAge": "Raramente accettabile" }
+          ],
+          "redFlags": [
+            "Livello di riempimento troppo basso per l'annata dichiarata",
+            "Livello molto alto su un vino antico non ri-tappato ufficialmente",
+            "Bolle d'aria visibili nel collo (possibile contaminazione da aria)",
+            "Colore del vino incompatibile con l'annata (un rosso di 5 anni non dovrebbe avere riflessi bruni)"
+          ],
+          "tips": [
+            "Per aste e vendite private, il livello è sempre indicato nel catalogo con le sigle EN/BN/TS/US/MS.",
+            "Un vino con livello 'into the neck' e 40 anni di età potrebbe indicare un ri-tappaggio — controlla la documentazione.",
+            "La perdita di 5-8ml/anno è normale per vini conservati in condizioni ideali."
+          ]
+        },
+
+        {
+          "id": "provenance",
+          "title": "Provenienza e catena di custodia",
+          "icon": "📋",
+          "description": "La provenienza (chain of custody) è la storia documentata di ogni bottiglia. Per i grandi vini di investimento, la documentazione è essenziale quanto il vino stesso.",
+          "checklist": [
+            { "id": "prv-1", "text": "Esiste una catena documentata dal produttore/importatore al venditore attuale", "weight": "critical" },
+            { "id": "prv-2", "text": "Le fatture di acquisto originali sono disponibili e verificabili", "weight": "critical" },
+            { "id": "prv-3", "text": "Il vino è stato conservato in cantina professionale con condizioni certificate (temperatura, umidità)", "weight": "high" },
+            { "id": "prv-4", "text": "La bottiglia viene venduta in OWC (Original Wooden Case) integra o con ricevuta d'asta", "weight": "high" },
+            { "id": "prv-5", "text": "Non ci sono periodi 'buio' nella storia della bottiglia (anni non documentati)", "weight": "high" },
+            { "id": "prv-6", "text": "La bottiglia non proviene da paesi noti per la contraffazione senza adeguata documentazione supplementare", "weight": "medium" }
+          ],
+          "documents": [
+            { "name": "OWC – Original Wooden Case", "desc": "Cassa di legno originale con etichetta del produttore. Aumenta il valore del 5-15%." },
+            { "name": "IB – In Bond", "desc": "Il vino è conservato in magazzino doganale; le tasse non sono state pagate. Standard per investitori UK." },
+            { "name": "OC – Original Carton", "desc": "Cartone di imballaggio originale. Meno pregiato dell'OWC ma documenta la provenienza." },
+            { "name": "Fattura di asta", "desc": "Ricevuta da case d'asta certificate (Christie's, Sotheby's, Hart Davis Hart, iDealwine)." },
+            { "name": "Certificato di magazzino", "desc": "Documento di una cantina professionale che attesta le condizioni di conservazione." }
+          ],
+          "redFlags": [
+            "Vendita 'as-is' senza alcuna documentazione",
+            "Storia di conservazione in casa privata senza certificazione professionale",
+            "Prezzo significativamente inferiore al valore di mercato stimato",
+            "Venditore che rifiuta di fornire fatture originali o numeri di lotto verificabili",
+            "Bottiglia di provenienza sconosciuta o con storia frammentata",
+            "Acquisto attraverso canali non certificati (mercatini, social media, aste online non regolamentate)"
+          ],
+          "tips": [
+            "Acquistare 'en primeur' direttamente da un négociant autorizzato garantisce la massima provenienza.",
+            "Le case d'asta maggiori (Christie's, Sotheby's, Zachys) autenticano ogni bottiglia prima della vendita.",
+            "Servizi come CellarTracker.com permettono di tracciare la storia di una bottiglia nel tempo.",
+            "Per i vini Borgogna DRC, esiste un sistema di codici di autenticazione direttamente dal produttore."
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "pre-investment",
+      "slug": "checklist-pre-investimento",
+      "title": "Checklist pre-investimento: cosa verificare prima di comprare",
+      "titleEn": "Pre-Investment Checklist",
+      "difficulty": "principiante",
+      "estimatedMinutes": 8,
+      "summary": "Prima di acquistare un vino come investimento, esegui questa verifica in 7 passi. Riduce il rischio di errori costosi.",
+      "steps": [
+        {
+          "id": "step-1",
+          "order": 1,
+          "title": "Verifica il produttore",
+          "icon": "🏰",
+          "questions": [
+            "Il produttore è certificato e riconosciuto nelle guide specializzate (Gambero Rosso, Wine Spectator, Decanter)?",
+            "Ha una storia di apprezzamento del valore nel tempo (almeno 10 anni di dati)?",
+            "Il vino è classificato (es. Grand Cru Classé per Bordeaux, Grand Cru per Borgogna)?",
+            "Il produttore ha mantenuto la qualità negli ultimi 5-10 anni?"
+          ],
+          "resources": ["Wine Spectator Top 100", "Decanter World Wine Awards", "Gambero Rosso Tre Bicchieri"]
+        },
+        {
+          "id": "step-2",
+          "order": 2,
+          "title": "Valuta la qualità dell'annata",
+          "icon": "📅",
+          "questions": [
+            "Qual è il punteggio dell'annata per quella regione (scala 0-100)?",
+            "L'annata è considerata 'grande' (95+), 'buona' (85-94) o 'difficile' (<85)?",
+            "Le condizioni climatiche di quell'anno sono documentate?",
+            "La critica ha rivalutato l'annata positivamente nel corso degli anni?"
+          ],
+          "note": "Le grandi annate (2000, 2005, 2009, 2010, 2016 per Bordeaux; 2010, 2015, 2019 per Borgogna) storicamente apprezzano di più."
+        },
+        {
+          "id": "step-3",
+          "order": 3,
+          "title": "Analizza la liquidità",
+          "icon": "💧",
+          "questions": [
+            "Il vino viene scambiato regolarmente in aste e su piattaforme come Wine-Searcher?",
+            "Esistono almeno 3-5 venditori attivi in questo momento?",
+            "Il bid/ask spread è accettabile (meno del 20%)?",
+            "Il vino ha un mercato internazionale o solo locale?"
+          ],
+          "note": "Un vino con scarsa liquidità potrebbe essere impossibile da vendere quando vuoi realizzare il profitto."
+        },
+        {
+          "id": "step-4",
+          "order": 4,
+          "title": "Controlla le condizioni della bottiglia",
+          "icon": "🔍",
+          "questions": [
+            "Il livello di riempimento è appropriato per l'annata?",
+            "L'etichetta è integra e autentica?",
+            "La capsula è intatta?",
+            "Hai la documentazione di provenienza?"
+          ],
+          "linkedModule": "authenticity"
+        },
+        {
+          "id": "step-5",
+          "order": 5,
+          "title": "Calcola i costi reali",
+          "icon": "🧮",
+          "questions": [
+            "Hai incluso i costi di spedizione e assicurazione nel prezzo di acquisto?",
+            "Dove conserverai il vino? Hai preventivato i costi di stoccaggio (€8-15/cassa/anno in cantina professionale)?",
+            "Hai considerato i dazi e le tasse all'importazione se applicabili?",
+            "Le commissioni di vendita (asta: 10-25%, piattaforma: 5-15%) sono state calcolate nel ROI atteso?"
+          ],
+          "note": "Il costo totale di detenzione di un vino su 10 anni può erodere il 15-30% del rendimento lordo."
+        },
+        {
+          "id": "step-6",
+          "order": 6,
+          "title": "Definisci la tua exit strategy",
+          "icon": "🎯",
+          "questions": [
+            "Quando prevedi di vendere (3, 5, 10, 20 anni)?",
+            "A quale prezzo target venderai? Con quale rendimento minimo?",
+            "Hai identificato i canali di vendita (aste, piattaforme, mercato privato)?",
+            "Sei preparato a tenere il vino più a lungo se il mercato non è favorevole?"
+          ],
+          "note": "Il vino non è un investimento liquido. Avere una exit strategy chiara previene vendite affrettate in perdita."
+        },
+        {
+          "id": "step-7",
+          "order": 7,
+          "title": "Verifica le implicazioni fiscali",
+          "icon": "⚖️",
+          "questions": [
+            "Nel tuo paese, i guadagni da vendita di vino sono tassati come capital gain?",
+            "Esistono soglie di esenzione per collezioni private?",
+            "Hai consultato un consulente fiscale specializzato?",
+            "Il vino è conservato In Bond (IB) per differire le tasse?"
+          ],
+          "disclaimer": "Questo non è consulenza fiscale o legale. Le leggi variano per paese. Consulta sempre un professionista qualificato.",
+          "note": "In Italia (2024), le plusvalenze da vendita di beni da collezione privati sono generalmente esenti da tassazione se non svolte in modo professionale/abituale. Verifica con un commercialista."
+        }
+      ]
+    },
+
+    {
+      "id": "storage",
+      "slug": "conservazione-vino",
+      "title": "Conservazione corretta: requisiti minimi per il vino da investimento",
+      "titleEn": "Wine Storage Requirements",
+      "difficulty": "principiante",
+      "estimatedMinutes": 6,
+      "summary": "Conservare il vino in modo non ottimale può distruggere anni di apprezzamento. Questi sono i parametri fondamentali.",
+      "parameters": [
+        {
+          "id": "temperature",
+          "name": "Temperatura",
+          "icon": "🌡️",
+          "ideal": "12-14°C costanti",
+          "acceptable": "10-16°C con variazioni lente (<1°C/giorno)",
+          "critical": "Mai sopra 22°C, mai sotto 4°C",
+          "why": "Temperature elevate accelerano l'invecchiamento chimico. Sbalzi termici dilatano e contraggono il tappo, introducendo aria.",
+          "tips": [
+            "Evita cantine vicino a impianti di riscaldamento o cucine.",
+            "Un termometro a registro è fondamentale per documentare la stabilità termica."
+          ]
+        },
+        {
+          "id": "humidity",
+          "name": "Umidità",
+          "icon": "💧",
+          "ideal": "70-80%",
+          "acceptable": "60-85%",
+          "critical": "Sotto 50% il tappo si secca; sopra 90% rischio muffa sulle etichette",
+          "why": "L'umidità mantiene il sughero elastico, prevenendo l'evaporazione e l'ingresso di aria. Troppa umidità deteriora le etichette, riducendo il valore della bottiglia.",
+          "tips": [
+            "Un umidificatore o del ghiaia umida sul pavimento della cantina mantiene i livelli.",
+            "Per proteggere le etichette, un'umidità del 70% è ottimale."
+          ]
+        },
+        {
+          "id": "light",
+          "name": "Luce",
+          "icon": "💡",
+          "ideal": "Buio totale o luce rossa",
+          "acceptable": "Luce artificiale fioca, brevi esposizioni",
+          "critical": "Nessun raggio UV diretto, nessuna luce solare",
+          "why": "I raggi UV degradano i composti fenolici del vino e causano il cosiddetto 'light strike' (gusto metallico). Per questo molte bottiglie di pregio usano vetro scuro.",
+          "tips": [
+            "Le lampade a LED a bassa emissione UV sono preferibili alle fluorescenti.",
+            "Le bottiglie in vetro trasparente sono più vulnerabili: tienile sempre nell'imballo."
+          ]
+        },
+        {
+          "id": "position",
+          "name": "Posizione",
+          "icon": "↔️",
+          "ideal": "Orizzontale (sughero a contatto col vino)",
+          "acceptable": "Orizzontale o leggermente inclinata (testa in basso)",
+          "critical": "Mai verticale per lunghi periodi (>3 mesi per sughero naturale)",
+          "why": "Le bottiglie con tappo in sughero naturale devono stare in orizzontale per mantenere il tappo umido e sigillato. I tappi a vite o sintetici non richiedono questa posizione.",
+          "tips": [
+            "Le bottiglie spumantizzate con gabbietta possono stare verticali più a lungo.",
+            "Le bottiglie ceralaccate non hanno questa limitazione."
+          ]
+        },
+        {
+          "id": "vibration",
+          "name": "Vibrazioni",
+          "icon": "📳",
+          "ideal": "Assenza totale di vibrazioni",
+          "acceptable": "Vibrazioni rare e di bassa intensità",
+          "critical": "Evitare vibrazioni continue (vicino a lavatrice, frigorifero, traffico pesante)",
+          "why": "Le vibrazioni disturb gli equilibri chimici nel vino, in particolare il deposito nei vini rossi maturi. Accelerano l'ossidazione e la precipitazione dei tannini.",
+          "tips": [
+            "I rack in legno isolano meglio le vibrazioni rispetto al metallo.",
+            "Evita di spostare frequentemente le bottiglie."
+          ]
+        },
+        {
+          "id": "odors",
+          "name": "Odori e contaminanti",
+          "icon": "👃",
+          "ideal": "Aria neutra, ben ventilata",
+          "acceptable": "Leggero odore di muffa su vecchie cantine (se non a contatto con le etichette)",
+          "critical": "Nessun solvente, vernice, naftalina, detergenti forti",
+          "why": "Il sughero è permeabile e può assorbire odori forti, trasmettendoli al vino nel tempo. Questo può causare gusti anomali.",
+          "tips": [
+            "Non conservare il vino vicino a garage, lavanderie o depositi di prodotti chimici.",
+            "Una ventilazione leggera previene l'accumulo di odori stantii."
+          ]
+        }
+      ],
+      "professionalStorage": {
+        "description": "Le cantine professionali (London City Bond, Octavian Vaults, vinoteche certificate) sono lo standard per il vino da investimento.",
+        "benefits": [
+          "Condizioni certificate e documentate (temperatura, umidità, vibrazioni)",
+          "Assicurazione inclusa",
+          "Accesso rapido per ispezione e vendita",
+          "Registro digitale di ogni bottiglia",
+          "Facilita la provenienza per la rivendita"
+        ],
+        "estimatedCost": "€0.50-1.50 per bottiglia al mese (€8-18 per cassa da 12)"
+      }
+    },
+
+    {
+      "id": "reading-wine-docs",
+      "slug": "documenti-vino",
+      "title": "Leggere i documenti del vino: glossario essenziale",
+      "titleEn": "Reading Wine Documents",
+      "difficulty": "principiante",
+      "estimatedMinutes": 5,
+      "summary": "Nel commercio del vino pregiato si usano abbreviazioni specifiche. Conoscerle è essenziale per valutare un'offerta.",
+      "terms": [
+        {
+          "abbrev": "OWC",
+          "full": "Original Wooden Case",
+          "it": "Cassa di legno originale",
+          "desc": "La cassa di legno prodotta dal châteaux/produttore stesso, con l'etichetta originale. È la forma di imballaggio di massimo valore. Aumenta il prezzo del 5-20% rispetto alle bottiglie sciolte.",
+          "value": "alto"
+        },
+        {
+          "abbrev": "OCC",
+          "full": "Original Cardboard Carton / Original Carton",
+          "it": "Cartone originale",
+          "desc": "Scatola di cartone originale del produttore. Meno pregiata dell'OWC ma documenta la provenienza.",
+          "value": "medio"
+        },
+        {
+          "abbrev": "IB",
+          "full": "In Bond",
+          "it": "In regime doganale",
+          "desc": "Il vino è conservato in un magazzino doganale autorizzato (es. HMRC Bonded Warehouse nel Regno Unito). Le tasse (IVA, dazio) non sono ancora state pagate. Standard per gli investitori: permette di vendere senza pagare tasse fino all'effettivo ritiro.",
+          "value": "info"
+        },
+        {
+          "abbrev": "DP",
+          "full": "Duty Paid",
+          "it": "Sdoganato",
+          "desc": "Tasse e dazi già pagati. Il vino è uscito dal regime doganale.",
+          "value": "info"
+        },
+        {
+          "abbrev": "EP",
+          "full": "En Primeur",
+          "it": "Vino in futures",
+          "desc": "Acquisto di vino prima che sia imbottigliato (circa 2 anni prima della commercializzazione). Si paga in anticipo con lo scopo di ottenere il vino a un prezzo inferiore a quello futuro. Rischio: il vino potrebbe non apprezzarsi.",
+          "value": "info"
+        },
+        {
+          "abbrev": "INT / BN / TS / US / MS",
+          "full": "Fill Level Abbreviations",
+          "it": "Livello di riempimento",
+          "desc": "INT = Into the Neck (piena); BN = Base of Neck; TS = Top Shoulder; US = Upper Shoulder; MS = Mid Shoulder. Indica lo spazio d'aria nella bottiglia.",
+          "value": "info",
+          "linkedModule": "authenticity",
+          "linkedTopic": "fill-level"
+        },
+        {
+          "abbrev": "WA",
+          "full": "Wine Advocate (Robert Parker)",
+          "it": "La rivista di Robert Parker",
+          "desc": "Una delle più influenti riviste di critica del vino. Il punteggio WA su scala 100 ha storicamente mosso i prezzi dei Bordeaux in modo significativo.",
+          "value": "info"
+        },
+        {
+          "abbrev": "WS",
+          "full": "Wine Spectator",
+          "it": "Wine Spectator",
+          "desc": "Rivista americana con scala di punteggio 100 punti. La lista 'Top 100 Wines of the Year' è molto seguita dagli investitori.",
+          "value": "info"
+        },
+        {
+          "abbrev": "JS",
+          "full": "James Suckling",
+          "it": "James Suckling",
+          "desc": "Critico internazionale su scala 100 punti. Particolarmente influente per Bordeaux, Super Tuscans e vini italiani.",
+          "value": "info"
+        },
+        {
+          "abbrev": "DC",
+          "full": "Decanter",
+          "it": "Decanter Magazine",
+          "desc": "Rivista britannica di riferimento. Scala 100 punti e medaglie Platinum/Gold/Silver. Forte influenza sul mercato asiatico.",
+          "value": "info"
+        },
+        {
+          "abbrev": "CT",
+          "full": "CellarTracker",
+          "it": "CellarTracker",
+          "desc": "Piattaforma con oltre 6 milioni di note di degustazione da utenti reali. Utile per valutare la bevibilità attuale di un vino.",
+          "value": "info"
+        },
+        {
+          "abbrev": "CIVB",
+          "full": "Conseil Interprofessionnel du Vin de Bordeaux",
+          "it": "Consorzio interprofessionale del vino di Bordeaux",
+          "desc": "Organismo di controllo e promozione dei vini di Bordeaux. Supervisiona la classificazione 1855 e i Grand Cru Classés.",
+          "value": "info"
+        }
+      ]
+    },
+
+    {
+      "id": "common-mistakes",
+      "slug": "errori-comuni",
+      "title": "I 10 errori più comuni nell'investimento in vino",
+      "titleEn": "10 Common Investment Mistakes",
+      "difficulty": "principiante",
+      "estimatedMinutes": 7,
+      "summary": "La maggior parte degli errori nell'investimento in vino sono evitabili. Conoscerli in anticipo vale più di qualsiasi rendimento passato.",
+      "mistakes": [
+        {
+          "id": "err-1",
+          "rank": 1,
+          "title": "Comprare vini difficili da rivendere",
+          "description": "Investire in vini poco conosciuti o con mercato esclusivamente locale rende quasi impossibile la vendita a prezzi di mercato.",
+          "solution": "Preferire vini con mercato internazionale documentato: Bordeaux Grand Cru Classé, Borgogna Grand Cru, Barolo/Barbaresco da produttori top, Champagne de prestige."
+        },
+        {
+          "id": "err-2",
+          "rank": 2,
+          "title": "Ignorare i costi di mantenimento",
+          "description": "Molti calcolano il rendimento sul solo prezzo di acquisto/vendita, dimenticando stoccaggio, assicurazione, spedizione e commissioni. Su 10 anni questi costi possono erodere il 20-30% del rendimento lordo.",
+          "solution": "Calcola sempre il Net ROI includendo tutti i costi: (Prezzo vendita - Prezzo acquisto - Costi totali) / Prezzo acquisto."
+        },
+        {
+          "id": "err-3",
+          "rank": 3,
+          "title": "Comprare senza documentazione di provenienza",
+          "description": "Un vino senza catena di custodia documentata non può essere venduto a prezzi premium. Rischi inoltre di acquistare una bottiglia contraffatta.",
+          "solution": "Acquistare sempre da fonti certificate: cantine, négociants autorizzati, case d'asta di reputazione, o piattaforme online certificate.",
+          "linkedModule": "authenticity",
+          "linkedTopic": "provenance"
+        },
+        {
+          "id": "err-4",
+          "rank": 4,
+          "title": "Concentrare troppo su una sola regione o produttore",
+          "description": "Un portfolio composto da soli vini Bordeaux (o solo DRC, o solo italiani) è esposto a rischi specifici di quella regione: annate difficili, cambiamento del gusto del mercato, scandali.",
+          "solution": "Diversificare su almeno 3 regioni diverse e 5-10 produttori. Bilanciare tra vini liquidi (Bordeaux) e vini ad alto potenziale (Borgogna, Barolo)."
+        },
+        {
+          "id": "err-5",
+          "rank": 5,
+          "title": "Investire senza orizzonte temporale",
+          "description": "Il vino non è un asset liquidabile in qualsiasi momento. Vendere in fretta può significare accettare prezzi molto inferiori al valore reale.",
+          "solution": "Stabilire prima dell'acquisto un orizzonte minimo (3-5 anni) e non investire denaro che potrebbe servirti nel breve termine."
+        },
+        {
+          "id": "err-6",
+          "rank": 6,
+          "title": "Conservare il vino in casa in condizioni non ottimali",
+          "description": "Sbalzi di temperatura, luce, vibrazioni e umidità errata rovinano il vino in modo irreversibile. Un vino deteriorato ha un valore commerciale vicino allo zero.",
+          "solution": "Usare sempre una cantina professionale certificata. I costi (€1/bottiglia/mese) sono marginali rispetto al valore del vino.",
+          "linkedModule": "storage"
+        },
+        {
+          "id": "err-7",
+          "rank": 7,
+          "title": "Comprare en primeur in annate deludenti",
+          "description": "L'acquisto en primeur ha senso solo per grandi annate di produttori top. In annate mediocri, il vino spesso si trova più economico sul mercato secondario dopo 2-3 anni.",
+          "solution": "Acquistare en primeur solo per annate 90+ nelle regioni di punta, da produttori con track record di apprezzamento post-EP."
+        },
+        {
+          "id": "err-8",
+          "rank": 8,
+          "title": "Non verificare l'autenticità prima dell'acquisto",
+          "description": "Le stime del settore indicano che il 5-20% dei vini costosi sul mercato secondario presenta anomalie di autenticità. Il danno economico può essere totale.",
+          "solution": "Usare sempre la checklist di autenticazione (etichetta, capsula, sughero, livello, provenienza) prima di ogni acquisto.",
+          "linkedModule": "authenticity"
+        },
+        {
+          "id": "err-9",
+          "rank": 9,
+          "title": "Seguire le mode senza analisi",
+          "description": "Comprare un vino 'di tendenza' dopo che ha già registrato un forte apprezzamento spesso significa entrare tardi nel ciclo. Il picco è già passato.",
+          "solution": "Identificare i vini con potenziale non ancora riconosciuto dal mercato generale: regioni emergenti (Jura, Etna, Ribera del Duero top), produttori newcomer di qualità."
+        },
+        {
+          "id": "err-10",
+          "rank": 10,
+          "title": "Aprire le bottiglie d'investimento",
+          "description": "Sembra ovvio, ma succede. Aprire una bottiglia acquistata come investimento ne azzera il valore commerciale.",
+          "solution": "Tenere separate le bottiglie da investimento (in cantina professionale) da quelle da consumo (a casa). Non aprire mai ciò che non si può permettere di perdere economicamente."
+        }
+      ]
+    },
+
+    {
+      "id": "regional-guide",
+      "slug": "regioni-vino-investimento",
+      "title": "Guida alle regioni vinicole per l'investimento",
+      "titleEn": "Investment Wine Regions Guide",
+      "difficulty": "intermedio",
+      "estimatedMinutes": 10,
+      "summary": "Non tutti i vini di qualità sono adatti all'investimento. Queste regioni hanno dimostrato storica liquidità e apprezzamento del valore.",
+      "regions": [
+        {
+          "id": "bordeaux",
+          "name": "Bordeaux",
+          "country": "Francia",
+          "investmentRating": 5,
+          "liquidity": "molto alta",
+          "entryPrice": "€30-15000/bottiglia",
+          "keyProducers": ["Pétrus", "Château Lafite-Rothschild", "Château Mouton Rothschild", "Château Margaux", "Château Haut-Brion", "Château Cheval Blanc", "Le Pin"],
+          "bestVintages": ["2000", "2005", "2009", "2010", "2015", "2016", "2018", "2019"],
+          "strengths": ["Mercato più liquido al mondo", "Classificazione stabile dal 1855", "Distribuzione globale", "En primeur consolidato"],
+          "weaknesses": ["I prezzi dei First Growths possono essere gonfiati", "Forte dipendenza dal gusto asiatico", "Alcune annate sovravalutate"],
+          "note": "Il mercato Bordeaux è il più trasparente: prezzi consultabili su Liv-ex e Wine-Searcher in tempo reale."
+        },
+        {
+          "id": "burgundy",
+          "name": "Borgogna / Bourgogne",
+          "country": "Francia",
+          "investmentRating": 5,
+          "liquidity": "alta",
+          "entryPrice": "€60-50000+/bottiglia",
+          "keyProducers": ["Domaine de la Romanée-Conti (DRC)", "Domaine Leroy", "Armand Rousseau", "Henri Jayer", "Méo-Camuzet", "Domaine Leflaive"],
+          "bestVintages": ["2002", "2005", "2010", "2012", "2015", "2019"],
+          "strengths": ["Apprezzamento tra i più forti nell'ultimo decennio", "Produzione molto limitata (crea scarsità)", "DRC tra gli asset più ricercati al mondo"],
+          "weaknesses": ["Falsificazioni molto frequenti per i vini di punta", "Prezzi ormai proibitivi per molti investitori entry-level", "Richiede esperienza per valutare qualità"],
+          "note": "La Borgogna è la regione con il più alto rischio di contraffazione. Provenienza impeccabile è fondamentale."
+        },
+        {
+          "id": "tuscany",
+          "name": "Toscana",
+          "country": "Italia",
+          "investmentRating": 4,
+          "liquidity": "media-alta",
+          "entryPrice": "€30-3000/bottiglia",
+          "keyProducers": ["Sassicaia (Tenuta San Guido)", "Masseto", "Ornellaia", "Solaia (Antinori)", "Biondi-Santi (Brunello)", "Montevertine (Le Pergole Torte)"],
+          "bestVintages": ["2001", "2004", "2006", "2010", "2013", "2015", "2019"],
+          "strengths": ["Super Tuscans con riconoscimento internazionale crescente", "Brunello di Montalcino tra i vini più longevi d'Italia", "Prezzi ancora accessibili vs Borgogna"],
+          "weaknesses": ["Mercato meno liquido di Bordeaux", "Alcune etichette hanno stagnato nei prezzi"],
+          "note": "Sassicaia è l'unico vino toscano con una propria DOC (Bolgheri Sassicaia DOC dal 1994)."
+        },
+        {
+          "id": "piedmont",
+          "name": "Piemonte",
+          "country": "Italia",
+          "investmentRating": 4,
+          "liquidity": "media",
+          "entryPrice": "€25-2000/bottiglia",
+          "keyProducers": ["Giacomo Conterno (Monfortino)", "Bruno Giacosa", "Angelo Gaja", "Giuseppe Mascarello", "Bartolo Mascarello", "Luciano Sandrone"],
+          "bestVintages": ["2001", "2004", "2006", "2010", "2013", "2016", "2019"],
+          "strengths": ["Barolo Monfortino tra i vini italiani più apprezzati agli investitori", "Lunga longevità (30-50+ anni)", "Interesse crescente dall'Asia"],
+          "weaknesses": ["Liquidità inferiore a Borgogna e Bordeaux", "Richiede conservazione lunga prima del picco"],
+          "note": "Il Barolo viene chiamato 'il re dei vini italiani'. I Monfortino di Conterno sono i più ricercati."
+        },
+        {
+          "id": "champagne",
+          "name": "Champagne",
+          "country": "Francia",
+          "investmentRating": 4,
+          "liquidity": "media-alta",
+          "entryPrice": "€60-2000/bottiglia",
+          "keyProducers": ["Krug", "Salon", "Jacques Selosse", "Dom Pérignon P3", "Cristal (Louis Roederer)", "Billecart-Salmon Blanc de Blancs"],
+          "bestVintages": ["1996", "2002", "2008", "2012", "2015"],
+          "strengths": ["Domanda sempre alta per cuvées di prestige", "Salon 2002/2008 tra i champagne più apprezzati in assoluto", "Ottimo rapport liquidità/rendimento"],
+          "weaknesses": ["Solo alcune etichette hanno mercato secondario liquido", "Conservazione delicata (sensibile alla luce e temperatura)"],
+          "note": "Krug Collection (le annate più vecchie in magazzino Krug) e Salon sono i benchmark per l'investimento in Champagne."
+        },
+        {
+          "id": "rhone",
+          "name": "Rodano / Rhône",
+          "country": "Francia",
+          "investmentRating": 3,
+          "liquidity": "media",
+          "entryPrice": "€30-800/bottiglia",
+          "keyProducers": ["Domaine Jean-Louis Chave", "E. Guigal (La La's: La Mouline, La Landonne, La Turque)", "Château Rayas", "Pegau", "Paul Jaboulet Aîné (La Chapelle)"],
+          "bestVintages": ["2003", "2007", "2010", "2015", "2016", "2017"],
+          "strengths": ["Guigal 'La La's' con apprezzamento storico significativo", "Prezzi ancora competitivi vs Borgogna", "Alta longevità dei migliori vini"],
+          "weaknesses": ["Mercato più ristretto, soprattutto per Châteauneuf-du-Pape", "Meno coverage mediatica globale"],
+          "note": "Le tre 'La La's' di Guigal (La Mouline, La Landonne, La Turque) sono prodotte in quantità estremamente limitata e molto ricercate."
+        }
+      ]
+    }
+  ],
+
+  "quickTips": [
+    { "id": "qt-1", "category": "authenticity", "tip": "Verifica sempre che l'annata sul sughero corrisponda all'etichetta.", "linkedModule": "authenticity", "linkedTopic": "cork" },
+    { "id": "qt-2", "category": "storage", "tip": "Temperatura ideale di conservazione: 12-14°C costanti.", "linkedModule": "storage" },
+    { "id": "qt-3", "category": "provenance", "tip": "Un vino senza OWC o documentazione di provenienza vale il 10-20% in meno.", "linkedModule": "authenticity", "linkedTopic": "provenance" },
+    { "id": "qt-4", "category": "investment", "tip": "Calcola sempre il costo totale: acquisto + stoccaggio + assicurazione + commissioni di vendita.", "linkedModule": "pre-investment" },
+    { "id": "qt-5", "category": "authenticity", "tip": "Una capsula che gira liberamente indica che la bottiglia è già stata aperta.", "linkedModule": "authenticity", "linkedTopic": "capsule" },
+    { "id": "qt-6", "category": "investment", "tip": "Investi solo in vini con mercato secondario internazionale documentato.", "linkedModule": "pre-investment" },
+    { "id": "qt-7", "category": "storage", "tip": "Umidità ideale per conservare le etichette integre: 70-80%.", "linkedModule": "storage" },
+    { "id": "qt-8", "category": "authenticity", "tip": "Le bottiglie dei grandi Borgogna vengono contraffatte frequentemente: richiedi sempre la provenienza.", "linkedModule": "authenticity", "linkedTopic": "provenance" },
+    { "id": "qt-9", "category": "investment", "tip": "Mai comprare en primeur in annate sotto 85/100: il mercato secondario darà prezzi migliori.", "linkedModule": "common-mistakes" },
+    { "id": "qt-10", "category": "investment", "tip": "Orizzonte temporale minimo consigliato: 5 anni. Il vino non è un asset a breve termine.", "linkedModule": "pre-investment" }
+  ],
+
+  "antiCounterfeitResources": [
+    { "name": "Wineauction.com authentication guide", "type": "educational" },
+    { "name": "Christie's Wine Authentication Programme", "type": "service" },
+    { "name": "Guigal official bottle registry", "type": "producer" },
+    { "name": "DRC anti-counterfeiting QR codes (dal 2019)", "type": "producer" },
+    { "name": "Eurobodalla Fine Wine Verification Service", "type": "third-party" }
+  ]
+}

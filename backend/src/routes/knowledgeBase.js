@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { getEducationTopicsForKnowledgeBase } from "../services/educationService.js";
 
 const router = Router();
 
@@ -57,7 +58,16 @@ router.get("/", (_req, res) => {
       {
         "name": "Market Signals",
         "description": "VinoInvest generates Buy/Sell/Hold signals based on: price momentum (3/6/12 months), Liv-ex volume, critic score trends, vintage maturity curve, and AI portfolio analysis. Signals are updated daily."
-      }
+      },
+      ...getEducationTopicsForKnowledgeBase().map((t) => ({
+        name: t.name,
+        nameIt: t.nameIt,
+        description: t.description,
+        category: "education",
+        difficulty: t.difficulty,
+        estimatedMinutes: t.estimatedMinutes,
+        apiEndpoint: `/api/academy/education/module/${t.slug}`,
+      }))
     ],
     "dataSources": [
       { "name": "Liv-ex", "type": "Market Data", "description": "Global fine wine exchange — price benchmark" },

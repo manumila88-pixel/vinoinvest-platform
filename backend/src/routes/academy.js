@@ -2,6 +2,18 @@ import express from "express";
 import pg from "pg";
 import crypto from "crypto";
 import { ADMIN_EMAIL, checkCourseAccess } from "../middleware/auth.js";
+import {
+  getModules,
+  getModuleById,
+  getChecklistForWine,
+  getQuickTips,
+  getAntiCounterfeitTopics,
+  getPreInvestmentChecklist,
+  getGlossaryTerms,
+  getRegionalGuide,
+  getStorageRequirements,
+  getCommonMistakes,
+} from "../services/educationService.js";
 
 const router = express.Router();
 const { Pool } = pg;
@@ -125,6 +137,75 @@ router.get("/verify/:code", async (req, res) => {
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
+});
+
+// ─── Educational endpoints (Agent E §2) ─────────────────────────────────────
+// All endpoints are read-only, no DB access, no market data.
+
+// GET /api/academy/education/modules  — list all educational modules
+router.get("/education/modules", (_req, res) => {
+  res.set("Cache-Control", "public, max-age=3600");
+  res.json({ modules: getModules() });
+});
+
+// GET /api/academy/education/module/:moduleId  — full module content
+router.get("/education/module/:moduleId", (req, res) => {
+  const module = getModuleById(req.params.moduleId);
+  if (!module) return res.status(404).json({ error: "Module not found" });
+  res.set("Cache-Control", "public, max-age=3600");
+  res.json({ module });
+});
+
+// GET /api/academy/education/checklist?module=authenticity  — visual checklist
+router.get("/education/checklist", (req, res) => {
+  const moduleId = req.query.module || "authenticity";
+  const checklist = getChecklistForWine({ moduleId });
+  if (!checklist) return res.status(404).json({ error: "Module not found" });
+  res.set("Cache-Control", "public, max-age=3600");
+  res.json(checklist);
+});
+
+// GET /api/academy/education/quick-tips?category=authenticity  — quick tip cards
+router.get("/education/quick-tips", (req, res) => {
+  const { category } = req.query;
+  res.set("Cache-Control", "public, max-age=3600");
+  res.json({ tips: getQuickTips(category || null) });
+});
+
+// GET /api/academy/education/anti-fake  — anti-counterfeit topic cards
+router.get("/education/anti-fake", (_req, res) => {
+  res.set("Cache-Control", "public, max-age=3600");
+  res.json({ topics: getAntiCounterfeitTopics() });
+});
+
+// GET /api/academy/education/pre-investment  — investment checklist
+router.get("/education/pre-investment", (_req, res) => {
+  res.set("Cache-Control", "public, max-age=3600");
+  res.json(getPreInvestmentChecklist());
+});
+
+// GET /api/academy/education/glossary?q=OWC  — glossary terms (optional search)
+router.get("/education/glossary", (req, res) => {
+  res.set("Cache-Control", "public, max-age=86400");
+  res.json({ terms: getGlossaryTerms(req.query.q || null) });
+});
+
+// GET /api/academy/education/regions  — regional investment guide
+router.get("/education/regions", (_req, res) => {
+  res.set("Cache-Control", "public, max-age=3600");
+  res.json(getRegionalGuide());
+});
+
+// GET /api/academy/education/storage  — storage requirements
+router.get("/education/storage", (_req, res) => {
+  res.set("Cache-Control", "public, max-age=3600");
+  res.json(getStorageRequirements());
+});
+
+// GET /api/academy/education/common-mistakes  — 10 common mistakes
+router.get("/education/common-mistakes", (_req, res) => {
+  res.set("Cache-Control", "public, max-age=3600");
+  res.json(getCommonMistakes());
 });
 
 export default router;
