@@ -167,7 +167,7 @@ export default function DashboardB2B() {
             </>
           ) : (
             <div style={{ color: "#334155", fontSize: 14, marginTop: 24, padding: 24, border: "1px dashed #1e293b", borderRadius: 12, textAlign: "center" }}>
-              Nessun dato di trading ancora — gli ordini appariranno qui.
+              No trading data yet — orders will appear here.
             </div>
           )}
         </>
@@ -231,11 +231,11 @@ export default function DashboardB2B() {
                     setWineFormMsg({ type: "error", text: "Errore: " + res.status });
                   }
                 } catch (e) {
-                  setWineFormMsg({ type: "error", text: "Errore di rete" });
+                  setWineFormMsg({ type: "error", text: "Network error" });
                 }
                 setSubmittingWine(false);
               }}
-            >{submittingWine ? "Salvataggio..." : "Aggiungi vino"}</button>
+            >{submittingWine ? "Saving..." : "Add wine"}</button>
             {wineFormMsg && (
               <div style={{ marginTop: 10, padding: "8px 12px", borderRadius: 8, fontSize: 13, background: wineFormMsg.type === "success" ? "rgba(5,46,22,0.5)" : "rgba(69,10,10,0.5)", color: wineFormMsg.type === "success" ? "#4ade80" : "#f87171" }}>
                 {wineFormMsg.text}
@@ -280,7 +280,7 @@ export default function DashboardB2B() {
             </div>
           ) : (
             <div style={{ color: "#334155", fontSize: 14, padding: 24, border: "1px dashed #1e293b", borderRadius: 12, textAlign: "center" }}>
-              Nessun cliente ancora — i dati appariranno quando arrivano i primi ordini.
+              No clients yet — data will appear when the first orders arrive.
             </div>
           )}
         </div>

@@ -79,7 +79,7 @@ export default function ClientDetail({ user }) {
 
   if (loading) return (
     <div style={{ minHeight: "50vh", display: "flex", alignItems: "center", justifyContent: "center", color: "#475569" }}>
-      Caricamento cliente...
+      Loading client...
     </div>
   );
 

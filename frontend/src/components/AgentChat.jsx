@@ -199,7 +199,7 @@ export default function AgentChat({ holdings = [], onAddToPortfolio, onViewWine,
     } catch (err) {
       setMessages(prev => [...prev, {
         role: "assistant",
-        content: err.name === "TimeoutError" ? "⏱ Timeout — il server sta partendo. Riprova tra 15 secondi." : "Errore di connessione. Verifica la rete.",
+        content: err.name === "TimeoutError" ? "⏱ Timeout — server is starting up. Retry in 15 seconds." : "Connection error. Check your network.",
         suggestedWines: [],
         resourceLinks: [{ url: "https://www.wine-searcher.com", label: "wine-searcher.com" }],
         toolsUsed: [],

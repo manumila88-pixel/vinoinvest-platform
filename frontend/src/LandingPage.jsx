@@ -504,6 +504,7 @@ export default function LandingPage({ onLogin }) {
             <style>{`@keyframes landingModalIn { from { opacity:0; transform:scale(0.92) translateY(18px); } to { opacity:1; transform:scale(1) translateY(0); } }`}</style>
             <button
               onClick={() => setShowModal(false)}
+              aria-label="Close modal"
               style={{ position: "absolute", top: 14, right: 14, width: 30, height: 30, borderRadius: "50%", background: "rgba(30,41,59,0.9)", border: "1px solid #334155", color: "#94a3b8", fontSize: 17, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
             >×</button>
 

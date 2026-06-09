@@ -61,7 +61,7 @@ export default function WinePriceCompare({ wineId, wineName, vintage, criticScor
         <p style={{ fontSize: 10, color: "#3a5a7a", marginBottom: 5, textTransform: "uppercase" }}>Compare Prices</p>
         <div style={{ display: "flex", alignItems: "center", gap: 6, color: "#3a5a7a", fontSize: 11 }}>
           <span style={{ width: 10, height: 10, borderRadius: "50%", border: "2px solid #3a5a7a", borderTopColor: "#c9a227", display: "inline-block", animation: "spin 0.8s linear infinite" }} />
-          Caricamento...
+          Loading...
         </div>
       </div>
     );

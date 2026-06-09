@@ -72,9 +72,9 @@ export default function AdminDashboard() {
       const headers = { ...await getAuthHeader(), "Content-Type": "application/json" };
       const r = await fetch(`${API}/api/admin/grant-access`, { method: "POST", headers, body: JSON.stringify({ email: grantEmail, plan: grantPlan }) });
       const d = await r.json();
-      setGrantMsg(d.ok ? `Accesso ${grantPlan} concesso a ${grantEmail}` : `Errore: ${d.error}`);
+      setGrantMsg(d.ok ? `${grantPlan} access granted to ${grantEmail}` : `Error: ${d.error}`);
       if (d.ok) { setGrantEmail(""); loadAll(); }
-    } catch (e) { setGrantMsg("Errore di rete"); }
+    } catch (e) { setGrantMsg("Network error"); }
   }
 
   async function handleRevoke(email) {
@@ -108,13 +108,13 @@ export default function AdminDashboard() {
             <span style={{ fontSize: 11, background: "rgba(201,162,39,0.15)", color: "#C9A227", borderRadius: 4, padding: "2px 8px", fontWeight: 700 }}>ADMIN</span>
           </div>
           <button onClick={loadAll} style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, padding: "7px 14px", color: "#94a3b8", cursor: "pointer", fontSize: 13 }}>
-            {loading ? "Caricamento..." : "Aggiorna"}
+            {loading ? "Loading..." : "Refresh"}
           </button>
         </div>
       </div>
 
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 16px" }}>
-        {error && <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 12, padding: 16, marginBottom: 24, color: "#f87171" }}>Errore: {error}</div>}
+        {error && <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 12, padding: 16, marginBottom: 24, color: "#f87171" }}>Error: {error}</div>}
         {stripeMode?.testMode && (
           <div style={{ background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.3)", borderRadius: 12, padding: "12px 16px", marginBottom: 20, display: "flex", alignItems: "center", gap: 10, fontSize: 13 }}>
             <span style={{ fontSize: 18 }}>⚠️</span>
@@ -231,7 +231,7 @@ export default function AdminDashboard() {
                   ))}
                 </tbody>
               </table>
-              {users.length === 0 && !loading && <div style={{ color: "#475569", textAlign: "center", padding: 32 }}>Nessun utente trovato. La tabella users potrebbe non essere popolata.</div>}
+              {users.length === 0 && !loading && <div style={{ color: "#475569", textAlign: "center", padding: 32 }}>No users found. The users table may not be populated yet.</div>}
             </div>
           </div>
         )}
@@ -241,7 +241,7 @@ export default function AdminDashboard() {
           <div style={{ background: "#1a2535", borderRadius: 16, padding: 24 }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: "#94a3b8", marginBottom: 16, textTransform: "uppercase", letterSpacing: "0.08em" }}>Security Events (ultimi 7gg)</div>
             {securityEvents.length === 0 ? (
-              <div style={{ color: "#475569", textAlign: "center", padding: 32 }}>Nessun evento di sicurezza registrato.</div>
+              <div style={{ color: "#475569", textAlign: "center", padding: 32 }}>No security events recorded.</div>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {securityEvents.map((ev, i) => (
@@ -260,7 +260,7 @@ export default function AdminDashboard() {
         {/* Email Analytics Tab */}
         {activeTab === "email" && (
           <div>
-            {emailLoading && <div style={{ color: "#64748b", textAlign: "center", padding: 40 }}>Caricamento analytics...</div>}
+            {emailLoading && <div style={{ color: "#64748b", textAlign: "center", padding: 40 }}>Loading analytics...</div>}
             {!emailLoading && emailAnalytics && (
               <div>
                 {/* KPI Row */}
@@ -387,7 +387,7 @@ export default function AdminDashboard() {
 
                 <div style={{ textAlign: "right", marginTop: 16 }}>
                   <button onClick={loadEmailAnalytics} style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, padding: "8px 16px", color: "#94a3b8", cursor: "pointer", fontSize: 13 }}>
-                    Aggiorna Analytics
+                    Refresh Analytics
                   </button>
                 </div>
               </div>
@@ -395,9 +395,9 @@ export default function AdminDashboard() {
             {!emailLoading && !emailAnalytics && (
               <div style={{ color: "#475569", textAlign: "center", padding: 40 }}>
                 <div style={{ fontSize: 32, marginBottom: 12 }}>📧</div>
-                <div>Nessun dato disponibile. Le tabelle email potrebbero non essere ancora popolate.</div>
+                <div>No data available. Email tables may not be populated yet.</div>
                 <button onClick={loadEmailAnalytics} style={{ marginTop: 16, background: "#C9A227", border: "none", borderRadius: 8, padding: "10px 20px", color: "#0b1220", fontWeight: 700, cursor: "pointer" }}>
-                  Carica Analytics
+                  Load Analytics
                 </button>
               </div>
             )}

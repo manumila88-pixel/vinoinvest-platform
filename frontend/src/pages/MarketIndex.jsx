@@ -18,13 +18,13 @@ export default function MarketIndex() {
 
   if (loading) return (
     <div style={{ minHeight: "100vh", background: "#0b1220", display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <span style={{ color: "#475569", fontSize: 14 }}>Caricamento indice...</span>
+      <span style={{ color: "#475569", fontSize: 14 }}>Loading index...</span>
     </div>
   );
 
   if (!index) return (
     <div style={{ minHeight: "100vh", background: "#0b1220", padding: 32, color: "#f87171" }}>
-      Indice non disponibile.
+      Index not available.
     </div>
   );
 

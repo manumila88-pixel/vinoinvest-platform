@@ -38,7 +38,7 @@ export default function B2BGuide() {
 
   if (loading) return (
     <div style={{ minHeight: "100vh", background: "#0b1220", display: "flex", alignItems: "center", justifyContent: "center", color: "#C9A227", fontSize: 14 }}>
-      Caricamento guida...
+      Loading guide...
     </div>
   );
 
@@ -152,17 +152,17 @@ export default function B2BGuide() {
 
         {/* CTA */}
         <div style={{ marginTop: 56, padding: "32px", background: "#0f1c2e", border: "1px solid #1e3050", borderRadius: 16, textAlign: "center" }}>
-          <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 12 }}>Prova VinoInvest Professional gratis 30 giorni</h3>
+          <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 12 }}>Try VinoInvest Professional free for 30 days</h3>
           <p style={{ color: "#94a3b8", fontSize: 15, marginBottom: 24, lineHeight: 1.6 }}>
-            Dashboard multi-cliente, risk analytics istituzionali, report PDF white-label.
-            Nessuna carta di credito richiesta.
+            Multi-client dashboard, institutional risk analytics, white-label PDF reports.
+            No credit card required.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <button onClick={() => navigate("/b2b-onboarding")} style={{ background: "#C9A227", border: "none", borderRadius: 10, padding: "12px 28px", color: "#0b1220", fontWeight: 700, cursor: "pointer", fontSize: 14 }}>
-              Inizia gratis →
+              Start free →
             </button>
             <button onClick={() => navigate("/b2b")} style={{ background: "transparent", border: "2px solid #1e3050", borderRadius: 10, padding: "12px 28px", color: "#94a3b8", cursor: "pointer", fontSize: 14 }}>
-              Vedi tutti i piani
+              View all plans
             </button>
           </div>
         </div>

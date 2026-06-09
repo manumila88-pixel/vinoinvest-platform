@@ -151,7 +151,7 @@ export default function CommandPalette({ onSelectWine }) {
           )}
           {allItems.length === 0 ? (
             <div style={{ padding: "24px 18px", textAlign: "center", color: "#334155", fontSize: 13 }}>
-              Nessun risultato per "{query}"
+              No results for "{query}"
             </div>
           ) : (
             allItems.map((item, i) => (

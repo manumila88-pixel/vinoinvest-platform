@@ -71,11 +71,11 @@ export default function PriceHistoryChart({ wineId, currentPrice = null, height 
     return () => ctrl.abort();
   }, [wineId, currentPrice, timeframe]);
 
-  const sourceLabel = source === "db" ? "Dati reali" : source === "estimated" ? "Dati stimati" : "Misti";
+  const sourceLabel = source === "db" ? "Real data" : source === "estimated" ? "Estimated data" : "Mixed";
   const sourceColor = source === "db" ? "#4ade80" : "#C9A227";
 
-  if (loading) return <div style={{ height, display: "flex", alignItems: "center", justifyContent: "center", color: "#475569", fontSize: 12 }}>Caricamento...</div>;
-  if (!data.length) return <div style={{ height, display: "flex", alignItems: "center", justifyContent: "center", color: "#475569", fontSize: 12 }}>Dati in elaborazione...</div>;
+  if (loading) return <div style={{ height, display: "flex", alignItems: "center", justifyContent: "center", color: "#475569", fontSize: 12 }}>Loading...</div>;
+  if (!data.length) return <div style={{ height, display: "flex", alignItems: "center", justifyContent: "center", color: "#475569", fontSize: 12 }}>Processing data...</div>;
 
   // Interpolate to at least 3 points so recharts can draw a visible line
   let chartData = data;

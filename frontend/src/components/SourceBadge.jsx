@@ -68,12 +68,12 @@ export default function SourceBadge({ source, url, date, confidence = 90, compac
         >
           <div style={{ color: "#e2e8f0", fontWeight: 600 }}>{source}</div>
           <div style={{ color: "#94a3b8", marginTop: 2 }}>
-            Affidabilità: <span style={{ color }}>{confidence}%</span>
+            Reliability: <span style={{ color }}>{confidence}%</span>
           </div>
           {formattedDate && (
-            <div style={{ color: "#94a3b8", marginTop: 1 }}>Aggiornato: {formattedDate}</div>
+            <div style={{ color: "#94a3b8", marginTop: 1 }}>Updated: {formattedDate}</div>
           )}
-          <div style={{ color: "#64748b", marginTop: 2, fontSize: 10 }}>Clicca per visitare la fonte ↗</div>
+          <div style={{ color: "#64748b", marginTop: 2, fontSize: 10 }}>Click to visit source ↗</div>
         </div>
       )}
     </span>

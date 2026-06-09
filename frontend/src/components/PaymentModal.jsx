@@ -42,10 +42,10 @@ export default function PaymentModal({ plan, userEmail, onClose }) {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        setError(data.error || "Errore durante il checkout Stripe.");
+        setError(data.error || "Stripe checkout error.");
       }
     } catch (e) {
-      setError("Impossibile connettersi al server.");
+      setError("Unable to connect to server.");
     } finally {
       setLoading(false);
     }
@@ -67,10 +67,10 @@ export default function PaymentModal({ plan, userEmail, onClose }) {
           : "https://www.sandbox.paypal.com";
         window.location.href = `${paypalBase}/checkoutnow?token=${data.id}`;
       } else {
-        setError(data.error || "Errore PayPal.");
+        setError(data.error || "PayPal error.");
       }
     } catch (e) {
-      setError("Impossibile connettersi al server.");
+      setError("Unable to connect to server.");
     } finally {
       setLoading(false);
     }
@@ -89,10 +89,10 @@ export default function PaymentModal({ plan, userEmail, onClose }) {
       if (data.invoice_url) {
         window.location.href = data.invoice_url;
       } else {
-        setError(data.error || "Errore NOWPayments.");
+        setError(data.error || "NOWPayments error.");
       }
     } catch (e) {
-      setError("Impossibile connettersi al server.");
+      setError("Unable to connect to server.");
     } finally {
       setLoading(false);
     }
@@ -208,7 +208,7 @@ export default function PaymentModal({ plan, userEmail, onClose }) {
               opacity: loading ? 0.7 : 1,
             }}
           >
-            {loading ? "Caricamento..." : btnLabel}
+            {loading ? "Loading..." : btnLabel}
           </button>
 
           <p style={{ fontSize: 10, color: "#334155", marginTop: 16, textAlign: "center", lineHeight: 1.6 }}>
