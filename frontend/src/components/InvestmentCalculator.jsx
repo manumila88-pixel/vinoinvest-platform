@@ -2,9 +2,9 @@ import React, { useState, useMemo } from "react";
 import { ComposedChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Area } from "recharts";
 
 const RISK_PROFILES = {
-  conservativo: { annualReturn: 0.06, volatility: 0.06, label: "Conservativo", color: "#4ade80" },
-  bilanciato:   { annualReturn: 0.09, volatility: 0.10, label: "Bilanciato",   color: "#C9A227" },
-  aggressivo:   { annualReturn: 0.13, volatility: 0.16, label: "Aggressivo",   color: "#f87171" },
+  conservativo: { annualReturn: 0.06, volatility: 0.06, label: "Conservativo", color: "var(--vi-positive)" },
+  bilanciato:   { annualReturn: 0.09, volatility: 0.10, label: "Bilanciato",   color: "var(--vi-accent)" },
+  aggressivo:   { annualReturn: 0.13, volatility: 0.16, label: "Aggressivo",   color: "var(--vi-negative)" },
 };
 
 function seededRandom(seed) {
@@ -61,12 +61,12 @@ export default function InvestmentCalculator({ onClose }) {
       alignItems: "center", justifyContent: "center", zIndex: 2000, padding: 16,
     }} onClick={onClose}>
       <div
-        style={{ background: "#0a1120", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 20, width: "100%", maxWidth: 640, maxHeight: "90vh", overflowY: "auto", padding: 28 }}
+        style={{ background: "var(--vi-bg)", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 20, width: "100%", maxWidth: 640, maxHeight: "90vh", overflowY: "auto", padding: 28 }}
         onClick={e => e.stopPropagation()}
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-          <h2 style={{ color: "#C9A227", fontSize: 20, fontWeight: 800, margin: 0 }}>
-            📊 Investment Calculator
+          <h2 style={{ color: "var(--vi-accent)", fontSize: 20, fontWeight: 800, margin: 0 }}>
+            Investment Calculator
           </h2>
           <button onClick={onClose} aria-label="Close" style={{ background: "none", border: "none", color: "#64748b", fontSize: 22, cursor: "pointer" }}>×</button>
         </div>
@@ -74,27 +74,27 @@ export default function InvestmentCalculator({ onClose }) {
         {/* Inputs */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
           <div>
-            <label style={{ color: "#94a3b8", fontSize: 12, display: "block", marginBottom: 6 }}>
+            <label style={{ color: "var(--vi-text-dim)", fontSize: 12, display: "block", marginBottom: 6 }}>
               Budget iniziale: <strong style={{ color: "#e2e8f0" }}>€{budget.toLocaleString("it-IT")}</strong>
             </label>
             <input type="range" min={1000} max={500000} step={1000} value={budget}
               onChange={e => setBudget(Number(e.target.value))}
-              style={{ width: "100%", accentColor: "#C9A227" }}
+              style={{ width: "100%", accentColor: "var(--vi-accent)" }}
             />
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, color: "#475569" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, color: "var(--vi-text-dim)" }}>
               <span>€1k</span><span>€500k</span>
             </div>
           </div>
 
           <div>
-            <label style={{ color: "#94a3b8", fontSize: 12, display: "block", marginBottom: 6 }}>
+            <label style={{ color: "var(--vi-text-dim)", fontSize: 12, display: "block", marginBottom: 6 }}>
               Orizzonte: <strong style={{ color: "#e2e8f0" }}>{years} anni</strong>
             </label>
             <input type="range" min={1} max={20} step={1} value={years}
               onChange={e => setYears(Number(e.target.value))}
-              style={{ width: "100%", accentColor: "#C9A227" }}
+              style={{ width: "100%", accentColor: "var(--vi-accent)" }}
             />
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, color: "#475569" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, color: "var(--vi-text-dim)" }}>
               <span>1 anno</span><span>20 anni</span>
             </div>
           </div>
@@ -123,21 +123,21 @@ export default function InvestmentCalculator({ onClose }) {
             { label: `Valore stimato (${years}a)`, value: fmt(final?.value || budget), highlight: true },
             { label: "ROI totale", value: `+${roi}%`, color: profile.color },
           ].map((s, i) => (
-            <div key={i} style={{ background: "rgba(15,23,42,0.7)", borderRadius: 10, padding: "12px 14px", textAlign: "center", border: s.highlight ? "1px solid rgba(201,162,39,0.3)" : "1px solid rgba(30,41,59,0.3)" }}>
-              <div style={{ fontSize: 10, color: "#64748b", marginBottom: 4 }}>{s.label}</div>
-              <div style={{ fontWeight: 800, fontSize: 18, color: s.color || "#e2e8f0" }}>{s.value}</div>
+            <div key={i} style={{ background: "var(--vi-bg-elev)", borderRadius: 10, padding: "12px 14px", textAlign: "center", border: s.highlight ? "1px solid rgba(201,162,39,0.3)" : "1px solid var(--vi-border)" }}>
+              <div style={{ fontSize: 10, color: "var(--vi-text-dim)", marginBottom: 4 }}>{s.label}</div>
+              <div style={{ fontWeight: 800, fontSize: 18, color: s.color || "var(--vi-text)", fontVariantNumeric: "tabular-nums" }}>{s.value}</div>
             </div>
           ))}
         </div>
 
         {/* Chart */}
         <ComposedChart width={580} height={200} data={data} style={{ maxWidth: "100%" }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(30,41,59,0.4)" />
-          <XAxis dataKey="label" tick={{ fill: "#475569", fontSize: 10 }} />
-          <YAxis tickFormatter={v => fmt(v)} tick={{ fill: "#475569", fontSize: 10 }} width={55} />
-          <Tooltip formatter={(v) => `€${v.toLocaleString("it-IT")}`} contentStyle={{ background: "#0a1120", border: "1px solid #1e293b", borderRadius: 8 }} />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--vi-border)" />
+          <XAxis dataKey="label" tick={{ fill: "var(--vi-text-dim)", fontSize: 10 }} />
+          <YAxis tickFormatter={v => fmt(v)} tick={{ fill: "var(--vi-text-dim)", fontSize: 10 }} width={55} />
+          <Tooltip formatter={(v) => `€${v.toLocaleString("it-IT")}`} contentStyle={{ background: "var(--vi-bg)", border: "1px solid var(--vi-border)", borderRadius: 8 }} />
           <Area type="monotone" dataKey="high" stroke="none" fill={`${profile.color}18`} />
-          <Area type="monotone" dataKey="low" stroke="none" fill="#0a1120" />
+          <Area type="monotone" dataKey="low" stroke="none" fill="var(--vi-bg)" />
           <Line type="monotone" dataKey="value" stroke={profile.color} strokeWidth={2} dot={false} />
         </ComposedChart>
 
