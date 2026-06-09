@@ -158,3 +158,52 @@ export async function getAuctionIndexData() {
   cache.set(key, result, 3600);
   return result;
 }
+
+// ── Open Food Facts — bottle images (CC0, no auth required) ─────────────────
+
+export async function getBottleImage(wineName, producer = "") {
+  const query = producer ? `${producer} ${wineName}` : wineName;
+  const key = `off_img_${query.toLowerCase().replace(/\s+/g, "_").slice(0, 60)}`;
+  const hit = cache.get(key);
+  if (hit !== undefined) return hit;
+
+  try {
+    const url = `https://world.openfoodfacts.org/cgi/search.pl?` +
+      `search_terms=${encodeURIComponent(query)}&search_simple=1` +
+      `&action=process&json=1&page_size=5&fields=product_name,image_url,image_front_url`;
+    const r = await get(url, { timeout: 8000 });
+    if (!r.ok) throw new Error(`OFF ${r.status}`);
+    const d = await r.json();
+    const products = d.products || [];
+    const hit2 = products.find(p => p.image_front_url || p.image_url);
+    const imageUrl = hit2?.image_front_url || hit2?.image_url || null;
+    cache.set(key, imageUrl, 86400 * 7); // 7 days
+    return imageUrl;
+  } catch {
+    cache.set(key, null);
+    return null;
+  }
+}
+
+// ── Wikimedia Commons — producer/winery images ───────────────────────────────
+
+export async function getWikimediaImage(searchTerm) {
+  const key = `wmc_${searchTerm.toLowerCase().replace(/\s+/g, "_").slice(0, 60)}`;
+  const hit = cache.get(key);
+  if (hit !== undefined) return hit;
+
+  try {
+    const url = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(searchTerm)}` +
+      `&prop=pageimages&format=json&pithumbsize=400&origin=*`;
+    const r = await get(url, { timeout: 7000 });
+    if (!r.ok) throw new Error(`Wikimedia ${r.status}`);
+    const d = await r.json();
+    const pages = Object.values(d.query?.pages || {});
+    const thumb = pages[0]?.thumbnail?.source || null;
+    cache.set(key, thumb, 86400 * 7);
+    return thumb;
+  } catch {
+    cache.set(key, null);
+    return null;
+  }
+}
