@@ -9,11 +9,11 @@ const REGION_MAP = {
 };
 
 function scoreColor(score) {
-  if (score >= 90) return "#4ade80";
+  if (score >= 90) return "var(--vi-positive)";
   if (score >= 78) return "#86efac";
-  if (score >= 65) return "#C9A227";
+  if (score >= 65) return "var(--vi-accent)";
   if (score >= 50) return "#fb923c";
-  return "#f87171";
+  return "var(--vi-negative)";
 }
 
 const VintageScore = memo(function VintageScore({ wine, compact = false }) {
@@ -49,18 +49,18 @@ const VintageScore = memo(function VintageScore({ wine, compact = false }) {
           border: `1px solid ${scoreColor(data.score)}44`, cursor: "help",
         }}
       >
-        🌡️ {data.score}
+        {data.score}
       </span>
     );
   }
 
   return (
     <div style={{
-      background: "rgba(15,23,42,0.6)", border: "1px solid rgba(30,41,59,0.5)",
+      background: "var(--vi-bg-elev)", border: "1px solid var(--vi-border)",
       borderRadius: 10, padding: "10px 14px", fontSize: 12,
     }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-        <span style={{ color: "#94a3b8", fontWeight: 600 }}>🌡️ Qualità Annata {year}</span>
+        <span style={{ color: "var(--vi-text-dim)", fontWeight: 600 }}>Qualità Annata {year}</span>
         <span style={{ color: scoreColor(data.score), fontWeight: 700 }}>{data.score}/100</span>
       </div>
       <div style={{ background: "rgba(2,6,23,0.5)", borderRadius: 4, height: 4, marginBottom: 6 }}>
@@ -68,7 +68,7 @@ const VintageScore = memo(function VintageScore({ wine, compact = false }) {
       </div>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <span style={{ color: scoreColor(data.score), fontWeight: 600 }}>{data.label}</span>
-        <span style={{ color: "#475569", fontSize: 10 }}>
+        <span style={{ color: "var(--vi-text-dim)", fontSize: 10 }}>
           {data.temp_mean}°C · {data.rain_total}mm · Open-Meteo
         </span>
       </div>
