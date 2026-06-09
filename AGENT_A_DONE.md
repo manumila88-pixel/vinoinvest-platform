@@ -1,19 +1,27 @@
-# AGENT A — STEP 0 COMPLETE
+# AGENT A — COMPLETE
 
 Branch: redesign/global
 
-## Files committed
+## All files modified
 
+### Foundation (Step 0)
 - `frontend/src/styles/tokens.css` — design tokens, colors extracted from actual project palette
 - `frontend/src/styles/utilities.css` — utility classes (.vi-interactive, .vi-btn, .vi-card, .vi-reveal)
 - `frontend/src/App.jsx` — imports tokens.css + utilities.css at lines 85-86
 - `REDESIGN_CONTRACT.md` — committed to repo
-- `frontend/src/pages/AuctionTracker.jsx` — tokens applied (no hardcoded colors)
-- `frontend/src/pages/EnPrimeur.jsx` — tokens applied
-- `frontend/src/pages/PressKit.jsx` — tokens applied (color palette reference uses #C9A227)
-- `frontend/src/pages/ReferralPage.jsx` — tokens applied
-- `frontend/src/pages/Transparency.jsx` — tokens applied
-- `frontend/src/pages/SharePortfolio.jsx` — tokens applied
+
+### Marketing pages (vi-tokens applied)
+- `frontend/src/pages/EnPrimeur.jsx`
+- `frontend/src/pages/AuctionTracker.jsx`
+- `frontend/src/pages/Transparency.jsx`
+- `frontend/src/pages/PressKit.jsx` (BRAND_COLORS data retains literal #C9A227)
+- `frontend/src/pages/ReferralPage.jsx`
+- `frontend/src/pages/SharePortfolio.jsx`
+- `frontend/src/pages/Pricing.jsx`
+- `frontend/src/pages/Learn.jsx`
+- `frontend/src/pages/B2B.jsx` (intentional blue accent for B2B brand)
+- `frontend/src/pages/LandingPage.jsx`
+- `frontend/src/pages/About.jsx`
 
 ## Palette source of truth (extracted from style.css + App.jsx grep)
 
