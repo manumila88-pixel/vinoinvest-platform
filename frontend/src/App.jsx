@@ -1006,15 +1006,29 @@ function App() {
           <LangSelector />
           {userEmail && <span style={{ fontSize: 12, color: "#3a5a7a" }}>{userEmail}</span>}
           {isAdmin && (
-            <a href="/admin" style={{ fontSize: 10, color: "var(--vi-accent)", border: "1px solid rgba(201,162,39,0.5)", borderRadius: 4, padding: "2px 8px", textTransform: "uppercase", fontWeight: 800, letterSpacing: "0.08em", textDecoration: "none", background: "rgba(201,162,39,0.08)" }}>
-              ADMIN
-            </a>
-          )}
-          {accountType && !isAdmin && (
-            <span style={{ fontSize: 10, color: "var(--vi-accent)", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 4, padding: "2px 7px", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.08em" }}>
-              {accountType}
+            <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+              <a href="/admin" style={{ fontSize: 10, color: "var(--vi-accent)", border: "1px solid rgba(201,162,39,0.5)", borderRadius: 4, padding: "2px 8px", textTransform: "uppercase", fontWeight: 800, letterSpacing: "0.08em", textDecoration: "none", background: "rgba(201,162,39,0.08)" }}>
+                ADMIN
+              </a>
+              <span style={{ fontSize: 9, color: "#475569", fontStyle: "italic" }}>(vista completa)</span>
             </span>
           )}
+          {accountType && !isAdmin && (() => {
+            const B2B_TYPES = ["b2b", "wealth_manager", "cantina", "family_office"];
+            const isB2BAccount = B2B_TYPES.includes(accountType);
+            const isEnterpriseAccount = accountType === "enterprise";
+            if (isEnterpriseAccount) return (
+              <span style={{ fontSize: 10, color: "#a78bfa", border: "1px solid rgba(167,139,250,0.6)", borderRadius: 4, padding: "2px 9px", textTransform: "uppercase", fontWeight: 800, letterSpacing: "0.1em", background: "rgba(167,139,250,0.12)", boxShadow: "0 0 8px rgba(167,139,250,0.2)" }}>
+                ENTERPRISE
+              </span>
+            );
+            if (isB2BAccount) return (
+              <span style={{ fontSize: 10, color: "#60a5fa", border: "1px solid rgba(96,165,250,0.6)", borderRadius: 4, padding: "2px 9px", textTransform: "uppercase", fontWeight: 800, letterSpacing: "0.1em", background: "rgba(96,165,250,0.12)", boxShadow: "0 0 8px rgba(96,165,250,0.2)" }}>
+                B2B
+              </span>
+            );
+            return null;
+          })()}
           <div style={{ position: "relative" }}>
             <button
               aria-label={`Notifiche${unreadCount > 0 ? ` (${unreadCount} non lette)` : ""}`}
@@ -1083,7 +1097,13 @@ function App() {
         <div className={`sidebar-overlay ${sidebarOpen ? "open" : ""}`} onClick={() => setSidebarOpen(false)} />
 
         {/* ── Sidebar ─────────────────────────────────────────────────────── */}
-        <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
+        <aside className={`sidebar ${sidebarOpen ? "open" : ""}`} style={(() => {
+          const B2B_TYPES = ["b2b", "wealth_manager", "cantina", "family_office"];
+          if (isAdmin) return { borderTop: "3px solid rgba(201,162,39,0.7)" };
+          if (accountType === "enterprise") return { borderTop: "3px solid rgba(167,139,250,0.7)" };
+          if (B2B_TYPES.includes(accountType)) return { borderTop: "3px solid rgba(96,165,250,0.7)" };
+          return {};
+        })()}>
           {[
             { id: "dashboard",  label: "Dashboard" },
             { id: "market",     label: t("nav.market") },
