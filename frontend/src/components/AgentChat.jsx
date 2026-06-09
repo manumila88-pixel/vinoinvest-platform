@@ -372,6 +372,7 @@ export default function AgentChat({ holdings = [], onAddToPortfolio, onViewWine,
           <button
             onClick={() => sendMessage()}
             disabled={loading || !input.trim()}
+            aria-label="Send message"
             style={{ padding: "0 16px", borderRadius: 12, border: "none", background: loading || !input.trim() ? "rgba(201,162,39,0.15)" : "linear-gradient(135deg,#C9A227,#a07820)", color: loading || !input.trim() ? "#64748b" : "#000", fontWeight: 800, cursor: loading || !input.trim() ? "default" : "pointer", fontSize: 20, transition: "all 0.15s", flexShrink: 0 }}
           >↑</button>
         </div>
