@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import { authFetch } from "../lib/authFetch";
 import { supabase } from "../lib/supabase";
+import AuthModal from "../components/AuthModal";
 
 const API = import.meta.env.VITE_API_URL || "https://vinoinvest-backend-2.onrender.com";
 
@@ -44,10 +45,14 @@ export default function OrgDashboard({ user }) {
   const [createdKey, setCreatedKey] = useState(null);
 
   const [session, setSession] = useState(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session: s } }) => setSession(s));
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
+      setSession(s);
+      if (s) { setShowAuthModal(false); loadOrgs(); }
+    });
     return () => subscription.unsubscribe();
   }, []);
 
@@ -121,9 +126,16 @@ export default function OrgDashboard({ user }) {
     <div style={{ minHeight: "60vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16 }}>
       <div style={{ fontSize: 48 }}>🔒</div>
       <p style={{ color: "#475569" }}>Accedi per gestire la tua organizzazione</p>
-      <a href="/login" style={{ padding: "10px 24px", background: "linear-gradient(135deg,#1d4ed8,#2563eb)", color: "#fff", borderRadius: 10, textDecoration: "none", fontWeight: 700 }}>
+      <button onClick={() => setShowAuthModal(true)} style={{ padding: "10px 24px", background: "linear-gradient(135deg,#1d4ed8,#2563eb)", color: "#fff", borderRadius: 10, border: "none", fontWeight: 700, cursor: "pointer" }}>
         Accedi
-      </a>
+      </button>
+      {showAuthModal && (
+        <AuthModal
+          reason="Accedi per gestire la tua organizzazione B2B"
+          onSuccess={() => { setShowAuthModal(false); loadOrgs(); }}
+          onClose={() => setShowAuthModal(false)}
+        />
+      )}
     </div>
   );
 
@@ -201,7 +213,7 @@ export default function OrgDashboard({ user }) {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "clamp(16px,4vw,32px)" }}>
         {/* Stats */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 16, marginBottom: 32 }}>
           <StatCard label="Clienti Totali" value={clients.length} sub={`${clients.filter(c => c.kyc_status === "approved").length} KYC approvati`} />
@@ -238,7 +250,7 @@ export default function OrgDashboard({ user }) {
             {showNewClient && (
               <form onSubmit={createClient} style={{
                 padding: 24, borderRadius: 14, background: "rgba(8,15,30,0.7)", border: "1px solid rgba(59,130,246,0.2)",
-                display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 20,
+                display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 12, marginBottom: 20,
               }}>
                 {[
                   { key: "client_name", label: "Nome Cliente", placeholder: "Mario Rossi", required: true },

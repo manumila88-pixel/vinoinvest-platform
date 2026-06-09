@@ -79,9 +79,9 @@ export default function MarketIntelligence({ user }) {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "clamp(16px,4vw,32px)" }}>
         {!isB2B && (
-          <div style={{ padding: 24, borderRadius: 14, background: "rgba(251,191,36,0.08)", border: "1px solid rgba(251,191,36,0.2)", marginBottom: 32, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ padding: 24, borderRadius: 14, background: "rgba(251,191,36,0.08)", border: "1px solid rgba(251,191,36,0.2)", marginBottom: 32, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
             <div>
               <div style={{ fontWeight: 700, fontSize: 14, color: "#fbbf24" }}>🔒 Contenuto Riservato ai Piani Professional/Enterprise</div>
               <div style={{ fontSize: 13, color: "#334155", marginTop: 4 }}>Questa sezione è disponibile per wealth manager e family office con piano Professional o Enterprise.</div>
@@ -111,7 +111,7 @@ export default function MarketIntelligence({ user }) {
           </div>
         )}
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))", gap: 24 }}>
           {/* Top Movers Istituzionali */}
           <div style={{ padding: "24px", borderRadius: 16, background: "rgba(8,15,30,0.6)", border: "1px solid rgba(59,130,246,0.12)" }}>
             <h3 style={{ margin: "0 0 16px", fontSize: 14, fontWeight: 700 }}>Top Movers Istituzionali (&gt;€500)</h3>
