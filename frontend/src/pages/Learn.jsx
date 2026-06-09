@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-const GOLD = "#C9A227";
-
 const COURSES = [
   {
     id: 1, title: "Perché investire nel vino?", icon: "🍷", duration: "5 min",
@@ -85,10 +83,10 @@ Il mercato è dominato da UK (Liv-ex, Bonhams) e Hong Kong (Zachys, Acker Asia).
 - <50: Speculativo — Sell/Avoid
 
 **Segnali di trading:**
-🟢 Strong Buy: confluenza di tutti i fattori positivi
-🔵 Buy: fondamentali solidi, trend favorevole
-🟡 Hold: mantieni, aspetta catalizzatori
-🔴 Sell: uscire dalla posizione
+Strong Buy: confluenza di tutti i fattori positivi
+Buy: fondamentali solidi, trend favorevole
+Hold: mantieni, aspetta catalizzatori
+Sell: uscire dalla posizione
 
 **Come viene calcolato:**
 Il modello Claude AI analizza dati in tempo reale: rating critici aggregati, dati climatici storici Open-Meteo, storico prezzi Liv-ex, e indicatori di liquidità del mercato.`,
@@ -177,11 +175,11 @@ Totale: €2.670 → restante per opportunità
     content: `**La conservazione è fondamentale** — un vino mal conservato perde tutto il suo valore.
 
 **Condizioni ideali:**
-- 🌡️ Temperatura: 12-15°C costante (mai sopra 20°C)
-- 💧 Umidità: 65-75% (protezione tappo di sughero)
-- 🌑 Buio: niente luce UV (danneggiano i polifenoli)
-- 🔇 Silenzio: zero vibrazioni (alterano sedimento)
-- 🍾 Orizzontale: il tappo deve essere bagnato
+- Temperatura: 12-15°C costante (mai sopra 20°C)
+- Umidità: 65-75% (protezione tappo di sughero)
+- Buio: niente luce UV (danneggiano i polifenoli)
+- Silenzio: zero vibrazioni (alterano sedimento)
+- Orizzontale: il tappo deve essere bagnato
 
 **Opzioni di storage:**
 
@@ -359,24 +357,28 @@ Per portfolio >€50.000 consulta un commercialista specializzato in beni altern
   },
 ];
 
+const LEVEL_COLORS = {
+  Principiante: "var(--vi-positive)",
+  Intermedio: "var(--vi-accent)",
+  Avanzato: "var(--vi-negative)",
+};
+
 function renderContent(text) {
   return text.split("\n").map((line, i) => {
     if (!line.trim()) return <br key={i} />;
     const clean = line.replace(/\*\*/g, "");
     if (line.startsWith("**") && line.endsWith("**")) {
-      return <p key={i} style={{ color: "#e2e8f0", fontWeight: 700, marginTop: 18, marginBottom: 6, fontSize: 15 }}>{clean}</p>;
+      return <p key={i} style={{ color: "var(--vi-text)", fontWeight: 700, marginTop: 18, marginBottom: 6, fontSize: "var(--vi-fs-sm)" }}>{clean}</p>;
     }
     if (line.startsWith("- ")) {
-      return <p key={i} style={{ paddingLeft: 18, marginBottom: 5, color: "#94a3b8" }}>• {clean.slice(2)}</p>;
+      return <p key={i} style={{ paddingLeft: 18, marginBottom: 5, color: "var(--vi-text-dim)", fontSize: "var(--vi-fs-sm)" }}>• {clean.slice(2)}</p>;
     }
     if (/^\d+\./.test(line)) {
-      return <p key={i} style={{ paddingLeft: 18, marginBottom: 5, color: "#94a3b8" }}>{clean}</p>;
+      return <p key={i} style={{ paddingLeft: 18, marginBottom: 5, color: "var(--vi-text-dim)", fontSize: "var(--vi-fs-sm)" }}>{clean}</p>;
     }
-    return <p key={i} style={{ marginBottom: 6, color: "#94a3b8" }}>{clean}</p>;
+    return <p key={i} style={{ marginBottom: 6, color: "var(--vi-text-dim)", fontSize: "var(--vi-fs-sm)" }}>{clean}</p>;
   });
 }
-
-const LEVEL_COLORS = { "Principiante": "#4ade80", "Intermedio": GOLD, "Avanzato": "#f87171" };
 
 export default function Learn() {
   const [activeId, setActiveId] = useState(null);
@@ -421,7 +423,6 @@ export default function Learn() {
   const course = COURSES.find(c => c.id === activeId);
   const passedCount = Object.values(completed).filter(v => v.passed).length;
   const progress = Math.round((passedCount / COURSES.length) * 100);
-
   const filtered = filterLevel === "Tutti" ? COURSES : COURSES.filter(c => c.level === filterLevel);
 
   if (activeId && course) {
@@ -433,39 +434,61 @@ export default function Learn() {
     const isPassed = completed[activeId]?.passed;
 
     return (
-      <div style={{ minHeight: "100vh", background: "#0b1220", padding: "32px 24px", maxWidth: 860, margin: "0 auto" }}>
+      <div style={{ minHeight: "100vh", background: "var(--vi-bg)", padding: "clamp(24px,4vw,40px) 24px", maxWidth: 860, margin: "0 auto" }}>
+        <style>{`
+          .learn-opt-btn { transition: background var(--vi-dur-fast) linear, border-color var(--vi-dur-fast) linear, color var(--vi-dur-fast) linear; }
+          .learn-opt-btn:hover:not(:disabled) { background: rgba(201,162,39,0.1) !important; border-color: var(--vi-accent) !important; color: var(--vi-accent) !important; }
+          .learn-action-btn { transition: opacity var(--vi-dur-fast) linear, transform var(--vi-dur-fast) var(--vi-ease); cursor: pointer; }
+          .learn-action-btn:hover:not(:disabled) { opacity: 0.85; transform: translateY(-1px); }
+          @media (prefers-reduced-motion: reduce) { .learn-action-btn:hover { transform: none; } }
+        `}</style>
+
         <button
           onClick={() => setActiveId(null)}
-          style={{ background: "none", border: "1px solid rgba(30,41,59,0.6)", color: "#94a3b8", borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontSize: 13, marginBottom: 28, fontFamily: "inherit" }}
-        >← Torna ai corsi</button>
+          style={{ background: "none", border: `1px solid var(--vi-border)`, color: "var(--vi-text-dim)", borderRadius: "var(--vi-radius-sm)", padding: "8px 16px", cursor: "pointer", fontSize: "var(--vi-fs-sm)", marginBottom: 28, fontFamily: "inherit" }}
+        >
+          ← Torna ai corsi
+        </button>
 
-        <div style={{ background: "rgba(15,23,42,0.85)", border: "1px solid rgba(30,41,59,0.5)", borderRadius: 18, padding: "32px 28px" }}>
+        <div className="vi-card" style={{ padding: "clamp(24px,3vw,36px)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
             <div>
-              <span style={{ fontSize: 44 }}>{course.icon}</span>
-              <h2 style={{ color: "#e2e8f0", fontSize: 22, fontWeight: 800, margin: "10px 0 4px" }}>{course.title}</h2>
+              <div style={{
+                width: 52, height: 52, marginBottom: 12,
+                background: "var(--vi-bg-elev)", border: `1px solid var(--vi-border)`,
+                borderRadius: "var(--vi-radius-md)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26
+              }}>
+                {course.icon}
+              </div>
+              <h2 style={{ color: "var(--vi-text)", fontSize: "clamp(18px,3vw,22px)", fontWeight: 800, margin: "0 0 8px", fontFamily: "var(--vi-font-display)" }}>{course.title}</h2>
               <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                <span style={{ color: "#64748b", fontSize: 12 }}>⏱ {course.duration}</span>
-                <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 20, background: LEVEL_COLORS[course.level] + "22", color: LEVEL_COLORS[course.level], fontWeight: 700 }}>{course.level}</span>
+                <span style={{ color: "var(--vi-text-dim)", fontSize: "var(--vi-fs-xs)" }}>{course.duration}</span>
+                <span style={{ fontSize: "var(--vi-fs-xs)", padding: "2px 8px", borderRadius: "var(--vi-radius-full)", background: LEVEL_COLORS[course.level] + "22", color: LEVEL_COLORS[course.level], fontWeight: 700 }}>{course.level}</span>
               </div>
             </div>
-            {isPassed && <span style={{ color: "#4ade80", fontSize: 13, fontWeight: 700 }}>✓ Completato ({completed[activeId].score}%)</span>}
+            {isPassed && (
+              <span style={{ color: "var(--vi-positive)", fontSize: "var(--vi-fs-xs)", fontWeight: 700, background: "rgba(74,222,128,0.1)", border: "1px solid rgba(74,222,128,0.25)", borderRadius: "var(--vi-radius-full)", padding: "4px 12px" }}>
+                Completato — {completed[activeId].score}%
+              </span>
+            )}
           </div>
 
           {!showQuiz ? (
             <>
-              <div style={{ marginBottom: 32 }}>{renderContent(course.content)}</div>
+              <div style={{ marginBottom: 32, lineHeight: 1.7 }}>{renderContent(course.content)}</div>
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
                 <button
+                  className="learn-action-btn vi-btn"
                   onClick={startQuiz}
-                  style={{ padding: "12px 24px", background: `linear-gradient(135deg, ${GOLD}, #a37e1a)`, color: "#0a0f1e", border: "none", borderRadius: 10, fontWeight: 800, cursor: "pointer", fontFamily: "inherit", fontSize: 14 }}
+                  style={{ padding: "11px 24px", fontFamily: "inherit", fontSize: "var(--vi-fs-sm)" }}
                 >
                   {isPassed ? "Ripeti il Quiz" : "Inizia Quiz →"}
                 </button>
                 {!isPassed && (
                   <button
+                    className="learn-action-btn"
                     onClick={() => { const u = { ...completed, [activeId]: { passed: true, score: 100, date: new Date().toISOString() } }; saveCompleted(u); }}
-                    style={{ padding: "12px 24px", background: "none", color: "#64748b", border: "1px solid rgba(30,41,59,0.6)", borderRadius: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", fontSize: 13 }}
+                    style={{ padding: "11px 24px", background: "none", color: "var(--vi-text-dim)", border: `1px solid var(--vi-border)`, borderRadius: "var(--vi-radius-md)", fontWeight: 600, fontFamily: "inherit", fontSize: "var(--vi-fs-sm)" }}
                   >
                     Segna come letto
                   </button>
@@ -474,31 +497,36 @@ export default function Learn() {
             </>
           ) : (
             <div>
-              <h3 style={{ color: GOLD, fontSize: 16, fontWeight: 800, marginBottom: 24 }}>Quiz — {course.quiz.length} domande</h3>
+              <h3 style={{ color: "var(--vi-accent)", fontSize: "var(--vi-fs-base)", fontWeight: 800, marginBottom: 24 }}>
+                Quiz — {course.quiz.length} domande
+              </h3>
               {course.quiz.map((q, qi) => {
                 const userAns = answers[qi];
                 const isCorrect = userAns === q.ans;
                 return (
                   <div key={qi} style={{ marginBottom: 28 }}>
-                    <p style={{ color: "#e2e8f0", fontWeight: 700, marginBottom: 12, fontSize: 14 }}>{qi + 1}. {q.q}</p>
+                    <p style={{ color: "var(--vi-text)", fontWeight: 700, marginBottom: 12, fontSize: "var(--vi-fs-sm)" }}>{qi + 1}. {q.q}</p>
                     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                       {q.opts.map((opt, oi) => {
-                        let bg = "rgba(15,23,42,0.6)";
-                        let border = "rgba(30,41,59,0.5)";
-                        let color = "#94a3b8";
+                        let bg = "var(--vi-surface)";
+                        let border = "var(--vi-border)";
+                        let color = "var(--vi-text-dim)";
                         if (quizSubmitted) {
-                          if (oi === q.ans) { bg = "rgba(74,222,128,0.1)"; border = "#4ade80"; color = "#4ade80"; }
-                          else if (oi === userAns && !isCorrect) { bg = "rgba(248,113,113,0.1)"; border = "#f87171"; color = "#f87171"; }
+                          if (oi === q.ans) { bg = "rgba(74,222,128,0.1)"; border = "rgba(74,222,128,0.6)"; color = "var(--vi-positive)"; }
+                          else if (oi === userAns && !isCorrect) { bg = "rgba(248,113,113,0.1)"; border = "rgba(248,113,113,0.6)"; color = "var(--vi-negative)"; }
                         } else if (oi === userAns) {
-                          bg = "rgba(201,162,39,0.12)"; border = GOLD; color = GOLD;
+                          bg = "rgba(201,162,39,0.12)"; border = "var(--vi-accent)"; color = "var(--vi-accent)";
                         }
                         return (
                           <button
                             key={oi}
                             disabled={quizSubmitted}
+                            className={quizSubmitted ? "" : "learn-opt-btn"}
                             onClick={() => !quizSubmitted && setAnswers(a => ({ ...a, [qi]: oi }))}
-                            style={{ padding: "11px 16px", textAlign: "left", background: bg, border: `1px solid ${border}`, borderRadius: 9, color, cursor: quizSubmitted ? "default" : "pointer", fontFamily: "inherit", fontSize: 13, transition: "all 0.15s" }}
-                          >{opt}</button>
+                            style={{ padding: "11px 16px", textAlign: "left", background: bg, border: `1px solid ${border}`, borderRadius: "var(--vi-radius-sm)", color, cursor: quizSubmitted ? "default" : "pointer", fontFamily: "inherit", fontSize: "var(--vi-fs-sm)" }}
+                          >
+                            {opt}
+                          </button>
                         );
                       })}
                     </div>
@@ -510,24 +538,49 @@ export default function Learn() {
                 <button
                   onClick={submitQuiz}
                   disabled={Object.keys(answers).length < course.quiz.length}
-                  style={{ padding: "13px 28px", background: Object.keys(answers).length < course.quiz.length ? "#1e293b" : `linear-gradient(135deg, ${GOLD}, #a37e1a)`, color: Object.keys(answers).length < course.quiz.length ? "#475569" : "#0a0f1e", border: "none", borderRadius: 10, fontWeight: 800, cursor: Object.keys(answers).length < course.quiz.length ? "not-allowed" : "pointer", fontFamily: "inherit", fontSize: 14 }}
+                  className="learn-action-btn"
+                  style={{
+                    padding: "13px 28px",
+                    background: Object.keys(answers).length < course.quiz.length ? "var(--vi-bg-elev)" : "var(--vi-accent)",
+                    color: Object.keys(answers).length < course.quiz.length ? "var(--vi-text-dim)" : "var(--vi-bg)",
+                    border: "none", borderRadius: "var(--vi-radius-md)", fontWeight: 800,
+                    cursor: Object.keys(answers).length < course.quiz.length ? "not-allowed" : "pointer",
+                    fontFamily: "inherit", fontSize: "var(--vi-fs-sm)"
+                  }}
                 >
                   Invia risposte ({Object.keys(answers).length}/{course.quiz.length})
                 </button>
               ) : (
                 <div style={{ marginTop: 8 }}>
-                  <div style={{ padding: 20, borderRadius: 12, background: quizResult.pct >= 60 ? "rgba(74,222,128,0.08)" : "rgba(248,113,113,0.08)", border: `1px solid ${quizResult.pct >= 60 ? "#4ade80" : "#f87171"}`, marginBottom: 16 }}>
-                    <div style={{ fontSize: 32, marginBottom: 8 }}>{quizResult.pct >= 60 ? "🎉" : "📚"}</div>
-                    <p style={{ color: quizResult.pct >= 60 ? "#4ade80" : "#f87171", fontWeight: 800, fontSize: 18, margin: "0 0 4px" }}>
+                  <div style={{
+                    padding: 20, borderRadius: "var(--vi-radius-md)", marginBottom: 16,
+                    background: quizResult.pct >= 60 ? "rgba(74,222,128,0.08)" : "rgba(248,113,113,0.08)",
+                    border: `1px solid ${quizResult.pct >= 60 ? "rgba(74,222,128,0.3)" : "rgba(248,113,113,0.3)"}`
+                  }}>
+                    <p style={{ color: quizResult.pct >= 60 ? "var(--vi-positive)" : "var(--vi-negative)", fontWeight: 800, fontSize: "var(--vi-fs-xl)", margin: "0 0 6px", fontVariantNumeric: "tabular-nums" }}>
                       {quizResult.correct}/{quizResult.total} corrette — {quizResult.pct}%
                     </p>
-                    <p style={{ color: "#64748b", fontSize: 13 }}>
-                      {quizResult.pct >= 60 ? "Ottimo! Lezione completata con successo." : "Punteggio insufficiente (min 60%). Rileggi la lezione e riprova."}
+                    <p style={{ color: "var(--vi-text-dim)", fontSize: "var(--vi-fs-sm)", margin: 0 }}>
+                      {quizResult.pct >= 60 ? "Ottimo. Lezione completata con successo." : "Punteggio insufficiente (min 60%). Rileggi la lezione e riprova."}
                     </p>
                   </div>
                   <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                    <button onClick={() => setShowQuiz(false)} style={{ padding: "11px 22px", background: "none", border: `1px solid ${GOLD}`, color: GOLD, borderRadius: 9, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", fontSize: 13 }}>Rileggi lezione</button>
-                    {quizResult.pct < 60 && <button onClick={startQuiz} style={{ padding: "11px 22px", background: `linear-gradient(135deg, ${GOLD}, #a37e1a)`, color: "#0a0f1e", border: "none", borderRadius: 9, fontWeight: 800, cursor: "pointer", fontFamily: "inherit", fontSize: 13 }}>Riprova Quiz</button>}
+                    <button
+                      onClick={() => setShowQuiz(false)}
+                      className="learn-action-btn"
+                      style={{ padding: "11px 22px", background: "none", border: `1px solid var(--vi-accent)`, color: "var(--vi-accent)", borderRadius: "var(--vi-radius-md)", fontWeight: 700, fontFamily: "inherit", fontSize: "var(--vi-fs-sm)" }}
+                    >
+                      Rileggi lezione
+                    </button>
+                    {quizResult.pct < 60 && (
+                      <button
+                        onClick={startQuiz}
+                        className="learn-action-btn vi-btn"
+                        style={{ padding: "11px 22px", fontFamily: "inherit", fontSize: "var(--vi-fs-sm)" }}
+                      >
+                        Riprova Quiz
+                      </button>
+                    )}
                   </div>
                 </div>
               )}
@@ -539,29 +592,44 @@ export default function Learn() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#0b1220", padding: "32px 24px", maxWidth: 1000, margin: "0 auto" }}>
+    <div style={{ minHeight: "100vh", background: "var(--vi-bg)", padding: "clamp(24px,4vw,40px) 24px", maxWidth: 1000, margin: "0 auto" }}>
+      <style>{`
+        .learn-course-card { transition: transform var(--vi-dur) var(--vi-ease), box-shadow var(--vi-dur) var(--vi-ease), border-color var(--vi-dur-fast) linear; cursor: pointer; }
+        .learn-course-card:hover { transform: translateY(-2px); border-color: var(--vi-accent) !important; box-shadow: var(--vi-elev-2); }
+        .learn-level-btn { transition: background var(--vi-dur-fast) linear, color var(--vi-dur-fast) linear, border-color var(--vi-dur-fast) linear; cursor: pointer; }
+        @media (prefers-reduced-motion: reduce) { .learn-course-card:hover { transform: none; } }
+      `}</style>
+
       {/* Header */}
       <div style={{ marginBottom: 32 }}>
-        <h1 style={{ color: GOLD, fontSize: 30, fontWeight: 900, margin: "0 0 6px" }}>🎓 Wine Investment Academy</h1>
-        <p style={{ color: "#64748b", fontSize: 14, margin: "0 0 20px" }}>
+        <div style={{ fontSize: "var(--vi-fs-xs)", letterSpacing: "0.15em", color: "var(--vi-accent)", textTransform: "uppercase", fontWeight: 600, marginBottom: 10 }}>
+          Academy
+        </div>
+        <h1 style={{ fontFamily: "var(--vi-font-display)", fontSize: "clamp(24px,4vw,32px)", fontWeight: 900, margin: "0 0 8px", color: "var(--vi-text)" }}>
+          Wine Investment Academy
+        </h1>
+        <p style={{ color: "var(--vi-text-dim)", fontSize: "var(--vi-fs-sm)", margin: "0 0 24px" }}>
           {COURSES.length} corsi gratuiti · quiz finali · traccia i tuoi progressi
         </p>
 
-        {/* Overall progress */}
-        <div style={{ background: "rgba(15,23,42,0.8)", border: "1px solid rgba(30,41,59,0.5)", borderRadius: 14, padding: "16px 20px", marginBottom: 24, display: "flex", gap: 20, alignItems: "center", flexWrap: "wrap" }}>
+        {/* Progress bar */}
+        <div className="vi-card" style={{ padding: "16px 20px", marginBottom: 24, display: "flex", gap: 20, alignItems: "center", flexWrap: "wrap" }}>
           <div style={{ flex: 1, minWidth: 200 }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-              <span style={{ color: "#e2e8f0", fontSize: 13, fontWeight: 700 }}>Progresso totale</span>
-              <span style={{ color: GOLD, fontSize: 13, fontWeight: 700 }}>{passedCount}/{COURSES.length}</span>
+              <span style={{ color: "var(--vi-text)", fontSize: "var(--vi-fs-sm)", fontWeight: 700 }}>Progresso totale</span>
+              <span style={{ color: "var(--vi-accent)", fontSize: "var(--vi-fs-sm)", fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>{passedCount}/{COURSES.length}</span>
             </div>
-            <div style={{ height: 7, background: "rgba(30,41,59,0.7)", borderRadius: 4 }}>
-              <div style={{ width: `${progress}%`, height: "100%", background: `linear-gradient(90deg, ${GOLD}, #4ade80)`, borderRadius: 4, transition: "width 0.5s" }} />
+            <div style={{ height: 6, background: "var(--vi-bg-elev)", borderRadius: "var(--vi-radius-full)" }}>
+              <div style={{ width: `${progress}%`, height: "100%", background: `linear-gradient(90deg, var(--vi-accent), var(--vi-positive))`, borderRadius: "var(--vi-radius-full)", transition: "width 0.5s ease" }} />
             </div>
           </div>
           {passedCount === COURSES.length && (
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 28 }}>🏅</span>
-              <span style={{ color: "#4ade80", fontWeight: 800, fontSize: 14 }}>Corso completato!</span>
+            <div style={{
+              display: "flex", alignItems: "center", gap: 8,
+              background: "rgba(74,222,128,0.1)", border: "1px solid rgba(74,222,128,0.3)",
+              borderRadius: "var(--vi-radius-full)", padding: "6px 14px"
+            }}>
+              <span style={{ color: "var(--vi-positive)", fontWeight: 800, fontSize: "var(--vi-fs-sm)" }}>Corso completato</span>
             </div>
           )}
         </div>
@@ -571,9 +639,18 @@ export default function Learn() {
           {["Tutti", "Principiante", "Intermedio", "Avanzato"].map(lv => (
             <button
               key={lv}
+              className="learn-level-btn"
               onClick={() => setFilterLevel(lv)}
-              style={{ padding: "6px 14px", borderRadius: 20, border: `1px solid ${filterLevel === lv ? GOLD : "rgba(30,41,59,0.6)"}`, background: filterLevel === lv ? GOLD + "22" : "transparent", color: filterLevel === lv ? GOLD : "#64748b", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}
-            >{lv}</button>
+              style={{
+                padding: "6px 16px", borderRadius: "var(--vi-radius-full)",
+                border: `1px solid ${filterLevel === lv ? "var(--vi-accent)" : "var(--vi-border)"}`,
+                background: filterLevel === lv ? "rgba(201,162,39,0.12)" : "transparent",
+                color: filterLevel === lv ? "var(--vi-accent)" : "var(--vi-text-dim)",
+                fontSize: "var(--vi-fs-xs)", fontWeight: 700, fontFamily: "inherit"
+              }}
+            >
+              {lv}
+            </button>
           ))}
         </div>
       </div>
@@ -586,28 +663,41 @@ export default function Learn() {
           return (
             <div
               key={c.id}
+              className="learn-course-card vi-card"
               onClick={() => openLesson(c.id)}
               style={{
-                background: done ? "rgba(74,222,128,0.04)" : "rgba(15,23,42,0.8)",
-                border: done ? "1px solid rgba(74,222,128,0.3)" : "1px solid rgba(30,41,59,0.5)",
-                borderRadius: 15, padding: "22px 20px", cursor: "pointer",
-                transition: "all 0.2s", position: "relative",
+                border: done ? "1px solid rgba(74,222,128,0.3)" : `1px solid var(--vi-border)`,
+                background: done ? "rgba(74,222,128,0.04)" : "var(--vi-surface)",
+                padding: "clamp(18px,2vw,22px)", position: "relative"
               }}
-              onMouseEnter={e => e.currentTarget.style.borderColor = GOLD}
-              onMouseLeave={e => e.currentTarget.style.borderColor = done ? "rgba(74,222,128,0.3)" : "rgba(30,41,59,0.5)"}
             >
               {done && (
-                <span style={{ position: "absolute", top: 12, right: 12, background: "rgba(74,222,128,0.15)", color: "#4ade80", fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 20 }}>
-                  ✓ {score}%
+                <span style={{
+                  position: "absolute", top: 12, right: 12,
+                  background: "rgba(74,222,128,0.15)", color: "var(--vi-positive)",
+                  fontSize: "var(--vi-fs-xs)", fontWeight: 700, padding: "2px 8px",
+                  borderRadius: "var(--vi-radius-full)", fontVariantNumeric: "tabular-nums"
+                }}>
+                  {score}%
                 </span>
               )}
-              <div style={{ fontSize: 36, marginBottom: 10 }}>{c.icon}</div>
-              <div style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "center" }}>
-                <span style={{ fontSize: 10, color: "#475569" }}>Corso {c.id} · {c.duration}</span>
-                <span style={{ fontSize: 10, padding: "1px 7px", borderRadius: 20, background: LEVEL_COLORS[c.level] + "22", color: LEVEL_COLORS[c.level], fontWeight: 700 }}>{c.level}</span>
+              <div style={{
+                width: 44, height: 44, marginBottom: 14,
+                background: "var(--vi-bg-elev)", border: `1px solid var(--vi-border)`,
+                borderRadius: "var(--vi-radius-md)", display: "flex", alignItems: "center",
+                justifyContent: "center", fontSize: 22
+              }}>
+                {c.icon}
               </div>
-              <h3 style={{ color: "#e2e8f0", fontSize: 14, fontWeight: 700, margin: "0 0 8px", lineHeight: 1.4 }}>{c.title}</h3>
-              <p style={{ color: "#475569", fontSize: 12, margin: 0 }}>{c.quiz.length} domande quiz</p>
+              <div style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "center" }}>
+                <span style={{ fontSize: "var(--vi-fs-xs)", color: "var(--vi-text-dim)" }}>Corso {c.id} · {c.duration}</span>
+                <span style={{
+                  fontSize: "var(--vi-fs-xs)", padding: "1px 7px", borderRadius: "var(--vi-radius-full)",
+                  background: LEVEL_COLORS[c.level] + "22", color: LEVEL_COLORS[c.level], fontWeight: 700
+                }}>{c.level}</span>
+              </div>
+              <h3 style={{ color: "var(--vi-text)", fontSize: "var(--vi-fs-sm)", fontWeight: 700, margin: "0 0 8px", lineHeight: 1.4 }}>{c.title}</h3>
+              <p style={{ color: "var(--vi-text-dim)", fontSize: "var(--vi-fs-xs)", margin: 0 }}>{c.quiz.length} domande quiz</p>
             </div>
           );
         })}
