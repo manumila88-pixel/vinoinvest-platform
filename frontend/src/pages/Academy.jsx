@@ -269,7 +269,7 @@ function AssessmentModal({ step, question, total, onAnswer, onClose }) {
       <div style={{ background: "#1a2535", borderRadius: 20, padding: 32, maxWidth: 520, width: "100%" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
           <span style={{ fontSize: 13, color: "#64748b" }}>Domanda {step + 1} di {total}</span>
-          <button onClick={onClose} style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 18 }}>✕</button>
+          <button onClick={onClose} aria-label="Close quiz" style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 18 }}>✕</button>
         </div>
         <div style={{ width: "100%", height: 4, background: "rgba(255,255,255,0.08)", borderRadius: 2, marginBottom: 24 }}>
           <div style={{ width: `${((step) / total) * 100}%`, height: "100%", background: "#C9A227", borderRadius: 2 }} />

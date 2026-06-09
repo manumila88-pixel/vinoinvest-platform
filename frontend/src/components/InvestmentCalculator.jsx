@@ -68,7 +68,7 @@ export default function InvestmentCalculator({ onClose }) {
           <h2 style={{ color: "#C9A227", fontSize: 20, fontWeight: 800, margin: 0 }}>
             📊 Investment Calculator
           </h2>
-          <button onClick={onClose} style={{ background: "none", border: "none", color: "#64748b", fontSize: 22, cursor: "pointer" }}>×</button>
+          <button onClick={onClose} aria-label="Close" style={{ background: "none", border: "none", color: "#64748b", fontSize: 22, cursor: "pointer" }}>×</button>
         </div>
 
         {/* Inputs */}

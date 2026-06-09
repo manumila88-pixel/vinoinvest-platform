@@ -140,7 +140,7 @@ const WineCard = memo(function WineCard({
           {alerts.map(a => (
             <div key={a.id} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10, color: "#60a5fa", marginBottom: 3 }}>
               <span>🔔 Alert ≤ €{Number(a.target_price).toFixed(0)}</span>
-              <button onClick={() => onDeleteAlert(a.id)} style={{ background: "none", border: "none", color: "#f87171", cursor: "pointer", fontSize: 12, padding: 0 }}>×</button>
+              <button onClick={() => onDeleteAlert(a.id)} aria-label="Delete alert" style={{ background: "none", border: "none", color: "#f87171", cursor: "pointer", fontSize: 12, padding: 0 }}>×</button>
             </div>
           ))}
           <div style={{ display: "flex", gap: 4 }}>
@@ -152,7 +152,7 @@ const WineCard = memo(function WineCard({
               style={{ flex: 1, padding: "5px 8px", borderRadius: 7, border: "1px solid rgba(30,41,59,0.7)", background: "#0b1220", color: "#94a3b8", fontSize: 11, outline: "none", minWidth: 0, fontFamily: "'Inter', Arial, sans-serif" }}
               onKeyDown={e => e.key === "Enter" && onCreateAlert(wine)}
             />
-            <button onClick={() => onCreateAlert(wine)} style={{ padding: "5px 8px", borderRadius: 7, border: "1px solid rgba(30,58,95,0.6)", background: "#0c1a2e", color: "#60a5fa", fontSize: 11, cursor: "pointer" }}>🔔</button>
+            <button onClick={() => onCreateAlert(wine)} aria-label="Set price alert" style={{ padding: "5px 8px", borderRadius: 7, border: "1px solid rgba(30,58,95,0.6)", background: "#0c1a2e", color: "#60a5fa", fontSize: 11, cursor: "pointer" }}>🔔</button>
           </div>
         </div>
         <div className="wineCard-actions">

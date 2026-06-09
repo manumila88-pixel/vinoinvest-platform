@@ -99,7 +99,7 @@ export default function ProactiveBriefing({ userId, holdings = [], marketWines =
           <span style={{ fontSize: 18 }}>🍷</span>
           <span style={{ fontSize: 11, fontWeight: 700, color: "#C9A227", fontFamily: "'Playfair Display',serif" }}>AI Wine Advisor</span>
         </div>
-        <button onClick={dismiss} style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 16, lineHeight: 1 }}>✕</button>
+        <button onClick={dismiss} aria-label="Dismiss" style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 16, lineHeight: 1 }}>✕</button>
       </div>
 
       {briefing.type === "analysis" && (

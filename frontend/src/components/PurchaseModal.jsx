@@ -51,10 +51,10 @@ export default function PurchaseModal({ wine, onClose, onImport }) {
         setImportMsg({ type: "success", text: `${wine.name} aggiunto al portfolio!` });
         setTimeout(() => { onImport?.(d); onClose(); }, 1500);
       } else {
-        setImportMsg({ type: "error", text: d.error || "Errore" });
+        setImportMsg({ type: "error", text: d.error || "Error" });
       }
     } catch (e) {
-      setImportMsg({ type: "error", text: "Errore di rete" });
+      setImportMsg({ type: "error", text: "Network error" });
     }
     setImporting(false);
   };
@@ -69,7 +69,7 @@ export default function PurchaseModal({ wine, onClose, onImport }) {
             <h2 style={{ fontSize: 20, fontWeight: 800, color: "#e2e8f0", margin: 0 }}>{wine.name}</h2>
             <p style={{ color: "#64748b", fontSize: 13, marginTop: 4 }}>{wine.producer} {wine.vintage && `· ${wine.vintage}`}</p>
           </div>
-          <button onClick={onClose} style={{ background: "none", border: "none", color: "#64748b", fontSize: 22, cursor: "pointer", lineHeight: 1 }}>×</button>
+          <button onClick={onClose} aria-label="Close" style={{ background: "none", border: "none", color: "#64748b", fontSize: 22, cursor: "pointer", lineHeight: 1 }}>×</button>
         </div>
 
         {/* Wine image + price */}
@@ -80,13 +80,13 @@ export default function PurchaseModal({ wine, onClose, onImport }) {
           <div>
             <div style={{ fontSize: 28, fontWeight: 800, color: "#C9A227" }}>€ {(wine.currentPrice || 0).toLocaleString("it-IT")}</div>
             <div style={{ fontSize: 12, color: "#4ade80", marginTop: 2 }}>AI Score: {wine.investmentScore || "—"}/100</div>
-            <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>Rischio: {wine.risk || "—"}</div>
+            <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>Risk: {wine.risk || "—"}</div>
           </div>
         </div>
 
         {/* Tabs */}
         <div style={{ display: "flex", gap: 4, marginBottom: 20, borderBottom: "1px solid rgba(30,41,59,0.6)", paddingBottom: 0 }}>
-          {[{ id: "buy", label: "Dove comprare" }, { id: "import", label: "Ho già comprato" }].map(t => (
+          {[{ id: "buy", label: "Where to buy" }, { id: "import", label: "Already purchased" }].map(t => (
             <button key={t.id} onClick={() => setTab(t.id)} style={{ padding: "8px 16px", border: "none", background: "none", color: tab === t.id ? "#C9A227" : "#475569", fontSize: 13, fontWeight: tab === t.id ? 700 : 400, cursor: "pointer", borderBottom: tab === t.id ? "2px solid #C9A227" : "2px solid transparent" }}>
               {t.label}
             </button>
@@ -97,7 +97,7 @@ export default function PurchaseModal({ wine, onClose, onImport }) {
         {tab === "buy" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {loading ? (
-              <div style={{ color: "#475569", textAlign: "center", padding: 20 }}>Caricamento piattaforme...</div>
+              <div style={{ color: "#475569", textAlign: "center", padding: 20 }}>Loading platforms...</div>
             ) : platforms.map(p => (
               <a
                 key={p.id}
@@ -140,7 +140,7 @@ export default function PurchaseModal({ wine, onClose, onImport }) {
                 <label style={{ fontSize: 11, color: "#64748b", display: "block", marginBottom: 5, textTransform: "uppercase", letterSpacing: "0.08em" }}>{label}</label>
                 {type === "select" ? (
                   <select value={importForm[key]} onChange={e => setImportForm(p => ({ ...p, [key]: e.target.value }))} className="searchInput" style={{ margin: 0, width: "100%" }}>
-                    <option value="">Seleziona...</option>
+                    <option value="">Select...</option>
                     {options.map(o => <option key={o} value={o}>{o}</option>)}
                   </select>
                 ) : (

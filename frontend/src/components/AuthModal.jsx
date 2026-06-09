@@ -38,7 +38,7 @@ export default function AuthModal({ onSuccess, onClose, defaultTab = "login", re
         const { data: ud } = await supabase.from("users").select("account_type").eq("id", data.user.id).single();
         onSuccess?.({ user: data.user, account_type: ud?.account_type || "b2c" });
       }
-    } catch { setError("Errore imprevisto. Riprova."); }
+    } catch { setError("Unexpected error. Please try again."); }
     setLoading(false);
   }
 
@@ -69,7 +69,7 @@ export default function AuthModal({ onSuccess, onClose, defaultTab = "login", re
         {/* Header */}
         <div style={{ padding: "20px 24px 0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ fontSize: 22, fontWeight: 800, color: GOLD, fontFamily: "Inter, sans-serif" }}>VinoInvest</div>
-          {onClose && <button onClick={onClose} style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 20, lineHeight: 1 }}>✕</button>}
+          {onClose && <button onClick={onClose} aria-label="Close" style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 20, lineHeight: 1 }}>✕</button>}
         </div>
 
         {/* Reason banner */}

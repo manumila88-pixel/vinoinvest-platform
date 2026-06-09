@@ -126,24 +126,24 @@ function AIPortfolioAnalysis({ holdings, totalValue, totalInvested, userId }) {
     <div style={{ marginBottom: 32, background: "rgba(11,18,32,0.85)", border: "1px solid rgba(31,41,55,0.7)", borderRadius: 18, padding: 24 }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 10 }}>
         <div>
-          <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 18, fontWeight: 700, margin: 0 }}>AI Analysis del tuo Portfolio</h3>
-          <p style={{ fontSize: 12, color: "#3a5a7a", marginTop: 3 }}>Analisi Claude AI basata sulle tue posizioni reali</p>
+          <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 18, fontWeight: 700, margin: 0 }}>AI Portfolio Analysis</h3>
+          <p style={{ fontSize: 12, color: "#3a5a7a", marginTop: 3 }}>Claude AI analysis based on your real positions</p>
         </div>
         <button className="btn-primary" style={{ width: "auto", padding: "9px 18px", fontSize: 12 }} onClick={runAnalysis} disabled={loading}>
-          {loading ? "Analisi in corso..." : analysis ? "Aggiorna" : "Analizza Portfolio"}
+          {loading ? "Analyzing..." : analysis ? "Refresh" : "Analyze Portfolio"}
         </button>
       </div>
 
       {!analysis && !loading && (
         <div style={{ fontSize: 13, color: "#3a5a7a", textAlign: "center", padding: 16, border: "1px dashed rgba(30,41,59,0.5)", borderRadius: 10 }}>
-          Clicca "Analizza Portfolio" per ricevere raccomandazioni AI personalizzate su {holdings.length} vini.
+          Click "Analyze Portfolio" to get personalized AI recommendations on {holdings.length} wines.
         </div>
       )}
 
       {loading && (
         <div style={{ display: "flex", alignItems: "center", gap: 10, color: "#3a5a7a", padding: 16 }}>
           <span style={{ width: 14, height: 14, borderRadius: "50%", border: "2px solid #3a5a7a", borderTopColor: "#C9A227", display: "inline-block", animation: "spin 0.8s linear infinite" }} />
-          L'AI sta analizzando il tuo portfolio...
+          AI is analyzing your portfolio...
         </div>
       )}
 
@@ -327,7 +327,7 @@ function PWAInstallBanner() {
         <div style={{ fontSize: 11, color: "#64748b" }}>Add to home screen for quick access</div>
       </div>
       <button onClick={async () => { deferredPrompt?.prompt(); setVisible(false); }} style={{ background: "#C9A227", color: "#020617", border: "none", borderRadius: 8, padding: "7px 14px", fontWeight: 700, cursor: "pointer", fontSize: 12 }}>Install</button>
-      <button onClick={() => setVisible(false)} style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 20, padding: 0 }}>×</button>
+      <button onClick={() => setVisible(false)} aria-label="Dismiss" style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 20, padding: 0 }}>×</button>
     </div>
   );
 }
@@ -780,10 +780,10 @@ function App() {
         toast("Posizione aggiunta al portfolio", "success");
         loadData();
       } else {
-        toast("Errore nell'aggiungere la posizione", "error");
+        toast("Error adding position", "error");
       }
     } catch {
-      toast("Errore di rete", "error");
+      toast("Network error", "error");
     }
   }
 
@@ -915,13 +915,13 @@ function App() {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   const tabMeta = {
-    dashboard: { title: "Dashboard Portfolio | VinoInvest", desc: "Monitora il tuo portfolio di vini pregiati con AI Score, grafici prezzi e alert in tempo reale." },
-    market: { title: "Mercato Vini da Investimento | VinoInvest", desc: "Esplora 50.000+ vini da investimento con prezzi storici Liv-ex, AI Score e filtri avanzati." },
-    blog: { title: "Wine Investment Blog | VinoInvest", desc: "Guide, analisi e strategie per investire in vino pregiato. Aggiornato settimanalmente." },
-    analysis: { title: "Analisi AI Portfolio | VinoInvest", desc: "Analisi intelligente del tuo portfolio vini con raccomandazioni AI personalizzate." },
-    myportfolio: { title: "Il Tuo Portfolio Vino | VinoInvest", desc: "Gestisci e valuta il tuo cellar con prezzi real-time e performance storiche." },
-    portfolio: { title: "Il Tuo Portfolio Vino | VinoInvest", desc: "Gestisci e valuta il tuo cellar con prezzi real-time e performance storiche." },
-    b2b: { title: "Soluzioni B2B per Wealth Manager | VinoInvest", desc: "Dashboard professionale per wealth manager, family office e consulenti finanziari." },
+    dashboard: { title: "Portfolio Dashboard | VinoInvest", desc: "Monitor your fine wine portfolio with AI Score, price charts and real-time alerts." },
+    market: { title: "Investment Wine Market | VinoInvest", desc: "Explore 50,000+ investment wines with Liv-ex historical prices, AI Score and advanced filters." },
+    blog: { title: "Wine Investment Blog | VinoInvest", desc: "Guides, analysis and strategies for investing in fine wine. Updated weekly." },
+    analysis: { title: "AI Portfolio Analysis | VinoInvest", desc: "Intelligent analysis of your wine portfolio with personalized AI recommendations." },
+    myportfolio: { title: "Your Wine Portfolio | VinoInvest", desc: "Manage and value your cellar with real-time prices and historical performance." },
+    portfolio: { title: "Your Wine Portfolio | VinoInvest", desc: "Manage and value your cellar with real-time prices and historical performance." },
+    b2b: { title: "B2B Solutions for Wealth Managers | VinoInvest", desc: "Professional dashboard for wealth managers, family offices and financial advisors." },
   };
   const currentMeta = modalWine
     ? { title: `${modalWine.name} ${modalWine.vintage || ""} - Prezzo ${modalWine.current_price || modalWine.price || ""} EUR | VinoInvest`.replace(/\s+/g, " ").trim(), desc: `${modalWine.name}: AI Score ${modalWine.investment_score || modalWine.aiScore || "N/A"}/100. Storico prezzi, dove comprare. Produttore: ${modalWine.producer || ""}.` }
@@ -1037,7 +1037,7 @@ function App() {
                   {notifications.length === 0 ? (
                     <div style={{ padding: "24px 16px", textAlign: "center", color: "#3a5a7a", fontSize: 13 }}>
                       <div style={{ fontSize: 24, marginBottom: 8 }}>🔕</div>
-                      Nessuna notifica
+                      {t('notifications.noNotifications')}
                     </div>
                   ) : (
                     notifications.slice(0, 8).map(n => (
@@ -1268,7 +1268,7 @@ function App() {
                       <span style={{ fontSize: 12, fontWeight: 700, color: "#C9A227" }}>🍷 L'AI suggerisce anche...</span>
                       <span style={{ fontSize: 11, color: "#64748b", marginLeft: 8 }}>Simili a {proactiveTrigger}</span>
                     </div>
-                    <button onClick={() => { setProactiveWines([]); setProactiveTrigger(null); }} style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 14 }}>✕</button>
+                    <button onClick={() => { setProactiveWines([]); setProactiveTrigger(null); }} aria-label="Close suggestions" style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 14 }}>✕</button>
                   </div>
                   <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                     {proactiveWines.slice(0, 4).map(w => (
@@ -1354,14 +1354,14 @@ function App() {
               {blogLoading && (
                 <div style={{ display: "flex", alignItems: "center", gap: 10, color: "#3a5a7a", padding: 24 }}>
                   <span style={{ width: 14, height: 14, borderRadius: "50%", border: "2px solid #3a5a7a", borderTopColor: "#C9A227", display: "inline-block", animation: "spin 0.8s linear infinite" }} />
-                  Generazione articoli AI in corso...
+                  Generating AI articles...
                 </div>
               )}
 
               {selectedPost ? (
                 /* ── Full post view ─── */
                 <article style={{ maxWidth: 720 }}>
-                  <div style={{ fontSize: 11, color: "#C9A227", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>{selectedPost.category} · {selectedPost.readTime} di lettura</div>
+                  <div style={{ fontSize: 11, color: "#C9A227", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>{selectedPost.category} · {selectedPost.readTime} read</div>
                   <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 28, fontWeight: 800, lineHeight: 1.25, marginBottom: 12 }}>{selectedPost.title}</h1>
                   <div style={{ fontSize: 12, color: "#64748b", marginBottom: 24 }}>
                     {selectedPost.author} · {new Date(selectedPost.publishedAt).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
@@ -1394,12 +1394,12 @@ function App() {
                       <p style={{ fontSize: 13, color: "#64748b", lineHeight: 1.6, marginBottom: 14, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{post.excerpt}</p>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 11, color: "#3a5a7a" }}>
                         <span>{post.author}</span>
-                        <span style={{ color: "#C9A227", fontWeight: 600 }}>Leggi →</span>
+                        <span style={{ color: "#C9A227", fontWeight: 600 }}>Read →</span>
                       </div>
                     </div>
                   ))}
                   {!blogLoading && blogPosts.length === 0 && (
-                    <div style={{ color: "#3a5a7a", padding: 24, gridColumn: "1/-1", textAlign: "center" }}>Nessun articolo disponibile.</div>
+                    <div style={{ color: "#3a5a7a", padding: 24, gridColumn: "1/-1", textAlign: "center" }}>No articles available.</div>
                   )}
                 </div>
               )}
@@ -1646,7 +1646,7 @@ function App() {
                 <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 22, fontWeight: 800, marginBottom: 4 }}>AI Wine Advisor</h2>
                 <p style={{ color: "#64748b", fontSize: 13, marginBottom: 16 }}>Chatta con il tuo consulente AI — analisi portafoglio, notizie mercato, opportunità.</p>
                 <div style={{ background: "rgba(11,18,32,0.85)", border: "1px solid rgba(30,41,59,0.7)", borderRadius: 16, overflow: "hidden" }}>
-                  <Suspense fallback={<div style={{ minHeight: 200, display: "flex", alignItems: "center", justifyContent: "center", color: "#3a5a7a", fontSize: 13 }}>Caricamento chat...</div>}>
+                  <Suspense fallback={<div style={{ minHeight: 200, display: "flex", alignItems: "center", justifyContent: "center", color: "#3a5a7a", fontSize: 13 }}>Loading...</div>}>
                     <AgentChat holdings={holdings} onAddToPortfolio={handleAddToPortfolio} />
                   </Suspense>
                 </div>
@@ -1820,7 +1820,7 @@ function App() {
             animation: "floatIn 0.2s ease-out",
           }}>
             <ErrorBoundary>
-              <Suspense fallback={<div style={{ minHeight: 200, display: "flex", alignItems: "center", justifyContent: "center", color: "#3a5a7a", fontSize: 13 }}>Caricamento...</div>}>
+              <Suspense fallback={<div style={{ minHeight: 200, display: "flex", alignItems: "center", justifyContent: "center", color: "#3a5a7a", fontSize: 13 }}>Loading...</div>}>
                 <AgentChat
                   holdings={holdings}
                   onAddToPortfolio={handleAddToPortfolio}
@@ -1904,13 +1904,13 @@ function App() {
           ))}
         </div>
         <div style={{ background: "rgba(201,162,39,0.06)", border: "1px solid rgba(201,162,39,0.15)", borderRadius: 8, padding: "10px 14px", marginBottom: 10, fontSize: 12, lineHeight: 1.6, color: "#94a3b8" }}>
-          <strong style={{ color: "#C9A227" }}>⚠️ Avvertenza:</strong> VinoInvest fornisce dati e analisi a scopo puramente informativo. Non costituisce consulenza finanziaria, raccomandazione di investimento o sollecitazione all'acquisto. I rendimenti passati non garantiscono risultati futuri. Investire nel vino comporta rischi di perdita del capitale. I prezzi mostrati sono stime algoritmiche salvo diversa indicazione. <a href="/disclaimer" style={{ color: "#C9A227" }}>Leggi il disclaimer completo →</a>
+          <strong style={{ color: "#C9A227" }}>⚠️ Disclaimer:</strong> VinoInvest provides data and analysis for informational purposes only. This does not constitute financial advice, investment recommendation or solicitation to purchase. Past returns do not guarantee future results. Investing in wine involves risk of capital loss. Prices shown are algorithmic estimates unless otherwise indicated. <a href="/disclaimer" style={{ color: "#C9A227" }}>Read full disclaimer →</a>
         </div>
         <span style={{ color: "#334155" }}>
           © {new Date().getFullYear()} VinoInvest ·{" "}
-          <a href="/terms" style={{ color: "#475569", textDecoration: "none" }}>Termini</a>{" · "}
+          <a href="/terms" style={{ color: "#475569", textDecoration: "none" }}>Terms</a>{" · "}
           <a href="/privacy" style={{ color: "#475569", textDecoration: "none" }}>Privacy</a>{" · "}
-          <a href="/cookies" style={{ color: "#475569", textDecoration: "none" }}>Cookie</a>{" · "}
+          <a href="/cookies" style={{ color: "#475569", textDecoration: "none" }}>Cookies</a>{" · "}
           <a href="/disclaimer" style={{ color: "#475569", textDecoration: "none" }}>Disclaimer</a>{" · "}
           <a href="/transparency" style={{ color: "#475569", textDecoration: "none" }}>Trasparenza</a>{" · "}
           <a href="mailto:manumila88@gmail.com" style={{ color: "#475569", textDecoration: "none" }}>Contatti</a>
@@ -1962,7 +1962,7 @@ createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <ToastProvider>
       <CurrencyProvider>
-        <Suspense fallback={<div style={{ minHeight: "100vh", background: "#0b1220", display: "flex", alignItems: "center", justifyContent: "center", color: "#C9A227", fontSize: 14 }}>Caricamento...</div>}>
+        <Suspense fallback={<div style={{ minHeight: "100vh", background: "#0b1220", display: "flex", alignItems: "center", justifyContent: "center", color: "#C9A227", fontSize: 14 }}>Loading...</div>}>
         <Routes>
           <Route path="/landing" element={<LandingPage onLogin={({ user, account_type }) => { window.location.href = "/"; }} />} />
           <Route path="/pricing" element={<Pricing />} />

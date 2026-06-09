@@ -281,14 +281,14 @@ function CellarTrackerNotes({ wineName }) {
           textTransform: "uppercase",
         }}
       >
-        {loading ? "Caricamento..." : `Note dalla Community ${open ? "↑" : "↓"}`}
+        {loading ? "Loading..." : `Community Notes ${open ? "↑" : "↓"}`}
       </button>
 
       {open && notes !== null && (
         <div style={{ marginTop: 10 }}>
           {notes.length === 0 ? (
             <p style={{ fontSize: 11, color: "#475569", fontStyle: "italic" }}>
-              Nessuna nota disponibile su CellarTracker.
+              No notes available on CellarTracker.
             </p>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -448,7 +448,7 @@ export default function WineBottle3DModal({ wine, onClose }) {
   const wineImage = wine.imageUrl || placeholderImg;
   const wineTitle = `${wine.name} ${wine.vintage || ""}`.trim();
   const seoTitle = `${wineTitle} - Prezzo €${price} | VinoInvest`;
-  const seoDesc = `${wine.name}: AI Score ${score ? `${score}/100` : "disponibile"}. Storico prezzi, dove comprare. Produttore: ${wine.producer || ""}. Analisi investimento completa.`;
+  const seoDesc = `${wine.name}: AI Score ${score ? `${score}/100` : "available"}. Price history, where to buy. Producer: ${wine.producer || ""}. Complete investment analysis.`;
 
   const productSchema = {
     "@context": "https://schema.org",
@@ -541,7 +541,7 @@ export default function WineBottle3DModal({ wine, onClose }) {
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Helmet>
       <div className="bottle-modal" style={{ overflowY: "auto", maxHeight: "92vh" }} onClick={e => e.stopPropagation()}>
-        <button className="bottle-modal-close" onClick={onClose}>×</button>
+        <button className="bottle-modal-close" onClick={onClose} aria-label="Close">×</button>
 
         {useImage ? (
           /* ── Real bottle photo with CSS drag rotation ── */
@@ -561,7 +561,7 @@ export default function WineBottle3DModal({ wine, onClose }) {
             <div ref={bottleRef}>
               <img
                 src={imgSrc}
-                alt=""
+                alt={wine.name}
                 style={{
                   height: "340px", width: "auto", objectFit: "contain",
                   filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.8)) drop-shadow(0 0 16px rgba(201,162,39,0.18))",
