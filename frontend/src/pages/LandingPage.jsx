@@ -61,8 +61,19 @@ export default function LandingPage() {
         <link rel="canonical" href="https://vinoinvest-platform.vercel.app/landing" />
       </Helmet>
 
+      {/* B2B PRO BANNER — fixed strip above nav */}
+      <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 101, background: "linear-gradient(90deg, #1a0a3e 0%, #0f1c2e 100%)", borderBottom: "1px solid rgba(124,58,237,0.3)", padding: "8px 24px", display: "flex", alignItems: "center", justifyContent: "center", gap: 24, fontSize: 12, flexWrap: "wrap" }}>
+        <span style={{ color: "#a78bfa", fontWeight: 600 }}>🏦 VinoInvest Professional</span>
+        <span style={{ color: "#94a3b8" }}>Per Wealth Manager · Family Office · Advisors</span>
+        <div style={{ display: "flex", gap: 16 }}>
+          <a href="/b2b" style={{ color: "#C9A227", textDecoration: "none", fontWeight: 600, fontSize: 12 }}>Dashboard B2B →</a>
+          <a href="/methodology" style={{ color: "#94a3b8", textDecoration: "none", fontSize: 12 }}>Metodologia</a>
+          <a href="/data-sources" style={{ color: "#94a3b8", textDecoration: "none", fontSize: 12 }}>Fonti Dati</a>
+        </div>
+      </div>
+
       {/* NAV */}
-      <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, background: "rgba(11,18,32,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid #1e3050", padding: "14px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <nav style={{ position: "fixed", top: 40, left: 0, right: 0, zIndex: 100, background: "rgba(11,18,32,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid #1e3050", padding: "14px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div style={{ fontSize: 20, fontWeight: 800, color: "#C9A227" }}>🍷 VinoInvest</div>
         <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
           <a href="#features" style={{ color: "#94a3b8", textDecoration: "none", fontSize: 14 }}>Features</a>
@@ -73,7 +84,7 @@ export default function LandingPage() {
       </nav>
 
       {/* HERO */}
-      <section style={{ paddingTop: 140, paddingBottom: 80, textAlign: "center", background: "radial-gradient(ellipse at 50% 0%, rgba(201,162,39,0.12) 0%, transparent 60%)" }}>
+      <section style={{ paddingTop: 178, paddingBottom: 80, textAlign: "center", background: "radial-gradient(ellipse at 50% 0%, rgba(201,162,39,0.12) 0%, transparent 60%)" }}>
         <div style={{ display: "inline-block", background: "rgba(201,162,39,0.15)", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 20, padding: "6px 16px", marginBottom: 24, fontSize: 13, color: "#C9A227" }}>
           🏆 La piattaforma #1 per investire in fine wine
         </div>
