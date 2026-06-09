@@ -86,7 +86,7 @@ export default function PurchaseModal({ wine, onClose, onImport }) {
 
         {/* Tabs */}
         <div style={{ display: "flex", gap: 4, marginBottom: 20, borderBottom: "1px solid var(--vi-border)", paddingBottom: 0 }}>
-          {[{ id: "buy", label: "Where to buy" }, { id: "import", label: "Already purchased" }].map(t => (
+          {[{ id: "buy", label: "Dove acquistare" }, { id: "import", label: "Già acquistato" }].map(t => (
             <button key={t.id} onClick={() => setTab(t.id)} style={{ padding: "8px 16px", border: "none", background: "none", color: tab === t.id ? "var(--vi-accent)" : "#475569", fontSize: 13, fontWeight: tab === t.id ? 700 : 400, cursor: "pointer", borderBottom: tab === t.id ? "2px solid var(--vi-accent)" : "2px solid transparent" }}>
               {t.label}
             </button>
@@ -97,7 +97,7 @@ export default function PurchaseModal({ wine, onClose, onImport }) {
         {tab === "buy" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {loading ? (
-              <div style={{ color: "#475569", textAlign: "center", padding: 20 }}>Loading platforms...</div>
+              <div style={{ color: "#475569", textAlign: "center", padding: 20 }}>Caricamento piattaforme...</div>
             ) : platforms.map(p => (
               <a
                 key={p.id}

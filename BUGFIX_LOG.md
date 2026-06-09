@@ -52,9 +52,9 @@ Compatibile con entrambi i formati (stringa o oggetto).
 ---
 
 ## BUG 4 — Stringhe in inglese
-**File:** `frontend/src/App.jsx`
+**File:** `frontend/src/App.jsx` + `frontend/src/components/PurchaseModal.jsx`
 
-**Stringhe fixate:**
+**Stringhe fixate (App.jsx — commit 46607cf):**
 | Prima | Dopo |
 |-------|------|
 | `Watchlist Analysis` | `Analisi Watchlist` |
@@ -65,4 +65,11 @@ Compatibile con entrambi i formati (stringa o oggetto).
 | `Mark all read` | `{t('notifications.markAllRead')}` → "Segna tutto come letto" |
 | `No notifications yet. Set a price alert...` | `{t('notifications.noNotifications')}` → traduzione IT |
 
-**Verifica:** Build pulito. Tutte le chiavi i18n esistono in `locales/it.json`.
+**Stringhe fixate (PurchaseModal.jsx — fix follow-up):**
+| Prima | Dopo |
+|-------|------|
+| `Where to buy` | `Dove acquistare` |
+| `Already purchased` | `Già acquistato` |
+| `Loading platforms...` | `Caricamento piattaforme...` |
+
+**Verifica:** Build pulito. Nessuna stringa inglese residua nei component JSX.
