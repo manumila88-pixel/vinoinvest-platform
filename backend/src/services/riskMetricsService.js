@@ -172,4 +172,48 @@ export function computePortfolioRisk(holdings, indexMonthlyReturns = []) {
   };
 }
 
+/**
+ * Per-wine risk profile from static signals (no price history required).
+ * Used by priceEstimateService to adjust confidence intervals.
+ *
+ * @param {object} wine - { risk, market_trend, vintage, producer_score, investment_score }
+ * @returns {{ riskScore: number, riskLabel: string, factors: object }}
+ */
+export function estimateSingleWineRisk(wine) {
+  const base = { Basso: 15, "Medio-Basso": 28, Medio: 45, "Medio-Alto": 62, Alto: 78 };
+  const riskLabel = wine.risk || "Medio";
+  let score = base[riskLabel] ?? 45;
+
+  // Illiquidity premium for very old vintages
+  const age = Math.max(0, new Date().getFullYear() - (parseInt(wine.vintage) || 2015));
+  if (age > 30) score += 8;
+  else if (age < 3) score += 5; // Very young = uncertain quality
+
+  // Market trend adjustment
+  const trend = String(wine.market_trend || "").toLowerCase();
+  if (trend === "bearish") score += 10;
+  if (trend === "bullish") score -= 5;
+
+  // Low investment score increases risk
+  const investScore = Number(wine.investment_score || wine.investmentScore || 70);
+  if (investScore < 40) score += 10;
+  else if (investScore >= 80) score -= 5;
+
+  score = Math.min(100, Math.max(0, Math.round(score)));
+  const label = score < 20 ? "Basso" : score < 40 ? "Medio-Basso" : score < 60 ? "Medio" : score < 80 ? "Medio-Alto" : "Alto";
+
+  return {
+    riskScore: score,
+    riskLabel: label,
+    factors: {
+      base_risk_label: riskLabel,
+      vintage_age: age,
+      market_trend: trend || "stable",
+      investment_score: investScore,
+    },
+    is_estimate: true,
+    disclaimer: "Risk score is indicative — based on static signals only, not live market data.",
+  };
+}
+
 export { buildReturns, annualisedVolatility, sharpeRatio, maxDrawdown, var95, concentrationRisk, beta };
