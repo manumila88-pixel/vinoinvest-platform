@@ -72,10 +72,10 @@ export default function PriceHistoryChart({ wineId, currentPrice = null, height 
   }, [wineId, currentPrice, timeframe]);
 
   const sourceLabel = source === "db" ? "Real data" : source === "estimated" ? "Estimated data" : "Mixed";
-  const sourceColor = source === "db" ? "#4ade80" : "#C9A227";
+  const sourceColor = source === "db" ? "var(--vi-positive)" : "var(--vi-accent)";
 
-  if (loading) return <div style={{ height, display: "flex", alignItems: "center", justifyContent: "center", color: "#475569", fontSize: 12 }}>Loading...</div>;
-  if (!data.length) return <div style={{ height, display: "flex", alignItems: "center", justifyContent: "center", color: "#475569", fontSize: 12 }}>Processing data...</div>;
+  if (loading) return <div style={{ height, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--vi-text-dim)", fontSize: 12 }}>Loading...</div>;
+  if (!data.length) return <div style={{ height, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--vi-text-dim)", fontSize: 12 }}>Processing data...</div>;
 
   // Interpolate to at least 3 points so recharts can draw a visible line
   let chartData = data;
@@ -102,9 +102,9 @@ export default function PriceHistoryChart({ wineId, currentPrice = null, height 
             style={{
               padding: "3px 8px",
               borderRadius: 6,
-              border: `1px solid ${timeframe === tf ? "#C9A227" : "rgba(30,41,59,0.7)"}`,
+              border: `1px solid ${timeframe === tf ? "var(--vi-accent)" : "var(--vi-border)"}`,
               background: timeframe === tf ? "rgba(201,162,39,0.15)" : "transparent",
-              color: timeframe === tf ? "#C9A227" : "#475569",
+              color: timeframe === tf ? "var(--vi-accent)" : "var(--vi-text-dim)",
               fontSize: 10,
               fontWeight: timeframe === tf ? 700 : 500,
               cursor: "pointer",
@@ -120,17 +120,17 @@ export default function PriceHistoryChart({ wineId, currentPrice = null, height 
       {/* Chart */}
       <div style={{ overflowX: "auto" }}>
         <ComposedChart width={width} height={height} data={chartData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-          <XAxis dataKey="label" tick={{ fontSize: 9, fill: "#64748b" }} />
-          <YAxis tick={{ fontSize: 9, fill: "#64748b" }} tickFormatter={v => "€"+v} width={45} />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--vi-border)" />
+          <XAxis dataKey="label" tick={{ fontSize: 9, fill: "var(--vi-text-dim)" }} />
+          <YAxis tick={{ fontSize: 9, fill: "var(--vi-text-dim)" }} tickFormatter={v => "€"+v} width={45} />
           <Tooltip
             formatter={(v, n) => ["€"+v, n === "avg" ? "Media" : n === "min" ? "Min" : "Banda"]}
-            contentStyle={{ background: "#0b1220", border: "1px solid #1e293b", borderRadius: 8, fontSize: 11 }}
-            labelStyle={{ color: "#94a3b8" }}
+            contentStyle={{ background: "var(--vi-bg)", border: "1px solid var(--vi-border)", borderRadius: 8, fontSize: 11 }}
+            labelStyle={{ color: "var(--vi-text-dim)" }}
           />
           <Area type="monotone" dataKey="min" stackId="1" stroke="none" fill="transparent" />
           <Area type="monotone" dataKey="band" stackId="1" stroke="none" fill="#722F37" fillOpacity={0.15} />
-          <Line type="monotone" dataKey="avg" stroke="#722F37" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: "#C9A227" }} />
+          <Line type="monotone" dataKey="avg" stroke="#722F37" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: "var(--vi-accent)" }} />
         </ComposedChart>
       </div>
     </div>
