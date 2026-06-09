@@ -4,6 +4,11 @@ import { requireAdmin } from "../middleware/auth.js";
 
 const router = Router();
 
+// GET /api/vintage — overview
+router.get("/", (_req, res) => {
+  res.json({ regions: getRegionList(), currentYear: new Date().getFullYear(), endpoints: ["/regions", "/score", "/region/:key", "/year/:year", "/scores"] });
+});
+
 // GET /api/vintage/regions — list all tracked regions
 router.get("/regions", (_req, res) => {
   res.json(getRegionList());

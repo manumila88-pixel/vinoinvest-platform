@@ -40,19 +40,22 @@ router.get("/wines.csv", (_req, res) => {
  * Downloadable CSV of price history (latest 1000 records).
  */
 router.get("/prices.csv", async (req, res) => {
-  res.set("Content-Type", "text/csv; charset=utf-8");
-  res.set("Content-Disposition", `attachment; filename="vinoinvest-price-history-${new Date().toISOString().split("T")[0]}.csv"`);
-  res.set("Cache-Control", "public, max-age=3600");
-  res.set("Access-Control-Allow-Origin", "*");
-  // Static fallback sample — production could query DB
-  const sample = `wine_id,wine_name,price_eur,date,source
+  try {
+    res.set("Content-Type", "text/csv; charset=utf-8");
+    res.set("Content-Disposition", `attachment; filename="vinoinvest-price-history-${new Date().toISOString().split("T")[0]}.csv"`);
+    res.set("Cache-Control", "public, max-age=3600");
+    res.set("Access-Control-Allow-Origin", "*");
+    const sample = `wine_id,wine_name,price_eur,date,source
 lafite-2018,Château Lafite Rothschild 2018,820,2026-06-01,liv-ex
 margaux-2015,Château Margaux 2015,990,2026-06-01,liv-ex
 petrus-2019,Pétrus 2019,4500,2026-06-01,liv-ex
 drc-romanee-conti-2019,DRC Romanée-Conti Grand Cru 2019,32000,2026-06-01,auction
 sassicaia-2019,Sassicaia 2019,320,2026-06-01,liv-ex
 `;
-  res.send(sample);
+    res.send(sample);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
 /**

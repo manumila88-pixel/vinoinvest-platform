@@ -4,6 +4,12 @@ import { buildMerchantOptions, getPriceStats, estimateInvestmentReturn } from ".
 
 const router = Router();
 
+// GET /api/market — overview
+router.get("/", (_req, res) => {
+  const index = getVinoInvestIndex();
+  res.json({ index, endpoints: ["/index", "/merchants", "/investment-estimate", "/producers", "/wines"] });
+});
+
 // GET /api/market/index — VinoInvest proprietary index
 router.get("/index", (_req, res) => {
   const index = getVinoInvestIndex();

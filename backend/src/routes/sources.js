@@ -31,22 +31,30 @@ const STATIC_SOURCES = [
 
 // GET /api/sources — all sources
 router.get("/", async (_req, res) => {
-  res.json({ sources: STATIC_SOURCES });
+  try {
+    res.json({ sources: STATIC_SOURCES });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
 // GET /api/sources/wine-urls?name=barolo&vintage=2016
 router.get("/wine-urls", async (req, res) => {
-  const { name = "", vintage = "" } = req.query;
-  const slug = encodeURIComponent(name.toLowerCase().replace(/\s+/g, "-"));
-  const q = encodeURIComponent(`${name} ${vintage}`.trim());
+  try {
+    const { name = "", vintage = "" } = req.query;
+    const slug = encodeURIComponent(name.toLowerCase().replace(/\s+/g, "-"));
+    const q = encodeURIComponent(`${name} ${vintage}`.trim());
 
-  res.json({
-    wine_searcher: `https://www.wine-searcher.com/find/${slug}/${vintage}`,
-    vivino: `https://www.vivino.com/search/wines?q=${q}`,
-    tannico: `https://www.tannico.it/catalogsearch/result/?q=${q}`,
-    cellar_tracker: `https://www.cellartracker.com/list.asp?Table=List&szSearch=${q}`,
-    decanter: `https://www.decanter.com/search/?q=${q}`,
-  });
+    res.json({
+      wine_searcher: `https://www.wine-searcher.com/find/${slug}/${vintage}`,
+      vivino: `https://www.vivino.com/search/wines?q=${q}`,
+      tannico: `https://www.tannico.it/catalogsearch/result/?q=${q}`,
+      cellar_tracker: `https://www.cellartracker.com/list.asp?Table=List&szSearch=${q}`,
+      decanter: `https://www.decanter.com/search/?q=${q}`,
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
 export default router;

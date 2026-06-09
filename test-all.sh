@@ -179,7 +179,8 @@ check "GET /api/reports/portfolio/test/pdf (no auth → 401)" 401 "$API/api/repo
 echo "── Public API v1 ──"
 check "GET /api/v1/wines" 200 "$API/api/v1/wines"
 check "GET /api/v1/market/index" 200 "$API/api/v1/market/index"
-check "GET /api/docs" 200 "$API/api/docs"
+check "GET /api/docs (redirect)" 301 "$API/api/docs"
+check "GET /api/docs/" 200 "$API/api/docs/"
 
 # ── Market & Producers ───────────────────────────────────
 echo "── Market ──"
@@ -249,7 +250,7 @@ check "POST /api/demo (missing body)" 400 "$API/api/demo" -X POST -H "Content-Ty
 check "POST /api/demo (valid request)" 200 "$API/api/demo" -X POST -H "Content-Type: application/json" -d '{"name":"Test User","email":"test@test.com","company":"Test Co"}'
 check "GET /api/risk/benchmark" 200 "$API/api/risk/benchmark"
 check "GET /api/risk/portfolio/:id (auth required)" 401 "$API/api/risk/portfolio/testuser"
-check "GET /api/client-portfolios (no orgId)" 400 "$API/api/client-portfolios"
+check "GET /api/client-portfolios (no auth → 401)" 401 "$API/api/client-portfolios"
 
 # ── New B2B Routes ────────────────────────────────────────
 echo "── New Backend Routes ──"

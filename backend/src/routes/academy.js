@@ -15,7 +15,6 @@ async function initAcademyTables() {
         user_id VARCHAR(255) NOT NULL,
         course_id INTEGER NOT NULL,
         lesson_id INTEGER NOT NULL,
-        done BOOLEAN DEFAULT false,
         quiz_score INTEGER DEFAULT 0,
         xp_earned INTEGER DEFAULT 0,
         completed_at TIMESTAMP,
@@ -33,6 +32,8 @@ async function initAcademyTables() {
       CREATE INDEX IF NOT EXISTS idx_academy_progress_user ON academy_progress(user_id);
       CREATE INDEX IF NOT EXISTS idx_academy_cert_code ON academy_certificates(code);
     `);
+    // Add missing columns if table was created without them
+    await pool.query(`ALTER TABLE academy_progress ADD COLUMN IF NOT EXISTS done BOOLEAN DEFAULT false`);
   } catch (e) {
     console.error("Academy tables init:", e.message);
   }
