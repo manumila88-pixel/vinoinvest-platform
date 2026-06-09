@@ -84,13 +84,13 @@ export default function DashboardB2B() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div style={{ color: "#475569", padding: 40 }}>Caricamento dashboard...</div>;
+  if (loading) return <div style={{ color: "var(--vi-text-dim)", padding: 40 }}>Caricamento dashboard...</div>;
 
   const card = (label, value, sub) => (
     <div className="statCard" key={label}>
       <small>{label}</small>
       <h2 style={{ fontSize: 28 }}>{value}</h2>
-      {sub && <p style={{ fontSize: 11, color: "#475569", marginTop: 4 }}>{sub}</p>}
+      {sub && <p style={{ fontSize: 11, color: "var(--vi-text-dim)", marginTop: 4 }}>{sub}</p>}
     </div>
   );
 
@@ -105,11 +105,11 @@ export default function DashboardB2B() {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8, flexWrap: "wrap", gap: 12 }}>
         <div>
           <h2 style={{ fontSize: 28, fontWeight: 800, margin: 0 }}>Dashboard B2B</h2>
-          <p style={{ color: "#64748b", fontSize: 13, marginTop: 4 }}>Analytics · Gestione · Clienti</p>
+          <p style={{ color: "var(--vi-text-dim)", fontSize: 13, marginTop: 4 }}>Analytics · Gestione · Clienti</p>
         </div>
         <button
           onClick={() => printReport(data, rates)}
-          style={{ padding: "9px 18px", borderRadius: 10, border: "1px solid rgba(201,162,39,0.3)", background: "rgba(201,162,39,0.1)", color: "#C9A227", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
+          style={{ padding: "9px 18px", borderRadius: 10, border: "1px solid rgba(201,162,39,0.3)", background: "rgba(201,162,39,0.1)", color: "var(--vi-accent)", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
         >Stampa / PDF</button>
       </div>
 
@@ -119,7 +119,7 @@ export default function DashboardB2B() {
           <button
             key={t.id}
             onClick={() => setActiveTab(t.id)}
-            style={{ padding: "8px 16px", borderRadius: "8px 8px 0 0", border: "none", background: activeTab === t.id ? "rgba(201,162,39,0.12)" : "transparent", color: activeTab === t.id ? "#C9A227" : "#64748b", fontSize: 13, fontWeight: activeTab === t.id ? 700 : 500, cursor: "pointer", borderBottom: activeTab === t.id ? "2px solid #C9A227" : "2px solid transparent" }}
+            style={{ padding: "8px 16px", borderRadius: "8px 8px 0 0", border: "none", background: activeTab === t.id ? "rgba(201,162,39,0.12)" : "transparent", color: activeTab === t.id ? "var(--vi-accent)" : "var(--vi-text-dim)", fontSize: 13, fontWeight: activeTab === t.id ? 700 : 500, cursor: "pointer", borderBottom: activeTab === t.id ? `2px solid var(--vi-accent)` : "2px solid transparent" }}
           >{t.label}</button>
         ))}
       </div>
@@ -130,7 +130,7 @@ export default function DashboardB2B() {
           {rates && (
             <div style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" }}>
               {Object.entries(rates.rates || {}).map(([cur, rate]) => (
-                <span key={cur} style={{ padding: "4px 12px", borderRadius: 999, fontSize: 12, background: "#0c1a2e", color: "#60a5fa", border: "1px solid #1e3a5f" }}>
+                <span key={cur} style={{ padding: "4px 12px", borderRadius: 999, fontSize: 12, background: "var(--vi-bg-elev)", color: "var(--vi-text-dim)", border: "1px solid var(--vi-border)" }}>
                   1 EUR = {rate.toFixed(4)} {cur}
                 </span>
               ))}
@@ -152,14 +152,14 @@ export default function DashboardB2B() {
               <h3 style={{ fontSize: 17, fontWeight: 700, marginBottom: 14 }}>Vini più scambiati</h3>
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {data.topWines.map((w, i) => (
-                  <div key={w.wineId} style={{ background: "#0b1220", border: "1px solid #1f2937", borderRadius: 14, padding: "14px 18px", display: "flex", alignItems: "center", gap: 14 }}>
-                    <span style={{ fontSize: 18, fontWeight: 800, color: "#c9a227", minWidth: 28 }}>#{i + 1}</span>
+                  <div key={w.wineId} style={{ background: "var(--vi-bg)", border: "1px solid var(--vi-border)", borderRadius: 14, padding: "14px 18px", display: "flex", alignItems: "center", gap: 14 }}>
+                    <span style={{ fontSize: 18, fontWeight: 800, color: "var(--vi-accent)", minWidth: 28, fontVariantNumeric: "tabular-nums" }}>#{i + 1}</span>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontWeight: 700, fontSize: 14 }}>{w.wineName || w.wineId}</div>
-                      <div style={{ fontSize: 11, color: "#475569", marginTop: 2 }}>{w.orders} ordini · Vol. €{w.volume.toLocaleString("it-IT")}</div>
+                      <div style={{ fontSize: 11, color: "var(--vi-text-dim)", marginTop: 2 }}>{w.orders} ordini · Vol. €{w.volume.toLocaleString("it-IT")}</div>
                     </div>
                     <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: w.avgRoi >= 0 ? "#4ade80" : "#f87171" }}>{w.avgRoi >= 0 ? "+" : ""}{w.avgRoi}% ROI</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: w.avgRoi >= 0 ? "var(--vi-positive)" : "var(--vi-negative)", fontVariantNumeric: "tabular-nums" }}>{w.avgRoi >= 0 ? "+" : ""}{w.avgRoi}% ROI</div>
                     </div>
                   </div>
                 ))}
@@ -177,7 +177,7 @@ export default function DashboardB2B() {
       {activeTab === "wines" && (
         <div>
           <h3 style={{ fontSize: 17, fontWeight: 700, marginBottom: 16 }}>Aggiungi / Modifica Vino</h3>
-          <div style={{ background: "rgba(11,18,32,0.85)", border: "1px solid rgba(31,41,55,0.7)", borderRadius: 16, padding: 24, maxWidth: 560 }}>
+          <div style={{ background: "var(--vi-surface)", border: "1px solid var(--vi-border)", borderRadius: 16, padding: 24, maxWidth: 560 }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
               {[
                 { key: "name", label: "Nome vino", placeholder: "Château Lafite Rothschild 2020" },
@@ -187,7 +187,7 @@ export default function DashboardB2B() {
                 { key: "price", label: "Prezzo (€)", placeholder: "850" },
               ].map(({ key, label, placeholder }) => (
                 <div key={key}>
-                  <label style={{ fontSize: 11, color: "#64748b", display: "block", marginBottom: 5, textTransform: "uppercase", letterSpacing: "0.08em" }}>{label}</label>
+                  <label style={{ fontSize: 11, color: "var(--vi-text-dim)", display: "block", marginBottom: 5, textTransform: "uppercase", letterSpacing: "0.08em" }}>{label}</label>
                   <input
                     value={wineForm[key]}
                     onChange={e => setWineForm(p => ({ ...p, [key]: e.target.value }))}
@@ -237,7 +237,7 @@ export default function DashboardB2B() {
               }}
             >{submittingWine ? "Saving..." : "Add wine"}</button>
             {wineFormMsg && (
-              <div style={{ marginTop: 10, padding: "8px 12px", borderRadius: 8, fontSize: 13, background: wineFormMsg.type === "success" ? "rgba(5,46,22,0.5)" : "rgba(69,10,10,0.5)", color: wineFormMsg.type === "success" ? "#4ade80" : "#f87171" }}>
+              <div style={{ marginTop: 10, padding: "8px 12px", borderRadius: 8, fontSize: 13, background: wineFormMsg.type === "success" ? "rgba(5,46,22,0.5)" : "rgba(69,10,10,0.5)", color: wineFormMsg.type === "success" ? "var(--vi-positive)" : "var(--vi-negative)" }}>
                 {wineFormMsg.text}
               </div>
             )}
@@ -260,7 +260,7 @@ export default function DashboardB2B() {
               </p>
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
                 <thead>
-                  <tr style={{ borderBottom: "1px solid #1e293b", color: "#3a5a7a" }}>
+                  <tr style={{ borderBottom: "1px solid var(--vi-border)", color: "var(--vi-text-dim)" }}>
                     {["Vino più ordinato", "Ordini totali", "Volume (€)", "ROI medio"].map(h => (
                       <th key={h} style={{ padding: "9px 12px", fontWeight: 600, fontSize: 11, textTransform: "uppercase", textAlign: "left" }}>{h}</th>
                     ))}
@@ -268,11 +268,11 @@ export default function DashboardB2B() {
                 </thead>
                 <tbody>
                   {data.topWines.map((w, i) => (
-                    <tr key={w.wineId} style={{ borderBottom: "1px solid #0a1220", background: i % 2 ? "rgba(11,18,32,0.5)" : "transparent" }}>
+                    <tr key={w.wineId} style={{ borderBottom: "1px solid var(--vi-bg)", background: i % 2 ? "rgba(11,18,32,0.5)" : "transparent" }}>
                       <td style={{ padding: "11px 12px", fontWeight: 600 }}>{w.wineName || w.wineId}</td>
-                      <td style={{ padding: "11px 12px", color: "#94a3b8" }}>{w.orders}</td>
-                      <td style={{ padding: "11px 12px", color: "#C9A227" }}>€ {w.volume.toLocaleString("it-IT")}</td>
-                      <td style={{ padding: "11px 12px", color: w.avgRoi >= 0 ? "#4ade80" : "#f87171" }}>{w.avgRoi >= 0 ? "+" : ""}{w.avgRoi}%</td>
+                      <td style={{ padding: "11px 12px", color: "var(--vi-text-dim)", fontVariantNumeric: "tabular-nums" }}>{w.orders}</td>
+                      <td style={{ padding: "11px 12px", color: "var(--vi-accent)", fontVariantNumeric: "tabular-nums" }}>€ {w.volume.toLocaleString("it-IT")}</td>
+                      <td style={{ padding: "11px 12px", color: w.avgRoi >= 0 ? "var(--vi-positive)" : "var(--vi-negative)", fontVariantNumeric: "tabular-nums" }}>{w.avgRoi >= 0 ? "+" : ""}{w.avgRoi}%</td>
                     </tr>
                   ))}
                 </tbody>
