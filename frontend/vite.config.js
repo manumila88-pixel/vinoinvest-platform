@@ -6,30 +6,35 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
-    rollupOptions: {
+    // Inline assets smaller than 8 kB as base64 data URIs — reduces HTTP requests
+    // for small icons and SVGs. Default is 4 kB; 8 kB is safe for modern browsers.
+    assetsInlineLimit: 8192,
+    // Rolldown-native chunking (Vite 8). Replaces rollupOptions.manualChunks.
+    // Groups with higher priority win when a module matches multiple rules.
+    rolldownOptions: {
       output: {
-        manualChunks(id) {
-          // Recharts — big charting library into its own chunk
-          if (id.includes('recharts') || id.includes('d3-')) return 'ComposedChart';
-          // React core
-          if (id.includes('react-dom') || id.includes('react-router')) return 'react-vendor';
-          // i18n
-          if (id.includes('i18next') || id.includes('react-i18next')) return 'i18n';
-          // Academy module deep content — split from main academy chunk
-          if (id.includes('premiumContent') || id.includes('/pages/AcademyModule')) return 'academy-modules';
-          // Academy content (free courses + index/course/lesson pages)
-          if (id.includes('/pages/Academy') || id.includes('academyContent')) return 'academy';
-          // B2B & Dashboard
-          if (id.includes('/pages/B2B') || id.includes('/pages/Dashboard')) return 'b2b';
-          // Legal & misc pages
-          if (id.includes('/pages/Terms') || id.includes('/pages/PrivacyPolicy') ||
-              id.includes('/pages/Cookies') || id.includes('/pages/Disclaimer') ||
-              id.includes('/pages/Pricing')) return 'legal-pages';
-          // Market tools
-          if (id.includes('/pages/MarketIndex') || id.includes('/pages/MarketSentiment') ||
-              id.includes('/pages/EnPrimeur') || id.includes('/pages/AuctionTracker')) return 'market-tools';
-        }
-      }
-    }
+        codeSplitting: {
+          groups: [
+            // ── Vendors ──────────────────────────────────────────────────────
+            { name: 'recharts', test: /node_modules\/(recharts|d3-)/, priority: 200 },
+            { name: 'react-vendor', test: /node_modules\/(react-dom|react-router)/, priority: 200 },
+            { name: 'supabase', test: /node_modules\/@supabase/, priority: 180 },
+            { name: 'i18n', test: /node_modules\/(i18next|react-i18next)/, priority: 180 },
+
+            // ── Heavy data files (change less than UI → better cache reuse) ──
+            { name: 'academy-data', test: /\/data\/academyContent/, priority: 120 },
+            { name: 'academy-premium-data', test: /\/data\/(premiumContent|premiumModules)/, priority: 120 },
+            { name: 'faq-data', test: /\/data\/faq/, priority: 110 },
+
+            // ── Feature chunks ────────────────────────────────────────────────
+            { name: 'academy-modules', test: /\/pages\/AcademyModule|\/pages\/AcademyTemplates/, priority: 90 },
+            { name: 'academy', test: /\/pages\/Academy/, priority: 80 },
+            { name: 'b2b', test: /\/pages\/(B2B|Dashboard|OrgDashboard|ClientDetail|B2BOnboarding)/, priority: 70 },
+            { name: 'legal-pages', test: /\/pages\/(Terms|PrivacyPolicy|Cookies|Disclaimer|Pricing)/, priority: 60 },
+            { name: 'market-tools', test: /\/pages\/(MarketIndex|MarketSentiment|EnPrimeur|AuctionTracker)/, priority: 60 },
+          ],
+        },
+      },
+    },
   }
 })
