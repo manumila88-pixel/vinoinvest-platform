@@ -25,8 +25,7 @@ export function segmentWines(wines, segment) {
     return wines.filter(w => {
       const price = getPrice(w);
       const score = getScore(w);
-      const risk = getRisk(w);
-      return price > 500 && score > 85 && B2B_RISK_ALLOW.includes(risk);
+      return price >= 300 && score >= 80;
     });
   }
 

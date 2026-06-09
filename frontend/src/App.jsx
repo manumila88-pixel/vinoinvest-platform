@@ -543,6 +543,15 @@ function App() {
     }
   }, [tab]);
 
+  // Re-load market wines when account type resolves from Supabase (fixes B2B filter race condition)
+  useEffect(() => {
+    const B2B_TYPES = ["b2b", "wealth_manager", "cantina", "family_office"];
+    if (tab === "market" && B2B_TYPES.includes(accountType)) {
+      mHasMoreRef.current = true;
+      loadMarketWines(mSearchRef.current, 1, false);
+    }
+  }, [accountType]);
+
   useEffect(() => {
     if (tab === "market") {
       mHasMoreRef.current = true;
