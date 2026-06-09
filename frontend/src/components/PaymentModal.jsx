@@ -128,6 +128,7 @@ export default function PaymentModal({ plan, userEmail, onClose }) {
         {/* Close */}
         <button
           onClick={onClose}
+          aria-label="Close"
           style={{ position: "absolute", top: 14, right: 14, width: 32, height: 32, borderRadius: "50%", background: "rgba(30,41,59,0.9)", border: "1px solid #334155", color: "#94a3b8", fontSize: 20, lineHeight: "32px", textAlign: "center", cursor: "pointer" }}
         >
           ×

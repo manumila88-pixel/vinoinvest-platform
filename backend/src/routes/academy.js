@@ -15,6 +15,7 @@ async function initAcademyTables() {
         user_id VARCHAR(255) NOT NULL,
         course_id INTEGER NOT NULL,
         lesson_id INTEGER NOT NULL,
+        done BOOLEAN DEFAULT false,
         quiz_score INTEGER DEFAULT 0,
         xp_earned INTEGER DEFAULT 0,
         completed_at TIMESTAMP,
