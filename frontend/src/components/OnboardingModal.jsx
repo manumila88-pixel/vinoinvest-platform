@@ -511,6 +511,7 @@ export default function OnboardingModal({ onClose, accountType }) {
                 onMouseEnter={e => e.currentTarget.style.color = "#e2e8f0"}
                 onMouseLeave={e => e.currentTarget.style.color = "#3a5a7a"}
                 title="Salta tour"
+                aria-label="Skip tour"
               >✕</button>
             </div>
 
@@ -520,6 +521,7 @@ export default function OnboardingModal({ onClose, accountType }) {
                 <button
                   key={i}
                   onClick={() => setStep(i)}
+                  aria-label={`Go to step ${i + 1}`}
                   style={{
                     width: i === step ? 20 : 8, height: 8, borderRadius: 4,
                     background: i === step ? accentTo : i < step ? `${accentTo}66` : "rgba(30,41,59,0.6)",

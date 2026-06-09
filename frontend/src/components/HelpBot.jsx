@@ -148,6 +148,7 @@ export default function HelpBot({ onAskAI }) {
       <button
         onClick={() => setOpen(o => !o)}
         title="Centro assistenza FAQ"
+        aria-label={open ? "Close help" : "Open help"}
         style={{
           position: "fixed", bottom: 96, right: 28, zIndex: 9000,
           width: 44, height: 44, borderRadius: "50%",
@@ -249,7 +250,7 @@ export default function HelpBot({ onAskAI }) {
                 onBlur={e => e.currentTarget.style.borderColor = b2bMode ? "rgba(59,130,246,0.2)" : "rgba(30,41,59,0.7)"}
               />
               {query && (
-                <button onClick={() => setQuery("")} style={{
+                <button onClick={() => setQuery("")} aria-label="Clear search" style={{
                   position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)",
                   background: "none", border: "none", color: "#3a5a7a", cursor: "pointer", fontSize: 14,
                 }}>✕</button>

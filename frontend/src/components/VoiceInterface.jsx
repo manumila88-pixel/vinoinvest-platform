@@ -52,6 +52,7 @@ export default function VoiceInterface({ onTranscript, disabled = false }) {
         onClick={listening ? stopListening : startListening}
         disabled={disabled}
         title={listening ? "Stop listening" : "Voice input"}
+        aria-label={listening ? "Stop voice input" : "Start voice input"}
         style={{
           width: 40, height: 40,
           borderRadius: "50%",

@@ -130,7 +130,7 @@ export default function WineJournal() {
                       {entry.occasion}
                     </span>
                   )}
-                  <button onClick={() => deleteEntry(entry.id)} style={{ background: "none", border: "none", color: "#475569", cursor: "pointer", fontSize: 16 }}>×</button>
+                  <button onClick={() => deleteEntry(entry.id)} aria-label="Delete journal entry" style={{ background: "none", border: "none", color: "#475569", cursor: "pointer", fontSize: 16 }}>×</button>
                 </div>
               </div>
 

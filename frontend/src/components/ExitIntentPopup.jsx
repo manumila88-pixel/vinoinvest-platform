@@ -84,6 +84,7 @@ export default function ExitIntentPopup({ userEmail }) {
       }}>
         <button
           onClick={handleClose}
+          aria-label="Close"
           style={{ position: "absolute", top: 12, right: 16, background: "none", border: "none", color: "#64748b", fontSize: 20, cursor: "pointer", lineHeight: 1 }}
         >×</button>
 

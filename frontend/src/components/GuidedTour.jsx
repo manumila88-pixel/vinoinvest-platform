@@ -144,6 +144,7 @@ function Tooltip({ rect, step, stepIndex, totalSteps, onNext, onPrev, onSkip, pl
           {stepIndex > 0 && (
             <button
               onClick={onPrev}
+              aria-label="Previous step"
               style={{
                 padding: "6px 14px", borderRadius: 8, border: "1px solid rgba(30,41,59,0.7)",
                 background: "transparent", color: "#94a3b8", cursor: "pointer", fontSize: 12, fontWeight: 600,

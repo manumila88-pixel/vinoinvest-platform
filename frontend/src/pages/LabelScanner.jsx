@@ -97,7 +97,7 @@ export default function LabelScanner({ onResult, onClose }) {
           <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, margin: 0 }}>Label Scanner</h3>
           <p style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>Powered by Claude Vision AI</p>
         </div>
-        {onClose && <button onClick={() => { stopCamera(); onClose(); }} style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 20 }}>×</button>}
+        {onClose && <button onClick={() => { stopCamera(); onClose(); }} aria-label="Close scanner" style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: 20 }}>×</button>}
       </div>
 
       <div style={{ padding: 20 }}>

@@ -126,7 +126,7 @@ export default function InvestmentGoals() {
                       {months > 0 ? ` · ${months} months remaining` : " · Past due"}
                     </div>
                   </div>
-                  <button onClick={() => deleteGoal(g.id)} style={{ background: "none", border: "none", color: "#475569", cursor: "pointer", fontSize: 18 }}>×</button>
+                  <button onClick={() => deleteGoal(g.id)} aria-label="Delete goal" style={{ background: "none", border: "none", color: "#475569", cursor: "pointer", fontSize: 18 }}>×</button>
                 </div>
 
                 <ProgressBar current={g.current_progress || 0} target={g.target_amount} />
