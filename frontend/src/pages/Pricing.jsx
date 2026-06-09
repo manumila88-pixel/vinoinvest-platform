@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import PaymentModal from "../components/PaymentModal";
 
@@ -13,7 +13,6 @@ const PLANS = [
     priceAnnual: 86,
     stripePriceMonthly: "price_1Tec4l15Hu1SBgIFa0PwZQvq",
     stripePriceAnnual: "price_1TecAi15Hu1SBgIFmZfb4ZLU",
-    color: "#c9a227",
     features: [
       "Accesso al mercato vini",
       "Portfolio tracker (fino a 10 vini)",
@@ -31,7 +30,6 @@ const PLANS = [
     priceAnnual: 278,
     stripePriceMonthly: "price_1Tec9R15Hu1SBgIFH99EfNSL",
     stripePriceAnnual: "price_1TecAi15Hu1SBgIFmZfb4ZLU",
-    color: "#c9a227",
     badge: "Più popolare",
     features: [
       "Tutto incluso in Basic",
@@ -53,7 +51,6 @@ const PLANS = [
     priceAnnual: 4800,
     stripePriceMonthly: "price_1TecCB15Hu1SBgIFRF1Rtv17",
     stripePriceAnnual: "price_1TecFh15Hu1SBgIFzQyMNKob",
-    color: "#60a5fa",
     features: [
       "Tutto incluso in Pro",
       "API access completo",
@@ -74,7 +71,6 @@ const PLANS = [
     priceAnnual: 19200,
     stripePriceMonthly: "price_1TecDn15Hu1SBgIFxnz20ADN",
     stripePriceAnnual: "price_1TecFh15Hu1SBgIFzQyMNKob",
-    color: "#60a5fa",
     features: [
       "Tutto incluso in Professional",
       "Onboarding dedicato",
@@ -107,122 +103,165 @@ export default function Pricing() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#020617", color: "white", padding: "60px 40px" }}>
+    <div style={{ minHeight: "100vh", background: "var(--vi-bg)", color: "var(--vi-text)", padding: "clamp(32px,5vw,60px) clamp(16px,4vw,40px)" }}>
+      <style>{`
+        .pricing-card { transition: transform var(--vi-dur) var(--vi-ease), box-shadow var(--vi-dur) var(--vi-ease); }
+        .pricing-card:hover { transform: translateY(-3px); box-shadow: var(--vi-elev-2); }
+        .pricing-card-hi:hover { box-shadow: var(--vi-glow); }
+        .pricing-cta { transition: opacity var(--vi-dur-fast) linear, transform var(--vi-dur-fast) var(--vi-ease); cursor: pointer; }
+        .pricing-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+        .pricing-toggle-btn { transition: background var(--vi-dur-fast) linear, color var(--vi-dur-fast) linear; cursor: pointer; }
+        @media (prefers-reduced-motion: reduce) { .pricing-card:hover, .pricing-cta:hover { transform: none; } }
+      `}</style>
+
+      {/* Back button */}
+      <button
+        onClick={() => navigate(-1)}
+        style={{
+          position: "fixed", left: "clamp(16px,3vw,40px)", top: 90,
+          background: "transparent", border: `1px solid var(--vi-border)`,
+          color: "var(--vi-text-dim)", padding: "7px 14px",
+          borderRadius: "var(--vi-radius-sm)", cursor: "pointer", fontSize: "var(--vi-fs-sm)"
+        }}
+      >
+        ← Indietro
+      </button>
+
       {/* Header */}
-      <div style={{ textAlign: "center", marginBottom: 48 }}>
-        <button
-          onClick={() => navigate(-1)}
-          style={{ position: "absolute", left: 40, top: 100, background: "transparent", border: "1px solid #1e293b", color: "#94a3b8", padding: "8px 16px", borderRadius: 8, cursor: "pointer", fontSize: 13 }}
-        >
-          ← Indietro
-        </button>
-        <div style={{ fontSize: 12, letterSpacing: "0.15em", color: "#c9a227", textTransform: "uppercase", marginBottom: 12 }}>Piani & Prezzi</div>
-        <h1 style={{ fontSize: 48, fontWeight: 800, lineHeight: 1.1, marginBottom: 16 }}>
-          Investi nel vino con<br /><span style={{ color: "#c9a227" }}>l'intelligenza artificiale</span>
+      <div style={{ textAlign: "center", marginBottom: 48, maxWidth: 560, margin: "0 auto 48px" }}>
+        <div style={{ fontSize: "var(--vi-fs-xs)", letterSpacing: "0.15em", color: "var(--vi-accent)", textTransform: "uppercase", marginBottom: 12, fontWeight: 600 }}>
+          Piani & Prezzi
+        </div>
+        <h1 style={{ fontSize: "clamp(28px,5vw,44px)", fontWeight: 800, lineHeight: 1.15, marginBottom: 16, fontFamily: "var(--vi-font-display)" }}>
+          Investi nel vino con<br /><span style={{ color: "var(--vi-accent)" }}>l'intelligenza artificiale</span>
         </h1>
-        <p style={{ color: "#64748b", fontSize: 16, maxWidth: 520, margin: "0 auto 32px" }}>
+        <p style={{ color: "var(--vi-text-dim)", fontSize: "var(--vi-fs-base)", lineHeight: 1.6 }}>
           Scegli il piano giusto per il tuo profilo. Annulla quando vuoi.
         </p>
 
         {/* Toggle */}
-        <div style={{ display: "inline-flex", background: "#0b1220", border: "1px solid #1e293b", borderRadius: 999, padding: 4, gap: 4 }}>
+        <div style={{ display: "inline-flex", marginTop: 24, background: "var(--vi-surface)", border: `1px solid var(--vi-border)`, borderRadius: "var(--vi-radius-full)", padding: 4, gap: 4 }}>
           <button
+            className="pricing-toggle-btn"
             onClick={() => setAnnual(false)}
-            style={{ padding: "8px 20px", borderRadius: 999, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, background: !annual ? "#c9a227" : "transparent", color: !annual ? "#000" : "#64748b", transition: "0.2s" }}
+            style={{ padding: "8px 20px", borderRadius: "var(--vi-radius-full)", border: "none", fontSize: "var(--vi-fs-sm)", fontWeight: 600, background: !annual ? "var(--vi-accent)" : "transparent", color: !annual ? "var(--vi-bg)" : "var(--vi-text-dim)" }}
           >
             Mensile
           </button>
           <button
+            className="pricing-toggle-btn"
             onClick={() => setAnnual(true)}
-            style={{ padding: "8px 20px", borderRadius: 999, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, background: annual ? "#c9a227" : "transparent", color: annual ? "#000" : "#64748b", transition: "0.2s" }}
+            style={{ padding: "8px 20px", borderRadius: "var(--vi-radius-full)", border: "none", fontSize: "var(--vi-fs-sm)", fontWeight: 600, background: annual ? "var(--vi-accent)" : "transparent", color: annual ? "var(--vi-bg)" : "var(--vi-text-dim)" }}
           >
-            Annuale <span style={{ fontSize: 11, opacity: 0.8 }}>(-20%)</span>
+            Annuale <span style={{ fontSize: "var(--vi-fs-xs)", opacity: 0.8 }}>(-20%)</span>
           </button>
         </div>
       </div>
 
       {/* Stripe test mode banner */}
       {(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "").startsWith("pk_test_") && (
-        <div style={{ background: "#1c0b07", border: "1px solid #9a3412", borderRadius: 10, padding: "10px 20px", marginBottom: 24, color: "#fb923c", textAlign: "center", maxWidth: 560, margin: "0 auto 24px", fontSize: 13 }}>
-          ⚠️ <strong>Stripe in modalità TEST</strong> — nessun addebito reale viene processato. Usa la carta di test: 4242 4242 4242 4242.
+        <div style={{
+          background: "rgba(154,52,18,0.08)", border: "1px solid rgba(154,52,18,0.3)",
+          borderRadius: "var(--vi-radius-sm)", padding: "10px 20px", marginBottom: 24,
+          color: "#fb923c", textAlign: "center", maxWidth: 560, margin: "0 auto 24px", fontSize: "var(--vi-fs-sm)"
+        }}>
+          <strong>Stripe in modalità TEST</strong> — nessun addebito reale viene processato. Carta di test: 4242 4242 4242 4242.
         </div>
       )}
 
       {/* Feedback banners */}
       {success && (
-        <div style={{ background: "#052e16", border: "1px solid #166534", borderRadius: 12, padding: "14px 20px", marginBottom: 32, color: "#4ade80", textAlign: "center", maxWidth: 560, margin: "0 auto 32px" }}>
-          Pagamento completato. Abbonamento attivo!
+        <div style={{
+          background: "rgba(5,46,22,0.6)", border: "1px solid rgba(22,101,52,0.6)",
+          borderRadius: "var(--vi-radius-md)", padding: "14px 20px", marginBottom: 32,
+          color: "var(--vi-positive)", textAlign: "center", maxWidth: 560, margin: "0 auto 32px"
+        }}>
+          Pagamento completato. Abbonamento attivo.
         </div>
       )}
       {cancelled && (
-        <div style={{ background: "#1c1007", border: "1px solid #9a3412", borderRadius: 12, padding: "14px 20px", marginBottom: 32, color: "#fb923c", textAlign: "center", maxWidth: 560, margin: "0 auto 32px" }}>
+        <div style={{
+          background: "rgba(28,16,7,0.6)", border: "1px solid rgba(154,52,18,0.4)",
+          borderRadius: "var(--vi-radius-md)", padding: "14px 20px", marginBottom: 32,
+          color: "#fb923c", textAlign: "center", maxWidth: 560, margin: "0 auto 32px"
+        }}>
           Pagamento annullato. Puoi riprovare quando vuoi.
         </div>
       )}
 
       {/* Plan cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 20, maxWidth: 1200, margin: "0 auto" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 18, maxWidth: 1200, margin: "0 auto" }}>
         {PLANS.map(plan => {
           const price = annual ? plan.priceAnnual : plan.priceMonthly;
           const priceId = annual ? plan.stripePriceAnnual : plan.stripePriceMonthly;
+          const isB2B = plan.audience === "B2B";
           return (
             <div
               key={plan.id}
+              className={`pricing-card${plan.highlighted ? " pricing-card-hi" : ""}`}
               style={{
-                background: plan.highlighted ? "linear-gradient(145deg, #0f1a30, #0b1220)" : "#0b1220",
-                border: plan.highlighted ? "2px solid #c9a227" : "1px solid #1f2937",
-                borderRadius: 24,
-                padding: 32,
+                background: plan.highlighted ? "linear-gradient(145deg, var(--vi-bg-elev), var(--vi-bg))" : "var(--vi-surface)",
+                border: plan.highlighted ? `2px solid var(--vi-accent)` : `1px solid var(--vi-border)`,
+                borderRadius: "var(--vi-radius-lg)",
+                padding: "clamp(24px,3vw,32px)",
                 display: "flex",
                 flexDirection: "column",
                 position: "relative",
-                boxShadow: plan.highlighted ? "0 0 40px #c9a22722" : "none",
-                transition: "0.25s",
+                boxShadow: plan.highlighted ? "0 0 40px var(--vi-accent-glow)" : "var(--vi-elev-1)",
               }}
             >
               {plan.badge && (
-                <div style={{ position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)", background: "#c9a227", color: "#000", fontSize: 11, fontWeight: 800, padding: "4px 16px", borderRadius: 999, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                <div style={{
+                  position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)",
+                  background: "var(--vi-accent)", color: "var(--vi-bg)",
+                  fontSize: "var(--vi-fs-xs)", fontWeight: 800, padding: "4px 16px",
+                  borderRadius: "var(--vi-radius-full)", letterSpacing: "0.08em", textTransform: "uppercase",
+                  whiteSpace: "nowrap"
+                }}>
                   {plan.badge}
                 </div>
               )}
 
               <div style={{ marginBottom: 20 }}>
-                <span style={{ fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", color: plan.audience === "B2B" ? "#60a5fa" : "#c9a227", fontWeight: 700 }}>{plan.audience}</span>
-                <h2 style={{ fontSize: 26, fontWeight: 800, marginTop: 4 }}>{plan.name}</h2>
+                <span style={{
+                  fontSize: "var(--vi-fs-xs)", letterSpacing: "0.12em", textTransform: "uppercase",
+                  color: isB2B ? "#60a5fa" : "var(--vi-accent)", fontWeight: 700
+                }}>{plan.audience}</span>
+                <h2 style={{ fontSize: "clamp(20px,3vw,26px)", fontWeight: 800, marginTop: 4, fontFamily: "var(--vi-font-display)" }}>{plan.name}</h2>
               </div>
 
               <div style={{ marginBottom: 28 }}>
-                <span style={{ fontSize: 44, fontWeight: 900 }}>€{price.toLocaleString("it-IT")}</span>
-                <span style={{ color: "#64748b", fontSize: 14 }}>/{annual ? "anno" : "mese"}</span>
+                <span style={{ fontSize: "clamp(32px,4vw,44px)", fontWeight: 900, fontVariantNumeric: "tabular-nums" }}>€{price.toLocaleString("it-IT")}</span>
+                <span style={{ color: "var(--vi-text-dim)", fontSize: "var(--vi-fs-sm)" }}>/{annual ? "anno" : "mese"}</span>
                 {annual && (
-                  <div style={{ fontSize: 11, color: "#4ade80", marginTop: 4 }}>
+                  <div style={{ fontSize: "var(--vi-fs-xs)", color: "var(--vi-positive)", marginTop: 4, fontVariantNumeric: "tabular-nums" }}>
                     ≈ €{Math.round(price / 12).toLocaleString("it-IT")}/mese
                   </div>
                 )}
               </div>
 
-              <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 10, marginBottom: 32, flex: 1 }}>
+              <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 10, marginBottom: 32, flex: 1, padding: 0 }}>
                 {plan.features.map((f, i) => (
-                  <li key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: 13, color: "#cbd5e1" }}>
-                    <span style={{ color: plan.audience === "B2B" ? "#60a5fa" : "#c9a227", flexShrink: 0, marginTop: 1 }}>✓</span>
+                  <li key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: "var(--vi-fs-sm)", color: "var(--vi-text-dim)" }}>
+                    <span style={{ color: isB2B ? "#60a5fa" : "var(--vi-accent)", flexShrink: 0, marginTop: 1, fontWeight: 700 }}>✓</span>
                     {f}
                   </li>
                 ))}
               </ul>
 
               <button
+                className="pricing-cta"
                 onClick={() => openPlan({ ...plan, priceId, price })}
                 style={{
                   width: "100%",
                   padding: "13px",
-                  borderRadius: 12,
+                  borderRadius: "var(--vi-radius-md)",
                   border: "none",
-                  cursor: "pointer",
                   fontWeight: 700,
-                  fontSize: 14,
-                  background: plan.highlighted ? "#c9a227" : plan.audience === "B2B" ? "#1e3a5f" : "#1e293b",
-                  color: plan.highlighted ? "#000" : plan.audience === "B2B" ? "#60a5fa" : "white",
-                  transition: "0.2s",
+                  fontSize: "var(--vi-fs-sm)",
+                  background: plan.highlighted ? "var(--vi-accent)" : isB2B ? "rgba(96,165,250,0.12)" : "var(--vi-bg-elev)",
+                  color: plan.highlighted ? "var(--vi-bg)" : isB2B ? "#60a5fa" : "var(--vi-text)",
+                  border: isB2B && !plan.highlighted ? "1px solid rgba(96,165,250,0.2)" : "none",
                 }}
               >
                 {plan.cta}
@@ -232,12 +271,11 @@ export default function Pricing() {
         })}
       </div>
 
-      {/* FAQ / trust row */}
-      <div style={{ textAlign: "center", marginTop: 56, color: "#475569", fontSize: 12 }}>
+      {/* Trust row */}
+      <div style={{ textAlign: "center", marginTop: 48, color: "var(--vi-text-dim)", fontSize: "var(--vi-fs-xs)", opacity: 0.7 }}>
         Tutti i piani includono 14 giorni di prova gratuita · Nessuna carta richiesta per iniziare · Disdici in qualsiasi momento
       </div>
 
-      {/* Payment modal */}
       {selected && (
         <PaymentModal
           plan={selected}
