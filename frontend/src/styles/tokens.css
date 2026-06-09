@@ -2,33 +2,34 @@
  * Shared namespace: --vi-*
  * Source of truth for all redesign agents (A, B, C).
  * DO NOT redefine these tokens elsewhere — consume with var(--vi-...).
+ * Colors extracted from existing project palette (style.css + App.jsx).
  */
 
 :root {
-  /* ── Colour — dark premium + single accent ── */
-  --vi-bg:            #0B0E14;
-  --vi-bg-elev:       #11151F;
-  --vi-surface:       #161B27;
-  --vi-border:        #232A3A;
-  --vi-text:          #EAF0FA;
-  --vi-text-dim:      #8A95A8;
-  --vi-accent:        #C0A062;          /* oro champagne — brand vino */
-  --vi-accent-2:      #E7CD8C;
-  --vi-accent-glow:   rgba(192, 160, 98, 0.35);
-  --vi-positive:      #4ADE80;
-  --vi-negative:      #F87171;
+  /* ── Colour — dark (default) ── */
+  --vi-bg:            #0b1220;               /* --bg-base dark */
+  --vi-bg-elev:       #0f172a;               /* --input-bg base (rgba 15,23,42) */
+  --vi-surface:       rgba(11,18,32,0.85);   /* --bg-card dark */
+  --vi-border:        rgba(30,41,59,0.6);    /* --border-color dark */
+  --vi-text:          #e2e8f0;               /* --text-primary dark */
+  --vi-text-dim:      #94a3b8;               /* --text-secondary dark */
+  --vi-accent:        #C9A227;               /* --gold dark (64 usages) */
+  --vi-accent-2:      #e0b82d;               /* lighter gold — gradient end (style.css:137) */
+  --vi-accent-glow:   rgba(201,162,39,0.2);  /* --gold-dim dark, boosted to 0.2 */
+  --vi-positive:      #4ade80;
+  --vi-negative:      #f87171;
 
   /* ── Typography ── */
   --vi-font-sans:     'Inter', system-ui, sans-serif;
   --vi-font-display:  'Playfair Display', 'Inter', serif;
 
-  --vi-fs-xs:   0.75rem;    /*  12px */
-  --vi-fs-sm:   0.875rem;   /*  14px */
-  --vi-fs-base: 1rem;       /*  16px */
-  --vi-fs-lg:   1.25rem;    /*  20px */
-  --vi-fs-xl:   1.75rem;    /*  28px */
-  --vi-fs-2xl:  2.5rem;     /*  40px */
-  --vi-fs-3xl:  3.75rem;    /*  60px */
+  --vi-fs-xs:   0.6875rem;  /*  11px */
+  --vi-fs-sm:   0.8125rem;  /*  13px */
+  --vi-fs-base: 0.875rem;   /*  14px */
+  --vi-fs-lg:   1rem;       /*  16px */
+  --vi-fs-xl:   1.125rem;   /*  18px */
+  --vi-fs-2xl:  1.5rem;     /*  24px */
+  --vi-fs-3xl:  1.875rem;   /*  30px */
 
   /* ── Radius ── */
   --vi-radius-sm:   8px;
@@ -42,9 +43,24 @@
   --vi-glow:   0 0 0 1px var(--vi-accent), 0 0 24px var(--vi-accent-glow);
 
   /* ── Motion ── */
-  --vi-dur-fast:   120ms;
-  --vi-dur:        200ms;
-  --vi-dur-slow:   360ms;
-  --vi-ease:       cubic-bezier(0.22, 1, 0.36, 1);
-  --vi-ease-spring:cubic-bezier(0.34, 1.56, 0.64, 1);
+  --vi-dur-fast:    120ms;
+  --vi-dur:         200ms;
+  --vi-dur-slow:    360ms;
+  --vi-ease:        cubic-bezier(0.22, 1, 0.36, 1);
+  --vi-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ── Light theme overrides ── */
+[data-theme="light"] {
+  --vi-bg:           #F8F4EF;                   /* --bg-base light */
+  --vi-bg-elev:      rgba(255,255,255,0.9);      /* --input-bg light */
+  --vi-surface:      rgba(255,253,249,0.95);     /* --bg-card light */
+  --vi-border:       rgba(139,26,26,0.15);       /* --border-color light */
+  --vi-text:         #1a1a2e;                    /* --text-primary light */
+  --vi-text-dim:     #4a4a6a;                    /* --text-secondary light */
+  --vi-accent:       #8B1A1A;                    /* --gold light */
+  --vi-accent-2:     #a82020;                    /* lighter crimson for hover */
+  --vi-accent-glow:  rgba(139,26,26,0.12);       /* --gold-dim light */
+  --vi-positive:     #16a34a;
+  --vi-negative:     #dc2626;
 }

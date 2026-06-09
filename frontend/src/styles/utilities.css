@@ -45,7 +45,7 @@
   gap: 6px;
   padding: 10px 22px;
   background: var(--vi-accent);
-  color: #0B0E14;
+  color: var(--vi-bg);
   font-family: var(--vi-font-sans);
   font-size: var(--vi-fs-sm);
   font-weight: 600;

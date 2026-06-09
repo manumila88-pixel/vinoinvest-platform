@@ -31,7 +31,7 @@ export default function EnPrimeur() {
         .ep-vintage-card { transition: transform var(--vi-dur) var(--vi-ease), box-shadow var(--vi-dur) var(--vi-ease); }
         .ep-vintage-card:hover { transform: translateY(-2px); box-shadow: var(--vi-glow); }
         .ep-sort-btn { transition: background var(--vi-dur-fast) linear, color var(--vi-dur-fast) linear; }
-        .ep-sort-btn:hover { background: rgba(192,160,98,0.1) !important; color: var(--vi-accent) !important; }
+        .ep-sort-btn:hover { background: rgba(201,162,39,0.1) !important; color: var(--vi-accent) !important; }
         .ep-row { transition: background var(--vi-dur-fast) linear; }
         .ep-row:hover { background: var(--vi-bg-elev); }
         .ep-step { transition: background var(--vi-dur-fast) linear; }
@@ -53,7 +53,7 @@ export default function EnPrimeur() {
           </p>
           <div style={{
             marginTop: 12, padding: "10px 14px",
-            background: "rgba(192,160,98,0.08)", border: "1px solid rgba(192,160,98,0.2)",
+            background: "rgba(201,162,39,0.08)", border: "1px solid rgba(201,162,39,0.2)",
             borderRadius: "var(--vi-radius-sm)", display: "inline-block",
             fontSize: "var(--vi-fs-xs)", color: "var(--vi-text-dim)"
           }}>
@@ -75,7 +75,7 @@ export default function EnPrimeur() {
               <div key={v.year} className="ep-vintage-card" style={{
                 flexShrink: 0, width: 180,
                 background: "var(--vi-surface)",
-                border: `1px solid ${v.score >= 97 ? "rgba(192,160,98,0.4)" : "var(--vi-border)"}`,
+                border: `1px solid ${v.score >= 97 ? "rgba(201,162,39,0.4)" : "var(--vi-border)"}`,
                 borderRadius: "var(--vi-radius-md)", padding: 18
               }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
@@ -83,7 +83,7 @@ export default function EnPrimeur() {
                   <span style={{
                     fontSize: 14, fontWeight: 700,
                     color: v.score >= 97 ? "var(--vi-accent)" : v.score >= 94 ? "var(--vi-positive)" : "var(--vi-text-dim)",
-                    background: v.score >= 97 ? "rgba(192,160,98,0.12)" : "rgba(74,222,128,0.08)",
+                    background: v.score >= 97 ? "rgba(201,162,39,0.12)" : "rgba(74,222,128,0.08)",
                     padding: "3px 8px", borderRadius: 6
                   }}>{v.score}/100</span>
                 </div>
@@ -107,9 +107,9 @@ export default function EnPrimeur() {
               ].map(s => (
                 <button key={s.key} className="ep-sort-btn" onClick={() => setSortBy(s.key)} style={{
                   padding: "5px 12px",
-                  background: sortBy === s.key ? "rgba(192,160,98,0.15)" : "rgba(30,41,59,0.4)",
+                  background: sortBy === s.key ? "rgba(201,162,39,0.15)" : "rgba(30,41,59,0.4)",
                   color: sortBy === s.key ? "var(--vi-accent)" : "var(--vi-text-dim)",
-                  border: `1px solid ${sortBy === s.key ? "rgba(192,160,98,0.3)" : "var(--vi-border)"}`,
+                  border: `1px solid ${sortBy === s.key ? "rgba(201,162,39,0.3)" : "var(--vi-border)"}`,
                   borderRadius: "var(--vi-radius-sm)", fontSize: "var(--vi-fs-xs)", cursor: "pointer"
                 }}>{s.label}</button>
               ))}
@@ -174,8 +174,8 @@ export default function EnPrimeur() {
               <div key={s.step} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
                 <span style={{
                   width: 28, height: 28, borderRadius: "50%",
-                  background: "rgba(192,160,98,0.15)", color: "var(--vi-accent)",
-                  border: "1px solid rgba(192,160,98,0.3)",
+                  background: "rgba(201,162,39,0.15)", color: "var(--vi-accent)",
+                  border: "1px solid rgba(201,162,39,0.3)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   fontWeight: 800, flexShrink: 0, fontSize: 13
                 }}>{s.step}</span>
