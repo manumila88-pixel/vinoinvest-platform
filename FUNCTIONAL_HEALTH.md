@@ -54,11 +54,11 @@
 | Accede corso gratuito | ✅ PASS | /academy → corsi 1-10 accessibili senza login |
 | Completa lezione con quiz | ✅ PASS | AcademyLesson: slides + quiz + submit + score |
 | Progress tracking (localStorage) | ✅ PASS | XP e progresso salvati in localStorage vino_academy_v1 |
-| Progress tracking (backend API) | ⚠️ PARTIAL | DB mancava colonna `done` — fix via ALTER TABLE deployato, attende restart Render |
+| Progress tracking (backend API) | ✅ PASS | ALTER TABLE fix deployato e verificato — GET /api/academy/progress risponde correttamente |
 | Accede corso premium (paywall) | ✅ PASS | LockedCourse mostra prezzo + Stripe checkout |
 | Certificato verificabile | ✅ PASS | POST /api/academy/certificate → GET /api/academy/verify/:code |
 
-**Flusso 3: 5/6 PASS, 1 PARTIAL ⚠️**
+**Flusso 3: 6/6 PASS ✅**
 
 **Fix applicato:** `ALTER TABLE academy_progress ADD COLUMN IF NOT EXISTS done` deployato 🔧
 
@@ -94,7 +94,7 @@
 | POST /api/agent/chat | ✅ PASS | Risponde con wine search + risorse |
 | GET /api/orders | ✅ PASS | Lista ordini per userId |
 | GET /api/risk/benchmark | ✅ PASS | VinoInvest Index vs S&P500/gold/inflation |
-| POST /api/academy/progress | ⚠️ PARTIAL | Fix deployato, attende Render restart |
+| POST /api/academy/progress | ✅ PASS | Fix ALTER TABLE verificato in produzione |
 | GET /api/academy/access | ✅ PASS | Controlla subscription level |
 | GET /api/academy/verify/:code | ✅ PASS | Verifica certificati |
 | GET /api/reports/portfolio/:id/pdf | ✅ PASS | PDF branded (auth required) |
@@ -133,7 +133,7 @@
 
 | Issue | Severity | Action Required |
 |-------|----------|-----------------|
-| Academy progress API | LOW | Attende Render restart per ALTER TABLE (auto nel prossimo deploy) |
+| Stripe webhook live | MEDIUM | STRIPE_WEBHOOK_SECRET non configurato in Render (solo sandbox) |
 | AI Chat qualità risposta | INFO | Agent è search-centric, risponde sempre ma non è conversazionale free-text |
 | Video YouTube nei moduli | LOW | Search queries placeholder funzionano, URL reali vanno inseriti manualmente |
 | Stripe webhook live | MEDIUM | STRIPE_WEBHOOK_SECRET non configurato in Render (solo sandbox) |
@@ -147,10 +147,10 @@
 |--------|-----------|--------|
 | F1 - B2C Nuovo Utente | 8/8 | 🟢 VERDE |
 | F2 - Wealth Manager B2B | 6/6 | 🟢 VERDE |
-| F3 - Academy | 5/6 | 🟡 GIALLO (1 issue minore) |
+| F3 - Academy | 6/6 | 🟢 VERDE |
 | F4 - Mobile 375px | 8/8 | 🟢 VERDE |
-| **TOTALE** | **27/28** | **🟢 96.4%** |
+| **TOTALE** | **28/28** | **🟢 100%** |
 
 ---
 
-> Last updated: 2026-06-09 | Commit: 26cac1c
+> Last updated: 2026-06-09 | Commit: 8b086fb
