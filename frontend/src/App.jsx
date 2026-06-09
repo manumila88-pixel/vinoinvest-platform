@@ -1412,8 +1412,8 @@ function App() {
           {/* ── Analysis ──────────────────────────────────────────────────── */}
           {tab === "analysis" && (
             <section className="chartPanel">
-              <h2>Watchlist Analysis</h2>
-              {!selectedWine && <p>Add wines to watchlist from Market section.</p>}
+              <h2>Analisi Watchlist</h2>
+              {!selectedWine && <p>Aggiungi vini alla watchlist dalla sezione Mercato.</p>}
               {selectedWine && (
                 <div style={{ marginBottom: 28 }}>
                   <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 26, marginBottom: 8 }}>{selectedWine.name}</h3>
@@ -1438,7 +1438,7 @@ function App() {
             <ErrorBoundary>
             <section className="ordersPanel">
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 22, flexWrap: "wrap", gap: 10 }}>
-                <h2 style={{ margin: 0 }}>My Portfolio</h2>
+                <h2 style={{ margin: 0 }}>{t('portfolio.title')}</h2>
                 {holdings.length > 0 && (
                   <button
                     className="btn-primary"
@@ -1702,7 +1702,7 @@ function App() {
           {tab === "notifications" && (
             <section>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, flexWrap: "wrap", gap: 10 }}>
-                <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 26, fontWeight: 800, margin: 0 }}>Notifications</h2>
+                <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 26, fontWeight: 800, margin: 0 }}>{t('notifications.title')}</h2>
                 <div style={{ display: "flex", gap: 8 }}>
                   {Notification.permission !== "granted" && "Notification" in window && (
                     <button
@@ -1711,16 +1711,16 @@ function App() {
                         if (perm === "granted") toast(t("notifications.pushEnabled"), "success");
                       }}
                       style={{ padding: "8px 14px", borderRadius: 8, border: "1px solid rgba(201,162,39,0.3)", background: "rgba(201,162,39,0.1)", color: "#C9A227", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
-                    >🔔 Enable Push</button>
+                    >{t('notifications.enablePush')}</button>
                   )}
                   {notifications.length > 0 && (
-                    <button onClick={markAllRead} style={{ padding: "8px 14px", borderRadius: 8, border: "1px solid rgba(30,41,59,0.5)", background: "transparent", color: "#64748b", fontSize: 12, cursor: "pointer" }}>Mark all read</button>
+                    <button onClick={markAllRead} style={{ padding: "8px 14px", borderRadius: 8, border: "1px solid rgba(30,41,59,0.5)", background: "transparent", color: "#64748b", fontSize: 12, cursor: "pointer" }}>{t('notifications.markAllRead')}</button>
                   )}
                 </div>
               </div>
               {notifications.length === 0 ? (
                 <div style={{ color: "#1e3050", fontSize: 13, padding: 24, border: "1px dashed rgba(30,41,59,0.5)", borderRadius: 12, textAlign: "center" }}>
-                  No notifications yet. Set a price alert in the Market section.
+                  {t('notifications.noNotifications')}
                 </div>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>

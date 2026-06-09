@@ -116,9 +116,10 @@ export async function getAIScore(wine) {
 
   const cached = await getCached(wine.id);
   if (cached) {
+    const cappedScore = isEliteWine(wine) ? cached.score : Math.min(99, cached.score);
     return {
       wineId: wine.id,
-      score: cached.score,
+      score: cappedScore,
       breakdown: cached.breakdown,
       signal: cached.signal,
       reasoning: cached.reasoning,

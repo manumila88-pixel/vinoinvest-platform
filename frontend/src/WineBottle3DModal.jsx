@@ -364,7 +364,7 @@ function FoodPairings({ wineId }) {
       <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
         {pairings.slice(0, 6).map((p, i) => (
           <span key={i} style={{ fontSize: 11, color: "var(--vi-accent)", background: "rgba(201,162,39,0.08)", padding: "2px 8px", borderRadius: 999, border: "1px solid rgba(201,162,39,0.2)" }}>
-            {p}
+            {typeof p === "object" ? p.food : p}
           </span>
         ))}
       </div>
@@ -443,7 +443,7 @@ export default function WineBottle3DModal({ wine, onClose }) {
   const aiScore = wine.aiScoreData?.score ?? wine.analysis?.aiScore ?? wine.investmentScore ?? "—";
   const aiSignal = wine.aiScoreData?.signal;
 
-  const price = wine.current_price || wine.price || 0;
+  const price = wine.currentPrice || wine.current_price || wine.price || 0;
   const score = wine.investment_score || wine.aiScore || (aiScore !== "—" ? aiScore : null);
   const wineImage = wine.imageUrl || placeholderImg;
   const wineTitle = `${wine.name} ${wine.vintage || ""}`.trim();

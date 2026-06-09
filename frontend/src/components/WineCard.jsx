@@ -86,13 +86,19 @@ const WineCard = memo(function WineCard({
   onDeleteAlert,
 }) {
   const { t } = useTranslation();
-  // Deterministic ±2 noise so scores don't cluster — reproducible per wine
-  const scoreNoise = [-2, -1, 0, 1, 2][(wine.id || 0) % 5];
-  const displayScore = aiScore?.score != null
-    ? Math.min(100, Math.max(0, aiScore.score + scoreNoise))
-    : wine.investmentScore != null
-    ? Math.min(100, Math.max(0, wine.investmentScore + scoreNoise))
-    : null;
+  // Deterministic ±2 noise for investmentScore fallback — reproducible per wine
+  const scoreNoise = [-2, -1, 0, 1, 2][(parseInt(wine.id) || 0) % 5];
+  const displayScore = (() => {
+    if (aiScore?.score != null) {
+      const s = Number(aiScore.score);
+      return isNaN(s) ? null : Math.min(100, Math.max(0, s));
+    }
+    if (wine.investmentScore != null) {
+      const s = Math.min(95, Number(wine.investmentScore));
+      return isNaN(s) ? null : Math.min(97, Math.max(0, s + scoreNoise));
+    }
+    return null;
+  })();
 
   return (
     <div
