@@ -163,30 +163,30 @@ export default function NotificationSettings() {
     return arr.includes(item) ? arr.filter(x => x !== item) : [...arr, item];
   }
 
-  if (loading) return <div style={{ minHeight: "100vh", background: "#020617", display: "flex", alignItems: "center", justifyContent: "center", color: "#64748b" }}>Loading...</div>;
+  if (loading) return <div style={{ minHeight: "100vh", background: "var(--vi-bg)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--vi-text-dim)" }}>Loading...</div>;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#020617", color: "#e2e8f0" }}>
+    <div style={{ minHeight: "100vh", background: "var(--vi-bg)", color: "var(--vi-text)" }}>
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "40px 24px" }}>
-        <a href="/" style={{ color: "#64748b", fontSize: 13, textDecoration: "none" }}>← Back</a>
+        <a href="/" style={{ color: "var(--vi-text-dim)", fontSize: 13, textDecoration: "none" }}>← Back</a>
 
         <div style={{ margin: "24px 0 36px" }}>
-          <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 30, marginBottom: 6 }}>⚙️ Notification Preferences</h1>
-          <p style={{ color: "#64748b", fontSize: 14 }}>Customize what you receive and how often</p>
+          <h1 style={{ fontFamily: "var(--vi-font-display)", fontSize: 30, marginBottom: 6 }}>Notification Preferences</h1>
+          <p style={{ color: "var(--vi-text-dim)", fontSize: 14 }}>Customize what you receive and how often</p>
         </div>
 
         {/* Email toggle */}
-        <div style={{ background: "rgba(11,18,32,0.85)", border: "1px solid rgba(30,41,59,0.5)", borderRadius: 14, padding: 20, marginBottom: 20 }}>
+        <div style={{ background: "var(--vi-surface)", border: "1px solid var(--vi-border)", borderRadius: 14, padding: 20, marginBottom: 20 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div>
               <div style={{ fontWeight: 700, fontSize: 15 }}>Email Notifications</div>
-              <div style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}>Receive personalized wine intelligence in your inbox</div>
+              <div style={{ fontSize: 12, color: "var(--vi-text-dim)", marginTop: 2 }}>Receive personalized wine intelligence in your inbox</div>
             </div>
             <button
               onClick={() => setPrefs(p => ({ ...p, email_subscribed: !p.email_subscribed }))}
               style={{
                 width: 52, height: 28, borderRadius: 14,
-                background: prefs.email_subscribed ? "#C9A227" : "rgba(30,41,59,0.8)",
+                background: prefs.email_subscribed ? "var(--vi-accent)" : "rgba(30,41,59,0.8)",
                 border: "none", cursor: "pointer", position: "relative", transition: "background 0.2s"
               }}
             >
@@ -200,11 +200,11 @@ export default function NotificationSettings() {
         </div>
 
         {/* Push Notifications */}
-        <div style={{ background: "rgba(11,18,32,0.85)", border: "1px solid rgba(30,41,59,0.5)", borderRadius: 14, padding: 20, marginBottom: 20 }}>
+        <div style={{ background: "var(--vi-surface)", border: "1px solid var(--vi-border)", borderRadius: 14, padding: 20, marginBottom: 20 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
             <div>
               <div style={{ fontWeight: 700, fontSize: 15 }}>Push Notifications</div>
-              <div style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}>
+              <div style={{ fontSize: 12, color: "var(--vi-text-dim)", marginTop: 2 }}>
                 {pushStatus === "unsupported"
                   ? "Browser non supportato"
                   : pushStatus === "denied"
@@ -215,7 +215,7 @@ export default function NotificationSettings() {
               </div>
             </div>
             {pushStatus === "unsupported" ? (
-              <span style={{ fontSize: 12, color: "#64748b" }}>Non disponibile</span>
+              <span style={{ fontSize: 12, color: "var(--vi-text-dim)" }}>Non disponibile</span>
             ) : pushStatus === "subscribed" ? (
               <button
                 onClick={disablePush}
@@ -230,7 +230,7 @@ export default function NotificationSettings() {
                 style={{
                   padding: "8px 16px",
                   background: pushStatus === "denied" ? "rgba(30,41,59,0.4)" : "rgba(201,162,39,0.15)",
-                  color: pushStatus === "denied" ? "#64748b" : "#C9A227",
+                  color: pushStatus === "denied" ? "var(--vi-text-dim)" : "var(--vi-accent)",
                   border: `1px solid ${pushStatus === "denied" ? "rgba(30,41,59,0.4)" : "rgba(201,162,39,0.3)"}`,
                   borderRadius: 8, fontWeight: 600, cursor: pushStatus === "denied" ? "not-allowed" : "pointer", fontSize: 13
                 }}
@@ -240,22 +240,22 @@ export default function NotificationSettings() {
             )}
           </div>
           {pushStatus === "subscribed" && (
-            <div style={{ marginTop: 10, fontSize: 12, color: "#4ade80" }}>Notifiche push attivate ✓</div>
+            <div style={{ marginTop: 10, fontSize: 12, color: "var(--vi-positive)" }}>Notifiche push attivate ✓</div>
           )}
         </div>
 
         {prefs.email_subscribed && (
           <>
             {/* Frequency */}
-            <div style={{ background: "rgba(11,18,32,0.85)", border: "1px solid rgba(30,41,59,0.5)", borderRadius: 14, padding: 20, marginBottom: 20 }}>
+            <div style={{ background: "var(--vi-surface)", border: "1px solid var(--vi-border)", borderRadius: 14, padding: 20, marginBottom: 20 }}>
               <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14 }}>Email Frequency</h3>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {FREQUENCIES.map(f => (
                   <label key={f.key} style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer", padding: "10px 12px", background: prefs.notification_frequency === f.key ? "rgba(201,162,39,0.1)" : "transparent", border: `1px solid ${prefs.notification_frequency === f.key ? "rgba(201,162,39,0.3)" : "rgba(30,41,59,0.4)"}`, borderRadius: 8 }}>
-                    <input type="radio" name="freq" value={f.key} checked={prefs.notification_frequency === f.key} onChange={() => setPrefs(p => ({ ...p, notification_frequency: f.key }))} style={{ accentColor: "#C9A227" }} />
+                    <input type="radio" name="freq" value={f.key} checked={prefs.notification_frequency === f.key} onChange={() => setPrefs(p => ({ ...p, notification_frequency: f.key }))} style={{ accentColor: "var(--vi-accent)" }} />
                     <div>
                       <div style={{ fontWeight: 600, fontSize: 13 }}>{f.label}</div>
-                      <div style={{ fontSize: 11, color: "#64748b" }}>{f.desc}</div>
+                      <div style={{ fontSize: 11, color: "var(--vi-text-dim)" }}>{f.desc}</div>
                     </div>
                   </label>
                 ))}
@@ -263,7 +263,7 @@ export default function NotificationSettings() {
             </div>
 
             {/* Regions */}
-            <div style={{ background: "rgba(11,18,32,0.85)", border: "1px solid rgba(30,41,59,0.5)", borderRadius: 14, padding: 20, marginBottom: 20 }}>
+            <div style={{ background: "var(--vi-surface)", border: "1px solid var(--vi-border)", borderRadius: 14, padding: 20, marginBottom: 20 }}>
               <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14 }}>Preferred Regions</h3>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {REGIONS.map(r => {
@@ -272,7 +272,7 @@ export default function NotificationSettings() {
                     <button key={r} onClick={() => setPrefs(p => ({ ...p, preferred_regions: toggleArray(p.preferred_regions || [], r) }))} style={{
                       padding: "6px 14px", borderRadius: 20, fontSize: 12, cursor: "pointer",
                       background: active ? "rgba(201,162,39,0.15)" : "rgba(30,41,59,0.4)",
-                      color: active ? "#C9A227" : "#94a3b8",
+                      color: active ? "var(--vi-accent)" : "var(--vi-text-dim)",
                       border: `1px solid ${active ? "rgba(201,162,39,0.4)" : "rgba(30,41,59,0.5)"}`,
                     }}>{r}</button>
                   );
@@ -281,7 +281,7 @@ export default function NotificationSettings() {
             </div>
 
             {/* Types */}
-            <div style={{ background: "rgba(11,18,32,0.85)", border: "1px solid rgba(30,41,59,0.5)", borderRadius: 14, padding: 20, marginBottom: 20 }}>
+            <div style={{ background: "var(--vi-surface)", border: "1px solid var(--vi-border)", borderRadius: 14, padding: 20, marginBottom: 20 }}>
               <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14 }}>Wine Types</h3>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {TYPES.map(t => {
@@ -290,7 +290,7 @@ export default function NotificationSettings() {
                     <button key={t} onClick={() => setPrefs(p => ({ ...p, preferred_types: toggleArray(p.preferred_types || [], t) }))} style={{
                       padding: "6px 14px", borderRadius: 20, fontSize: 12, cursor: "pointer",
                       background: active ? "rgba(129,140,248,0.15)" : "rgba(30,41,59,0.4)",
-                      color: active ? "#818cf8" : "#94a3b8",
+                      color: active ? "#818cf8" : "var(--vi-text-dim)",
                       border: `1px solid ${active ? "rgba(129,140,248,0.4)" : "rgba(30,41,59,0.5)"}`,
                     }}>{t}</button>
                   );
@@ -299,7 +299,7 @@ export default function NotificationSettings() {
             </div>
 
             {/* Price range */}
-            <div style={{ background: "rgba(11,18,32,0.85)", border: "1px solid rgba(30,41,59,0.5)", borderRadius: 14, padding: 20, marginBottom: 20 }}>
+            <div style={{ background: "var(--vi-surface)", border: "1px solid var(--vi-border)", borderRadius: 14, padding: 20, marginBottom: 20 }}>
               <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14 }}>Price Range (per bottle)</h3>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
                 {[
@@ -307,12 +307,12 @@ export default function NotificationSettings() {
                   { label: "Max €", key: "price_range_max" },
                 ].map(f => (
                   <div key={f.key}>
-                    <label style={{ fontSize: 12, color: "#94a3b8", display: "block", marginBottom: 6 }}>{f.label}</label>
+                    <label style={{ fontSize: 12, color: "var(--vi-text-dim)", display: "block", marginBottom: 6 }}>{f.label}</label>
                     <input
                       type="number"
                       value={prefs[f.key] || ""}
                       onChange={e => setPrefs(p => ({ ...p, [f.key]: parseInt(e.target.value) || 0 }))}
-                      style={{ width: "100%", padding: "10px", background: "rgba(15,23,42,0.8)", border: "1px solid rgba(30,41,59,0.6)", borderRadius: 8, color: "#e2e8f0", fontSize: 14 }}
+                      style={{ width: "100%", padding: "10px", background: "var(--vi-bg-elev)", border: "1px solid var(--vi-border)", borderRadius: 8, color: "var(--vi-text)", fontSize: 14 }}
                     />
                   </div>
                 ))}
@@ -326,23 +326,23 @@ export default function NotificationSettings() {
           <button
             onClick={savePrefs}
             disabled={saving}
-            style={{ flex: 1, minWidth: 140, padding: "12px", background: saved ? "rgba(74,222,128,0.2)" : "#C9A227", color: saved ? "#4ade80" : "#020617", border: saved ? "1px solid rgba(74,222,128,0.4)" : "none", borderRadius: 10, fontWeight: 700, cursor: "pointer", fontSize: 14 }}
+            style={{ flex: 1, minWidth: 140, padding: "12px", background: saved ? "rgba(74,222,128,0.2)" : "var(--vi-accent)", color: saved ? "var(--vi-positive)" : "var(--vi-bg)", border: saved ? "1px solid rgba(74,222,128,0.4)" : "none", borderRadius: 10, fontWeight: 700, cursor: "pointer", fontSize: 14 }}
           >
             {saving ? "Saving..." : saved ? "✓ Saved!" : "Save Preferences"}
           </button>
           {prefs.email_subscribed && (
             <button
               onClick={sendTest}
-              style={{ padding: "12px 20px", background: "rgba(201,162,39,0.1)", color: "#C9A227", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 10, fontWeight: 600, cursor: "pointer", fontSize: 14 }}
+              style={{ padding: "12px 20px", background: "rgba(201,162,39,0.1)", color: "var(--vi-accent)", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 10, fontWeight: 600, cursor: "pointer", fontSize: 14 }}
             >
               {testSent ? "✓ Sent!" : "Send Test Email"}
             </button>
           )}
         </div>
 
-        <div style={{ marginTop: 16, fontSize: 11, color: "#334155" }}>
+        <div style={{ marginTop: 16, fontSize: 11, color: "var(--vi-text-dim)" }}>
           Your preferences are used to personalize news, wine recommendations and email content.
-          <br />GDPR: <a href="/" style={{ color: "#475569" }}>Download your data</a> · <a href="/" style={{ color: "#475569" }}>Delete account</a>
+          <br />GDPR: <a href="/" style={{ color: "var(--vi-text-dim)" }}>Download your data</a> · <a href="/" style={{ color: "var(--vi-text-dim)" }}>Delete account</a>
         </div>
       </div>
     </div>
