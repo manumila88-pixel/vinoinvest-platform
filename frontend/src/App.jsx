@@ -8,6 +8,7 @@ import { HelmetProvider, Helmet } from "react-helmet-async";
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ComposedChart } from "recharts";
 import PriceHistoryChart from "./components/PriceHistoryChart";
 import ErrorBoundary from "./components/ErrorBoundary";
+import { init as initErrorReporting } from "./lib/errorReporting";
 import { ToastProvider, useToast } from "./components/Toast";
 import { fetchWithRetry } from "./lib/fetchWithRetry";
 import { authFetch } from "./lib/authFetch";
@@ -1958,6 +1959,8 @@ onCLS(reportWebVitals);
 onLCP(reportWebVitals);
 onINP(reportWebVitals);
 onTTFB(reportWebVitals);
+
+initErrorReporting();
 
 createRoot(document.getElementById("root")).render(
   <HelmetProvider>
