@@ -37,18 +37,18 @@ export default function WinePriceCompare({ wineId, wineName, vintage, criticScor
           width: "100%",
           padding: "8px",
           marginBottom: 8,
-          border: "1px solid rgba(30,41,59,0.7)",
+          border: "1px solid var(--vi-border)",
           borderRadius: 10,
           background: "transparent",
-          color: "#60a5fa",
+          color: "var(--vi-accent)",
           fontSize: 11,
           cursor: "pointer",
           fontFamily: "'Inter', Arial, sans-serif",
           textAlign: "center",
           transition: "all 0.2s",
         }}
-        onMouseEnter={e => e.target.style.borderColor = "rgba(96,165,250,0.4)"}
-        onMouseLeave={e => e.target.style.borderColor = "rgba(30,41,59,0.7)"}
+        onMouseEnter={e => e.target.style.borderColor = "rgba(201,162,39,0.4)"}
+        onMouseLeave={e => e.target.style.borderColor = "var(--vi-border)"}
       >
         Compare Prices ↓
       </button>
@@ -58,9 +58,9 @@ export default function WinePriceCompare({ wineId, wineName, vintage, criticScor
   if (loading) {
     return (
       <div style={{ marginBottom: 10 }}>
-        <p style={{ fontSize: 10, color: "#3a5a7a", marginBottom: 5, textTransform: "uppercase" }}>Compare Prices</p>
+        <p style={{ fontSize: 10, color: "var(--vi-text-dim)", marginBottom: 5, textTransform: "uppercase" }}>Compare Prices</p>
         <div style={{ display: "flex", alignItems: "center", gap: 6, color: "#3a5a7a", fontSize: 11 }}>
-          <span style={{ width: 10, height: 10, borderRadius: "50%", border: "2px solid #3a5a7a", borderTopColor: "#c9a227", display: "inline-block", animation: "spin 0.8s linear infinite" }} />
+          <span style={{ width: 10, height: 10, borderRadius: "50%", border: "2px solid var(--vi-border)", borderTopColor: "var(--vi-accent)", display: "inline-block", animation: "spin 0.8s linear infinite" }} />
           Loading...
         </div>
       </div>
@@ -72,7 +72,7 @@ export default function WinePriceCompare({ wineId, wineName, vintage, criticScor
     return (
       <div style={{ marginBottom: 10 }}>
         <p style={{ fontSize: 10, color: "#3a5a7a", marginBottom: 4, textTransform: "uppercase" }}>Compare Prices</p>
-        <div style={{ fontSize: 11, color: "#3a5a7a" }}>Prezzo non disponibile</div>
+        <div style={{ fontSize: 11, color: "var(--vi-text-dim)" }}>Prezzo non disponibile</div>
       </div>
     );
   }
@@ -84,18 +84,18 @@ export default function WinePriceCompare({ wineId, wineName, vintage, criticScor
 
   return (
     <div style={{ marginBottom: 10, cursor: "pointer" }} onClick={handleToggle}>
-      <p style={{ fontSize: 10, color: "#3a5a7a", marginBottom: 5, textTransform: "uppercase" }}>
-        Compare Prices{isEstimate && <span style={{ color: "#1e3050", marginLeft: 4, fontSize: 9 }}>(stima)</span>}
+      <p style={{ fontSize: 10, color: "var(--vi-text-dim)", marginBottom: 5, textTransform: "uppercase" }}>
+        Compare Prices{isEstimate && <span style={{ color: "var(--vi-text-dim)", marginLeft: 4, fontSize: 9 }}>(stima)</span>}
       </p>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "4px 0", borderBottom: "1px solid #0a1220" }}>
-        <span style={{ fontSize: 11, color: "#64748b" }}>Min</span>
-        <span style={{ fontSize: 12, fontWeight: 700 }}>€ {min}</span>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "4px 0", borderBottom: "1px solid var(--vi-bg)" }}>
+        <span style={{ fontSize: 11, color: "var(--vi-text-dim)" }}>Min</span>
+        <span style={{ fontSize: 12, fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>€ {min}</span>
       </div>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "4px 0", borderBottom: "1px solid #0a1220" }}>
-        <span style={{ fontSize: 11, color: "#64748b" }}>Max</span>
-        <span style={{ fontSize: 12, fontWeight: 700 }}>€ {max}</span>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "4px 0", borderBottom: "1px solid var(--vi-bg)" }}>
+        <span style={{ fontSize: 11, color: "var(--vi-text-dim)" }}>Max</span>
+        <span style={{ fontSize: 12, fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>€ {max}</span>
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 3, fontSize: 10, color: "#3a5a7a" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 3, fontSize: 10, color: "var(--vi-text-dim)" }}>
         {data.merchant_count > 0
           ? <span>{data.merchant_count} merchant · +{spread}%</span>
           : <span>Stima AI</span>
@@ -106,7 +106,7 @@ export default function WinePriceCompare({ wineId, wineName, vintage, criticScor
             target="_blank"
             rel="noopener noreferrer"
             onClick={e => e.stopPropagation()}
-            style={{ color: "#c9a227", textDecoration: "none", fontWeight: 700 }}
+            style={{ color: "var(--vi-accent)", textDecoration: "none", fontWeight: 700 }}
           >Vedi →</a>
         )}
       </div>
