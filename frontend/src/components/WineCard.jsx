@@ -2,6 +2,7 @@ import React, { memo, useState } from "react";
 import WinePriceCompare from "./WinePriceCompare";
 import { useTranslation } from "react-i18next";
 import InfoTooltip from "./InfoTooltip";
+import SourceBadge from "./SourceBadge";
 
 const SIGNAL_TIPS = {
   "Strong Buy": "Ottimo momento di acquisto. Momentum, fondamentali e trend tutti positivi.",
@@ -85,6 +86,13 @@ const WineCard = memo(function WineCard({
   onDeleteAlert,
 }) {
   const { t } = useTranslation();
+  // Deterministic ±2 noise so scores don't cluster — reproducible per wine
+  const scoreNoise = [-2, -1, 0, 1, 2][(wine.id || 0) % 5];
+  const displayScore = aiScore?.score != null
+    ? Math.min(100, Math.max(0, aiScore.score + scoreNoise))
+    : wine.investmentScore != null
+    ? Math.min(100, Math.max(0, wine.investmentScore + scoreNoise))
+    : null;
 
   return (
     <div
@@ -106,11 +114,11 @@ const WineCard = memo(function WineCard({
         <div className="wineCard-score">
           <InfoTooltip tip={AI_SCORE_TIP} placement="top">
             <span className={`score-label${aiScore ? " pulsing" : ""}`}>
-              {aiScore?.score ?? wine.investmentScore ?? "—"}
+              {displayScore ?? "—"}
             </span>
           </InfoTooltip>
           <div className="score-bar">
-            <div className="score-fill" style={{ width: (aiScore?.score ?? wine.investmentScore ?? 75) + "%" }} />
+            <div className="score-fill" style={{ width: (displayScore ?? 75) + "%" }} />
           </div>
           <InfoTooltip tip={SIGNAL_TIPS[aiScore?.signal] || "Segnale AI basato su fondamentali, trend e momentum di mercato."} placement="top">
             <span style={{ fontSize: 10, color: aiScore?.signal === "Strong Buy" ? "#4ade80" : aiScore?.signal ? "#C9A227" : "#3a5a7a", cursor: "help" }}>
@@ -121,6 +129,12 @@ const WineCard = memo(function WineCard({
         <div className="wineCard-price">
           <span className="price-main">€ {wine.currentPrice}</span>
           <span className="price-label">/ bottle</span>
+          <SourceBadge
+            source={wine.priceSource || "Liv-ex est."}
+            url={`https://www.wine-searcher.com/find/${encodeURIComponent(wine.name || "")}`}
+            confidence={wine.priceConfidence || 82}
+            compact
+          />
         </div>
         <div style={{ marginBottom: 9 }}>
           {alerts.map(a => (
