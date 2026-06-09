@@ -1,0 +1,50 @@
+/* VinoInvest Design Tokens — v1
+ * Shared namespace: --vi-*
+ * Source of truth for all redesign agents (A, B, C).
+ * DO NOT redefine these tokens elsewhere — consume with var(--vi-...).
+ */
+
+:root {
+  /* ── Colour — dark premium + single accent ── */
+  --vi-bg:            #0B0E14;
+  --vi-bg-elev:       #11151F;
+  --vi-surface:       #161B27;
+  --vi-border:        #232A3A;
+  --vi-text:          #EAF0FA;
+  --vi-text-dim:      #8A95A8;
+  --vi-accent:        #C0A062;          /* oro champagne — brand vino */
+  --vi-accent-2:      #E7CD8C;
+  --vi-accent-glow:   rgba(192, 160, 98, 0.35);
+  --vi-positive:      #4ADE80;
+  --vi-negative:      #F87171;
+
+  /* ── Typography ── */
+  --vi-font-sans:     'Inter', system-ui, sans-serif;
+  --vi-font-display:  'Playfair Display', 'Inter', serif;
+
+  --vi-fs-xs:   0.75rem;    /*  12px */
+  --vi-fs-sm:   0.875rem;   /*  14px */
+  --vi-fs-base: 1rem;       /*  16px */
+  --vi-fs-lg:   1.25rem;    /*  20px */
+  --vi-fs-xl:   1.75rem;    /*  28px */
+  --vi-fs-2xl:  2.5rem;     /*  40px */
+  --vi-fs-3xl:  3.75rem;    /*  60px */
+
+  /* ── Radius ── */
+  --vi-radius-sm:   8px;
+  --vi-radius-md:   14px;
+  --vi-radius-lg:   24px;
+  --vi-radius-full: 999px;
+
+  /* ── Elevation / Glow ── */
+  --vi-elev-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --vi-elev-2: 0 12px 40px rgba(0, 0, 0, 0.55);
+  --vi-glow:   0 0 0 1px var(--vi-accent), 0 0 24px var(--vi-accent-glow);
+
+  /* ── Motion ── */
+  --vi-dur-fast:   120ms;
+  --vi-dur:        200ms;
+  --vi-dur-slow:   360ms;
+  --vi-ease:       cubic-bezier(0.22, 1, 0.36, 1);
+  --vi-ease-spring:cubic-bezier(0.34, 1.56, 0.64, 1);
+}

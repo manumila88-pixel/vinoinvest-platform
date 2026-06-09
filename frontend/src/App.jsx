@@ -82,6 +82,8 @@ import ExitIntentPopup from "./components/ExitIntentPopup";
 import ProactiveBriefing from "./components/ProactiveBriefing";
 import { getSavedTheme, applyTheme } from "./lib/theme";
 import { API, ADMIN_EMAIL as ADMIN_EMAIL_CONST } from "./lib/constants";
+import "./styles/tokens.css";
+import "./styles/utilities.css";
 import "./style.css";
 
 // ── Skeleton Card ────────────────────────────────────────────────────────────
