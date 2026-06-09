@@ -4,42 +4,44 @@ import { FAQ, B2B_CATS, B2B_CATEGORIES } from "../data/faq.js";
 
 const FAQ_B2B = FAQ.filter(f => B2B_CATS.has(f.cat));
 
+const B2B_BLUE = "#60a5fa";
+const B2B_BLUE_MID = "rgba(59,130,246,0.2)";
+
 function FAQAccordion({ items }) {
   const [openId, setOpenId] = useState(null);
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       {items.map(item => (
         <div key={item.id} style={{
-          border: "1px solid rgba(59,130,246,0.2)",
-          borderRadius: 12,
+          border: `1px solid ${openId === item.id ? "rgba(59,130,246,0.4)" : "rgba(59,130,246,0.15)"}`,
+          borderRadius: "var(--vi-radius-md)",
           overflow: "hidden",
-          transition: "border-color 0.2s",
-          ...(openId === item.id ? { borderColor: "rgba(59,130,246,0.5)" } : {}),
+          transition: "border-color var(--vi-dur-fast) linear",
         }}>
           <button
             onClick={() => setOpenId(openId === item.id ? null : item.id)}
             style={{
               width: "100%", textAlign: "left", display: "flex", justifyContent: "space-between",
               alignItems: "center", gap: 12, padding: "14px 20px",
-              background: openId === item.id ? "rgba(59,130,246,0.08)" : "rgba(8,15,30,0.6)",
-              border: "none", cursor: "pointer", color: "#e2e8f0",
-              fontSize: 14, fontWeight: openId === item.id ? 600 : 500, lineHeight: 1.4,
-              transition: "background 0.2s",
+              background: openId === item.id ? "rgba(59,130,246,0.08)" : "var(--vi-surface)",
+              border: "none", cursor: "pointer", color: "var(--vi-text)",
+              fontSize: "var(--vi-fs-sm)", fontWeight: openId === item.id ? 600 : 500, lineHeight: 1.4,
+              transition: "background var(--vi-dur-fast) linear", fontFamily: "var(--vi-font-sans)",
             }}
           >
             <span style={{ flex: 1 }}>{item.q}</span>
             <span style={{
-              fontSize: 20, color: "#60a5fa", flexShrink: 0,
-              transition: "transform 0.25s",
+              fontSize: 20, color: B2B_BLUE, flexShrink: 0,
+              transition: "transform var(--vi-dur) var(--vi-ease)",
               transform: openId === item.id ? "rotate(180deg)" : "rotate(0deg)",
             }}>›</span>
           </button>
           {openId === item.id && (
             <div style={{
               padding: "16px 20px",
-              background: "rgba(4,8,20,0.8)",
-              fontSize: 14, color: "#94a3b8", lineHeight: 1.8,
-              borderTop: "1px solid rgba(59,130,246,0.15)",
+              background: "var(--vi-bg)",
+              fontSize: "var(--vi-fs-sm)", color: "var(--vi-text-dim)", lineHeight: 1.8,
+              borderTop: "1px solid rgba(59,130,246,0.1)",
               animation: "faqExpand 0.2s ease-out",
             }}>
               {item.a}
@@ -52,36 +54,12 @@ function FAQAccordion({ items }) {
 }
 
 const FEATURES = [
-  {
-    icon: "📊",
-    title: "Analytics Avanzati",
-    desc: "Dashboard dedicata con dati di mercato in tempo reale, trend per regione e annata, correlazione con altri asset class.",
-  },
-  {
-    icon: "👥",
-    title: "Multi-Portfolio",
-    desc: "Gestisci portfolio separati per ogni cliente. Performance aggregate, P&L per posizione, report individuali.",
-  },
-  {
-    icon: "📄",
-    title: "Report PDF Branded",
-    desc: "Genera report professionali in un click: composizione, YTD, benchmark, outlook AI. Brandizzabili con il tuo logo.",
-  },
-  {
-    icon: "🔌",
-    title: "API & Integrazioni",
-    desc: "REST API documentata. Export CSV/XLSX compatibile con Bloomberg, Advent Geneva e i principali PMS.",
-  },
-  {
-    icon: "⚖️",
-    title: "GDPR & DPA",
-    desc: "Conformità GDPR completa. Data Processing Agreement disponibile per clienti B2B. Dati conservati in EU.",
-  },
-  {
-    icon: "🎯",
-    title: "Support Dedicato",
-    desc: "Account manager dedicato, risposta entro 4h su Slack o email. Onboarding assistito per il tuo team.",
-  },
+  { title: "Analytics Avanzati", desc: "Dashboard dedicata con dati di mercato in tempo reale, trend per regione e annata, correlazione con altri asset class." },
+  { title: "Multi-Portfolio", desc: "Gestisci portfolio separati per ogni cliente. Performance aggregate, P&L per posizione, report individuali." },
+  { title: "Report PDF Branded", desc: "Genera report professionali in un click: composizione, YTD, benchmark, outlook AI. Brandizzabili con il tuo logo." },
+  { title: "API & Integrazioni", desc: "REST API documentata. Export CSV/XLSX compatibile con Bloomberg, Advent Geneva e i principali PMS." },
+  { title: "GDPR & DPA", desc: "Conformità GDPR completa. Data Processing Agreement disponibile per clienti B2B. Dati conservati in EU." },
+  { title: "Support Dedicato", desc: "Account manager dedicato, risposta entro 4h su Slack o email. Onboarding assistito per il tuo team." },
 ];
 
 const PLANS = [
@@ -89,20 +67,13 @@ const PLANS = [
     name: "Starter B2B",
     price: "Gratis",
     period: "30 giorni",
-    color: "#C9A227",
+    accent: "var(--vi-accent)",
     border: "rgba(201,162,39,0.3)",
     bg: "rgba(201,162,39,0.05)",
     badge: null,
     sub: "Poi €0 — fino a 3 clienti",
     competitor: null,
-    features: [
-      "3 portfolio clienti",
-      "Dashboard B2B base",
-      "Report PDF standard",
-      "Risk metrics base",
-      "Export CSV",
-      "Support email",
-    ],
+    features: ["3 portfolio clienti", "Dashboard B2B base", "Report PDF standard", "Risk metrics base", "Export CSV", "Support email"],
     cta: "Inizia gratis 30gg →",
     ctaHref: "/b2b-onboarding",
   },
@@ -110,22 +81,17 @@ const PLANS = [
     name: "Professional",
     price: "€200",
     period: "/mese",
-    color: "#60a5fa",
+    accent: B2B_BLUE,
     border: "rgba(59,130,246,0.5)",
     bg: "rgba(59,130,246,0.06)",
     badge: "Più popolare",
     sub: "Risparmia €600 vs Cult Wines Intelligence",
     competitor: "Cult Wines Intelligence: €800/mese",
     features: [
-      "20 portfolio clienti",
-      "Dashboard B2B completa",
-      "Report PDF branded + logo",
-      "Risk metrics avanzati (Sharpe, VaR, MDD)",
-      "Benchmark S&P500 / Gold / Inflazione",
-      "API 10.000 req/giorno",
-      "Market Intelligence B2B",
-      "Export Bloomberg CSV",
-      "DPA incluso · Support dedicato",
+      "20 portfolio clienti", "Dashboard B2B completa", "Report PDF branded + logo",
+      "Risk metrics avanzati (Sharpe, VaR, MDD)", "Benchmark S&P500 / Gold / Inflazione",
+      "API 10.000 req/giorno", "Market Intelligence B2B",
+      "Export Bloomberg CSV", "DPA incluso · Support dedicato",
     ],
     cta: "Richiedi Demo →",
     ctaHref: "/b2b-onboarding",
@@ -134,22 +100,17 @@ const PLANS = [
     name: "Enterprise",
     price: "€500",
     period: "/mese",
-    color: "#a78bfa",
+    accent: "#a78bfa",
     border: "rgba(167,139,250,0.4)",
     bg: "rgba(167,139,250,0.05)",
     badge: "White-Label",
     sub: "SLA 99.9% · Account manager dedicato",
     competitor: null,
     features: [
-      "Portfolio clienti illimitati",
-      "Tutto di Professional",
-      "White-label: logo + colori + dominio",
-      "API illimitata + webhook real-time",
-      "SLA 99.9% garantito",
-      "Account manager dedicato",
-      "Integrazione Bloomberg/Advent Geneva",
-      "Report completamente brandizzati",
-      "Onboarding assistito team",
+      "Portfolio clienti illimitati", "Tutto di Professional",
+      "White-label: logo + colori + dominio", "API illimitata + webhook real-time",
+      "SLA 99.9% garantito", "Account manager dedicato",
+      "Integrazione Bloomberg/Advent Geneva", "Report completamente brandizzati", "Onboarding assistito team",
     ],
     cta: "Contatta Sales →",
     ctaHref: "mailto:sales@vinoinvest.com?subject=Enterprise%20Inquiry",
@@ -157,12 +118,12 @@ const PLANS = [
 ];
 
 const SEGMENTS = [
-  { icon: "🏦", label: "Family Office" },
-  { icon: "📈", label: "Wealth Manager" },
-  { icon: "🍾", label: "Cantine" },
-  { icon: "🏛️", label: "Fondi d'Investimento" },
-  { icon: "⚖️", label: "Fiduciari" },
-  { icon: "🔬", label: "Analisti" },
+  { label: "Family Office" },
+  { label: "Wealth Manager" },
+  { label: "Cantine" },
+  { label: "Fondi d'Investimento" },
+  { label: "Fiduciari" },
+  { label: "Analisti" },
 ];
 
 export default function B2BPage() {
@@ -183,12 +144,27 @@ export default function B2BPage() {
   }
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      background: "linear-gradient(160deg,#0b1220 0%,#040810 50%,#0b1220 100%)",
-      color: "#e2e8f0",
-      fontFamily: "'Inter',Arial,sans-serif",
-    }}>
+    <div style={{ minHeight: "100vh", background: "var(--vi-bg)", color: "var(--vi-text)", fontFamily: "var(--vi-font-sans)" }}>
+      <style>{`
+        @keyframes faqExpand { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+        .b2b-feature-card { transition: transform var(--vi-dur) var(--vi-ease), border-color var(--vi-dur-fast) linear; }
+        .b2b-feature-card:hover { transform: translateY(-2px); border-color: rgba(59,130,246,0.35) !important; }
+        .b2b-plan-card { transition: transform var(--vi-dur) var(--vi-ease), box-shadow var(--vi-dur) var(--vi-ease); }
+        .b2b-plan-card:hover { transform: translateY(-4px); box-shadow: var(--vi-elev-2); }
+        .b2b-cta-btn { transition: opacity var(--vi-dur-fast) linear, transform var(--vi-dur-fast) var(--vi-ease); }
+        .b2b-cta-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+        .b2b-guide-card { transition: border-color var(--vi-dur-fast) linear; }
+        .b2b-guide-card:hover { border-color: rgba(201,162,39,0.3) !important; }
+        .b2b-input { transition: border-color var(--vi-dur-fast) linear; outline: none; }
+        .b2b-input:focus { border-color: rgba(59,130,246,0.55) !important; }
+        .b2b-faq-cat { transition: background var(--vi-dur-fast) linear, color var(--vi-dur-fast) linear, border-color var(--vi-dur-fast) linear; cursor: pointer; }
+        .b2b-stat { transition: transform var(--vi-dur) var(--vi-ease), box-shadow var(--vi-dur) var(--vi-ease); }
+        .b2b-stat:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(59,130,246,0.3), 0 8px 32px rgba(59,130,246,0.12); }
+        .b2b-testi { transition: border-color var(--vi-dur-fast) linear; }
+        .b2b-testi:hover { border-color: rgba(59,130,246,0.2) !important; }
+        @media (prefers-reduced-motion: reduce) { .b2b-feature-card:hover, .b2b-plan-card:hover, .b2b-cta-btn:hover, .b2b-stat:hover { transform: none; } }
+      `}</style>
+
       <Helmet>
         <title>Soluzioni B2B per Wealth Manager | VinoInvest</title>
         <meta name="description" content="Dashboard professionale per wealth manager, family office e consulenti finanziari. API, dati Liv-ex, AI Score e reportistica per clienti HNWI." />
@@ -196,41 +172,42 @@ export default function B2BPage() {
         <meta property="og:description" content="Strumenti professionali per investimento in wine per wealth manager e family office." />
         <link rel="canonical" href="https://vinoinvest-platform.vercel.app/b2b" />
       </Helmet>
+
       {/* Nav */}
       <nav style={{
         position: "sticky", top: 0, zIndex: 100,
-        borderBottom: "1px solid rgba(59,130,246,0.1)",
-        background: "rgba(2,6,23,0.9)",
+        borderBottom: "1px solid rgba(59,130,246,0.08)",
+        background: "var(--vi-surface)",
         backdropFilter: "blur(12px)",
-        padding: "0 32px",
+        padding: "0 clamp(16px,3vw,32px)",
         display: "flex", alignItems: "center", justifyContent: "space-between",
         height: 60,
       }}>
         <a href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ fontSize: 22 }}>🍷</span>
-          <span style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: 18, fontWeight: 700, color: "#e2e8f0" }}>
-            VinoInvest
+          <span style={{ fontFamily: "var(--vi-font-display)", fontSize: 18, fontWeight: 700, color: "var(--vi-text)" }}>
+            Vino<span style={{ color: "var(--vi-accent)" }}>Invest</span>
           </span>
           <span style={{
-            padding: "2px 8px", borderRadius: 6,
-            background: "rgba(59,130,246,0.15)", border: "1px solid rgba(59,130,246,0.3)",
-            fontSize: 10, fontWeight: 700, color: "#60a5fa", letterSpacing: "0.05em",
+            padding: "2px 8px", borderRadius: "var(--vi-radius-sm)",
+            background: "rgba(59,130,246,0.12)", border: "1px solid rgba(59,130,246,0.25)",
+            fontSize: "var(--vi-fs-xs)", fontWeight: 700, color: B2B_BLUE, letterSpacing: "0.05em",
           }}>B2B</span>
         </a>
-        <div style={{ display: "flex", gap: 8 }}>
-          <a href="/market-intelligence" style={{ padding: "7px 14px", borderRadius: 8, fontSize: 12, color: "#60a5fa", textDecoration: "none", border: "1px solid rgba(59,130,246,0.2)" }}>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <a href="/market-intelligence" style={{ padding: "7px 14px", borderRadius: "var(--vi-radius-sm)", fontSize: "var(--vi-fs-xs)", color: B2B_BLUE, textDecoration: "none", border: "1px solid rgba(59,130,246,0.2)" }}>
             Market Intelligence
           </a>
-          <a href="/org-dashboard" style={{ padding: "7px 14px", borderRadius: 8, fontSize: 12, color: "#94a3b8", textDecoration: "none" }}>
+          <a href="/org-dashboard" style={{ padding: "7px 14px", borderRadius: "var(--vi-radius-sm)", fontSize: "var(--vi-fs-xs)", color: "var(--vi-text-dim)", textDecoration: "none" }}>
             Dashboard Org
           </a>
-          <a href="/" style={{ padding: "7px 16px", borderRadius: 8, fontSize: 13, color: "#94a3b8", textDecoration: "none" }}>
+          <a href="/" style={{ padding: "7px 14px", borderRadius: "var(--vi-radius-sm)", fontSize: "var(--vi-fs-sm)", color: "var(--vi-text-dim)", textDecoration: "none" }}>
             Consumer →
           </a>
           <a
             href="/b2b-onboarding"
+            className="b2b-cta-btn"
             style={{
-              padding: "7px 18px", borderRadius: 8, fontSize: 13, fontWeight: 700,
+              padding: "7px 18px", borderRadius: "var(--vi-radius-sm)", fontSize: "var(--vi-fs-sm)", fontWeight: 700,
               background: "linear-gradient(135deg,#1d4ed8,#2563eb)",
               color: "#fff", textDecoration: "none",
               boxShadow: "0 2px 12px rgba(37,99,235,0.3)",
@@ -242,55 +219,51 @@ export default function B2BPage() {
       </nav>
 
       {/* Hero */}
-      <section style={{ padding: "100px 32px 80px", maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
+      <section style={{ padding: "clamp(64px,8vw,100px) clamp(16px,3vw,32px) 80px", maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
         <div style={{
           display: "inline-flex", alignItems: "center", gap: 8,
-          padding: "6px 16px", borderRadius: 100,
-          background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.25)",
-          fontSize: 12, fontWeight: 600, color: "#60a5fa",
+          padding: "6px 16px", borderRadius: "var(--vi-radius-full)",
+          background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.2)",
+          fontSize: "var(--vi-fs-xs)", fontWeight: 600, color: B2B_BLUE,
           marginBottom: 28, letterSpacing: "0.05em",
         }}>
           INTELLIGENCE PER PROFESSIONISTI
         </div>
         <h1 style={{
-          fontFamily: "'Playfair Display',Georgia,serif",
-          fontSize: "clamp(36px,6vw,64px)",
+          fontFamily: "var(--vi-font-display)",
+          fontSize: "clamp(32px,6vw,60px)",
           fontWeight: 700, lineHeight: 1.1,
           margin: "0 0 24px",
-          background: "linear-gradient(135deg,#e2e8f0 0%,#60a5fa 50%,#e2e8f0 100%)",
+          background: "linear-gradient(135deg, var(--vi-text) 0%, #60a5fa 55%, var(--vi-text) 100%)",
           WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
         }}>
           Intelligence per Investitori<br />Professionali
         </h1>
-        <p style={{ fontSize: 18, color: "#64748b", lineHeight: 1.7, maxWidth: 640, margin: "0 auto 40px" }}>
+        <p style={{ fontSize: "var(--vi-fs-lg)", color: "var(--vi-text-dim)", lineHeight: 1.7, maxWidth: 620, margin: "0 auto 40px" }}>
           Strumenti istituzionali per wealth manager, family office e cantine.
           Dati reali, API integrate, reportistica avanzata.
         </p>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
           <a
             href="#demo"
+            className="b2b-cta-btn"
             style={{
-              padding: "14px 32px", borderRadius: 12, fontSize: 15, fontWeight: 700,
+              padding: "14px 32px", borderRadius: "var(--vi-radius-md)", fontSize: "var(--vi-fs-base)", fontWeight: 700,
               background: "linear-gradient(135deg,#1d4ed8,#2563eb)",
               color: "#fff", textDecoration: "none",
               boxShadow: "0 4px 24px rgba(37,99,235,0.35)",
-              transition: "transform 0.2s",
             }}
-            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = ""; }}
           >
             Richiedi una Demo
           </a>
           <a
             href="#pricing"
+            className="b2b-cta-btn"
             style={{
-              padding: "14px 32px", borderRadius: 12, fontSize: 15, fontWeight: 600,
+              padding: "14px 32px", borderRadius: "var(--vi-radius-md)", fontSize: "var(--vi-fs-base)", fontWeight: 600,
               background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.3)",
-              color: "#60a5fa", textDecoration: "none",
-              transition: "all 0.2s",
+              color: B2B_BLUE, textDecoration: "none",
             }}
-            onMouseEnter={e => { e.currentTarget.style.background = "rgba(59,130,246,0.15)"; }}
-            onMouseLeave={e => { e.currentTarget.style.background = "rgba(59,130,246,0.08)"; }}
           >
             Vedi i Piani
           </a>
@@ -298,42 +271,39 @@ export default function B2BPage() {
 
         {/* Demo Box */}
         <div style={{
-          marginTop: 40,
-          padding: "24px 32px",
-          borderRadius: 16,
-          background: "linear-gradient(135deg,rgba(201,162,39,0.1),rgba(201,162,39,0.05))",
-          border: "1px solid rgba(201,162,39,0.4)",
-          display: "inline-block",
-          textAlign: "left",
-          maxWidth: 460,
-          margin: "40px auto 0",
+          marginTop: 48,
+          padding: "clamp(20px,3vw,28px) clamp(20px,3vw,32px)",
+          borderRadius: "var(--vi-radius-lg)",
+          background: "linear-gradient(135deg,rgba(201,162,39,0.1),rgba(201,162,39,0.04))",
+          border: "1px solid rgba(201,162,39,0.35)",
+          display: "inline-block", textAlign: "left", maxWidth: 460, margin: "48px auto 0",
         }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#C9A227", marginBottom: 12 }}>
+          <div style={{ fontSize: "var(--vi-fs-xs)", fontWeight: 700, color: "var(--vi-accent)", marginBottom: 10, letterSpacing: "0.08em" }}>
             PROVA LA DEMO GRATUITA ADESSO
           </div>
-          <p style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 16px", lineHeight: 1.6 }}>
+          <p style={{ fontSize: "var(--vi-fs-xs)", color: "var(--vi-text-dim)", margin: "0 0 14px", lineHeight: 1.6 }}>
             Account precaricato con portfolio da €1.2M e 15 vini premium. Nessuna registrazione richiesta.
           </p>
-          <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 12, padding: "8px 12px", background: "rgba(0,0,0,0.3)", borderRadius: 8, fontFamily: "monospace", fontSize: 12 }}>
+          <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 12, padding: "8px 12px", background: "var(--vi-bg)", borderRadius: "var(--vi-radius-sm)", fontFamily: "monospace", fontSize: "var(--vi-fs-xs)" }}>
             <div style={{ flex: 1 }}>
-              <span style={{ color: "#475569" }}>Email: </span><span style={{ color: "#C9A227" }}>demo@vinoinvest.com</span><br/>
-              <span style={{ color: "#475569" }}>Pass: </span><span style={{ color: "#C9A227" }}>Demo2026!</span>
+              <span style={{ color: "var(--vi-text-dim)" }}>Email: </span><span style={{ color: "var(--vi-accent)" }}>demo@vinoinvest.com</span><br/>
+              <span style={{ color: "var(--vi-text-dim)" }}>Pass: </span><span style={{ color: "var(--vi-accent)" }}>Demo2026!</span>
             </div>
             <button
               onClick={() => { navigator.clipboard.writeText("Demo2026!"); }}
-              style={{ background: "rgba(201,162,39,0.2)", border: "1px solid rgba(201,162,39,0.3)", color: "#C9A227", borderRadius: 6, padding: "4px 10px", cursor: "pointer", fontSize: 11, fontWeight: 600 }}
+              style={{ background: "rgba(201,162,39,0.15)", border: "1px solid rgba(201,162,39,0.3)", color: "var(--vi-accent)", borderRadius: "var(--vi-radius-sm)", padding: "4px 10px", cursor: "pointer", fontSize: "var(--vi-fs-xs)", fontWeight: 600 }}
             >
               Copia
             </button>
           </div>
           <a
             href="/"
+            className="b2b-cta-btn"
             style={{
               display: "block", textAlign: "center",
-              padding: "12px 24px", borderRadius: 10, fontSize: 14, fontWeight: 700,
-              background: "linear-gradient(135deg,#C9A227,#a07820)",
-              color: "#fff", textDecoration: "none",
-              boxShadow: "0 4px 20px rgba(201,162,39,0.3)",
+              padding: "12px 24px", borderRadius: "var(--vi-radius-md)", fontSize: "var(--vi-fs-sm)", fontWeight: 700,
+              background: "linear-gradient(135deg, var(--vi-accent), #a07820)",
+              color: "var(--vi-bg)", textDecoration: "none",
             }}
           >
             Accedi alla Demo →
@@ -341,113 +311,100 @@ export default function B2BPage() {
         </div>
 
         {/* Segments */}
-        <div style={{ marginTop: 60, display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+        <div style={{ marginTop: 56, display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
           {SEGMENTS.map(s => (
             <div key={s.label} style={{
-              padding: "8px 16px", borderRadius: 100,
-              background: "rgba(15,23,42,0.6)", border: "1px solid rgba(30,41,59,0.6)",
-              fontSize: 12, color: "#64748b",
-              display: "flex", alignItems: "center", gap: 6,
+              padding: "7px 14px", borderRadius: "var(--vi-radius-full)",
+              background: "var(--vi-surface)", border: `1px solid var(--vi-border)`,
+              fontSize: "var(--vi-fs-xs)", color: "var(--vi-text-dim)",
             }}>
-              <span>{s.icon}</span> {s.label}
+              {s.label}
             </div>
           ))}
         </div>
       </section>
 
       {/* Stats */}
-      <section style={{ padding: "0 32px 80px", maxWidth: 900, margin: "0 auto" }}>
-        <div style={{
-          display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 16,
-        }}>
+      <section style={{ padding: "0 clamp(16px,3vw,32px) 80px", maxWidth: 900, margin: "0 auto" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 16 }}>
           {[
             { value: "50.000+", label: "Vini nel catalogo" },
             { value: "€2M+", label: "Portfolio monitorati" },
             { value: "99.5%", label: "Uptime garantito" },
             { value: "24h", label: "Risposta support" },
           ].map(s => (
-            <div key={s.label} style={{
-              padding: "24px", borderRadius: 16, textAlign: "center",
-              background: "rgba(8,15,30,0.6)", border: "1px solid rgba(59,130,246,0.12)",
+            <div key={s.label} className="b2b-stat vi-card" style={{
+              padding: "24px", textAlign: "center",
+              border: "1px solid rgba(59,130,246,0.1)",
             }}>
-              <div style={{ fontFamily: "'Playfair Display',serif", fontSize: 28, fontWeight: 700, color: "#60a5fa" }}>
+              <div style={{ fontFamily: "var(--vi-font-display)", fontSize: "var(--vi-fs-2xl)", fontWeight: 700, color: B2B_BLUE, fontVariantNumeric: "tabular-nums" }}>
                 {s.value}
               </div>
-              <div style={{ fontSize: 12, color: "#3a5a7a", marginTop: 4 }}>{s.label}</div>
+              <div style={{ fontSize: "var(--vi-fs-xs)", color: "var(--vi-text-dim)", marginTop: 6 }}>{s.label}</div>
             </div>
           ))}
         </div>
       </section>
 
       {/* Social Proof */}
-      <section style={{ padding: "0 32px 80px", maxWidth: 960, margin: "0 auto" }}>
-        <div style={{
-          padding: "32px 40px", borderRadius: 20,
-          background: "linear-gradient(135deg,rgba(8,15,30,0.8),rgba(15,25,50,0.8))",
-          border: "1px solid rgba(59,130,246,0.15)",
-          boxShadow: "0 8px 40px rgba(0,0,0,0.3)",
+      <section style={{ padding: "0 clamp(16px,3vw,32px) 80px", maxWidth: 960, margin: "0 auto" }}>
+        <div className="vi-card" style={{
+          padding: "clamp(24px,3vw,40px)",
+          border: "1px solid rgba(59,130,246,0.12)",
         }}>
           <div style={{ textAlign: "center", marginBottom: 32 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: "#60a5fa", letterSpacing: "0.08em", marginBottom: 8 }}>
-              TRUSTED BY WEALTH MANAGERS ACROSS EUROPE
+            <div style={{ fontSize: "var(--vi-fs-xs)", fontWeight: 700, color: B2B_BLUE, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+              Trusted by Wealth Managers Across Europe
             </div>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 20 }}>
             {[
-              {
-                quote: "In 3 mesi ho spostato il 12% del patrimonio di 5 clienti sul fine wine. VinoInvest mi ha dato i dati per farlo con sicurezza.",
-                author: "Marco T.", role: "Wealth Manager, Milano",
-              },
-              {
-                quote: "I report PDF sono esattamente quello che cercavo: professionali, con risk metrics reali e il mio logo. I clienti chiedono quando arriva il prossimo.",
-                author: "Francesca R.", role: "Family Office, Roma",
-              },
-              {
-                quote: "L'API Bloomberg-compatible ci ha permesso di integrare VinoInvest nel nostro PMS in meno di una settimana. €200/mese è un regalo.",
-                author: "Luca B.", role: "CIO, Fondo Alternativo",
-              },
+              { quote: "In 3 mesi ho spostato il 12% del patrimonio di 5 clienti sul fine wine. VinoInvest mi ha dato i dati per farlo con sicurezza.", author: "Marco T.", role: "Wealth Manager, Milano" },
+              { quote: "I report PDF sono esattamente quello che cercavo: professionali, con risk metrics reali e il mio logo. I clienti chiedono quando arriva il prossimo.", author: "Francesca R.", role: "Family Office, Roma" },
+              { quote: "L'API Bloomberg-compatible ci ha permesso di integrare VinoInvest nel nostro PMS in meno di una settimana. €200/mese è un regalo.", author: "Luca B.", role: "CIO, Fondo Alternativo" },
             ].map(t => (
-              <div key={t.author} style={{ padding: "20px 24px", borderRadius: 14, background: "rgba(4,8,20,0.6)", border: "1px solid rgba(59,130,246,0.08)" }}>
+              <div key={t.author} className="b2b-testi" style={{ padding: "20px 24px", borderRadius: "var(--vi-radius-md)", background: "var(--vi-bg)", border: "1px solid rgba(59,130,246,0.06)" }}>
                 <div style={{ fontSize: 28, color: "#1d4ed8", marginBottom: 10, lineHeight: 1 }}>❝</div>
-                <p style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.7, margin: "0 0 16px", fontStyle: "italic" }}>{t.quote}</p>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#e2e8f0" }}>{t.author}</div>
-                <div style={{ fontSize: 11, color: "#3a5a7a" }}>{t.role}</div>
+                <p style={{ fontSize: "var(--vi-fs-sm)", color: "var(--vi-text-dim)", lineHeight: 1.7, margin: "0 0 14px", fontStyle: "italic" }}>{t.quote}</p>
+                <div style={{ fontSize: "var(--vi-fs-sm)", fontWeight: 700, color: "var(--vi-text)" }}>{t.author}</div>
+                <div style={{ fontSize: "var(--vi-fs-xs)", color: "var(--vi-text-dim)", opacity: 0.7 }}>{t.role}</div>
               </div>
             ))}
           </div>
-          <div style={{ textAlign: "center", marginTop: 24, fontSize: 12, color: "#334155" }}>
-            📍 Testimonial verificati · Nomi abbreviati per privacy
+          <div style={{ textAlign: "center", marginTop: 20, fontSize: "var(--vi-fs-xs)", color: "var(--vi-text-dim)", opacity: 0.5 }}>
+            Testimonial verificati · Nomi abbreviati per privacy
           </div>
         </div>
       </section>
 
       {/* Case Study */}
-      <section style={{ padding: "0 32px 80px", maxWidth: 960, margin: "0 auto" }}>
-        <div style={{
-          padding: "36px 40px", borderRadius: 20,
-          background: "rgba(59,130,246,0.05)", border: "1px solid rgba(59,130,246,0.2)",
+      <section style={{ padding: "0 clamp(16px,3vw,32px) 80px", maxWidth: 960, margin: "0 auto" }}>
+        <div className="vi-card" style={{
+          padding: "clamp(24px,3vw,40px)",
+          border: "1px solid rgba(59,130,246,0.18)",
+          background: "rgba(59,130,246,0.04)",
         }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, alignItems: "center" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px,1fr))", gap: 40, alignItems: "start" }}>
             <div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: "#60a5fa", letterSpacing: "0.08em", marginBottom: 12 }}>CASE STUDY</div>
-              <h3 style={{ fontFamily: "'Playfair Display',serif", fontSize: 22, margin: "0 0 16px", lineHeight: 1.3, color: "#e2e8f0" }}>
+              <div style={{ fontSize: "var(--vi-fs-xs)", fontWeight: 700, color: B2B_BLUE, letterSpacing: "0.08em", marginBottom: 12, textTransform: "uppercase" }}>Case Study</div>
+              <h3 style={{ fontFamily: "var(--vi-font-display)", fontSize: "clamp(18px,2vw,22px)", margin: "0 0 16px", lineHeight: 1.3, color: "var(--vi-text)" }}>
                 Come un Family Office ha allocato €500k in Fine Wine
               </h3>
-              <p style={{ fontSize: 13, color: "#64748b", lineHeight: 1.8, margin: "0 0 12px" }}>
+              <p style={{ fontSize: "var(--vi-fs-sm)", color: "var(--vi-text-dim)", lineHeight: 1.8, margin: "0 0 12px" }}>
                 Un family office milanese con €8M di AUM totale cercava una soluzione per diversificare verso asset reali alternativi
                 con bassa correlazione equity/obbligazionaria. Il fine wine rappresentava un'opzione interessante per la sua storica
                 bassa volatilità (Liv-ex 1000: σ = 8.2% annuo vs S&P500 18.4%) e i rendimenti decorrelati.
               </p>
-              <p style={{ fontSize: 13, color: "#64748b", lineHeight: 1.8, margin: "0 0 12px" }}>
+              <p style={{ fontSize: "var(--vi-fs-sm)", color: "var(--vi-text-dim)", lineHeight: 1.8, margin: "0 0 12px" }}>
                 Dopo una valutazione di 3 mesi con VinoInvest Professional, l'advisor ha costruito un portfolio wine di €500k
                 distribuito su: Bordeaux premier cru (40%), Borgogna grand cru (25%), Champagne prestige (15%), top Barolo e Brunello (20%).
               </p>
-              <p style={{ fontSize: 13, color: "#64748b", lineHeight: 1.8, margin: 0 }}>
+              <p style={{ fontSize: "var(--vi-fs-sm)", color: "var(--vi-text-dim)", lineHeight: 1.8, margin: 0 }}>
                 In 18 mesi: rendimento +14.2% vs benchmark mercato +8.1%. Sharpe Ratio 1.2. Riduzione volatilità complessiva patrimonio
-                di 2.3 punti percentuali. I clienti beneficiari (4 famiglie) ricevono report mensili generati in 3 click direttamente da VinoInvest.
+                di 2.3 punti percentuali.
               </p>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
               {[
                 { label: "AUM Wine allocato", value: "€500.000" },
                 { label: "Rendimento 12 mesi", value: "+14.8%" },
@@ -455,9 +412,9 @@ export default function B2BPage() {
                 { label: "Sharpe Ratio", value: "1.2" },
                 { label: "Clienti beneficiari", value: "4 famiglie" },
               ].map(s => (
-                <div key={s.label} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid rgba(59,130,246,0.08)", fontSize: 13 }}>
-                  <span style={{ color: "#475569" }}>{s.label}</span>
-                  <span style={{ fontWeight: 700, color: "#60a5fa" }}>{s.value}</span>
+                <div key={s.label} style={{ display: "flex", justifyContent: "space-between", padding: "11px 0", borderBottom: `1px solid var(--vi-border)`, fontSize: "var(--vi-fs-sm)" }}>
+                  <span style={{ color: "var(--vi-text-dim)" }}>{s.label}</span>
+                  <span style={{ fontWeight: 700, color: B2B_BLUE, fontVariantNumeric: "tabular-nums" }}>{s.value}</span>
                 </div>
               ))}
             </div>
@@ -466,130 +423,128 @@ export default function B2BPage() {
       </section>
 
       {/* Demo Video */}
-      <section style={{ padding: "0 32px 80px", maxWidth: 960, margin: "0 auto" }}>
+      <section style={{ padding: "0 clamp(16px,3vw,32px) 80px", maxWidth: 960, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: 28, fontWeight: 700, color: "#e2e8f0", margin: "0 0 12px" }}>
+          <h2 style={{ fontFamily: "var(--vi-font-display)", fontSize: "clamp(22px,3vw,28px)", fontWeight: 700, color: "var(--vi-text)", margin: "0 0 10px" }}>
             Vedi la Piattaforma in 3 Minuti
           </h2>
-          <p style={{ fontSize: 14, color: "#475569" }}>Demo walkthrough della dashboard B2B professionale</p>
+          <p style={{ fontSize: "var(--vi-fs-sm)", color: "var(--vi-text-dim)" }}>Demo walkthrough della dashboard B2B professionale</p>
         </div>
-        <div style={{
-          borderRadius: 20, overflow: "hidden",
-          border: "1px solid rgba(59,130,246,0.2)",
-          background: "rgba(8,15,30,0.8)",
+        <div className="vi-card" style={{
+          borderRadius: "var(--vi-radius-lg)", overflow: "hidden",
+          border: "1px solid rgba(59,130,246,0.18)",
           aspectRatio: "16/9",
           display: "flex", alignItems: "center", justifyContent: "center",
           flexDirection: "column", gap: 16,
-          boxShadow: "0 20px 60px rgba(0,0,0,0.4)",
         }}>
-          <div style={{
-            width: 72, height: 72, borderRadius: "50%",
-            background: "linear-gradient(135deg,#1d4ed8,#2563eb)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer", boxShadow: "0 8px 32px rgba(37,99,235,0.4)",
-          }}
+          <div
+            className="b2b-cta-btn"
+            style={{
+              width: 72, height: 72, borderRadius: "50%",
+              background: "linear-gradient(135deg,#1d4ed8,#2563eb)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              cursor: "pointer", boxShadow: "0 8px 32px rgba(37,99,235,0.35)",
+            }}
             onClick={() => alert("Video demo in arrivo. Prova la demo live: demo@vinoinvest.com / Demo2026!")}
           >
-            <span style={{ fontSize: 28, marginLeft: 4 }}>▶</span>
+            <span style={{ fontSize: 26, marginLeft: 4 }}>▶</span>
           </div>
-          <div style={{ color: "#475569", fontSize: 13 }}>Dashboard B2B · Multi-portfolio · Report PDF · AI Score</div>
+          <div style={{ color: "var(--vi-text-dim)", fontSize: "var(--vi-fs-sm)" }}>Dashboard B2B · Multi-portfolio · Report PDF · AI Score</div>
         </div>
       </section>
 
       {/* Features */}
-      <section style={{ padding: "0 32px 100px", maxWidth: 1000, margin: "0 auto" }}>
+      <section style={{ padding: "0 clamp(16px,3vw,32px) 100px", maxWidth: 1000, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
-          <h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: 32, fontWeight: 700, color: "#e2e8f0", margin: "0 0 12px" }}>
+          <h2 style={{ fontFamily: "var(--vi-font-display)", fontSize: "clamp(24px,3vw,32px)", fontWeight: 700, color: "var(--vi-text)", margin: "0 0 12px" }}>
             Funzionalità Professionali
           </h2>
-          <p style={{ fontSize: 15, color: "#475569" }}>
+          <p style={{ fontSize: "var(--vi-fs-base)", color: "var(--vi-text-dim)" }}>
             Tutto quello che serve a un gestore professionale
           </p>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 20 }}>
           {FEATURES.map(f => (
-            <div key={f.title} style={{
-              padding: "28px", borderRadius: 16,
-              background: "rgba(8,15,30,0.5)", border: "1px solid rgba(59,130,246,0.12)",
-              transition: "border-color 0.2s, transform 0.2s",
-              cursor: "default",
-            }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(59,130,246,0.35)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(59,130,246,0.12)"; e.currentTarget.style.transform = ""; }}
-            >
-              <div style={{ fontSize: 32, marginBottom: 14 }}>{f.icon}</div>
-              <h3 style={{ fontWeight: 700, fontSize: 16, color: "#e2e8f0", margin: "0 0 10px" }}>{f.title}</h3>
-              <p style={{ fontSize: 13, color: "#475569", lineHeight: 1.7, margin: 0 }}>{f.desc}</p>
+            <div key={f.title} className="b2b-feature-card vi-card" style={{
+              padding: "clamp(20px,2vw,28px)",
+              border: "1px solid rgba(59,130,246,0.1)",
+            }}>
+              <div style={{
+                width: 44, height: 44, marginBottom: 16,
+                background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.15)",
+                borderRadius: "var(--vi-radius-md)", display: "flex", alignItems: "center",
+                justifyContent: "center",
+              }}>
+                <span style={{ width: 20, height: 2, background: B2B_BLUE, borderRadius: 2, display: "block" }} />
+              </div>
+              <h3 style={{ fontWeight: 700, fontSize: "var(--vi-fs-base)", color: "var(--vi-text)", margin: "0 0 10px" }}>{f.title}</h3>
+              <p style={{ fontSize: "var(--vi-fs-sm)", color: "var(--vi-text-dim)", lineHeight: 1.7, margin: 0 }}>{f.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* Pricing */}
-      <section id="pricing" style={{ padding: "0 32px 100px", maxWidth: 1100, margin: "0 auto" }}>
+      <section id="pricing" style={{ padding: "0 clamp(16px,3vw,32px) 100px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
-          <h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: 32, fontWeight: 700, color: "#e2e8f0", margin: "0 0 12px" }}>
+          <h2 style={{ fontFamily: "var(--vi-font-display)", fontSize: "clamp(24px,3vw,32px)", fontWeight: 700, color: "var(--vi-text)", margin: "0 0 12px" }}>
             Piani e Prezzi
           </h2>
-          <p style={{ fontSize: 15, color: "#475569" }}>
+          <p style={{ fontSize: "var(--vi-fs-base)", color: "var(--vi-text-dim)" }}>
             Scegli il piano giusto per la tua organizzazione
           </p>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 20, alignItems: "start" }}>
           {PLANS.map(plan => (
-            <div key={plan.name} style={{
-              padding: "28px", borderRadius: 20,
-              background: plan.bg, border: `1px solid ${plan.border}`,
+            <div key={plan.name} className="b2b-plan-card" style={{
+              padding: "clamp(22px,2vw,28px)",
+              borderRadius: "var(--vi-radius-lg)",
+              background: plan.bg,
+              border: `1px solid ${plan.border}`,
               position: "relative",
-              transition: "transform 0.2s",
-            }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = ""; }}
-            >
+            }}>
               {plan.badge && (
                 <div style={{
                   position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)",
-                  padding: "4px 14px", borderRadius: 100,
+                  padding: "4px 14px", borderRadius: "var(--vi-radius-full)",
                   background: "linear-gradient(135deg,#1d4ed8,#2563eb)",
-                  fontSize: 11, fontWeight: 700, color: "#fff",
+                  fontSize: "var(--vi-fs-xs)", fontWeight: 700, color: "#fff",
                   whiteSpace: "nowrap",
                 }}>
                   {plan.badge}
                 </div>
               )}
-              <div style={{ fontSize: 13, fontWeight: 600, color: plan.color, marginBottom: 4 }}>{plan.name}</div>
+              <div style={{ fontSize: "var(--vi-fs-xs)", fontWeight: 700, color: plan.accent, marginBottom: 6, letterSpacing: "0.05em", textTransform: "uppercase" }}>{plan.name}</div>
               <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 20 }}>
-                <span style={{ fontFamily: "'Playfair Display',serif", fontSize: 36, fontWeight: 700, color: "#e2e8f0" }}>
+                <span style={{ fontFamily: "var(--vi-font-display)", fontSize: "clamp(28px,4vw,36px)", fontWeight: 700, color: "var(--vi-text)", fontVariantNumeric: "tabular-nums" }}>
                   {plan.price}
                 </span>
-                {plan.period && <span style={{ fontSize: 14, color: "#475569" }}>{plan.period}</span>}
+                {plan.period && <span style={{ fontSize: "var(--vi-fs-sm)", color: "var(--vi-text-dim)" }}>{plan.period}</span>}
               </div>
-              {plan.sub && <div style={{ fontSize: 11, color: "#34d399", marginBottom: 8, fontWeight: 600 }}>{plan.sub}</div>}
-              {plan.competitor && <div style={{ fontSize: 10, color: "#334155", marginBottom: 12, textDecoration: "line-through" }}>{plan.competitor}</div>}
-              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px", display: "flex", flexDirection: "column", gap: 8 }}>
+              {plan.sub && <div style={{ fontSize: "var(--vi-fs-xs)", color: "#34d399", marginBottom: 6, fontWeight: 600 }}>{plan.sub}</div>}
+              {plan.competitor && <div style={{ fontSize: "var(--vi-fs-xs)", color: "var(--vi-text-dim)", marginBottom: 10, textDecoration: "line-through", opacity: 0.6 }}>{plan.competitor}</div>}
+              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px", display: "flex", flexDirection: "column", gap: 9 }}>
                 {plan.features.map(f => (
-                  <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 13, color: "#94a3b8" }}>
-                    <span style={{ color: plan.color, flexShrink: 0, marginTop: 1 }}>✓</span>
+                  <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: "var(--vi-fs-sm)", color: "var(--vi-text-dim)" }}>
+                    <span style={{ color: plan.accent, flexShrink: 0, marginTop: 1, fontWeight: 700 }}>✓</span>
                     {f}
                   </li>
                 ))}
               </ul>
               <a
                 href={plan.ctaHref}
+                className="b2b-cta-btn"
                 style={{
                   display: "block", textAlign: "center",
-                  padding: "11px 20px", borderRadius: 10, fontSize: 13, fontWeight: 700,
+                  padding: "11px 20px", borderRadius: "var(--vi-radius-md)", fontSize: "var(--vi-fs-sm)", fontWeight: 700,
                   background: plan.name === "Professional"
                     ? "linear-gradient(135deg,#1d4ed8,#2563eb)"
-                    : `rgba(${plan.color === "#C9A227" ? "201,162,39" : plan.color === "#60a5fa" ? "59,130,246" : "167,139,250"},0.12)`,
+                    : "transparent",
                   border: plan.name === "Professional" ? "none" : `1px solid ${plan.border}`,
-                  color: plan.name === "Professional" ? "#fff" : plan.color,
+                  color: plan.name === "Professional" ? "#fff" : plan.accent,
                   textDecoration: "none",
-                  boxShadow: plan.name === "Professional" ? "0 4px 16px rgba(37,99,235,0.35)" : "none",
-                  transition: "transform 0.15s",
+                  boxShadow: plan.name === "Professional" ? "0 4px 16px rgba(37,99,235,0.3)" : "none",
                 }}
-                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = ""; }}
               >
                 {plan.cta}
               </a>
@@ -599,29 +554,28 @@ export default function B2BPage() {
       </section>
 
       {/* FAQ B2B */}
-      <section style={{ padding: "0 32px 100px", maxWidth: 860, margin: "0 auto" }}>
+      <section style={{ padding: "0 clamp(16px,3vw,32px) 100px", maxWidth: 860, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 40 }}>
-          <h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: 32, fontWeight: 700, color: "#e2e8f0", margin: "0 0 12px" }}>
+          <h2 style={{ fontFamily: "var(--vi-font-display)", fontSize: "clamp(24px,3vw,32px)", fontWeight: 700, color: "var(--vi-text)", margin: "0 0 12px" }}>
             FAQ Professionali
           </h2>
-          <p style={{ fontSize: 15, color: "#475569" }}>
+          <p style={{ fontSize: "var(--vi-fs-base)", color: "var(--vi-text-dim)" }}>
             Domande frequenti da investitori istituzionali, cantine e wealth manager
           </p>
         </div>
 
-        {/* Category filter */}
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center", marginBottom: 28 }}>
           {B2B_CATEGORIES.map(c => (
             <button
               key={c.id}
+              className="b2b-faq-cat"
               onClick={() => setActiveCat(c.id)}
               style={{
-                padding: "7px 14px", borderRadius: 100, cursor: "pointer",
-                fontSize: 12, fontWeight: 600,
-                border: activeCat === c.id ? "1px solid rgba(59,130,246,0.6)" : "1px solid rgba(30,41,59,0.5)",
-                background: activeCat === c.id ? "rgba(59,130,246,0.15)" : "rgba(8,15,30,0.6)",
-                color: activeCat === c.id ? "#60a5fa" : "#4a6a8a",
-                transition: "all 0.15s",
+                padding: "7px 14px", borderRadius: "var(--vi-radius-full)", fontFamily: "var(--vi-font-sans)",
+                fontSize: "var(--vi-fs-xs)", fontWeight: 600,
+                border: activeCat === c.id ? "1px solid rgba(59,130,246,0.5)" : `1px solid var(--vi-border)`,
+                background: activeCat === c.id ? "rgba(59,130,246,0.12)" : "var(--vi-surface)",
+                color: activeCat === c.id ? B2B_BLUE : "var(--vi-text-dim)",
               }}
             >
               {c.icon} {c.label}
@@ -633,28 +587,29 @@ export default function B2BPage() {
       </section>
 
       {/* Demo form */}
-      <section id="demo" style={{ padding: "0 32px 120px", maxWidth: 680, margin: "0 auto" }}>
-        <div style={{
-          padding: "48px", borderRadius: 24,
-          background: "rgba(8,15,30,0.7)", border: "1px solid rgba(59,130,246,0.2)",
-          boxShadow: "0 24px 80px rgba(0,0,0,0.4)",
+      <section id="demo" style={{ padding: "0 clamp(16px,3vw,32px) 120px", maxWidth: 680, margin: "0 auto" }}>
+        <div className="vi-card" style={{
+          padding: "clamp(28px,4vw,48px)",
+          border: "1px solid rgba(59,130,246,0.18)",
         }}>
           {formSent ? (
-            <div style={{ textAlign: "center", padding: "20px 0" }}>
-              <div style={{ fontSize: 48, marginBottom: 16 }}>✅</div>
-              <h3 style={{ fontFamily: "'Playfair Display',serif", fontSize: 22, color: "#e2e8f0", margin: "0 0 12px" }}>
-                Richiesta inviata!
+            <div style={{ textAlign: "center", padding: "24px 0" }}>
+              <div style={{ width: 52, height: 52, margin: "0 auto 16px", background: "rgba(74,222,128,0.12)", border: "1px solid rgba(74,222,128,0.3)", borderRadius: "var(--vi-radius-full)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ color: "var(--vi-positive)", fontWeight: 700, fontSize: 22 }}>✓</span>
+              </div>
+              <h3 style={{ fontFamily: "var(--vi-font-display)", fontSize: "clamp(18px,2vw,22px)", color: "var(--vi-text)", margin: "0 0 12px" }}>
+                Richiesta inviata
               </h3>
-              <p style={{ fontSize: 14, color: "#64748b", lineHeight: 1.7 }}>
+              <p style={{ fontSize: "var(--vi-fs-sm)", color: "var(--vi-text-dim)", lineHeight: 1.7 }}>
                 Il nostro team ti contatterà entro 24h per organizzare una demo personalizzata.
               </p>
             </div>
           ) : (
             <>
-              <h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: 28, fontWeight: 700, color: "#e2e8f0", margin: "0 0 8px" }}>
+              <h2 style={{ fontFamily: "var(--vi-font-display)", fontSize: "clamp(22px,3vw,28px)", fontWeight: 700, color: "var(--vi-text)", margin: "0 0 8px" }}>
                 Richiedi una Demo
               </h2>
-              <p style={{ fontSize: 14, color: "#475569", marginBottom: 28, lineHeight: 1.6 }}>
+              <p style={{ fontSize: "var(--vi-fs-sm)", color: "var(--vi-text-dim)", marginBottom: 28, lineHeight: 1.6 }}>
                 Mostriamo come VinoInvest si adatta alla tua organizzazione. Demo personalizzata in 30 minuti.
               </p>
               <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -664,23 +619,18 @@ export default function B2BPage() {
                     { key: "company", label: "Azienda", placeholder: "Family Office Spa", type: "text" },
                   ].map(f => (
                     <div key={f.key}>
-                      <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#60a5fa", marginBottom: 6 }}>
-                        {f.label}
-                      </label>
+                      <label style={{ display: "block", fontSize: "var(--vi-fs-xs)", fontWeight: 600, color: B2B_BLUE, marginBottom: 6 }}>{f.label}</label>
                       <input
-                        type={f.type}
-                        required
+                        type={f.type} required
                         value={formData[f.key]}
                         onChange={e => setFormData(d => ({ ...d, [f.key]: e.target.value }))}
                         placeholder={f.placeholder}
+                        className="b2b-input"
                         style={{
-                          width: "100%", padding: "10px 14px", borderRadius: 10, boxSizing: "border-box",
-                          background: "rgba(4,8,20,0.8)", border: "1px solid rgba(59,130,246,0.2)",
-                          color: "#e2e8f0", fontSize: 13, outline: "none",
-                          transition: "border-color 0.2s",
+                          width: "100%", padding: "10px 14px", borderRadius: "var(--vi-radius-md)", boxSizing: "border-box",
+                          background: "var(--vi-bg)", border: "1px solid rgba(59,130,246,0.2)",
+                          color: "var(--vi-text)", fontSize: "var(--vi-fs-sm)", fontFamily: "var(--vi-font-sans)",
                         }}
-                        onFocus={e => e.currentTarget.style.borderColor = "rgba(59,130,246,0.6)"}
-                        onBlur={e => e.currentTarget.style.borderColor = "rgba(59,130,246,0.2)"}
                       />
                     </div>
                   ))}
@@ -690,28 +640,23 @@ export default function B2BPage() {
                   { key: "role", label: "Ruolo", placeholder: "Wealth Manager / Family Office / CIO...", type: "text" },
                 ].map(f => (
                   <div key={f.key}>
-                    <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#60a5fa", marginBottom: 6 }}>
-                      {f.label}
-                    </label>
+                    <label style={{ display: "block", fontSize: "var(--vi-fs-xs)", fontWeight: 600, color: B2B_BLUE, marginBottom: 6 }}>{f.label}</label>
                     <input
-                      type={f.type}
-                      required
+                      type={f.type} required
                       value={formData[f.key]}
                       onChange={e => setFormData(d => ({ ...d, [f.key]: e.target.value }))}
                       placeholder={f.placeholder}
+                      className="b2b-input"
                       style={{
-                        width: "100%", padding: "10px 14px", borderRadius: 10, boxSizing: "border-box",
-                        background: "rgba(4,8,20,0.8)", border: "1px solid rgba(59,130,246,0.2)",
-                        color: "#e2e8f0", fontSize: 13, outline: "none",
-                        transition: "border-color 0.2s",
+                        width: "100%", padding: "10px 14px", borderRadius: "var(--vi-radius-md)", boxSizing: "border-box",
+                        background: "var(--vi-bg)", border: "1px solid rgba(59,130,246,0.2)",
+                        color: "var(--vi-text)", fontSize: "var(--vi-fs-sm)", fontFamily: "var(--vi-font-sans)",
                       }}
-                      onFocus={e => e.currentTarget.style.borderColor = "rgba(59,130,246,0.6)"}
-                      onBlur={e => e.currentTarget.style.borderColor = "rgba(59,130,246,0.2)"}
                     />
                   </div>
                 ))}
                 <div>
-                  <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#60a5fa", marginBottom: 6 }}>
+                  <label style={{ display: "block", fontSize: "var(--vi-fs-xs)", fontWeight: 600, color: B2B_BLUE, marginBottom: 6 }}>
                     Cosa vuoi ottenere? (opzionale)
                   </label>
                   <textarea
@@ -719,33 +664,29 @@ export default function B2BPage() {
                     onChange={e => setFormData(d => ({ ...d, message: e.target.value }))}
                     placeholder="Es: Gestisco 15 clienti HNW, voglio monitorare portfolio vino + report mensili..."
                     rows={3}
+                    className="b2b-input"
                     style={{
-                      width: "100%", padding: "10px 14px", borderRadius: 10, boxSizing: "border-box",
-                      background: "rgba(4,8,20,0.8)", border: "1px solid rgba(59,130,246,0.2)",
-                      color: "#e2e8f0", fontSize: 13, outline: "none", resize: "vertical",
-                      fontFamily: "'Inter',Arial,sans-serif",
-                      transition: "border-color 0.2s",
+                      width: "100%", padding: "10px 14px", borderRadius: "var(--vi-radius-md)", boxSizing: "border-box",
+                      background: "var(--vi-bg)", border: "1px solid rgba(59,130,246,0.2)",
+                      color: "var(--vi-text)", fontSize: "var(--vi-fs-sm)", resize: "vertical",
+                      fontFamily: "var(--vi-font-sans)",
                     }}
-                    onFocus={e => e.currentTarget.style.borderColor = "rgba(59,130,246,0.6)"}
-                    onBlur={e => e.currentTarget.style.borderColor = "rgba(59,130,246,0.2)"}
                   />
                 </div>
                 <button
                   type="submit"
+                  className="b2b-cta-btn"
                   style={{
-                    padding: "13px 32px", borderRadius: 12, border: "none",
+                    padding: "13px 32px", borderRadius: "var(--vi-radius-md)", border: "none",
                     background: "linear-gradient(135deg,#1d4ed8,#2563eb)",
-                    color: "#fff", cursor: "pointer", fontSize: 15, fontWeight: 700,
-                    boxShadow: "0 4px 24px rgba(37,99,235,0.4)",
-                    transition: "transform 0.2s",
-                    marginTop: 4,
+                    color: "#fff", cursor: "pointer", fontSize: "var(--vi-fs-base)", fontWeight: 700,
+                    boxShadow: "0 4px 24px rgba(37,99,235,0.35)",
+                    marginTop: 4, fontFamily: "var(--vi-font-sans)",
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = ""; }}
                 >
                   Richiedi Demo →
                 </button>
-                <div style={{ fontSize: 11, color: "#3a5a7a", textAlign: "center" }}>
+                <div style={{ fontSize: "var(--vi-fs-xs)", color: "var(--vi-text-dim)", textAlign: "center", opacity: 0.7 }}>
                   Risposta entro 24h · Nessun impegno · GDPR compliant
                 </div>
               </form>
@@ -755,14 +696,14 @@ export default function B2BPage() {
       </section>
 
       {/* Guide Professionali */}
-      <section style={{ padding: "72px 32px", maxWidth: 960, margin: "0 auto" }}>
-        <h2 style={{ textAlign: "center", fontSize: 26, fontWeight: 800, marginBottom: 12, color: "#e2e8f0" }}>
+      <section style={{ padding: "72px clamp(16px,3vw,32px)", maxWidth: 960, margin: "0 auto" }}>
+        <h2 style={{ textAlign: "center", fontFamily: "var(--vi-font-display)", fontSize: "clamp(20px,3vw,26px)", fontWeight: 800, marginBottom: 12, color: "var(--vi-text)" }}>
           Guide per professionisti
         </h2>
-        <p style={{ textAlign: "center", color: "#475569", fontSize: 15, marginBottom: 40 }}>
+        <p style={{ textAlign: "center", color: "var(--vi-text-dim)", fontSize: "var(--vi-fs-base)", marginBottom: 40 }}>
           Contenuto istituzionale per wealth manager, family office e consulenti finanziari.
         </p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 14 }}>
           {[
             { title: "Wine investment per family office: asset allocation ottimale", slug: "wine-investment-family-office", tag: "Family Office" },
             { title: "Fine wine come hedge contro inflazione: analisi 2000-2026", slug: "fine-wine-hedge-inflazione", tag: "Analisi" },
@@ -771,16 +712,14 @@ export default function B2BPage() {
             { title: "Suitability assessment per clienti wine: metodologia", slug: "suitability-assessment-wine", tag: "Compliance" },
             { title: "Come presentare fine wine a un UHNWI in 20 minuti", slug: "presentare-fine-wine-uhnwi", tag: "Advisory" },
           ].map(g => (
-            <a key={g.slug} href={`/b2b/guide/${g.slug}`} style={{
-              display: "block", background: "rgba(8,15,30,0.6)", border: "1px solid rgba(59,130,246,0.1)",
-              borderRadius: 12, padding: "20px 24px", textDecoration: "none", transition: "border-color 0.2s",
-            }}
-              onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(201,162,39,0.3)"}
-              onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(59,130,246,0.1)"}
-            >
-              <div style={{ fontSize: 10, fontWeight: 700, color: "#C9A227", marginBottom: 10, textTransform: "uppercase", letterSpacing: 1 }}>{g.tag}</div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: "#e2e8f0", lineHeight: 1.5 }}>{g.title}</div>
-              <div style={{ fontSize: 12, color: "#C9A227", marginTop: 12 }}>Leggi guida →</div>
+            <a key={g.slug} href={`/b2b/guide/${g.slug}`} className="b2b-guide-card vi-card" style={{
+              display: "block", textDecoration: "none",
+              borderRadius: "var(--vi-radius-md)", padding: "18px 20px",
+              border: "1px solid rgba(59,130,246,0.08)",
+            }}>
+              <div style={{ fontSize: "var(--vi-fs-xs)", fontWeight: 700, color: "var(--vi-accent)", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>{g.tag}</div>
+              <div style={{ fontSize: "var(--vi-fs-sm)", fontWeight: 600, color: "var(--vi-text)", lineHeight: 1.5 }}>{g.title}</div>
+              <div style={{ fontSize: "var(--vi-fs-xs)", color: "var(--vi-accent)", marginTop: 12 }}>Leggi guida →</div>
             </a>
           ))}
         </div>
@@ -788,26 +727,20 @@ export default function B2BPage() {
 
       {/* Footer */}
       <footer style={{
-        borderTop: "1px solid rgba(59,130,246,0.1)",
-        padding: "32px",
+        borderTop: `1px solid var(--vi-border)`,
+        padding: "28px clamp(16px,3vw,32px)",
         textAlign: "center",
-        fontSize: 12,
-        color: "#1e293b",
+        fontSize: "var(--vi-fs-xs)",
+        color: "var(--vi-text-dim)",
+        opacity: 0.7,
       }}>
         <div style={{ marginBottom: 8 }}>
-          <a href="mailto:sales@vinoinvest.com" style={{ color: "#3a5a7a", marginRight: 20, textDecoration: "none" }}>sales@vinoinvest.com</a>
-          <a href="mailto:legal@vinoinvest.com" style={{ color: "#3a5a7a", marginRight: 20, textDecoration: "none" }}>legal@vinoinvest.com</a>
-          <a href="/" style={{ color: "#3a5a7a", textDecoration: "none" }}>Consumer Platform →</a>
+          <a href="mailto:sales@vinoinvest.com" style={{ color: "var(--vi-text-dim)", marginRight: 20, textDecoration: "none" }}>sales@vinoinvest.com</a>
+          <a href="mailto:legal@vinoinvest.com" style={{ color: "var(--vi-text-dim)", marginRight: 20, textDecoration: "none" }}>legal@vinoinvest.com</a>
+          <a href="/" style={{ color: "var(--vi-text-dim)", textDecoration: "none" }}>Consumer Platform →</a>
         </div>
-        <div>© 2025 VinoInvest · GDPR Compliant · Dati EU</div>
+        <div>© 2026 VinoInvest · GDPR Compliant · Dati EU</div>
       </footer>
-
-      <style>{`
-        @keyframes faqExpand {
-          from { opacity: 0; transform: translateY(-6px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
     </div>
   );
 }
