@@ -371,6 +371,8 @@ function App() {
   const [wines, setWines] = useState([]);
   const [orders, setOrders] = useState([]);
   const [watchlist, setWatchlist] = useState([]);
+  const [recommendedWines, setRecommendedWines] = useState([]);
+  const [recommendedBasedOn, setRecommendedBasedOn] = useState([]);
   const [marketWines, setMarketWines] = useState([]);
   const [marketPage, setMarketPage] = useState(1);
   const [marketSearch, setMarketSearch] = useState("");
@@ -566,6 +568,18 @@ function App() {
       loadMarketWines("", 1, false);
     }
   }, [tab]);
+
+  useEffect(() => {
+    if (tab !== "market" || !userEmail) return;
+    fetch(`${API}/api/wines/recommended?userId=${encodeURIComponent(userEmail)}&limit=6`)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (d?.wines?.length) {
+          setRecommendedWines(d.wines);
+          setRecommendedBasedOn(d.basedOn || []);
+        }
+      }).catch(() => {});
+  }, [tab, userEmail, watchlist.length]);
 
   // Re-load market wines when account type resolves from Supabase (fixes B2B filter race condition)
   useEffect(() => {
@@ -1301,6 +1315,41 @@ function App() {
                       Prezzo {">"}€200 · Score 80+ · Rischio Basso/Medio
                     </span>
                   )}
+                </div>
+              )}
+              {recommendedWines.length > 0 && (
+                <div style={{ marginBottom: 24 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                    <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: "#C9A227" }}>
+                      ✨ Recommended for You
+                    </h3>
+                    {recommendedBasedOn.length > 0 && (
+                      <span style={{ fontSize: 11, color: "#3a5a7a" }}>
+                        Based on {recommendedBasedOn.join(", ")}
+                      </span>
+                    )}
+                  </div>
+                  <section className="marketGrid">
+                    {recommendedWines.map(wine => (
+                      <WineCard
+                        key={`rec-${wine.id}`}
+                        wine={wine}
+                        aiScore={cardProps.aiScores[wine.id]}
+                        alerts={cardProps.alerts.filter(a => a.wine_id === wine.id && a.active)}
+                        alertInput={cardProps.alertInputs[wine.id]}
+                        inWatchlist={cardProps.watchlist.includes(wine.id)}
+                        onImageClick={cardProps.onImageClick}
+                        onAddToPortfolio={cardProps.onAddToPortfolio}
+                        onToggleWatchlist={cardProps.onToggleWatchlist}
+                        onCardTilt={cardProps.onCardTilt}
+                        onCardTiltReset={cardProps.onCardTiltReset}
+                        onCreateAlert={cardProps.onCreateAlert}
+                        onAlertInputChange={cardProps.onAlertInputChange}
+                        onDeleteAlert={cardProps.onDeleteAlert}
+                      />
+                    ))}
+                  </section>
+                  <hr style={{ border: "none", borderTop: "1px solid rgba(30,41,59,0.4)", margin: "20px 0 16px" }} />
                 </div>
               )}
               <div ref={marketGridRef} style={{ width: "100%" }}>

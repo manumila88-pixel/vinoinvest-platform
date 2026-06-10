@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { getModuleById, getModulesForCourse, QUIZ_PASS_THRESHOLD, ADMIN_EMAIL } from "../data/premiumContent";
 import VideoLesson from "../components/VideoLesson";
 import { getModuleVideo } from "../data/academyVideos";
@@ -190,6 +191,9 @@ function Section({ emoji, title, children }) {
 export default function AcademyModule() {
   const { moduleId } = useParams();
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
+  const lang = i18n.language?.slice(0, 2) || "it";
+  const [bannerDismissed, setBannerDismissed] = useState(false);
   const [quizPassed, setQuizPassed] = useState(false);
   const [contentRevealed, setContentRevealed] = useState(false);
   const topRef = useRef(null);
@@ -268,6 +272,12 @@ export default function AcademyModule() {
       </div>
 
       <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 16px" }}>
+        {lang !== "it" && !bannerDismissed && (
+          <div style={{ background: "#fef9c3", border: "1px solid #fde047", borderRadius: 10, padding: "10px 16px", marginBottom: 24, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, color: "#713f12", fontSize: 13, fontWeight: 500 }}>
+            <span>Contenuto disponibile in italiano — <strong>Translation coming soon</strong></span>
+            <button onClick={() => setBannerDismissed(true)} style={{ background: "none", border: "none", cursor: "pointer", color: "#a16207", fontSize: 18, lineHeight: 1, padding: "0 4px", flexShrink: 0 }} aria-label="Dismiss">×</button>
+          </div>
+        )}
         {/* SECTION 1: Hero */}
         <div style={{ background: "#1a2535", borderRadius: 20, padding: "32px 36px", marginBottom: 32, borderLeft: `4px solid ${GOLD}` }}>
           <div style={{ fontSize: 11, color: GOLD, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, marginBottom: 10 }}>

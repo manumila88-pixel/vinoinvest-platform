@@ -919,6 +919,80 @@ app.get("/api/wines", cacheFor(300), (req, res) => {
   });
 });
 
+// GET /api/wines/watchlist-counts — returns map of wine_id → watchlist count
+app.get("/api/wines/watchlist-counts", cacheFor(300), async (_req, res) => {
+  if (!pool) return res.json({});
+  try {
+    const { rows } = await pool.query(
+      `SELECT wine_id, COUNT(*) as count FROM user_watchlists GROUP BY wine_id`
+    );
+    const counts = {};
+    for (const row of rows) counts[row.wine_id] = parseInt(row.count);
+    res.json(counts);
+  } catch (e) {
+    res.json({});
+  }
+});
+
+// GET /api/wines/recommended?userId= — personalized recommendations
+app.get("/api/wines/recommended", cacheFor(180), async (req, res) => {
+  const userId = (req.query.userId || "").toString().trim();
+  const limit = Math.min(20, Math.max(1, parseInt(req.query.limit) || 10));
+
+  let watchlistIds = [];
+  let portfolioIds = [];
+
+  if (userId && pool) {
+    try {
+      const { rows } = await pool.query(
+        `SELECT wine_id FROM user_watchlists WHERE user_id = $1`,
+        [userId]
+      );
+      watchlistIds = rows.map(r => r.wine_id);
+    } catch (_e) {}
+    try {
+      const { rows } = await pool.query(
+        `SELECT DISTINCT wine_id FROM user_holdings WHERE user_id = $1`,
+        [userId]
+      ).catch(() => ({ rows: [] }));
+      portfolioIds = rows.map(r => r.wine_id);
+    } catch (_e) {}
+  }
+
+  const excluded = new Set([...watchlistIds, ...portfolioIds]);
+
+  // Analyze watchlist: extract preferred regions and score range
+  const watchlistWines = watchlistIds.map(id => allWines.find(w => w.id === id)).filter(Boolean);
+  const preferredRegions = [...new Set(watchlistWines.map(w => (w.region || w.country || "").split(",")[0].trim()).filter(Boolean))];
+  const avgScore = watchlistWines.length > 0
+    ? watchlistWines.reduce((s, w) => s + (w.investmentScore || w.investment_score || 75), 0) / watchlistWines.length
+    : 80;
+
+  // Score candidates: same region gets +3, similar score (within 10) gets +2, high score gets base
+  const candidates = allWines
+    .filter(w => !excluded.has(w.id) && (w.investmentScore || w.investment_score || 0) >= 70)
+    .map(w => {
+      const score = w.investmentScore || w.investment_score || 70;
+      const wRegion = (w.region || w.country || "").split(",")[0].trim();
+      let relevance = score / 10;
+      if (preferredRegions.some(r => wRegion.toLowerCase().includes(r.toLowerCase()) || r.toLowerCase().includes(wRegion.toLowerCase()))) relevance += 30;
+      if (Math.abs(score - avgScore) <= 10) relevance += 20;
+      return { wine: w, relevance };
+    })
+    .sort((a, b) => b.relevance - a.relevance)
+    .slice(0, limit * 3);
+
+  // Shuffle top candidates and pick limit
+  const shuffled = candidates.sort(() => Math.random() - 0.3);
+  const recommended = shuffled.slice(0, limit).map(c => c.wine);
+
+  res.json({
+    wines: recommended,
+    basedOn: preferredRegions.length > 0 ? preferredRegions.slice(0, 2) : ["Top Rated"],
+    watchlistCount: watchlistIds.length,
+  });
+});
+
 // POST /api/wines — B2B wine management (requires auth)
 app.post("/api/wines", requireAuth, (req, res) => {
   const { name, producer, vintage, region, current_price, type } = req.body;

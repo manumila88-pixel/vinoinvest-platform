@@ -164,8 +164,8 @@ const WineCard = memo(function WineCard({
         <div className="wineCard-actions">
           <WinePriceCompare wineId={wine.id} wineName={wine.name} vintage={wine.vintage} criticScore={wine.criticScore || wine.investmentScore} />
           <button className="btn-primary" onClick={() => onAddToPortfolio(wine)}>{t("market.addToPortfolio")}</button>
-          <button className={`btn-secondary ${inWatchlist ? "active" : ""}`} onClick={() => onToggleWatchlist(wine)} aria-label={inWatchlist ? "Remove from watchlist" : "Add to watchlist"}>
-            {inWatchlist ? "★" : "☆"}
+          <button className={`btn-secondary ${inWatchlist ? "active" : ""}`} onClick={() => onToggleWatchlist(wine)} aria-label={inWatchlist ? "Remove from watchlist" : "Add to watchlist"} title={wine._watchlistCount > 0 ? `${wine._watchlistCount} investors watching` : undefined}>
+            {inWatchlist ? "★" : "☆"}{wine._watchlistCount > 1 ? <span style={{ fontSize: 9, marginLeft: 2, color: "#60a5fa" }}>{wine._watchlistCount}</span> : null}
           </button>
         </div>
         <div style={{ display: "flex", borderTop: "1px solid var(--vi-border)" , marginTop: 4 }}>

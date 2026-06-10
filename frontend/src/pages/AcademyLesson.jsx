@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ComposedChart, Bar, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend, Area } from "recharts";
 import { COURSES, XP_RULES } from "../data/academyContent";
+import { useTranslation } from "react-i18next";
 
 const BG = "#0b1220";
 const GOLD = "#C9A227";
@@ -60,12 +61,18 @@ function saveProgress(p) { try { localStorage.setItem(PROGRESS_KEY, JSON.stringi
 export default function AcademyLesson() {
   const { lessonId } = useParams();
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
+  const lang = i18n.language?.slice(0, 2) || "it";
+  const [bannerDismissed, setBannerDismissed] = useState(false);
 
   let lesson = null, course = null;
   for (const c of COURSES) {
     const l = c.lessons?.find(l => l.id === parseInt(lessonId));
     if (l) { lesson = l; course = c; break; }
   }
+
+  const displayLessonTitle = lesson?.translations?.[lang]?.title || lesson?.title;
+  const displayCourseTitle = course?.translations?.[lang]?.title || course?.title;
 
   const [quizAnswers, setQuizAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
@@ -145,7 +152,7 @@ export default function AcademyLesson() {
             <span style={{ color: "#475569" }}>›</span>
             <button onClick={() => navigate(`/academy/course/${course.slug}`)} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", padding: 0 }}>{course.icon} {course.title}</button>
             <span style={{ color: "#475569" }}>›</span>
-            <span style={{ color: "#e2e8f0", fontWeight: 600 }}>{lesson.title}</span>
+            <span style={{ color: "#e2e8f0", fontWeight: 600 }}>{displayLessonTitle}</span>
           </div>
           {/* Course progress bar */}
           <div style={{ marginTop: 8, height: 2, background: "rgba(255,255,255,0.06)", borderRadius: 1 }}>
@@ -164,13 +171,20 @@ export default function AcademyLesson() {
             <span style={{ fontSize: 11, background: "rgba(255,255,255,0.1)", color: "#94a3b8", borderRadius: 20, padding: "3px 10px" }}>⏱ {lesson.duration} min</span>
             <span style={{ fontSize: 11, background: "rgba(255,255,255,0.1)", color: "#94a3b8", borderRadius: 20, padding: "3px 10px" }}>{slides.length} slide</span>
           </div>
-          <h1 style={{ fontSize: 30, fontWeight: 900, color: "#fff", marginBottom: 6, textShadow: "0 2px 8px rgba(0,0,0,0.5)" }}>{lesson.title}</h1>
+          <h1 style={{ fontSize: 30, fontWeight: 900, color: "#fff", marginBottom: 6, textShadow: "0 2px 8px rgba(0,0,0,0.5)" }}>{displayLessonTitle}</h1>
           <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>© {media.heroCredit} — Unsplash</div>
         </div>
       </div>
 
       {/* ── CONTENT BODY ───────────────────────────────────────────────── */}
       <div style={{ maxWidth: 960, margin: "0 auto", padding: "32px 16px" }}>
+
+        {lang !== "it" && !bannerDismissed && (
+          <div style={{ background: "#fef9c3", border: "1px solid #fde047", borderRadius: 10, padding: "10px 16px", marginBottom: 24, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, color: "#713f12", fontSize: 13, fontWeight: 500 }}>
+            <span>Contenuto disponibile in italiano — <strong>Translation coming soon</strong></span>
+            <button onClick={() => setBannerDismissed(true)} style={{ background: "none", border: "none", cursor: "pointer", color: "#a16207", fontSize: 18, lineHeight: 1, padding: "0 4px", flexShrink: 0 }} aria-label="Dismiss">×</button>
+          </div>
+        )}
 
         {/* ── SEZIONE 1: SLIDE VISIVE ─────────────────────────────────── */}
         <SectionLabel label="SLIDE DELLA LEZIONE" icon="📺" />
