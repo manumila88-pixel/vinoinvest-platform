@@ -317,19 +317,57 @@ function makeSlug(title) {
     .slice(0, 80);
 }
 
+// ── CLI ARGS ─────────────────────────────────────────────────────────────────
+
+function parseArgs() {
+  const args = process.argv.slice(2);
+  return {
+    dryRun: args.includes("--dry-run"),
+    persona: args.find(a => a.startsWith("--persona="))?.split("=")[1],
+    concurrency: parseInt(args.find(a => a.startsWith("--concurrency="))?.split("=")[1] || "1", 10),
+    limit: parseInt(args.find(a => a.startsWith("--limit="))?.split("=")[1] || "999", 10),
+    help: args.includes("--help") || args.includes("-h"),
+  };
+}
+
 // ── MAIN ─────────────────────────────────────────────────────────────────────
 
 async function main() {
-  console.log("=== VinoInvest Blog Generator — 100 Articles ===\n");
+  const opts = parseArgs();
 
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (opts.help) {
+    console.log(`
+VinoInvest Blog Generator — 100 Articles via Claude Haiku
+
+Usage: node src/scripts/generateBlogContent.js [options]
+
+Options:
+  --dry-run              Preview topics without calling API
+  --persona=<name>       Only generate for one persona
+                         (curioso|appassionato|investitore|youngPro|wealth|cantina|seo)
+  --concurrency=<n>      Parallel requests (default: 1, max recommended: 3)
+  --limit=<n>            Stop after N articles generated
+  --help                 Show this help
+
+Examples:
+  node src/scripts/generateBlogContent.js --dry-run
+  node src/scripts/generateBlogContent.js --persona=investitore
+  node src/scripts/generateBlogContent.js --concurrency=2 --limit=20
+`);
+    process.exit(0);
+  }
+
+  console.log("=== VinoInvest Blog Generator — 100 Articles ===\n");
+  if (opts.dryRun) console.log("  [DRY RUN] — no API calls, no DB writes\n");
+
+  if (!opts.dryRun && !process.env.ANTHROPIC_API_KEY) {
     console.error("ERROR: ANTHROPIC_API_KEY not set in .env");
     process.exit(1);
   }
 
-  await ensureSchema();
+  if (!opts.dryRun) await ensureSchema();
 
-  const plan = [
+  const allPlan = [
     { persona: "curioso",    topics: TOPICS.curioso },
     { persona: "appassionato", topics: TOPICS.appassionato },
     { persona: "investitore", topics: TOPICS.investitore },
@@ -339,47 +377,71 @@ async function main() {
     { persona: "seo",        topics: TOPICS.seo },
   ];
 
+  const plan = opts.persona
+    ? allPlan.filter(p => p.persona === opts.persona)
+    : allPlan;
+
+  if (opts.persona && plan.length === 0) {
+    console.error(`ERROR: unknown persona "${opts.persona}". Use: ${allPlan.map(p => p.persona).join(", ")}`);
+    process.exit(1);
+  }
+
   let generated = 0;
   let skipped = 0;
   let failed = 0;
-  const total = plan.reduce((s, p) => s + p.topics.length, 0);
+  const total = Math.min(opts.limit, plan.reduce((s, p) => s + p.topics.length, 0));
 
-  console.log(`Total target: ${total} articles\n`);
+  console.log(`Total target: ${total} articles | concurrency: ${opts.concurrency}\n`);
 
   for (const { persona, topics } of plan) {
     console.log(`\n── Persona: ${persona.toUpperCase()} (${topics.length} articles) ──`);
 
-    for (const topic of topics) {
-      const slug = makeSlug(topic.title);
+    // Process in batches of `concurrency`
+    for (let i = 0; i < topics.length; i += opts.concurrency) {
+      if (generated >= opts.limit) break;
 
-      if (await slugExists(slug)) {
-        console.log(`  [SKIP] ${topic.title.slice(0, 60)}`);
-        skipped++;
-        generated++;
-        if (generated % 10 === 0) printProgress(generated, total, skipped, failed);
-        continue;
-      }
+      const batch = topics.slice(i, i + opts.concurrency);
 
-      process.stdout.write(`  [GEN]  ${topic.title.slice(0, 60)}... `);
-      const article = await generateArticle(topic, persona);
+      await Promise.all(batch.map(async (topic) => {
+        if (generated >= opts.limit) return;
 
-      if (article) {
-        article.slug = article.slug || slug;
-        // Ensure slug is safe
-        article.slug = makeSlug(article.slug);
-        await savePost(article);
-        generated++;
-        console.log(`OK (${article.wordCount}w, ${article.tokensUsed} tokens)`);
-      } else {
-        failed++;
-        generated++;
-        console.log("FAILED — skipped");
-      }
+        const slug = makeSlug(topic.title);
+
+        if (opts.dryRun) {
+          console.log(`  [DRY]  ${topic.title.slice(0, 70)}`);
+          generated++;
+          return;
+        }
+
+        if (await slugExists(slug)) {
+          console.log(`  [SKIP] ${topic.title.slice(0, 60)}`);
+          skipped++;
+          generated++;
+          return;
+        }
+
+        process.stdout.write(`  [GEN]  ${topic.title.slice(0, 60)}... `);
+        const article = await generateArticle(topic, persona);
+
+        if (article) {
+          article.slug = article.slug || slug;
+          article.slug = makeSlug(article.slug);
+          await savePost(article);
+          generated++;
+          console.log(`OK (${article.wordCount}w, ${article.tokensUsed} tokens)`);
+        } else {
+          failed++;
+          generated++;
+          console.log("FAILED — skipped");
+        }
+      }));
 
       if (generated % 10 === 0) printProgress(generated, total, skipped, failed);
 
-      // Rate limiting: 1 req/s to stay within Haiku limits
-      await delay(1100);
+      // Rate limit gap between batches
+      if (!opts.dryRun && i + opts.concurrency < topics.length) {
+        await delay(Math.max(500, Math.round(1100 / opts.concurrency)));
+      }
     }
   }
 
@@ -389,7 +451,7 @@ async function main() {
   console.log(`      ${failed} failed`);
   console.log("═══════════════════════════════════════\n");
 
-  await pool.end();
+  if (!opts.dryRun) await pool.end();
 }
 
 function printProgress(done, total, skipped, failed) {
