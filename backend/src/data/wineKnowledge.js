@@ -387,6 +387,154 @@ export const FAQ = [
   },
 ];
 
+  // ── INVESTIMENTO AVANZATO ─────────────────────────────────────────────────
+  {
+    id: "inv-009",
+    category: "investimento",
+    persona: ["esperto"],
+    q: "Quale impatto ha il climate change sull'investimento in vino?",
+    a: "Il climate change sposta le zone climatiche ottimali verso nord: la Borgogna soffre calori estremi, mentre Inghilterra e Danimarca emergono per spumanti. Rischio geografico reale: vigneti a bassa altitudine in Rhône e Languedoc. Opportunità: regioni più fresche (Oregon, Alto Adige, Champagne) e produttori con vigne vecchie (radici profonde, più resistenti).",
+    tags: ["climate change", "rischio", "geografia", "cambiamento climatico"],
+  },
+  {
+    id: "inv-010",
+    category: "investimento",
+    persona: ["intermedio", "esperto"],
+    q: "Cosa è il 'Parker effect' e come impatta i prezzi?",
+    a: "Robert Parker ha inventato la critica moderna del vino con la scala 100 punti. Una valutazione di 100/100 può far raddoppiare il prezzo in settimane. Dopo il ritiro di Parker nel 2019, il mercato si è frammentato: oggi influenzano i prezzi anche James Suckling, Decanter, Wine Spectator e critici social. L'effetto è però diminuito di intensità.",
+    tags: ["Parker", "critica", "valutazioni", "prezzo"],
+  },
+  {
+    id: "inv-011",
+    category: "investimento",
+    persona: ["principiante", "intermedio"],
+    q: "È possibile investire in vino tramite un fondo?",
+    a: "Sì, esistono fondi specializzati: Cult Wines (UK), WineCap, Vinovest (USA). Vantaggi: diversificazione automatica, gestione professionale, accesso ad allocazioni esclusive. Svantaggi: fee alte (1.5-3% annuo), minore controllo, illiquidità. Alternativa: piattaforme come VinoInvest dove gestisci il tuo portfolio direttamente.",
+    tags: ["fondo", "Cult Wines", "WineCap", "gestione"],
+  },
+  {
+    id: "inv-012",
+    category: "investimento",
+    persona: ["esperto"],
+    q: "Cos'è la tokenizzazione del vino e ha senso per un investitore?",
+    a: "La tokenizzazione trasforma la proprietà di una bottiglia (o cassa) in un token digitale su blockchain. Permette proprietà frazionata (comprare 1/10 di cassa) e scambio rapido. Vantaggi: liquidità migliorata, accesso con piccoli capitali. Rischi: tecnologia imatura, regolamentazione incerta, controparty risk elevato. Segui Winechain, BlockBar, Vinid.",
+    tags: ["tokenizzazione", "blockchain", "NFT", "frazioni"],
+  },
+
+  // ── CONFRONTO ──────────────────────────────────────────────────────────────
+  {
+    id: "cfr-001",
+    category: "confronto",
+    persona: ["principiante", "intermedio"],
+    q: "Vino vs oro: quale è meglio come riserva di valore?",
+    a: "Oro: liquidità immediata, riconoscimento globale, zero costi di conservazione. Vino: rendimento storico leggermente superiore (9% vs 7%), ma illiquido e con costi storage. Oro per liquidità e sicurezza assoluta. Vino per rendimento aggiuntivo con orizzonte lungo. Ideale: usarli entrambi in portfolio (correlazione bassissima tra loro).",
+    tags: ["oro", "confronto", "riserva valore", "gold"],
+  },
+  {
+    id: "cfr-002",
+    category: "confronto",
+    persona: ["intermedio"],
+    q: "Vino vs whisky come investimento nel 2025?",
+    a: "Whisky: rendimenti più volatili ma potenzialmente altissimi (Macallan Fine & Rare +300% in 10 anni). Mercato più giovane, meno strutturato. Vino: mercato più maturo, Liv-ex come benchmark, più liquido nei top names. Whisky ha più upside speculativo, vino più stabilità. Alcuni investitori usano whisky come 'equity part' e vino come 'bond part' degli alternativi.",
+    tags: ["whisky", "confronto", "Macallan", "rendimento"],
+  },
+  {
+    id: "cfr-003",
+    category: "confronto",
+    persona: ["intermedio", "esperto"],
+    q: "Vino vs arte come investimento?",
+    a: "Arte: rendimento storico similar al vino (8-10%/anno), ma liquidità ancora più bassa, dipende dall'artista (rischio di moda), autenticità difficile da verificare. Vino: più standardizzato (denominazioni, critici), mercato globale più profondo, ma deperibile. Entrambi sono asset fisici con benefici simili come diversificatori. Molti UHNW investor detengono entrambi (Sotheby's vende wine e art).",
+    tags: ["arte", "confronto", "Sotheby's", "diversificazione"],
+  },
+  {
+    id: "cfr-004",
+    category: "confronto",
+    persona: ["principiante"],
+    q: "Vino vs immobiliare: differenze chiave",
+    a: "Immobiliare: rendita da affitto, leva finanziaria possibile, valore intrinseco del mattone. Vino: nessuna rendita, no leva, valore basato su reputazione/scarsità. Immobiliare richiede più capitale iniziale e è molto illiquido. Vino è divisibile (si vende una bottiglia alla volta). Immobiliare tassa più chiaramente (IMU). Complementari in un portfolio ampio.",
+    tags: ["immobiliare", "confronto", "real estate", "capitale"],
+  },
+
+  // ── PRATICO AVANZATO ──────────────────────────────────────────────────────
+  {
+    id: "pra-005",
+    category: "pratico",
+    persona: ["principiante", "intermedio"],
+    q: "Come verificare l'autenticità di una bottiglia di vino pregiato?",
+    a: "Controlli fisici: livello del vino nella bottiglia (ullage normale: mezzo centimetro sotto il tappo), capsula integra, etichetta non staccata o bagnata, tappo non ammuffito quando si estrae. Provenienza documentata: fattura di acquisto, tracciabilità. Per vini >€500: considera autenticazione professionale (Berry Bros o Christie's offrono il servizio). Diffida da prezzi troppo bassi.",
+    tags: ["autenticità", "verifica", "contraffazione", "bottiglia"],
+  },
+  {
+    id: "pra-006",
+    category: "pratico",
+    persona: ["intermedio"],
+    q: "Qual è la differenza tra acquistare da un merchant e da un'asta?",
+    a: "Merchant: prezzo fisso, garanzia provenienza, meno offerte rare ma più affidabili. Aste: prezzi potenzialmente più bassi (o più alti per vini rari), buyer's premium 15-25%, rischio sulla provenienza. Regola: per vini comuni compra da merchant (più veloce, più sicuro). Per vini ultra-rari (DRC, Pétrus annate storiche) l'asta è spesso l'unico canale.",
+    tags: ["merchant", "asta", "acquisto", "differenze"],
+  },
+  {
+    id: "pra-007",
+    category: "pratico",
+    persona: ["principiante"],
+    q: "Come faccio a usare al meglio VinoInvest?",
+    a: "Workflow consigliato: (1) Usa l'AI Advisor per orientarti sul mercato e fare domande specifiche, (2) esplora il Market con filtri AI Score >80, (3) aggiungi vini al watchlist per tracciarne i prezzi, (4) usa il calcolatore per stimare i rendimenti, (5) apri il portfolio quando fai acquisti reali. Il tutorial guidato dura 10 minuti.",
+    tags: ["VinoInvest", "come usare", "tutorial", "workflow"],
+  },
+
+  // ── EN PRIMEUR ────────────────────────────────────────────────────────────
+  {
+    id: "enp-001",
+    category: "enprimeur",
+    persona: ["principiante", "intermedio"],
+    q: "L'en primeur è sempre conveniente?",
+    a: "No. Conviene quando: (1) l'annata è eccezionale (critica unanime), (2) il prezzo release è modesto rispetto alle aspettative, (3) hai orizzonte 5+ anni. Non conviene quando: (1) i châteaux alzano il prezzo release oltre le aspettative (Bordeaux 2022 era troppo caro), (2) l'annata è sopravvalutata, (3) hai bisogno di liquidità presto.",
+    tags: ["en primeur", "convenienza", "release price"],
+  },
+  {
+    id: "enp-002",
+    category: "enprimeur",
+    persona: ["intermedio"],
+    q: "Quali cantine offrono en primeur oltre Bordeaux?",
+    a: "Oltre Bordeaux: Borgogna (pochi domaine come DRC tramite lista allocation), Barolo (alcuni produttori fanno pre-vendita ai clienti fissi), Champagne (allocazioni per vintage), Brunello di Montalcino (pre-allocazioni per la Riserva). Il sistema è meno strutturato fuori Bordeaux ma opportunità esistono.",
+    tags: ["en primeur", "Borgogna", "Barolo", "Brunello"],
+  },
+
+  // ── NOTIZIE E TREND ───────────────────────────────────────────────────────
+  {
+    id: "nws-001",
+    category: "notizie",
+    persona: ["principiante", "intermedio", "esperto"],
+    q: "Quali sono i trend del mercato fine wine nel 2025-2026?",
+    a: "Trend 2025-2026: (1) Borgogna in forte crescita — domanda asiatica che riprende; (2) Bordeaux Premier Cru in correzione dopo i picchi 2022 — opportunità; (3) Barolo emergente come 'the new Burgundy' — valore relativo ancora interessante; (4) Champagne vintage stabile; (5) New World (Oregon, Napa cult) in crescita strutturale.",
+    tags: ["trend", "2025", "2026", "mercato"],
+  },
+  {
+    id: "nws-002",
+    category: "notizie",
+    persona: ["esperto"],
+    q: "Come il rialzo dei tassi ha impattato il mercato del vino?",
+    a: "Il rialzo dei tassi 2022-2024 ha colpito gli alternativi in generale. Il fine wine ha corretto del 10-15% dal picco 2022, soprattutto il Bordeaux ultra-premium (meno i Grand Cru di Borgogna che hanno domanda strutturale). Con la riduzione tassi 2025, ci aspettano rimbalzo nei premium. I vini conservati in bond hanno costo opportunità crescente quando i tassi salgono.",
+    tags: ["tassi", "Fed", "BCE", "correzione"],
+  },
+
+  // ── RICERCA ────────────────────────────────────────────────────────────────
+  {
+    id: "ric-001",
+    category: "ricerca",
+    persona: ["principiante"],
+    q: "Come cerco un vino specifico su VinoInvest?",
+    a: "Usa la barra di ricerca in alto: puoi cercare per nome vino, produttore, regione o annata. I filtri avanzati nel Market permettono di filtrare per AI Score, fascia di prezzo, tipologia (rosso/bianco/spumante) e vintage. Il risultato mostra prezzo corrente, trend e AI Score per ogni vino.",
+    tags: ["ricerca", "filtri", "market", "VinoInvest"],
+  },
+  {
+    id: "ric-002",
+    category: "ricerca",
+    persona: ["intermedio"],
+    q: "Quali sono i migliori vini italiani emergenti da comprare ora?",
+    a: "Radar 2025: Vietti Barolo Castiglione (ottimo rapporto qualità-prezzo), Sandrone Barolo Aleste (ex Cannubi Boschis), La Spinetta Barbaresco Starderi, Casanova di Neri Brunello Cerretalto, Allegrini Amarone (stabile ma spesso dimenticato). Cerca queste etichette nel Market VinoInvest con AI Score >80.",
+    tags: ["emergenti", "italiani", "barolo", "brunello", "2025"],
+  },
+
 /** Helper: get FAQs by category */
 export function getFAQByCategory(category) {
   if (!category || category === "all") return FAQ;
