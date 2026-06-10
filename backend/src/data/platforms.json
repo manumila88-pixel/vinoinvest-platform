@@ -13,10 +13,11 @@
     "website": "https://www.liv-ex.com",
     "strengths": [
       "Trading professionale",
-      "Market data",
+      "Market data in tempo reale",
       "Alta liquidità",
-      "Prezzi globali"
-    ]
+      "Prezzi globali trasparenti"
+    ],
+    "description": "La principale borsa mondiale del vino fine. Usata da merchant professionisti. Richiede account aziendale."
   },
 
   {
@@ -32,10 +33,11 @@
     "fees": "Variabili",
     "website": "https://www.wine-searcher.com",
     "strengths": [
-      "Ricerca globale",
-      "Confronto prezzi",
-      "Merchant worldwide"
-    ]
+      "Ricerca globale su 100K+ merchant",
+      "Confronto prezzi in tempo reale",
+      "Storico prezzi gratuito"
+    ],
+    "description": "Il motore di ricerca leader per trovare e confrontare prezzi di qualsiasi vino nel mondo."
   },
 
   {
@@ -51,10 +53,11 @@
     "fees": "Professional",
     "website": "https://www.bordeauxindex.com",
     "strengths": [
-      "Trading",
-      "Storage",
-      "Mercato premium"
-    ]
+      "Trading e storage integrati",
+      "Market data professionale",
+      "Accesso en primeur Bordeaux"
+    ],
+    "description": "Piattaforma professionale UK per trading, storage e market data sul vino fine."
   },
 
   {
@@ -67,13 +70,74 @@
     "apiAvailable": false,
     "globalMarket": true,
     "recommended": true,
-    "fees": "Auction fees",
+    "fees": "15-25% buyer's premium",
     "website": "https://www.sothebys.com",
     "strengths": [
-      "Aste premium",
-      "Vini rari",
-      "Alta reputazione"
-    ]
+      "Aste wine premium",
+      "Accesso vini rarissimi",
+      "Garanzia autenticità"
+    ],
+    "description": "La casa d'aste più prestigiosa del mondo. New York, Londra, Hong Kong. Buyer's premium 15-25%."
+  },
+
+  {
+    "id": "christies",
+    "name": "Christie's Wine",
+    "type": "Auction House",
+    "trustScore": 97,
+    "riskLevel": "Molto basso",
+    "verified": true,
+    "apiAvailable": false,
+    "globalMarket": true,
+    "recommended": true,
+    "fees": "20-25% buyer's premium",
+    "website": "https://www.christies.com",
+    "strengths": [
+      "Aste vino storiche dal 1766",
+      "Vini rari e da collezione",
+      "Presenza globale"
+    ],
+    "description": "Fondata nel 1766. Una delle case d'aste più storiche per il vino fine. Buyer's premium 20-25%."
+  },
+
+  {
+    "id": "hart-davis-hart",
+    "name": "Hart Davis Hart",
+    "type": "Auction House",
+    "trustScore": 95,
+    "riskLevel": "Basso",
+    "verified": true,
+    "apiAvailable": false,
+    "globalMarket": true,
+    "recommended": true,
+    "fees": "18-22% buyer's premium",
+    "website": "https://www.hartdavishart.com",
+    "strengths": [
+      "Specializzata in vini americani e Borgogna",
+      "Due diligence rigorosa",
+      "Prezzi competitivi"
+    ],
+    "description": "Chicago-based, specializzata in vini di alta qualità con focus USA. Buyer's premium 18-22%."
+  },
+
+  {
+    "id": "acker",
+    "name": "Acker Merrall & Condit",
+    "type": "Auction House",
+    "trustScore": 94,
+    "riskLevel": "Basso",
+    "verified": true,
+    "apiAvailable": false,
+    "globalMarket": true,
+    "recommended": true,
+    "fees": "15-22% buyer's premium",
+    "website": "https://www.ackerauctions.com",
+    "strengths": [
+      "Borgogna e vini rari USA",
+      "Aste Hong Kong e New York",
+      "Accesso mercato asiatico"
+    ],
+    "description": "Leader mondiale nelle aste di Borgogna e vini rari. Presenza forte in Asia (Hong Kong)."
   },
 
   {
@@ -86,12 +150,113 @@
     "apiAvailable": false,
     "globalMarket": true,
     "recommended": true,
-    "fees": "Marketplace fees",
+    "fees": "15% seller commission",
     "website": "https://www.idealwine.com",
     "strengths": [
-      "Marketplace globale",
-      "Aste online",
-      "Ampio catalogo"
-    ]
+      "Marketplace e aste online",
+      "Ampio catalogo Borgogna e Bordeaux",
+      "Interfaccia in italiano"
+    ],
+    "description": "Marketplace francese con aste online mensili. Ottimo per acquistare e vendere vini europei."
+  },
+
+  {
+    "id": "berry-bros",
+    "name": "Berry Bros & Rudd",
+    "type": "Wine Merchant",
+    "trustScore": 98,
+    "riskLevel": "Molto basso",
+    "verified": true,
+    "apiAvailable": false,
+    "globalMarket": true,
+    "recommended": true,
+    "fees": "Retail + storage",
+    "website": "https://www.bbr.com",
+    "strengths": [
+      "Merchant UK fondato nel 1698",
+      "En primeur Bordeaux e Borgogna",
+      "Storage in bond London"
+    ],
+    "description": "Il merchant di vino più antico del mondo. Fornitore reale. Eccellente per en primeur e storage professionale."
+  },
+
+  {
+    "id": "wineauctioneer",
+    "name": "Wineauctioneer",
+    "type": "Online Auction Platform",
+    "trustScore": 88,
+    "riskLevel": "Basso",
+    "verified": true,
+    "apiAvailable": false,
+    "globalMarket": true,
+    "recommended": true,
+    "fees": "10-15% buyer's premium",
+    "website": "https://www.wineauctioneer.com",
+    "strengths": [
+      "Buyer's premium basso",
+      "Aste online continue",
+      "Accessibile a privati"
+    ],
+    "description": "Piattaforma di aste online con buyer's premium tra i più bassi del settore. Adatta anche a privati."
+  },
+
+  {
+    "id": "wine-bid",
+    "name": "WineBid",
+    "type": "Online Auction Platform",
+    "trustScore": 86,
+    "riskLevel": "Basso",
+    "verified": true,
+    "apiAvailable": false,
+    "globalMarket": false,
+    "recommended": false,
+    "fees": "12-18% buyer's premium",
+    "website": "https://www.winebid.com",
+    "strengths": [
+      "Focus USA",
+      "Ampia selezione California",
+      "Aste settimanali"
+    ],
+    "description": "Principale piattaforma d'aste online USA. Ottima per vini californiani e americani."
+  },
+
+  {
+    "id": "cellartracker",
+    "name": "CellarTracker",
+    "type": "Community & Data Platform",
+    "trustScore": 90,
+    "riskLevel": "Basso",
+    "verified": true,
+    "apiAvailable": true,
+    "globalMarket": true,
+    "recommended": true,
+    "fees": "Freemium",
+    "website": "https://www.cellartracker.com",
+    "strengths": [
+      "700K+ note di degustazione community",
+      "Gestione cantina personale",
+      "Prezzi storici community"
+    ],
+    "description": "La più grande community di note di degustazione al mondo. Utile per valutare vini e tracciare prezzi community."
+  },
+
+  {
+    "id": "vinfolio",
+    "name": "Vinfolio",
+    "type": "Wine Management & Trading",
+    "trustScore": 89,
+    "riskLevel": "Basso",
+    "verified": true,
+    "apiAvailable": true,
+    "globalMarket": true,
+    "recommended": false,
+    "fees": "Storage + trading fee",
+    "website": "https://www.vinfolio.com",
+    "strengths": [
+      "Gestione portfolio integrata",
+      "Storage San Francisco",
+      "Marketplace B2C"
+    ],
+    "description": "Piattaforma USA per gestione, storage e trading di vini fini. Ottima per investitori USA con portfolio medio-grandi."
   }
 ]
