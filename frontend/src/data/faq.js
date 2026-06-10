@@ -710,6 +710,114 @@ export const FAQ = [
     a: "Tutti i dati vengono eliminati definitivamente entro 30 giorni dalla cancellazione: portfolio, alert, storico, sessioni. Ti consigliamo di esportare il portfolio prima.",
     tags: ["cancellazione", "dati", "eliminazione", "GDPR"],
   },
+
+  // ── Rendimenti aggiuntivi ────────────────────────────────────────────────
+  {
+    id: "r8", cat: "rendimenti",
+    q: "Il vino è correlato all'inflazione?",
+    a: "Parzialmente sì. Il fine wine tende a conservare il valore reale in periodi di alta inflazione, in particolare i Grand Cru di Borgogna e i Bordeaux Premier Cru che sono prezzati in EUR o GBP. Non è però una copertura garantita.",
+    tags: ["inflazione", "correlazione", "copertura", "hedge"],
+  },
+  {
+    id: "r9", cat: "rendimenti",
+    q: "Quanto pesa la liquidità nel valutare un investimento in vino?",
+    a: "Molto. Il vino non è liquido come un'azione. Vendere può richiedere settimane o mesi. Prediligi vini con mercato attivo (Bordeaux Premier Cru, Borgogna Grand Cru) se prevedi di liquidare entro 3-5 anni.",
+    tags: ["liquidità", "vendita", "tempo", "mercato attivo"],
+  },
+  {
+    id: "r10", cat: "rendimenti",
+    q: "Cosa sono i vini 'cult' e perché rendono di più?",
+    a: "Vini prodotti in quantità minime da produttori iconici: Screaming Eagle (800 casse/anno), Romanée-Conti (450 casse/anno), Le Pin (~400 casse). La scarsità artificiale genera domanda > offerta, spingendo i prezzi in modo esponenziale.",
+    tags: ["cult", "scarsità", "Screaming Eagle", "Le Pin", "DRC", "quantità"],
+  },
+
+  // ── Come funziona aggiuntivi ─────────────────────────────────────────────
+  {
+    id: "f10", cat: "funziona",
+    q: "Come funziona la sezione AI Portfolio?",
+    a: "Inserisci il tuo budget, orizzonte temporale e preferenza di rischio. L'algoritmo seleziona una combinazione ottimale di vini diversificati per regione, annata e profilo di rischio/rendimento. I suggerimenti si aggiornano con i movimenti di mercato.",
+    tags: ["AI portfolio", "allocazione", "budget", "rischio", "diversificazione"],
+  },
+  {
+    id: "f11", cat: "funziona",
+    q: "Come sono calcolati i 'market trend' (Bull/Bear/Neutral)?",
+    a: "Il trend è calcolato comparando il prezzo attuale con la media mobile a 90 giorni e il momentum a 30 giorni. Bull = +5% su 90gg, Bear = -5%, Neutral = tra i due. Basato su dati storici reali dove disponibili.",
+    tags: ["market trend", "bull", "bear", "neutral", "calcolo", "media mobile"],
+  },
+  {
+    id: "f12", cat: "funziona",
+    q: "Cosa fa l'AI Advisor nella chat?",
+    a: "L'AI Advisor analizza il tuo portfolio, risponde a domande su vini specifici, fornisce analisi di mercato e suggerisce ottimizzazioni. È alimentato da Claude (Anthropic). Non fornisce consulenza finanziaria regolamentata.",
+    tags: ["AI advisor", "chat", "claude", "analisi", "consigli"],
+  },
+  {
+    id: "f13", cat: "funziona",
+    q: "Cos'è il VinoInvest Index?",
+    a: "Un indice proprietario che aggrega 150 vini fine selezionati per liquidità, qualità e distribuzione geografica (Bordeaux 35%, Borgogna 25%, Italia 20%, resto del mondo 20%). Mostra la performance aggregata del mercato fine wine.",
+    tags: ["index", "indice", "150", "composizione", "benchmark"],
+  },
+
+  // ── Portfolio aggiuntivi ─────────────────────────────────────────────────
+  {
+    id: "p10", cat: "portfolio",
+    q: "Posso importare un portfolio esistente?",
+    a: "Sì, puoi importare via CSV (template scaricabile dalla Dashboard). Campi: nome_vino, produttore, annata, quantità, prezzo_acquisto, data_acquisto. Il sistema abbina automaticamente ai vini nel database.",
+    tags: ["importare", "CSV", "template", "esistente", "migrazione"],
+  },
+  {
+    id: "p11", cat: "portfolio",
+    q: "Come funziona la sezione 'Diversificazione'?",
+    a: "Mostra la distribuzione del tuo portfolio per tipologia (rosso/bianco/spumante/dolce) e per vino singolo. Idealmente: max 20-25% su un singolo vino, almeno 3 regioni diverse, mix di annate.",
+    tags: ["diversificazione", "distribuzione", "regioni", "tipologia", "bilanciamento"],
+  },
+  {
+    id: "p12", cat: "portfolio",
+    q: "Perché il valore del portfolio si aggiorna lentamente?",
+    a: "I prezzi fine wine si aggiornano meno frequentemente dei mercati finanziari tradizionali. Il sistema aggiorna i dati ogni 24h per i vini con quotazioni disponibili, ogni 72h per quelli con dati stimati.",
+    tags: ["aggiornamento", "lento", "prezzi", "frequenza", "real-time"],
+  },
+
+  // ── Acquisti aggiuntivi ──────────────────────────────────────────────────
+  {
+    id: "a10", cat: "acquisti",
+    q: "Conviene comprare vino all'asta o in enoteca?",
+    a: "All'asta: prezzi spesso più bassi, ma aggiungi buyer's premium (15-25%) e attenzione alla provenienza. In enoteca: prezzo certo, garanzia condizioni. En primeur: sconto 20-40% ma aspetti 2-3 anni la consegna.",
+    tags: ["asta", "enoteca", "buyer premium", "en primeur", "prezzo"],
+  },
+  {
+    id: "a11", cat: "acquisti",
+    q: "Cos'è il 'duty-paid' e 'in bond'?",
+    a: "'In bond' significa che il vino è in magazzino doganale e non ha ancora pagato accise/IVA — prezzo più basso ma non puoi prenderlo fisicamente. 'Duty-paid' ha già pagato tutti i dazi. Per investimento puro preferisci in bond.",
+    tags: ["duty-paid", "in bond", "magazzino", "accise", "IVA", "doganale"],
+  },
+
+  // ── Tecnico aggiuntivi ───────────────────────────────────────────────────
+  {
+    id: "t5", cat: "tecnico",
+    q: "Come faccio il white-label di VinoInvest per i miei clienti?",
+    a: "Il piano Enterprise include white-label completo: logo, colori, dominio custom. Disponibile per wealth manager e family office. Contatta enterprise@vinoinvest.com per una demo.",
+    tags: ["white-label", "enterprise", "custom", "branding", "wealth manager"],
+  },
+  {
+    id: "t6", cat: "tecnico",
+    q: "Supportate single sign-on (SSO)?",
+    a: "Sì, per piani Enterprise offriamo SAML 2.0 e OAuth 2.0 SSO. Compatibile con Azure AD, Okta, Google Workspace. Setup in 2-3 giorni lavorativi.",
+    tags: ["SSO", "SAML", "OAuth", "Azure AD", "Okta", "enterprise"],
+  },
+
+  // ── Wealth manager aggiuntivi ─────────────────────────────────────────────
+  {
+    id: "w6", cat: "wealth",
+    q: "È possibile personalizzare i parametri di rischio per ogni cliente?",
+    a: "Sì. Per ogni cliente puoi impostare: budget target, orizzonte minimo, soglia di rischio (1-5), regioni preferite ed escluse. L'AI adatta le raccomandazioni al profilo individuale.",
+    tags: ["rischio", "personalizzare", "cliente", "profilo", "parametri"],
+  },
+  {
+    id: "w7", cat: "wealth",
+    q: "Come gestite la performance attribution?",
+    a: "Il report Performance Attribution scompone il rendimento per: selezione vino, timing d'acquisto, effetto annata, effetto regione. Confronto con benchmark Liv-ex Fine Wine 100 e S&P 500.",
+    tags: ["performance attribution", "rendimento", "scomposizione", "benchmark", "Liv-ex"],
+  },
 ];
 
 export const CATEGORIES = [

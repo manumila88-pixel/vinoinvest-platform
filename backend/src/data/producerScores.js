@@ -281,6 +281,40 @@ export const PRODUCER_SCORES = {
   "Meerlust": 83,
   "Vergelegen": 82,
 
+  // ── Amarone & Valpolicella ─────────────────────────────────────────────────
+  "Allegrini": 87, "Quintarelli": 96, "Masi": 82, "Bertani": 81,
+  "Dal Forno Romano": 94, "Zenato": 79, "Tedeschi": 77,
+  "Corte Sant'Alda": 84, "Brigaldara": 78,
+
+  // ── Brunello di Montalcino ─────────────────────────────────────────────────
+  "Biondi-Santi": 96, "Poggio di Sotto": 94, "Casanova di Neri": 91,
+  "Il Poggione": 87, "Cerbaiona": 92, "Salvioni": 93,
+  "Fuligni": 88, "Stella di Campalto": 91, "Le Chiuse": 86,
+  "Pian dell'Orino": 87,
+
+  // ── Sauternes & Dessert ───────────────────────────────────────────────────
+  "Château d'Yquem": 99, "Château Rieussec": 92, "Château Climens": 91,
+  "Château Suduiraut": 90, "Château Guiraud": 88, "Château Raymond-Lafon": 87,
+
+  // ── Rhône Valley ──────────────────────────────────────────────────────────
+  "Chapoutier": 85, "Guigal": 90, "Jean-Louis Chave": 97,
+  "Delas": 83, "Paul Jaboulet": 86, "Vidal-Fleury": 79,
+  "Château Rayas": 96, "Château de Beaucastel": 92,
+  "Henri Bonneau": 93, "Roger Sabon": 84, "Château Fortia": 78,
+
+  // ── Loire Valley ──────────────────────────────────────────────────────────
+  "Didier Dagueneau": 95, "Henri Bourgeois": 82, "Pascal Cotat": 90,
+  "Domaine Vacheron": 87, "Huet": 92, "Nicolas Joly": 84,
+  "Domaine Leflaive Loire": 83,
+
+  // ── Alsace ────────────────────────────────────────────────────────────────
+  "Domaine Weinbach": 91, "Trimbach": 88, "Zind-Humbrecht": 93,
+  "Marcel Deiss": 87, "Hugel": 83, "Beyer": 80,
+
+  // ── Greece & Eastern Europe ───────────────────────────────────────────────
+  "Gaia Estate": 81, "Domaine Sigalas": 79, "Alpha Estate": 77,
+  "Bodegas Roda Spain": 83,
+
   // ── Defaults by tier ───────────────────────────────────────────────────────
   "default_premier_cru": 88,
   "default_grand_cru": 92,
