@@ -379,6 +379,202 @@ export const FAQ = [
     tags: ["valuta", "EUR", "USD", "GBP", "multi-valuta", "NAV"],
   },
 
+  // ── B2B Professional — Onboarding ────────────────────────────────────────
+  {
+    id: "b2b_01", cat: "b2b",
+    q: "Quanto tempo richiede il processo di onboarding?",
+    a: "Il processo di onboarding per clienti Professional ed Enterprise richiede in media 2–3 giorni lavorativi: il giorno 1 viene creato e verificato l'account organizzazione; il giorno 2 viene completato il KYC e caricato il brand kit; il giorno 3 il team abilita tutte le funzionalità avanzate e organizza una sessione di formazione dedicata.",
+    tags: ["onboarding", "tempi", "attivazione", "professional", "enterprise"],
+  },
+  {
+    id: "b2b_02", cat: "b2b",
+    q: "Quali documenti sono necessari per il KYC?",
+    a: "Per completare la verifica KYC sono richiesti: documento di identità valido del rappresentante legale (carta d'identità o passaporto), visura camerale aggiornata (non oltre 6 mesi), codice LEI per clienti istituzionali e, per fondi o family office, copia dello statuto e delibera di autorizzazione all'utilizzo della piattaforma.",
+    tags: ["KYC", "documenti", "verifica", "identità", "LEI", "onboarding"],
+  },
+  {
+    id: "b2b_03", cat: "b2b",
+    q: "È possibile importare portfolio di clienti già esistenti?",
+    a: "Sì. Durante l'onboarding il team VinoInvest supporta la migrazione dei dati esistenti tramite upload CSV con il formato standard fornito nella documentazione. È possibile importare: nome cliente, posizioni wine (LWIN o nome libero), prezzo di acquisto, quantità e data. Il processo richiede circa 24 ore per portafogli fino a 500 posizioni.",
+    tags: ["importare", "migrazione", "portfolio", "CSV", "onboarding", "dati esistenti"],
+  },
+  {
+    id: "b2b_04", cat: "b2b",
+    q: "È disponibile formazione o supporto dedicato alla piattaforma?",
+    a: "Sì. Il piano Professional include una sessione di onboarding live da 60 minuti con un account specialist e accesso alla knowledge base completa. Il piano Enterprise aggiunge formazione personalizzata per tutti gli advisor del team, sessioni mensili di aggiornamento sulle nuove funzionalità e un canale Slack dedicato con il team VinoInvest.",
+    tags: ["formazione", "training", "supporto", "onboarding", "account specialist", "sessione"],
+  },
+
+  // ── B2B Professional — Compliance / MiFID II ─────────────────────────────
+  {
+    id: "b2b_05", cat: "b2b",
+    q: "La piattaforma supporta la conformità MiFID II per il mio processo advisory?",
+    a: "VinoInvest non è un intermediario regolamentato MiFID II, ma è progettata per supportare il tuo processo di conformità: include suitability assessment strutturato, audit trail immutabile di tutte le operazioni, documentazione delle raccomandazioni con fonti e metodologia AI, e report pronti per la conservazione documentale richiesta dalla direttiva.",
+    tags: ["MiFID II", "compliance", "suitability", "audit trail", "conformità", "direttiva"],
+  },
+  {
+    id: "b2b_06", cat: "b2b",
+    q: "Come vengono conservati e tracciati i suitability assessment?",
+    a: "Ogni suitability assessment completato viene salvato con timestamp certificato, versione del questionario utilizzata e punteggio di profilo risultante. I documenti sono consultabili e scaricabili in PDF da Dashboard B2B → Compliance → Suitability Archive. La retention predefinita è 10 anni, in linea con i requisiti MiFID II.",
+    tags: ["suitability", "assessment", "conservazione", "MiFID II", "retention", "audit"],
+  },
+  {
+    id: "b2b_07", cat: "b2b",
+    q: "Per quanto tempo vengono conservati i documenti di compliance?",
+    a: "I documenti di compliance (suitability, report generati, audit log, comunicazioni con i clienti) vengono conservati per un minimo di 10 anni dalla data di creazione, in conformità con l'art. 25 MiFID II. Al termine della retention period viene inviata notifica all'organizzazione prima di qualsiasi eliminazione. Puoi richiedere retention estesa fino a 15 anni per piani Enterprise.",
+    tags: ["conservazione", "retention", "compliance", "MiFID II", "documenti", "10 anni"],
+  },
+  {
+    id: "b2b_08", cat: "b2b",
+    q: "Posso generare report conformi MiFID II da consegnare ai clienti?",
+    a: "Sì. I report generabili da Dashboard B2B → Report includono tutti gli elementi richiesti: descrizione degli strumenti raccomandati, giustificazione della raccomandazione rispetto al profilo di suitability del cliente, costi e oneri stimati, e dichiarazione che la raccomandazione si basa su dati di mercato aggiornati. Il PDF è firmabile digitalmente e archiviato automaticamente.",
+    tags: ["report", "MiFID II", "conforme", "raccomandazione", "PDF", "compliance"],
+  },
+
+  // ── B2B Professional — Gestione multi-cliente ────────────────────────────
+  {
+    id: "b2b_09", cat: "b2b",
+    q: "Quanti clienti posso gestire per ciascun piano?",
+    a: "Il piano Starter B2B include fino a 3 clienti. Il piano Professional (€200/mese) supporta fino a 20 clienti attivi. Il piano Enterprise (€500/mese) offre clienti illimitati. In tutti i piani 'cliente attivo' significa un profilo con almeno un portfolio associato; profili archiviati non contano verso il limite.",
+    tags: ["clienti", "piano", "limite", "professional", "enterprise", "numero"],
+  },
+  {
+    id: "b2b_10", cat: "b2b",
+    q: "I clienti possono vedere i portfolio degli altri clienti?",
+    a: "Assolutamente no. L'isolamento dei dati è garantito a livello di database: ogni cliente accede esclusivamente al proprio portfolio tramite credenziali personali. Gli advisor vedono tutti i clienti della propria organizzazione, ma non possono accedere ai clienti di altre organizzazioni. L'architettura è multi-tenant con row-level security su PostgreSQL.",
+    tags: ["privacy", "isolamento", "clienti", "sicurezza", "multi-tenant", "row-level security"],
+  },
+  {
+    id: "b2b_11", cat: "b2b",
+    q: "Come configuro l'accesso per un nuovo cliente?",
+    a: "Da Dashboard B2B → Clienti → '+Nuovo Cliente': inserisci nome, email e profilo di rischio base. Il sistema invia automaticamente un'email di invito con credenziali temporanee (valide 7 giorni). Al primo accesso il cliente imposta la password definitiva e può facoltativamente completare il profilo di suitability.",
+    tags: ["accesso", "nuovo cliente", "invito", "credenziali", "configurazione"],
+  },
+  {
+    id: "b2b_12", cat: "b2b",
+    q: "Esiste un portale dedicato per i clienti finali?",
+    a: "Sì. I clienti invitati accedono a un portale semplificato su app.vinoinvest.com/client che mostra esclusivamente: il loro portfolio con performance aggiornata, i report pubblicati dall'advisor, i documenti condivisi e le notifiche di mercato personalizzate. Il portale è responsive e ottimizzato per mobile.",
+    tags: ["portale", "cliente", "app", "interfaccia", "mobile", "performance"],
+  },
+
+  // ── B2B Professional — Reporting & PDF ───────────────────────────────────
+  {
+    id: "b2b_13", cat: "b2b",
+    q: "Quali tipologie di report posso generare?",
+    a: "Dalla Dashboard B2B sono disponibili: (1) Report Portfolio mensile/trimestrale con performance e benchmark, (2) Report Due Diligence vino singolo, (3) Report Suitability Assessment, (4) Market Outlook settimanale con top pick B2B, (5) Audit Log Compliance esportabile in CSV. Tutti i report sono disponibili in PDF e, dove indicato, in CSV/Excel.",
+    tags: ["report", "tipologie", "portfolio", "due diligence", "suitability", "audit log"],
+  },
+  {
+    id: "b2b_14", cat: "b2b",
+    q: "Posso personalizzare i report PDF con il logo e i colori della mia società?",
+    a: "Sì, nel piano Professional ed Enterprise. Vai su Dashboard B2B → Impostazioni → Brand Identity: carica il logo (PNG/SVG, min 200px), seleziona colore primario e secondario in hex, e inserisci i dati aziendali (nome, partita IVA, disclaimer legale). Tutti i PDF generati useranno automaticamente il tuo brand kit. Nel piano Enterprise è possibile rimuovere completamente ogni riferimento a VinoInvest.",
+    tags: ["white label", "logo", "brand", "PDF", "personalizzazione", "colori"],
+  },
+  {
+    id: "b2b_15", cat: "b2b",
+    q: "Con quale frequenza posso generare report?",
+    a: "Non ci sono limiti al numero di report manuali generabili. I report automatici schedulabili sono: mensili (12/anno), trimestrali (4/anno) o settimanali (52/anno, solo Enterprise). Ogni report generato viene archiviato nella Document Library del cliente e può essere ri-scaricato in qualsiasi momento.",
+    tags: ["frequenza", "report", "mensile", "trimestrale", "settimanale", "limite"],
+  },
+  {
+    id: "b2b_16", cat: "b2b",
+    q: "Cosa contiene il report PDF mensile standard?",
+    a: "Il report PDF mensile include: riepilogo executive con NAV e variazione del mese, composizione portfolio per regione e tipologia con grafico a torta, performance di ogni posizione (P&L, ROI, variazione mensile), confronto con benchmark (Liv-ex 1000, S&P 500, Oro), top mover del portfolio, segnali AI aggiornati per ogni posizione, outlook di mercato del mese e note dell'advisor.",
+    tags: ["PDF", "mensile", "contenuto", "NAV", "benchmark", "composizione", "outlook"],
+  },
+
+  // ── B2B Professional — Pricing & Piani ───────────────────────────────────
+  {
+    id: "b2b_17", cat: "b2b",
+    q: "Cosa è incluso nel piano Professional?",
+    a: "Il piano Professional (€200/mese, fatturazione mensile; €160/mese con fatturazione annuale) include: gestione fino a 20 clienti, report PDF branded con il tuo logo, accesso API fino a 10.000 richieste/giorno, dati Liv-ex avanzati, suitability assessment illimitati, audit trail completo, supporto via email con risposta entro 4 ore lavorative e accesso alla knowledge base B2B.",
+    tags: ["professional", "piano", "incluso", "prezzo", "funzionalità", "API"],
+  },
+  {
+    id: "b2b_18", cat: "b2b",
+    q: "Posso passare a un piano superiore o inferiore in qualsiasi momento?",
+    a: "Sì. L'upgrade è immediato: le funzionalità aggiuntive sono disponibili subito e la fatturazione viene ricalcolata pro-rata per il mese in corso. Il downgrade è effettivo al termine del ciclo di fatturazione corrente; riceverai notifica se il numero di clienti attivi supera il limite del piano di destinazione e avrai 30 giorni per archiviare le posizioni in eccesso.",
+    tags: ["upgrade", "downgrade", "piano", "cambio", "fatturazione", "pro-rata"],
+  },
+  {
+    id: "b2b_19", cat: "b2b",
+    q: "È disponibile un periodo di prova gratuito per i piani B2B?",
+    a: "Sì. I piani Professional ed Enterprise includono 30 giorni di prova gratuita senza carta di credito. Durante la prova hai accesso completo a tutte le funzionalità del piano scelto, puoi gestire fino a 3 clienti reali e generare report brandizzati. Al termine del trial puoi scegliere di sottoscrivere o continuare con il piano Starter B2B gratuito (max 3 clienti, funzionalità base).",
+    tags: ["prova", "trial", "gratuito", "30 giorni", "senza carta", "professional"],
+  },
+  {
+    id: "b2b_20", cat: "b2b",
+    q: "Sono disponibili sconti per volumi o contratti pluriennali?",
+    a: "Sì. Fatturazione annuale: sconto del 20% su tutti i piani (equivalente a 2 mesi gratuiti). Contratti biennali: sconto 30% con pagamento anticipato. Per organizzazioni con più di 10 advisor o portfoli superiori a €50M AUM gestiti sulla piattaforma, contatta sales@vinoinvest.com per un'offerta personalizzata. Sconti non cumulabili.",
+    tags: ["sconto", "volume", "annuale", "pluriennale", "prezzo", "AUM"],
+  },
+
+  // ── B2B Professional — Dati & API ────────────────────────────────────────
+  {
+    id: "b2b_21", cat: "b2b",
+    q: "Posso esportare tutti i dati in CSV o Excel?",
+    a: "Sì. Da Dashboard B2B → Export puoi scaricare: portafoglio completo per cliente in CSV (compatibile Excel, Google Sheets, Bloomberg), storico prezzi per ogni vino selezionato, audit log delle operazioni, e lista completa dei clienti con metadati. L'export Excel nativo (XLSX) con formattazione e grafici incorporati è disponibile nel piano Enterprise.",
+    tags: ["export", "CSV", "Excel", "XLSX", "dati", "Bloomberg", "download"],
+  },
+  {
+    id: "b2b_22", cat: "b2b",
+    q: "Esiste un'API per integrare VinoInvest con il mio CRM?",
+    a: "Sì. L'API REST v1 è documentata su /api/v1/docs (Swagger UI). Gli endpoint principali per l'integrazione CRM sono: GET /api/v1/clients (lista clienti), GET /api/v1/portfolios/{clientId} (portfolio cliente), POST /api/v1/webhooks (configura webhook per eventi real-time come aggiornamenti prezzo o segnali AI). Compatibile nativamente con Salesforce via Connected App e HubSpot via Custom Integration.",
+    tags: ["API", "CRM", "Salesforce", "HubSpot", "webhook", "integrazione", "REST"],
+  },
+  {
+    id: "b2b_23", cat: "b2b",
+    q: "Quali sono le fonti dei dati utilizzate da VinoInvest?",
+    a: "I prezzi dei vini provengono da: Liv-ex (mercato professionale, aggiornamento intraday), Wine-Searcher (prezzi di vendita al dettaglio globali), CellarTracker (valutazioni community e prezzi d'asta), dati di Christie's e Sotheby's (risultati d'asta storici), e algoritmi proprietari di stima per vini con scarsa liquidità. Il badge 'Dati reali' vs 'Stimato' indica la fonte primaria utilizzata per ogni vino.",
+    tags: ["fonti", "dati", "Liv-ex", "Wine-Searcher", "CellarTracker", "aste", "prezzi"],
+  },
+  {
+    id: "b2b_24", cat: "b2b",
+    q: "Con quale frequenza viene aggiornato l'AI Score?",
+    a: "L'AI Score viene ricalcolato ogni 24 ore nella finestra notturna (01:00–03:00 CET) tenendo conto di: aggiornamenti di prezzo Liv-ex, nuove recensioni dei critici (Parker, Decanter, Gambero Rosso), variazioni del sentiment di mercato e dati macroeconomici rilevanti. Per eventi straordinari (es. nuova vendemmia classificata 100 punti) viene eseguito un ricalcolo immediato fuori ciclo.",
+    tags: ["AI Score", "aggiornamento", "frequenza", "ricalcolo", "Parker", "Decanter"],
+  },
+
+  // ── B2B Professional — Sicurezza & Privacy ───────────────────────────────
+  {
+    id: "b2b_25", cat: "b2b",
+    q: "Come sono protetti i dati dei miei clienti?",
+    a: "I dati dei clienti sono protetti con: crittografia AES-256 a riposo su tutti i database, TLS 1.3 in transito, isolamento multi-tenant con row-level security (ogni organizzazione non può accedere ai dati di un'altra), autenticazione a due fattori obbligatoria per gli account advisor B2B, e accesso all'infrastruttura ristretto con principio del privilegio minimo. I log di accesso ai dati sono conservati per 12 mesi.",
+    tags: ["sicurezza", "dati", "crittografia", "AES-256", "TLS", "2FA", "multi-tenant"],
+  },
+  {
+    id: "b2b_26", cat: "b2b",
+    q: "VinoInvest è conforme al GDPR?",
+    a: "Sì. VinoInvest è conforme al Regolamento UE 2016/679 (GDPR): i dati sono trattati e conservati in data center nell'Unione Europea (Supabase EU region, Frankfurt), viene fornito un Data Processing Agreement (DPA) standard a tutti i clienti B2B, gli interessati possono esercitare i diritti di accesso, rettifica e cancellazione dall'account, e VinoInvest è iscritta al registro dei titolari del trattamento. Il DPA è richiesto tramite legal@vinoinvest.com.",
+    tags: ["GDPR", "conformità", "data protection", "DPA", "EU", "diritti"],
+  },
+  {
+    id: "b2b_27", cat: "b2b",
+    q: "Dove sono fisicamente conservati i dati?",
+    a: "Tutti i dati degli utenti e dei clienti B2B sono conservati esclusivamente in Europa: il database PostgreSQL principale è ospitato su Render (Frankfurt, DE), l'autenticazione è gestita da Supabase (EU region, Frankfurt), e il frontend è distribuito su Vercel con CDN geo-restricted a edge node europei. Non vengono effettuati trasferimenti di dati personali verso paesi extra-SEE.",
+    tags: ["dati", "storage", "EU", "Frankfurt", "Render", "Supabase", "GDPR", "geografico"],
+  },
+
+  // ── B2B Professional — Supporto & SLA ────────────────────────────────────
+  {
+    id: "b2b_28", cat: "b2b",
+    q: "Quali sono i tempi di risposta del supporto per i piani B2B?",
+    a: "Piano Starter B2B: supporto via email, risposta entro 2 giorni lavorativi. Piano Professional: supporto via email con risposta garantita entro 4 ore lavorative (lun–ven, 9–18 CET), accesso alla knowledge base avanzata e chat in-app. Piano Enterprise: supporto prioritario 24/7 per incidenti critici (P1), risposta entro 1 ora; per richieste normali entro 2 ore lavorative. Tutti i piani includono la status page pubblica con uptime storico.",
+    tags: ["supporto", "tempi", "risposta", "SLA", "professional", "enterprise", "24/7"],
+  },
+  {
+    id: "b2b_29", cat: "b2b",
+    q: "Il piano Enterprise include un account manager dedicato?",
+    a: "Sì. Il piano Enterprise include un Customer Success Manager (CSM) dedicato che funge da punto di contatto unico: gestisce l'onboarding, pianifica le sessioni di aggiornamento trimestrale, coordina le richieste di sviluppo personalizzato e monitora proattivamente l'utilizzo della piattaforma per suggerire ottimizzazioni. Il CSM è raggiungibile via email, telefono e Slack dedicato durante gli orari lavorativi, con reperibilità per incidenti critici.",
+    tags: ["account manager", "CSM", "enterprise", "dedicato", "supporto", "customer success"],
+  },
+  {
+    id: "b2b_30", cat: "b2b",
+    q: "Qual è l'uptime SLA garantito contrattualmente?",
+    a: "Piano Professional: SLA target 99.5% uptime mensile (massimo ~3.6 ore di downtime/mese). Piano Enterprise: SLA 99.9% uptime mensile (massimo ~43 minuti di downtime/mese) garantito contrattualmente con penali in caso di mancato rispetto. Il calcolo esclude le finestre di manutenzione programmate (comunicata con 72h di anticipo). La status page con uptime storico in tempo reale è disponibile su status.vinoinvest.com.",
+    tags: ["SLA", "uptime", "99.9%", "enterprise", "contrattuale", "downtime", "manutenzione"],
+  },
+
   // ── B2B — Cantine e produttori ───────────────────────────────────────────
   {
     id: "c1", cat: "cantina",

@@ -64,17 +64,17 @@ const FEATURES = [
 
 const PLANS = [
   {
-    name: "Starter B2B",
-    price: "Gratis",
-    period: "30 giorni",
+    name: "Starter",
+    price: "€0",
+    period: "/mese",
     accent: "var(--vi-accent)",
     border: "rgba(201,162,39,0.3)",
     bg: "rgba(201,162,39,0.05)",
     badge: null,
-    sub: "Poi €0 — fino a 3 clienti",
+    sub: "Gratuito — fino a 5 clienti",
     competitor: null,
-    features: ["3 portfolio clienti", "Dashboard B2B base", "Report PDF standard", "Risk metrics base", "Export CSV", "Support email"],
-    cta: "Inizia gratis 30gg →",
+    features: ["5 portfolio clienti", "Dashboard B2B base", "Report PDF standard", "Risk metrics base", "Export CSV", "Support email"],
+    cta: "Inizia gratis →",
     ctaHref: "/b2b-onboarding",
   },
   {
@@ -88,7 +88,7 @@ const PLANS = [
     sub: "Risparmia €600 vs Cult Wines Intelligence",
     competitor: "Cult Wines Intelligence: €800/mese",
     features: [
-      "20 portfolio clienti", "Dashboard B2B completa", "Report PDF branded + logo",
+      "25 portfolio clienti", "Dashboard B2B completa", "Report PDF branded + logo",
       "Risk metrics avanzati (Sharpe, VaR, MDD)", "Benchmark S&P500 / Gold / Inflazione",
       "API 10.000 req/giorno", "Market Intelligence B2B",
       "Export Bloomberg CSV", "DPA incluso · Support dedicato",
@@ -107,7 +107,7 @@ const PLANS = [
     sub: "SLA 99.9% · Account manager dedicato",
     competitor: null,
     features: [
-      "Portfolio clienti illimitati", "Tutto di Professional",
+      "Clienti illimitati", "Tutto di Professional",
       "White-label: logo + colori + dominio", "API illimitata + webhook real-time",
       "SLA 99.9% garantito", "Account manager dedicato",
       "Integrazione Bloomberg/Advent Geneva", "Report completamente brandizzati", "Onboarding assistito team",
@@ -324,6 +324,47 @@ export default function B2BPage() {
         </div>
       </section>
 
+      {/* Demo CTA Banner */}
+      <section style={{ padding: "0 clamp(16px,3vw,32px) 60px", maxWidth: 960, margin: "0 auto" }}>
+        <div style={{
+          padding: "clamp(28px,4vw,44px) clamp(24px,4vw,48px)",
+          borderRadius: "var(--vi-radius-lg)",
+          background: "linear-gradient(135deg,rgba(29,78,216,0.18),rgba(37,99,235,0.08))",
+          border: "1px solid rgba(59,130,246,0.35)",
+          display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 16,
+        }}>
+          <div style={{ fontSize: "var(--vi-fs-xs)", fontWeight: 700, color: B2B_BLUE, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+            ACCESSO IMMEDIATO
+          </div>
+          <h2 style={{
+            fontFamily: "var(--vi-font-display)",
+            fontSize: "clamp(22px,3vw,30px)", fontWeight: 700, lineHeight: 1.2,
+            color: "var(--vi-text)", margin: 0,
+          }}>
+            Demo Gratuita — 14 Giorni Senza Carta
+          </h2>
+          <p style={{ fontSize: "var(--vi-fs-base)", color: "var(--vi-text-dim)", lineHeight: 1.7, maxWidth: 540, margin: 0 }}>
+            Accedi a tutte le funzionalità Professional con dati reali. Nessun pagamento richiesto.
+          </p>
+          <a
+            href="/b2b-onboarding"
+            className="b2b-cta-btn"
+            style={{
+              marginTop: 4,
+              padding: "14px 36px", borderRadius: "var(--vi-radius-md)", fontSize: "var(--vi-fs-base)", fontWeight: 700,
+              background: "linear-gradient(135deg,#1d4ed8,#2563eb)",
+              color: "#fff", textDecoration: "none",
+              boxShadow: "0 4px 24px rgba(37,99,235,0.4)",
+            }}
+          >
+            Inizia la Demo →
+          </a>
+          <div style={{ fontSize: "var(--vi-fs-xs)", color: "var(--vi-text-dim)", opacity: 0.7 }}>
+            Setup in 5 minuti · Nessun contratto · Annulla quando vuoi
+          </div>
+        </div>
+      </section>
+
       {/* Stats */}
       <section style={{ padding: "0 clamp(16px,3vw,32px) 80px", maxWidth: 900, margin: "0 auto" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 16 }}>
@@ -377,16 +418,93 @@ export default function B2BPage() {
         </div>
       </section>
 
-      {/* Case Study */}
+      {/* Case Studies */}
       <section style={{ padding: "0 clamp(16px,3vw,32px) 80px", maxWidth: 960, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 36 }}>
+          <div style={{ fontSize: "var(--vi-fs-xs)", fontWeight: 700, color: B2B_BLUE, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 10 }}>
+            Case Study
+          </div>
+          <h2 style={{ fontFamily: "var(--vi-font-display)", fontSize: "clamp(22px,3vw,28px)", fontWeight: 700, color: "var(--vi-text)", margin: 0 }}>
+            Risultati Verificati dai Nostri Clienti
+          </h2>
+        </div>
+
+        {/* Zurich Family Office — featured case study */}
         <div className="vi-card" style={{
           padding: "clamp(24px,3vw,40px)",
-          border: "1px solid rgba(59,130,246,0.18)",
-          background: "rgba(59,130,246,0.04)",
+          border: "1px solid rgba(59,130,246,0.28)",
+          background: "rgba(59,130,246,0.05)",
+          marginBottom: 20,
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+            <div style={{
+              padding: "3px 12px", borderRadius: "var(--vi-radius-full)",
+              background: "rgba(59,130,246,0.12)", border: "1px solid rgba(59,130,246,0.3)",
+              fontSize: "var(--vi-fs-xs)", fontWeight: 700, color: B2B_BLUE,
+            }}>
+              CASE STUDY — FAMILY OFFICE
+            </div>
+            <div style={{ fontSize: "var(--vi-fs-xs)", color: "var(--vi-text-dim)", opacity: 0.6 }}>Zurich · 2024</div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px,1fr))", gap: 40, alignItems: "start" }}>
+            <div>
+              <h3 style={{ fontFamily: "var(--vi-font-display)", fontSize: "clamp(18px,2vw,24px)", margin: "0 0 16px", lineHeight: 1.3, color: "var(--vi-text)" }}>
+                Family Office Zurich — €2M in Fine Wine
+              </h3>
+              <p style={{ fontSize: "var(--vi-fs-sm)", color: "var(--vi-text-dim)", lineHeight: 1.8, margin: "0 0 12px" }}>
+                Un family office svizzero con patrimonio multifamiliare ha allocato €2 milioni in fine wine utilizzando
+                VinoInvest Professional come strumento operativo per portfolio tracking, reporting agli LP e comunicazione ai clienti.
+              </p>
+              <p style={{ fontSize: "var(--vi-fs-sm)", color: "var(--vi-text-dim)", lineHeight: 1.8, margin: "0 0 20px" }}>
+                In 24 mesi, il portfolio wine ha registrato un rendimento del +17.3%, contro il +11.2% del Liv-ex 100 nello stesso periodo,
+                generando un alpha di 6.1 punti percentuali e riducendo la volatilità complessiva del patrimonio di 2.8 punti percentuali.
+                Il team ha risparmiato 12 ore/mese grazie alla reportistica automatizzata.
+              </p>
+              <blockquote style={{
+                margin: 0,
+                padding: "16px 20px",
+                borderLeft: `3px solid ${B2B_BLUE}`,
+                background: "rgba(59,130,246,0.06)",
+                borderRadius: "0 var(--vi-radius-md) var(--vi-radius-md) 0",
+              }}>
+                <p style={{ fontSize: "var(--vi-fs-sm)", color: "var(--vi-text-dim)", lineHeight: 1.7, margin: "0 0 10px", fontStyle: "italic" }}>
+                  "VinoInvest ha trasformato come presentiamo i wine asset ai nostri clienti. In 6 mesi abbiamo onboardato 3 nuove famiglie solo grazie ai report professionali."
+                </p>
+                <div style={{ fontSize: "var(--vi-fs-xs)", fontWeight: 600, color: "var(--vi-text)" }}>
+                  — Responsabile Investimenti, Family Office Zurich
+                </div>
+              </blockquote>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+              {[
+                { label: "AUM fine wine allocato", value: "€2.000.000" },
+                { label: "Rendimento 24 mesi", value: "+17.3%" },
+                { label: "Benchmark Liv-ex 100", value: "+11.2%" },
+                { label: "Alpha generato", value: "+6.1 p.p." },
+                { label: "Riduzione volatilità patrimonio", value: "-2.8 p.p." },
+                { label: "Ore/mese risparmiate (reporting)", value: "12 ore" },
+              ].map(s => (
+                <div key={s.label} style={{ display: "flex", justifyContent: "space-between", padding: "12px 0", borderBottom: `1px solid var(--vi-border)`, fontSize: "var(--vi-fs-sm)" }}>
+                  <span style={{ color: "var(--vi-text-dim)" }}>{s.label}</span>
+                  <span style={{ fontWeight: 700, color: B2B_BLUE, fontVariantNumeric: "tabular-nums" }}>{s.value}</span>
+                </div>
+              ))}
+              <div style={{ paddingTop: 12, fontSize: "var(--vi-fs-xs)", color: "var(--vi-text-dim)", opacity: 0.5 }}>
+                Dati storici verificati — portafoglio anonimizzato
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Milan Family Office — existing case study */}
+        <div className="vi-card" style={{
+          padding: "clamp(24px,3vw,40px)",
+          border: "1px solid rgba(59,130,246,0.12)",
+          background: "rgba(59,130,246,0.02)",
         }}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px,1fr))", gap: 40, alignItems: "start" }}>
             <div>
-              <div style={{ fontSize: "var(--vi-fs-xs)", fontWeight: 700, color: B2B_BLUE, letterSpacing: "0.08em", marginBottom: 12, textTransform: "uppercase" }}>Case Study</div>
+              <div style={{ fontSize: "var(--vi-fs-xs)", fontWeight: 700, color: B2B_BLUE, letterSpacing: "0.08em", marginBottom: 12, textTransform: "uppercase" }}>Family Office · Milano</div>
               <h3 style={{ fontFamily: "var(--vi-font-display)", fontSize: "clamp(18px,2vw,22px)", margin: "0 0 16px", lineHeight: 1.3, color: "var(--vi-text)" }}>
                 Come un Family Office ha allocato €500k in Fine Wine
               </h3>
@@ -407,8 +525,8 @@ export default function B2BPage() {
             <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
               {[
                 { label: "AUM Wine allocato", value: "€500.000" },
-                { label: "Rendimento 12 mesi", value: "+14.8%" },
-                { label: "vs S&P500 (stesso periodo)", value: "+3.1pp" },
+                { label: "Rendimento 18 mesi", value: "+14.2%" },
+                { label: "Benchmark mercato", value: "+8.1%" },
                 { label: "Sharpe Ratio", value: "1.2" },
                 { label: "Clienti beneficiari", value: "4 famiglie" },
               ].map(s => (

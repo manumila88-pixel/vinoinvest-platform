@@ -282,6 +282,820 @@ Documento ad uso professionale — VinoInvest Professional
 Aggiornato: 2026 | Non costituisce consulenza d'investimento.
 `,
   },
+  {
+    id: "due-diligence-wine",
+    title: "Due Diligence Checklist per Investimento Fine Wine",
+    description: "Checklist professionale in 5 sezioni per la valutazione di autenticità, conservazione, documentazione legale, mercato e controparte prima di ogni acquisto.",
+    icon: "🔍",
+    tag: "Due Diligence",
+    filename: "due-diligence-fine-wine.txt",
+    content: `DUE DILIGENCE CHECKLIST — INVESTIMENTO FINE WINE (SINGOLO LOTTO)
+Data: _______________    Acquirente/Advisor: _______________    Vino: _______________
+Annata: ___   Quantità (bottiglie/casse): ___   Prezzo offerto: €_______________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. AUTENTICITÀ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+□ Provenienza documentata (catena di custodia completa): □ Sì  □ No  □ Parziale
+   Note: _______________________________________________
+□ Etichetta: corrispondenza con annata dichiarata, font e colori autentici
+   Note: _______________________________________________
+□ Capsula: integrità, colore e stampa conformi al produttore
+   Note: _______________________________________________
+□ Livello: □ Base gola  □ Alta spalla  □ Media spalla  □ Bassa spalla
+   Livello accettabile per l'annata? □ Sì  □ No
+   Note: _______________________________________________
+□ Tappatura: assenza di spinte verso l'alto, nessuna perdita visibile
+   Note: _______________________________________________
+□ Retroetichetta e codici lotto: verificati e coerenti con release ufficiale
+   Note: _______________________________________________
+□ Numero di serie / QR Code produttore (ove applicabile): □ Verificato  □ N/A
+   Note: _______________________________________________
+□ Documentazione fotografica completa effettuata: □ Sì  □ No
+   Note: _______________________________________________
+□ Perizia terza parte (es. Wine Authenticate, Vérif'Vin): □ Sì  □ No  □ Da richiedere
+   Note: _______________________________________________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. STATO DI CONSERVAZIONE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+□ Temperatura di stoccaggio storica: □ <12°C costante  □ 12-15°C  □ variabile  □ sconosciuta
+   Note: _______________________________________________
+□ Umidità relativa di stoccaggio: □ 60-75% (ideale)  □ fuori range  □ sconosciuta
+   Note: _______________________________________________
+□ Storage provider attuale: _______________________________________________
+□ Storage provider certificato/accreditato (es. London City Bond, Octavian, Crown Wine): □ Sì  □ No
+   Note: _______________________________________________
+□ Storico trasferimenti tra magazzini (numero di movimenti): ___
+   Ogni trasferimento documentato? □ Sì  □ No  □ Parziale
+   Note: _______________________________________________
+□ Audit reports magazzino disponibili (ultimo 12 mesi): □ Sì  □ No
+   Note: _______________________________________________
+□ Assicurazione attiva sul lotto: □ Sì — valore assicurato: €___  □ No
+   Note: _______________________________________________
+□ Casse originali (OWC — Original Wooden Case): □ Sì  □ No  □ Non applicabile
+   Note: _______________________________________________
+□ Stato fisico etichette (umidità, strappi, muffa): □ Ottimo  □ Buono  □ Discreto  □ Scarso
+   Note: _______________________________________________
+□ Ispezione fisica effettuata in loco: □ Sì  □ No (solo foto)
+   Note: _______________________________________________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. DOCUMENTAZIONE LEGALE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+□ Invoice originale di acquisto disponibile: □ Sì  □ No
+   Emessa da: _______________________________________________
+□ Chain of custody completa (ogni passaggio di proprietà documentato): □ Sì  □ No  □ Parziale
+   Note: _______________________________________________
+□ Documenti doganali (per vini extra-UE o ex-UK post-Brexit): □ Sì  □ N/A
+   Note: _______________________________________________
+□ Certificato di custodia magazzino (warehouse receipt) corrente: □ Sì  □ No
+   Note: _______________________________________________
+□ Prova che il vino è in regime bonded / duty-paid: □ Bonded  □ Duty-paid  □ Da verificare
+   Note: _______________________________________________
+□ Assenza di pegni o vincoli legali sul lotto: □ Confermato  □ Da verificare
+   Note: _______________________________________________
+□ Contratto di vendita con clausole di garanzia autenticità: □ Sì  □ No  □ Da negoziare
+   Note: _______________________________________________
+□ Clausola di recesso o garanzia in caso di non autenticità: □ Sì  □ No
+   Note: _______________________________________________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4. VALUTAZIONE DI MERCATO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+□ Prezzo verificato su Liv-ex (Market Price): €___ / bottiglia   Data check: ___
+   Note: _______________________________________________
+□ Confronto Wine-Searcher (prezzo medio mercato): €___ / bottiglia
+   Spread rispetto all'offerta: ___% (positivo se < 0%)
+   Note: _______________________________________________
+□ Ultime aste rilevanti (Sotheby's, Christie's, Hart Davis Hart) negli ultimi 12 mesi:
+   Prezzo medio realizzato: €___ / bottiglia   Fonte: _______________
+□ Trend di prezzo Liv-ex ultimi 12 mesi: □ +  □ stabile  □ - di ___%
+   Note: _______________________________________________
+□ Liquidity score (n. transazioni Liv-ex ultimi 12 mesi): ___
+   Adeguato (>10 tx/anno)? □ Sì  □ No
+   Note: _______________________________________________
+□ Punteggi critici confermati: Parker/WA: ___  Decanter: ___  JR: ___
+   Coerenti con le aspettative di prezzo? □ Sì  □ No
+   Note: _______________________________________________
+□ AI Score VinoInvest: ___  (target >80 per acquisto)
+   Note: _______________________________________________
+□ Prezzo d'acquisto vs. fair value stimato: sconto/premio: ___%
+   Note: _______________________________________________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5. CONTROPARTE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+□ Merchant / venditore: _______________________________________________
+□ Anni di attività nel settore: ___
+□ Iscrizione a associazioni di settore (LIV-EX, BIVB, CIVB, Merchants of Florence): □ Sì  □ No
+   Quale: _______________________________________________
+□ Reputazione online verificata (Wine-Searcher seller rating, Trustpilot): □ Positiva  □ Neutra  □ Negativa
+   Note: _______________________________________________
+□ Referenze da altri wealth manager / family office: □ Sì  □ No
+   Fonte: _______________________________________________
+□ Referenze dirette ricevute e verificate: □ Sì (n. ___) □ No
+   Note: _______________________________________________
+□ Storico di controversie legali note: □ No  □ Sì — dettagli: _______________
+□ AML / KYC venditore completato (per acquisti >€10k): □ Sì  □ No  □ Da completare
+   Note: _______________________________________________
+□ Termini di pagamento e garanzie contrattuali accettabili: □ Sì  □ No
+   Note: _______________________________________________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ESITO DUE DILIGENCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Sezioni con criticità rilevate: □ 1  □ 2  □ 3  □ 4  □ 5  □ Nessuna
+
+Raccomandazione: □ Procedi all'acquisto  □ Procedi con riserve  □ Non procedere
+Note finali: _______________________________________________
+
+Firma Advisor: _______________    Data: _______________
+
+NOTE: Documento ad uso interno. Conservare con il dossier di acquisto.
+Conforme alle best practice MiFID II per strumenti alternativi illiquidi.
+`,
+  },
+  {
+    id: "risk-calculator",
+    title: "Risk Calculator per Portfolio Fine Wine",
+    description: "Calcolatore testuale con formule quantitative (VaR, Sharpe, HHI) per valutare il profilo di rischio di un portfolio fine wine. Include esempio compilato.",
+    icon: "📊",
+    tag: "Risk",
+    filename: "risk-calculator-wine.txt",
+    content: `RISK CALCULATOR — PORTFOLIO FINE WINE
+VinoInvest Professional | Versione 2026
+Data elaborazione: _______________    Advisor: _______________    Cliente: _______________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SEZIONE A — INPUT DEL PORTFOLIO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Compila i campi seguenti con i dati del portfolio cliente.
+
+A1. AUM totale del cliente (tutti gli asset): €_______________
+A2. Valore attuale portfolio fine wine:       €_______________
+A3. % allocazione wine su AUM totale:         ___%   [= A2 / A1 × 100]
+
+A4. Numero di posizioni nel portfolio wine:   ___
+A5. Numero di regioni rappresentate:          ___
+    (Bordeaux, Borgogna, Champagne, Italia, Rodano, California, altro)
+    Dettaglio:
+    Regione 1: _______________ — Valore: €_____ — % portfolio wine: ___%
+    Regione 2: _______________ — Valore: €_____ — % portfolio wine: ___%
+    Regione 3: _______________ — Valore: €_____ — % portfolio wine: ___%
+    Regione 4: _______________ — Valore: €_____ — % portfolio wine: ___%
+    Regione 5: _______________ — Valore: €_____ — % portfolio wine: ___%
+
+A6. Rendimento medio annuo portfolio (ultimi 3 anni, se disponibile): ___%
+A7. Volatilità annualizzata stimata o storica:                         ___%
+    (default di settore: 10% per portfolio diversificato; 15-20% per portfolio concentrato)
+A8. Rendimento del tasso risk-free (es. BTP 2Y, Euribor):             ___%
+    (riferimento corrente 2026: ~2.8%)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SEZIONE B — FORMULE E CALCOLI
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+B1. SHARPE RATIO
+────────────────
+Formula: Sharpe = (Rp - Rf) / σp
+
+Dove:
+  Rp = rendimento annuo portfolio wine    (dal campo A6)
+  Rf = tasso risk-free                    (dal campo A8)
+  σp = volatilità annualizzata portfolio  (dal campo A7)
+
+Calcolo:
+  Sharpe = ( ___ % - ___ % ) / ___ % = ___
+
+Interpretazione:
+  > 1.0  → Eccellente risk-adjusted return
+  0.5–1.0 → Buono
+  0.0–0.5 → Accettabile
+  < 0.0  → Underperformance rispetto al risk-free
+
+B2. VALUE AT RISK (VaR) 95% — ORIZZONTE 1 MESE
+────────────────────────────────────────────────
+Formula: VaR(95%, 1M) = Vp × (µ_mensile - 1.65 × σ_mensile)
+
+Dove:
+  Vp           = valore portfolio wine                (dal campo A2)
+  µ_mensile    = Rp_annuo / 12                        = ___ % / 12 = ___ %
+  σ_mensile    = σ_annuo / √12                        = ___ % / √12 = ___ %
+  1.65         = z-score per intervallo di confidenza 95%
+
+Calcolo:
+  µ_mensile  = ___ %
+  σ_mensile  = ___ %
+  VaR input  = µ_mensile - 1.65 × σ_mensile = ___ % - ___ % = ___ %
+  VaR (€)    = €_______________ × ___ % = €_______________
+
+Interpretazione:
+  Con confidenza al 95%, la perdita massima mensile attesa è ≤ €_______________
+  (ovvero il ___% del valore corrente del portfolio wine)
+
+B3. INDICE DI CONCENTRAZIONE HERFINDAHL-HIRSCHMAN (HHI)
+─────────────────────────────────────────────────────────
+Formula: HHI = Σ (wi²)   dove wi = peso % di ogni regione espresso come frazione
+
+Calcolo (inserire i pesi % di ogni regione da A5, divisi per 100):
+  HHI = (___)² + (___)² + (___)² + (___)² + (___)² = ___
+
+Esempio: se Bordeaux 50%, Borgogna 30%, Italia 20%:
+  HHI = 0.50² + 0.30² + 0.20² = 0.25 + 0.09 + 0.04 = 0.38
+
+Interpretazione:
+  HHI < 0.15 → Alta diversificazione (portafoglio ben distribuito)
+  0.15–0.25  → Diversificazione moderata
+  0.25–0.40  → Concentrazione significativa (monitorare)
+  > 0.40     → Alta concentrazione (rischio idiosincratico elevato)
+  = 1.0      → Concentrazione totale (mono-regione)
+
+B4. PESO MASSIMO SINGOLA POSIZIONE
+────────────────────────────────────
+Peso max consigliato per singolo vino: max 10% del portfolio wine
+Calcolo soglia: 10% × €_______________ = €_______________
+
+Posizioni che superano la soglia (indicare):
+  1. _______________ — peso: ___% — €_______________
+  2. _______________ — peso: ___% — €_______________
+  Azione raccomandata: □ Nessuna  □ Riduzione posizione  □ Ribilanciamento
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SEZIONE C — ESEMPIO DI CALCOLO COMPILATO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+(Cliente fittizio per illustrazione — sostituire con dati reali)
+
+INPUT:
+  AUM totale:              €3.500.000
+  Portfolio wine:          €280.000  (8% di AUM — profilo moderato)
+  N. posizioni:            12
+  Regioni: Bordeaux 45%, Borgogna 30%, Champagne 15%, Italia 10%
+  Rendimento storico 3Y:   9.2% annuo
+  Volatilità:              11.0% annuo
+  Risk-free rate:          2.8%
+
+RISULTATI:
+  Sharpe Ratio:
+    = (9.2% - 2.8%) / 11.0% = 6.4% / 11.0% = 0.58  → BUONO
+
+  VaR (95%, 1 mese):
+    µ_mensile  = 9.2% / 12 = 0.767%
+    σ_mensile  = 11.0% / √12 = 11.0% / 3.464 = 3.176%
+    VaR input  = 0.767% - 1.65 × 3.176% = 0.767% - 5.240% = -4.473%
+    VaR (€)    = €280.000 × 4.473% = €12.524
+    → Con il 95% di confidenza, la perdita mensile max è ≤ €12.524 (4.5% del portafoglio wine)
+
+  HHI:
+    = 0.45² + 0.30² + 0.15² + 0.10²
+    = 0.2025 + 0.09 + 0.0225 + 0.01 = 0.325  → CONCENTRAZIONE SIGNIFICATIVA
+    Raccomandazione: ridurre Bordeaux al 40%, aumentare Italia al 15%
+
+  Peso max singola posizione: 10% × €280.000 = €28.000
+    Posizione Pétrus 2015 (OWC 3 bt): €31.000 → supera soglia, considerare riduzione
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SEZIONE D — SINTESI E RACCOMANDAZIONI
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Sharpe Ratio calcolato:       ___   Giudizio: _______________
+VaR 95% (1 mese) calcolato:   €___  Giudizio: _______________
+HHI calcolato:                ___   Giudizio: _______________
+Posizioni > 10%:              ___   Azione: _______________
+
+Azioni di ribilanciamento proposte:
+1. _______________________________________________
+2. _______________________________________________
+3. _______________________________________________
+
+Data prossima review rischio: _______________
+Firma Advisor: _______________    Data: _______________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+NOTE METODOLOGICHE
+Le formule applicate assumono distribuzione normale dei rendimenti.
+Il fine wine presenta code più pesanti della normale (tail risk).
+VaR non cattura i rischi di illiquidità (orizzonte vendita 30-90 giorni).
+Documento ad uso professionale — VinoInvest Professional 2026.
+`,
+  },
+  {
+    id: "investment-proposal",
+    title: "Template Investment Proposal per Clienti HNW",
+    description: "Proposta di investimento in 6 sezioni per clienti High Net Worth: executive summary, allocazione, selezione vini con AI Score, risk management ed exit strategy.",
+    icon: "📋",
+    tag: "Proposal",
+    filename: "investment-proposal-wine.txt",
+    content: `INVESTMENT PROPOSAL — FINE WINE PORTFOLIO
+Documento riservato — uso esclusivo del destinatario
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Preparato da:  _______________________________________________
+Per:           _______________________________________________
+Data:          _______________    Versione: _______________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. EXECUTIVE SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Proposta in sintesi:
+
+  Allocazione proposta al fine wine:   ___% dell'AUM  (€_______________)
+  Rendimento atteso annuo netto:       ___%  (orizzonte ___ anni)
+  Profilo di rischio:                  □ Conservativo  □ Moderato  □ Crescita
+
+I tre argomenti chiave per questa proposta:
+
+  1. _______________________________________________
+     _______________________________________________
+
+  2. _______________________________________________
+     _______________________________________________
+
+  3. _______________________________________________
+     _______________________________________________
+
+Raccomandazione sintetica:
+_______________________________________________
+_______________________________________________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. PROFILO CLIENTE E OBIETTIVI
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Cliente: _______________________________________________
+Categoria: □ HNWI (€1M-30M)  □ UHNWI (>€30M)  □ Family Office  □ Istituzionale
+
+Obiettivo primario:
+□ Preservazione patrimonio reale (hedge inflazione)
+□ Diversificazione da equity/bond
+□ Rendimento assoluto su orizzonte lungo
+□ Passione e competenza di settore (motivazione mista)
+
+Orizzonte temporale dichiarato: ___ anni
+Necessità di liquidità nei prossimi 24 mesi: □ Sì — importo: €___  □ No
+Vincoli etici o geografici da considerare: _______________
+
+Suitability Assessment completato il: _______________  (ref. doc. n. ___)
+Esito: □ Adeguato  □ Adeguato con avvertenze  □ Non adeguato (proposta non procedibile)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. PROPOSTA DI ALLOCAZIONE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+AUM totale cliente: €_______________
+Allocazione proposta al fine wine: ___% = €_______________
+
+RIPARTIZIONE PER REGIONE:
+─────────────────────────────────────────────────────────────────────────
+Regione              | Peso % | Importo (€) | Rendimento Atteso (p.a.)
+─────────────────────────────────────────────────────────────────────────
+Bordeaux premier cru |  ___%  | €_________  | ___%
+Borgogna grand cru   |  ___%  | €_________  | ___%
+Champagne prestige   |  ___%  | €_________  | ___%
+Italia (top tier)    |  ___%  | €_________  | ___%
+Altra regione: ___   |  ___%  | €_________  | ___%
+─────────────────────────────────────────────────────────────────────────
+TOTALE               |  100%  | €_________  | ___% (media ponderata)
+─────────────────────────────────────────────────────────────────────────
+
+Note sull'allocazione:
+_______________________________________________
+_______________________________________________
+
+Confronto con profilo benchmark MiFID:
+  Max allocazione in strumenti illiquidi per questo profilo: ___%
+  Allocazione proposta rientra nei limiti: □ Sì  □ No — giustificazione: ___
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4. SELEZIONE VINI — TOP 5 RACCOMANDATI
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Metodologia di selezione: AI Score VinoInvest + verifica Liv-ex + analisi fondamentale
+Soglia minima AI Score per inclusione: 82/100
+
+─────────────────────────────────────────────────────────────────────────────────
+N. | Vino                    | Annata | AI Score | Prezzo/bt | % Portfolio | Rationale
+─────────────────────────────────────────────────────────────────────────────────
+1  | _____________________   |  ____  |  ___/100 | €_______  |    ___%     |
+   | _______________________________________________
+2  | _____________________   |  ____  |  ___/100 | €_______  |    ___%     |
+   | _______________________________________________
+3  | _____________________   |  ____  |  ___/100 | €_______  |    ___%     |
+   | _______________________________________________
+4  | _____________________   |  ____  |  ___/100 | €_______  |    ___%     |
+   | _______________________________________________
+5  | _____________________   |  ____  |  ___/100 | €_______  |    ___%     |
+   | _______________________________________________
+─────────────────────────────────────────────────────────────────────────────────
+
+Note sulla selezione:
+_______________________________________________
+_______________________________________________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5. RISK MANAGEMENT E EXIT STRATEGY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Metriche di rischio target del portfolio proposto:
+  Sharpe Ratio target:                   > ___
+  VaR 95% mensile target (max):          ≤ ___% del valore wine = ≤ €_______________
+  Concentrazione max (HHI):              < 0.30
+  Peso max singolo vino:                 ≤ 10% del portfolio wine
+
+Trigger di alert automatici (VinoInvest Platform):
+  □ AI Score scende sotto 70 → notifica immediata
+  □ Prezzo spot cala > 10% in 30 giorni → notifica immediata
+  □ Indice Liv-ex regione di riferimento -8% YTD → review straordinaria
+
+Strategia di uscita:
+  Orizzonte primario: ___ anni
+  Canale di vendita preferito: □ Aste (Sotheby's/Christie's)  □ Liv-ex  □ Merchant  □ Misto
+  Canale secondario: _______________
+  Stima tempo di liquidazione: 30-90 giorni per lotto standard
+  Commissioni di uscita stimate: ___% del valore (incluse nelle proiezioni di rendimento)
+
+Piano di ribilanciamento:
+  Frequenza review: □ Mensile  □ Trimestrale  □ Semestrale
+  Trigger ribilanciamento: deviazione > __% dall'allocation target
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+6. APPENDICE — FONTI E DISCLAIMER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Fonti dati utilizzate:
+  • Liv-ex (indici di mercato, prezzi spot, liquidità)
+  • Wine-Searcher (prezzi di mercato comparati)
+  • Wine Advocate / Robert Parker (punteggi critici)
+  • Decanter / Jancis Robinson MW (punteggi critici)
+  • VinoInvest AI Score (algoritmo proprietario)
+  • Dati macroeconomici: Eurostat, BCE (tasso risk-free)
+  Ultimo aggiornamento dati: _______________
+
+Rendimenti storici citati:
+  Liv-ex 1000 CAGR 2004–2024: ~10% p.a. lordo (fonte: Liv-ex)
+  Volatilità storica Bordeaux 500: ~10-12% annuo
+  I rendimenti passati non sono garanzia di rendimenti futuri.
+
+DISCLAIMER LEGALE (MiFID II):
+Questo documento è preparato ai soli fini informativi e non costituisce
+consulenza d'investimento ai sensi della Direttiva 2014/65/UE (MiFID II).
+L'investimento in fine wine è uno strumento alternativo illiquido
+classificato come ad alto rischio per la categoria retail. L'investimento
+è adatto esclusivamente a investitori professionali e/o HNWI che soddisfino
+i requisiti di adeguatezza verificati nel documento di Suitability Assessment.
+Il fine wine non è uno strumento finanziario regolamentato ai sensi di MiFID II;
+non è coperto da garanzie FITD/FGD né da sistemi di protezione degli investitori.
+Conservare il presente documento per 5 anni ai sensi degli obblighi di
+rendicontazione MiFID II (art. 25, Direttiva 2014/65/UE).
+
+Firma Advisor: _______________    Data: _______________
+Firma Cliente per ricevuta: _______________    Data: _______________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+VinoInvest Professional Platform | vinoinvest-platform.vercel.app
+`,
+  },
+  {
+    id: "monthly-report",
+    title: "Template Report Mensile Cliente",
+    description: "Struttura completa per il report mensile: performance YTD, market update con benchmark Liv-ex/S&P500, portfolio highlights, raccomandazioni e appendice tecnica.",
+    icon: "📅",
+    tag: "Reporting",
+    filename: "monthly-report-wine.txt",
+    content: `REPORT MENSILE — PORTFOLIO FINE WINE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Cliente:    _______________________________________________
+Advisor:    _______________________________________________
+Periodo:    _______________ (es. Maggio 2026)
+Data emit.: _______________
+Rif. doc.:  _______________________________________________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. PERFORMANCE YEAR-TO-DATE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RIEPILOGO PERFORMANCE:
+────────────────────────────────────────────────────────────────────
+Metrica                        | Questo Mese | YTD       | Inception
+────────────────────────────────────────────────────────────────────
+Valore Portfolio Fine Wine     | €_________  | —         | —
+Variazione Valore (€)          | €_________  | €________ | €________
+Variazione Valore (%)          |    ___%     |   ___% YTD|   ___% tot.
+Benchmark Liv-ex 1000 (%)      |    ___%     |   ___% YTD| —
+Alpha vs Benchmark (pp)        |    ___pp    |   ___pp   | —
+────────────────────────────────────────────────────────────────────
+
+PERFORMANCE PER REGIONE (YTD):
+────────────────────────────────────────────────────────────────────
+Regione              | Val. Iniziale | Val. Corrente | P&L (€) | P&L (%)
+────────────────────────────────────────────────────────────────────
+Bordeaux             | €_________   | €_________    | €_____  |  ___%
+Borgogna             | €_________   | €_________    | €_____  |  ___%
+Champagne            | €_________   | €_________    | €_____  |  ___%
+Italia               | €_________   | €_________    | €_____  |  ___%
+Altra regione: ___   | €_________   | €_________    | €_____  |  ___%
+────────────────────────────────────────────────────────────────────
+TOTALE PORTFOLIO     | €_________   | €_________    | €_____  |  ___%
+────────────────────────────────────────────────────────────────────
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. MARKET UPDATE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+INDICI DI MERCATO (variazione mensile):
+────────────────────────────────────────────────────────────────────
+Indice                   | Valore Corrente | Var. Mese | Var. YTD
+────────────────────────────────────────────────────────────────────
+Liv-ex Fine Wine 1000    |    ________     |   ____%   |   ____%
+Liv-ex Bordeaux 500      |    ________     |   ____%   |   ____%
+Liv-ex Burgundy 150      |    ________     |   ____%   |   ____%
+Liv-ex Italy 100         |    ________     |   ____%   |   ____%
+S&P 500 (benchmark EQ)   |    ________     |   ____%   |   ____%
+EUR/GBP (impatto storage)|    ________     |   ____%   |   ____%
+────────────────────────────────────────────────────────────────────
+
+Commento mercato:
+_______________________________________________
+_______________________________________________
+_______________________________________________
+
+Notizie rilevanti del mese (en primeur, aste, rating):
+• _______________________________________________
+• _______________________________________________
+• _______________________________________________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. PORTFOLIO HIGHLIGHTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+BEST PERFORMER DEL MESE:
+  Vino:         _______________________________________________
+  Annata:       ___    Bottiglie detenute: ___
+  Variazione:   +___% (da €___ a €___ / bottiglia)
+  Motivazione: _______________________________________________
+
+WORST PERFORMER DEL MESE:
+  Vino:         _______________________________________________
+  Annata:       ___    Bottiglie detenute: ___
+  Variazione:   -___% (da €___ a €___ / bottiglia)
+  Motivazione: _______________________________________________
+  Azione:       □ Mantieni  □ Monitora  □ Considera uscita
+
+AI ALERTS RICEVUTI NEL PERIODO:
+  □ Nessun alert
+  □ Alert ricevuti:
+    1. Vino: _________________ — AI Score sceso a ___  — Azione: _______________
+    2. Vino: _________________ — AI Score sceso a ___  — Azione: _______________
+    3. Vino: _________________ — Prezzo -10% in 30gg   — Azione: _______________
+
+OPERAZIONI EFFETTUATE NEL MESE:
+  Acquisti:
+    1. _______________ — Annata ___ — ___ bt — €___ / bt — Totale: €___
+    2. _______________ — Annata ___ — ___ bt — €___ / bt — Totale: €___
+  Vendite:
+    1. _______________ — Annata ___ — ___ bt — €___ / bt — P&L realizzato: €___
+    2. _______________ — Annata ___ — ___ bt — €___ / bt — P&L realizzato: €___
+  Costi periodo (storage + assicurazione): €_______________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4. RACCOMANDAZIONI PER IL MESE SUCCESSIVO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Opportunità di acquisto identificate:
+  1. _______________ — Rationale: _______________  — Budget: €___
+  2. _______________ — Rationale: _______________  — Budget: €___
+
+Posizioni da considerare per uscita:
+  1. _______________ — Rationale: _______________  — Timing: ___
+  2. _______________ — Rationale: _______________  — Timing: ___
+
+Ribilanciamento necessario: □ No  □ Sì — descrizione: _______________
+Obiettivo allocazione post-ribilanciamento:
+  Bordeaux: ___%  Borgogna: ___%  Champagne: ___%  Italia: ___%  Altro: ___%
+
+Prossima review: _______________
+Eventuali scadenze/aste da calendario:
+  • _______________________________________________
+  • _______________________________________________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5. APPENDICE TECNICA — METRICHE DI RISCHIO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Metriche aggiornate al _______________ :
+────────────────────────────────────────────────────────────────────
+Metrica                        | Questo Mese | Mese Prec. | Target
+────────────────────────────────────────────────────────────────────
+Sharpe Ratio (rolling 12M)     |    ___      |    ___     | > 0.60
+Volatilità annualizzata        |   ____%     |   ____%    | < 12%
+VaR 95% (1 mese)               |  ___% / €__| ___% / €__ | < 5%
+Max Drawdown (storico)         |   ____%     |   ____%    | < 15%
+Beta vs Liv-ex 1000            |    ___      |    ___     | 0.8–1.2
+Correlazione vs S&P 500        |    ___      |    ___     | < 0.25
+HHI Concentrazione Regionale   |    ___      |    ___     | < 0.30
+────────────────────────────────────────────────────────────────────
+
+Formula reminder:
+  Sharpe = (Rp - Rf) / σp
+  VaR(95%, 1M) = Vp × (µ_mensile - 1.65 × σ_mensile)
+  HHI = Σ(wi²)   con wi = peso regionale come frazione
+
+Commento metriche:
+_______________________________________________
+_______________________________________________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Firma Advisor: _______________    Data: _______________
+
+Documento riservato — uso esclusivo del destinatario.
+I dati sono elaborati da VinoInvest Professional Platform.
+I rendimenti passati non garantiscono rendimenti futuri.
+Conservare per 10 anni ai sensi della normativa MiFID II.
+`,
+  },
+  {
+    id: "onboarding-checklist",
+    title: "Checklist Onboarding Nuovo Cliente",
+    description: "Piano operativo in 4 settimane per l'onboarding completo di un nuovo cliente fine wine: KYC/AML, suitability, proposta, primo acquisto e setup ongoing.",
+    icon: "✅",
+    tag: "Onboarding",
+    filename: "onboarding-checklist-wine.txt",
+    content: `CHECKLIST ONBOARDING NUOVO CLIENTE — FINE WINE INVESTMENT
+VinoInvest Professional | Piano 4 Settimane
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Advisor:          _______________________________________________
+Cliente:          _______________________________________________
+Data inizio:      _______________    Target completamento: _______________
+Segmento cliente: □ HNWI  □ UHNWI  □ Family Office  □ Corporate
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SETTIMANA 1 — KYC / AML / PROFILO DI RISCHIO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Obiettivo: completare tutta la documentazione normativa prima di qualsiasi raccomandazione.
+
+KYC / IDENTIFICAZIONE:
+□ Documento d'identità in corso di validità ricevuto e verificato (CI/Passaporto)
+  Data verifica: _______________   Verificato da: _______________
+□ Codice fiscale / partita IVA acquisita
+□ Indirizzo di residenza fiscale documentato (utenza / estratto conto)
+□ Per persone giuridiche: visura camerale, statuto, procura del rappresentante
+□ Screening PEP (Politically Exposed Person): □ Non PEP  □ PEP — procedura rafforzata attivata
+□ Screening sanzioni internazionali (OFAC, EU sanctions list): □ Clear  □ Match — escalation
+
+AML:
+□ Dichiarazione origine dei fondi acquisita e coerente con profilo
+  Fonte dichiarata: _______________________________________________
+□ Suspicious Activity Report (SAR) necessario: □ No  □ Sì — ref: _______________
+□ Verifica titolarità effettiva (per strutture societarie/trust): □ Completata  □ N/A
+□ Soglie AML verificate (>€10k — identificazione; >€15k — approfondimento origine fondi)
+
+SUITABILITY ASSESSMENT (MiFID II):
+□ Questionario di adeguatezza compilato (ref. Template Suitability Assessment)
+  Data compilazione: _______________
+□ AUM dichiarato: €_______________
+□ Profilo di rischio assegnato: □ Conservativo  □ Moderato  □ Crescita
+□ Esito adeguatezza per fine wine: □ Adeguato  □ Non adeguato (blocco procedura)
+□ Documento suitability firmato da cliente e advisor
+□ Copia consegnata al cliente: □ Email  □ Cartaceo  □ Portale digitale
+
+PROFILO COMPLETO CREATO SU PIATTAFORMA:
+□ Account VinoInvest Professional creato per advisor
+□ Profilo cliente inserito in piattaforma
+□ Livello di accesso configurato: □ View only  □ Full access
+□ Notifiche e alert configurati (email: ___________________)
+
+Completamento Settimana 1: □ Sì — Data: ___   □ Parziale — Blocchi: _______________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SETTIMANA 2 — PRIMA CONSULENZA E EDUCATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Obiettivo: allineare il cliente sul mercato fine wine e stabilire le basi della strategia.
+
+PRIMA CONSULENZA DI PORTFOLIO:
+□ Incontro (in presenza / video call) effettuato — Durata: ___ min   Data: _______________
+□ Presentazione piattaforma VinoInvest: funzionalità, AI Score, price history
+□ Discussione obiettivi di lungo periodo confermata e documentata
+□ Simulazione di portfolio proposta (strumento Risk Calculator Wine condiviso)
+□ Domande aperte del cliente registrate:
+  1. _______________________________________________
+  2. _______________________________________________
+□ Follow-up necessario: □ No  □ Sì — entro: _______________
+
+WINE EDUCATION BRIEF:
+□ Documento "Introduzione al Fine Wine come Asset Class" inviato
+□ Spiegazione meccanismo Liv-ex: prezzo, liquidità, trading
+□ Spiegazione en primeur: rischi, tempistiche, vantaggi di prezzo
+□ Spiegazione storage bonded: costi, sicurezza, audit
+□ Spiegazione Sharpe Ratio e VaR applicati al fine wine (Template Risk Calculator condiviso)
+□ Punteggi critici spiegati: Parker/WA, Decanter, JR — come influenzano i prezzi
+□ Costi totali del ciclo di investimento presentati chiaramente:
+  Acquisto: ____%   Storage: ___% p.a.   Assicurazione: ____%   Vendita: ____%
+□ Documento di educazione firmato dal cliente per ricevuta: □ Sì  □ No
+
+STORAGE SETUP (pre-autorizzazione):
+□ Provider di stoccaggio discusso: □ London City Bond  □ Octavian  □ Crown  □ Altro: ___
+□ Regime preferito: □ Bonded  □ Duty-paid
+□ Cliente informato sui costi di storage: £___/cassa/anno
+
+Completamento Settimana 2: □ Sì — Data: ___   □ Parziale — Blocchi: _______________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SETTIMANA 3 — PRESENTAZIONE PROPOSTA DI INVESTIMENTO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Obiettivo: presentare e far approvare la proposta formale.
+
+PREPARAZIONE:
+□ Investment Proposal redatta (ref. Template Investment Proposal Wine)
+  Allocazione proposta: ___% = €_______________
+□ Top 5 vini selezionati con AI Score VinoInvest > 82 — confermati
+□ Risk Calculator compilato con dati reali del portfolio proposto
+□ Due Diligence completata sui vini proposti (ref. Template Due Diligence Fine Wine)
+□ Proposta revisionata dal compliance officer interno: □ Sì  □ N/A
+
+PRESENTAZIONE AL CLIENTE:
+□ Incontro di presentazione effettuato — Data: _______________
+□ Executive Summary illustrato (3 punti chiave)
+□ Tabella di allocazione per regione presentata e spiegata
+□ Selezione vini con rationale spiegata (AI Score + fondamentali)
+□ Risk Management e VaR illustrati in modo accessibile
+□ Disclaimer MiFID II letto e sottoscritto dal cliente
+□ Domande post-presentazione del cliente:
+  1. _______________________________________________
+  2. _______________________________________________
+□ Richieste di modifica alla proposta: □ No  □ Sì — dettagli: _______________
+
+APPROVAZIONE:
+□ Investment Proposal firmata dal cliente: □ Sì  □ In attesa — scadenza: _______________
+□ Investment Proposal firmata dall'advisor: □ Sì
+□ Copia depositata nel dossier cliente: □ Sì
+
+Completamento Settimana 3: □ Sì — Data: ___   □ Parziale — Blocchi: _______________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SETTIMANA 4 — PRIMO ACQUISTO E SETUP OPERATIVO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Obiettivo: eseguire il primo acquisto e configurare tutti i servizi ongoing.
+
+ESECUZIONE PRIMO ACQUISTO:
+□ Ordine di acquisto autorizzato dal cliente (scrittura): □ Sì — data: _______________
+□ Due Diligence pre-acquisto completata per ogni lotto (ref. Template Due Diligence)
+□ Acquisto n. 1: _______________ — Annata ___ — ___ bt — €___ tot.
+□ Acquisto n. 2: _______________ — Annata ___ — ___ bt — €___ tot.
+□ Acquisto n. 3: _______________ — Annata ___ — ___ bt — €___ tot.
+□ Invoice ufficiali ricevute e archiviate: □ Sì
+□ Conferma avvenuto trasferimento a magazzino bonded: □ Sì — data: _______________
+□ Certificato di custodia magazzino ricevuto: □ Sì
+□ Polizza assicurativa attivata sul lotto: □ Sì — compagnia: ___  valore: €___
+
+SETUP REPORTING MENSILE:
+□ Cadenza report mensile concordata: primo ___ del mese
+□ Formato report concordato: □ Email PDF  □ Portale VinoInvest  □ Entrambi
+□ Template Report Mensile personalizzato con brand advisor: □ Sì  □ No
+□ Primo report mensile schedulato per: _______________
+
+SETUP ALERT E NOTIFICHE (VinoInvest Platform):
+□ Alert AI Score < 70 attivato per tutti i vini in portfolio: □ Sì
+□ Alert variazione prezzo > -10% in 30 giorni: □ Sì
+□ Alert Liv-ex indice regionale -8% YTD: □ Sì
+□ Alert scadenza assicurazione (90 giorni prima): □ Sì
+□ Email notifiche impostata: _______________________________________________
+□ Frequenza digest: □ In tempo reale  □ Giornaliero  □ Settimanale
+
+DOCUMENTAZIONE FINALE:
+□ Dossier cliente completo archiviato (KYC + AML + Suitability + Proposal + DD + Invoice)
+□ Registro interno clienti aggiornato
+□ Prossima review suitability programmata (ogni 12 mesi): _______________
+□ Data anniversary review portfolio: _______________
+
+Completamento Settimana 4: □ Sì — Data: ___   □ Parziale — Blocchi: _______________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ONGOING — SERVIZIO CONTINUATIVO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Pianificazione mensile:
+□ Report mensile inviato entro il ___ del mese
+□ Call di aggiornamento: □ Mensile  □ Trimestrale  □ Su richiesta
+□ Proposta di acquisto opportunistico se AI Score > 88 su vino non in portfolio
+
+Pianificazione annuale:
+□ Revisione suitability annuale (obbligo MiFID II): _______________
+□ Revisione dell'Investment Proposal e strategia: _______________
+□ Audit del magazzino / verifica fisica del lotto: _______________
+□ Revisione copertura assicurativa: _______________
+□ Report fiscale annuale (P&L realizzati e non realizzati): _______________
+
+Note advisor:
+_______________________________________________
+_______________________________________________
+
+ONBOARDING COMPLETATO: □ Sì — Data: _______________
+Firma Advisor: _______________    Firma Cliente (ricevuta): _______________
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Documento ad uso interno. Conservare nel dossier cliente.
+VinoInvest Professional Platform | vinoinvest-platform.vercel.app
+`,
+  },
 ];
 
 function downloadTemplate(template) {

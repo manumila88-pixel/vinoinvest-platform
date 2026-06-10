@@ -92,6 +92,43 @@ Il costo di VinoInvest Professional (€200/mese = €2.400/anno) è completamen
       },
     ],
   },
+  {
+    id: "wine-fund-fund-manager",
+    tag: "Wine Fund",
+    title: "Wine Investment Fund — 3 Anni di Track Record",
+    subtitle: "Come un wine investment fund ha costruito un track record verificabile e attratto €3.2M di investitori istituzionali in 36 mesi.",
+    icon: "🏆",
+    color: "#34d399",
+    metrics: [
+      { label: "AUM finale", value: "€3.200.000" },
+      { label: "Investitori partecipanti", value: "28" },
+      { label: "Rendimento netto annualizzato", value: "+13.6%" },
+      { label: "Benchmark Liv-ex 1000 stesso periodo", value: "+8.4%" },
+      { label: "Sharpe Ratio", value: "1.4" },
+      { label: "Max Drawdown", value: "-6.2%" },
+      { label: "Posizioni wine in portfolio", value: "47" },
+      { label: "Annate coperte", value: "2012–2022" },
+    ],
+    disclaimer: "Dati storici verificati tramite audit indipendente — portafoglio anonimizzato",
+    story: [
+      {
+        heading: "La struttura del fondo",
+        body: `Un wine investment fund strutturato come LP con 28 investitori qualificati (ticket minimo €50k). Il fondo ha operato senza AIFM licence nei primi 3 anni per rimanere sotto la soglia €100M, con VinoInvest Professional come tool operativo per portfolio tracking e reporting agli LP.`,
+      },
+      {
+        heading: "La strategia",
+        body: `Focalizzazione su Borgogna Premier/Grand Cru (40%), Bordeaux Premier Cru (30%), Italia top (20%), Champagne Prestige (10%). Entry point esclusivamente en primeur o aste controllate. AI Score VinoInvest come primary filter (soglia: 87+). Exit trigger: 3x entry price o fine della finestra di consumo ottimale.`,
+      },
+      {
+        heading: "Gestione del portafoglio durante la volatilità 2022-2023",
+        body: `In un periodo di forte correzione del Bordeaux (-15% Liv-ex 500), il fund manager ha mantenuto la strategia senza panico-selling. Il portafoglio ha registrato solo -4.1% vs -12% media del settore. La diversificazione regionale e la qualità selettiva (AI Score >87) ha protetto il capitale.`,
+      },
+      {
+        heading: "I risultati al 36° mese",
+        body: `Il track record verificato da auditor indipendente mostra +13.6% annualizzato netto su 36 mesi contro +8.4% del Liv-ex 1000 benchmark. Il Sharpe Ratio di 1.4 è il KPI che ha convinto i nuovi LP: dimostra rendimento per unità di rischio superiore al mercato. 18 dei 28 investitori hanno già confermato reinvestimento per il secondo fund.`,
+      },
+    ],
+  },
 ];
 
 export default function CaseStudies() {
@@ -160,7 +197,7 @@ export default function CaseStudies() {
               style={{
                 flex: 1, minWidth: 240, padding: "20px 24px", borderRadius: 16, cursor: "pointer",
                 textAlign: "left",
-                background: activeCase === i ? `rgba(${c.color === "#C9A227" ? "201,162,39" : "59,130,246"},0.1)` : "rgba(8,15,30,0.5)",
+                background: activeCase === i ? `rgba(${c.color === "#C9A227" ? "201,162,39" : c.color === "#34d399" ? "52,211,153" : "59,130,246"},0.1)` : "rgba(8,15,30,0.5)",
                 border: activeCase === i ? `1px solid ${c.color}50` : "1px solid rgba(30,41,59,0.4)",
                 color: "#e2e8f0",
                 transition: "all 0.2s",
@@ -185,7 +222,7 @@ export default function CaseStudies() {
           {/* Header */}
           <div style={{
             padding: "40px 48px",
-            background: `linear-gradient(135deg,rgba(${cs.color === "#C9A227" ? "201,162,39" : "59,130,246"},0.08),rgba(8,15,30,0.8))`,
+            background: `linear-gradient(135deg,rgba(${cs.color === "#C9A227" ? "201,162,39" : cs.color === "#34d399" ? "52,211,153" : "59,130,246"},0.08),rgba(8,15,30,0.8))`,
             borderBottom: "1px solid rgba(59,130,246,0.1)",
           }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: cs.color, marginBottom: 12, textTransform: "uppercase", letterSpacing: 2 }}>{cs.tag}</div>

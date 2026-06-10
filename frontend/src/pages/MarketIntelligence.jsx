@@ -225,6 +225,86 @@ export default function MarketIntelligence({ user }) {
             </div>
           )}
         </div>
+
+        {/* B2B Weekly Premium Picks — gated */}
+        {isB2B && (
+          <div style={{ marginTop: 32 }}>
+            {/* Weekly B2B Picks table */}
+            <div style={{ padding: "24px", borderRadius: 16, background: "rgba(8,15,30,0.6)", border: "1px solid rgba(59,130,246,0.18)", marginBottom: 20 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, flexWrap: "wrap", gap: 10 }}>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#e2e8f0" }}>Weekly B2B Picks — Settimana del 9 Giugno 2026</h3>
+                  <div style={{ fontSize: 11, color: "#475569", marginTop: 4 }}>Analisi esclusiva per Professional &amp; Enterprise — top 10 vini da monitorare questa settimana</div>
+                </div>
+                <span style={{ padding: "3px 10px", borderRadius: 6, background: "rgba(52,211,153,0.12)", border: "1px solid rgba(52,211,153,0.25)", fontSize: 10, fontWeight: 700, color: "#34d399" }}>B2B PREMIUM</span>
+              </div>
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+                  <thead>
+                    <tr>
+                      {["Wine Name", "Vintage", "Price", "Trend (30d)", "AI Score", "Signal"].map(h => (
+                        <th key={h} style={{ padding: "8px 14px", textAlign: "left", color: "#475569", fontWeight: 600, borderBottom: "1px solid rgba(59,130,246,0.12)", whiteSpace: "nowrap" }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { name: "DRC Romanée-Conti",        vintage: 2021, price: "€24.800", trend: "+8.2%",  score: 99, signal: "BUY" },
+                      { name: "Pétrus",                    vintage: 2019, price: "€4.200",  trend: "+5.6%",  score: 96, signal: "BUY" },
+                      { name: "Harlan Estate",             vintage: 2018, price: "€920",    trend: "+4.1%",  score: 93, signal: "BUY" },
+                      { name: "Screaming Eagle",           vintage: 2019, price: "€3.400",  trend: "+7.8%",  score: 95, signal: "BUY" },
+                      { name: "Sassicaia DOC",             vintage: 2020, price: "€380",    trend: "+3.3%",  score: 89, signal: "BUY" },
+                      { name: "Giacomo Conterno Monf.",    vintage: 2016, price: "€680",    trend: "+2.1%",  score: 92, signal: "HOLD" },
+                      { name: "Lafite Rothschild",         vintage: 2020, price: "€650",    trend: "-1.2%",  score: 87, signal: "HOLD" },
+                      { name: "Mouton Rothschild",         vintage: 2019, price: "€720",    trend: "+0.8%",  score: 88, signal: "HOLD" },
+                      { name: "Ornellaia Bianco",          vintage: 2022, price: "€340",    trend: "+5.4%",  score: 86, signal: "BUY" },
+                      { name: "Krug Grande Cuvée",         vintage: 171,  price: "€195",    trend: "+1.9%",  score: 84, signal: "HOLD" },
+                    ].map((w, i) => {
+                      const signalColor = w.signal === "BUY" ? "#34d399" : w.signal === "HOLD" ? "#fbbf24" : "#f87171";
+                      const signalBg   = w.signal === "BUY" ? "rgba(52,211,153,0.13)" : w.signal === "HOLD" ? "rgba(251,191,36,0.13)" : "rgba(248,113,113,0.13)";
+                      return (
+                        <tr key={i} style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
+                          <td style={{ padding: "11px 14px", fontWeight: 600, color: "#e2e8f0", whiteSpace: "nowrap" }}>{w.name}</td>
+                          <td style={{ padding: "11px 14px", color: "#94a3b8" }}>{w.vintage}</td>
+                          <td style={{ padding: "11px 14px", fontWeight: 700, color: "#e2e8f0" }}>{w.price}</td>
+                          <td style={{ padding: "11px 14px", fontWeight: 700, color: w.trend.startsWith("+") ? "#34d399" : "#f87171" }}>{w.trend}</td>
+                          <td style={{ padding: "11px 14px" }}>
+                            <span style={{ padding: "2px 8px", borderRadius: 6, fontSize: 11, fontWeight: 700, background: "rgba(96,165,250,0.1)", color: "#60a5fa" }}>{w.score}</span>
+                          </td>
+                          <td style={{ padding: "11px 14px" }}>
+                            <span style={{ padding: "3px 10px", borderRadius: 6, fontSize: 10, fontWeight: 700, background: signalBg, color: signalColor }}>{w.signal}</span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Institutional Flow card */}
+            <div style={{ padding: "20px 24px", borderRadius: 16, background: "rgba(8,15,30,0.6)", border: "1px solid rgba(59,130,246,0.12)" }}>
+              <h4 style={{ margin: "0 0 14px", fontSize: 13, fontWeight: 700, color: "#e2e8f0" }}>Institutional Flow — Questa Settimana</h4>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 12, marginBottom: 14 }}>
+                <div style={{ padding: "12px 16px", borderRadius: 10, background: "rgba(52,211,153,0.07)", border: "1px solid rgba(52,211,153,0.15)" }}>
+                  <div style={{ fontSize: 10, color: "#475569", marginBottom: 6, fontWeight: 600 }}>NET BUYER</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: "#34d399", marginBottom: 2 }}>Family Office</div>
+                  <div style={{ fontSize: 12, color: "#e2e8f0" }}>+€2.1M</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: "#34d399", marginTop: 6, marginBottom: 2 }}>HNW Private</div>
+                  <div style={{ fontSize: 12, color: "#e2e8f0" }}>+€890k</div>
+                </div>
+                <div style={{ padding: "12px 16px", borderRadius: 10, background: "rgba(248,113,113,0.07)", border: "1px solid rgba(248,113,113,0.15)" }}>
+                  <div style={{ fontSize: 10, color: "#475569", marginBottom: 6, fontWeight: 600 }}>NET SELLER</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: "#f87171", marginBottom: 2 }}>Retail Fund</div>
+                  <div style={{ fontSize: 12, color: "#e2e8f0" }}>-€340k</div>
+                </div>
+              </div>
+              <div style={{ fontSize: 10, color: "#334155", borderTop: "1px solid rgba(59,130,246,0.08)", paddingTop: 10 }}>
+                Flussi istituzionali basati su dati Liv-ex aggregati. Non nominativi.
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
