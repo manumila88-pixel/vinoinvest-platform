@@ -6,6 +6,57 @@ import PriceHistoryChart from "./components/PriceHistoryChart";
 import SourceBadge from "./components/SourceBadge";
 import { getWineAwards } from "./data/awards";
 
+function SimilarWines({ wine, onWineClick }) {
+  const [similar, setSimilar] = useState([]);
+  useEffect(() => {
+    if (!wine?.id) return;
+    const region = encodeURIComponent((wine.region || wine.country || "").split(",")[0].trim());
+    const score = wine.investmentScore || wine.investment_score || 70;
+    fetch(`${API}/api/wines?limit=6&scoreMin=${Math.max(0, score - 12)}&scoreMax=${Math.min(100, score + 12)}${region ? `&region=${region}` : ""}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (d?.results) setSimilar(d.results.filter(w => w.id !== wine.id).slice(0, 4));
+      }).catch(() => {});
+  }, [wine?.id]);
+
+  if (similar.length === 0) return null;
+  return (
+    <div style={{ marginTop: 24 }}>
+      <p style={{ fontSize: 10, fontWeight: 700, color: "#C9A227", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 12 }}>
+        Vini simili che potrebbero interessarti
+      </p>
+      <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+        {similar.map(w => (
+          <button
+            key={w.id}
+            onClick={() => onWineClick && onWineClick(w)}
+            style={{
+              padding: "8px 12px", borderRadius: 10, cursor: "pointer", textAlign: "left",
+              background: "rgba(11,18,32,0.8)", border: "1px solid rgba(30,41,59,0.6)",
+              transition: "all 0.15s", minWidth: 150, maxWidth: 200,
+            }}
+          >
+            <div style={{ fontSize: 12, fontWeight: 700, color: "#e2e8f0", fontFamily: "'Playfair Display', Georgia, serif", marginBottom: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {w.name}
+            </div>
+            <div style={{ fontSize: 10, color: "#64748b", marginBottom: 4 }}>
+              {w.producer} · {w.vintage || "N/A"}
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ fontSize: 11, color: "#C9A227", fontWeight: 700 }}>
+                Score {w.investmentScore || w.investment_score || "–"}
+              </span>
+              {w.currentPrice && (
+                <span style={{ fontSize: 11, color: "#94a3b8" }}>€{Number(w.currentPrice).toFixed(0)}</span>
+              )}
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
 // Region inference: map wine fields to a vintage score region key
@@ -679,6 +730,9 @@ export default function WineBottle3DModal({ wine, onClose }) {
               {t('modal.searchVivino')}
             </a>
           </div>
+
+          {/* ── Similar wines recommendations ───────────────────────────── */}
+          <SimilarWines wine={wine} onWineClick={w => { onClose(); setTimeout(() => onClose(w), 50); }} />
 
           {/* ── Food Pairings ───────────────────────────────────────────── */}
           <FoodPairings wineId={wine.id} />

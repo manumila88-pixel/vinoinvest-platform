@@ -877,6 +877,18 @@ app.get("/api/wines", cacheFor(300), (req, res) => {
   const segment = (req.query.segment || "").toString().trim().toLowerCase();
   const institutional = req.query.institutional === "true";
 
+  // Advanced filters
+  const filterType = (req.query.type || "").toString().trim().toLowerCase();
+  const filterPriceMin = req.query.priceMin ? Number(req.query.priceMin) : null;
+  const filterPriceMax = req.query.priceMax ? Number(req.query.priceMax) : null;
+  const filterScoreMin = req.query.scoreMin ? Number(req.query.scoreMin) : null;
+  const filterScoreMax = req.query.scoreMax ? Number(req.query.scoreMax) : null;
+  const filterVintageMin = req.query.vintageMin ? Number(req.query.vintageMin) : null;
+  const filterVintageMax = req.query.vintageMax ? Number(req.query.vintageMax) : null;
+  const filterRisk = (req.query.risk || "").toString().trim().toLowerCase();
+  const filterRegion = (req.query.region || "").toString().trim().toLowerCase();
+  const filterGrape = (req.query.grape || "").toString().trim().toLowerCase();
+
   let filtered;
   if (search) {
     const q = normalize(search);
@@ -900,9 +912,41 @@ app.get("/api/wines", cacheFor(300), (req, res) => {
     });
   }
 
+  // Apply advanced filters
+  if (filterType) {
+    const typeMap = { rosso: ["red", "rosso", "rouge"], bianco: ["white", "bianco", "blanc"], rosé: ["rose", "rosé", "rosato"], champagne: ["champagne", "sparkling", "spumante", "prosecco", "cava"], dolce: ["sweet", "dolce", "dessert", "passito", "sauternes"], fortificato: ["port", "porto", "sherry", "madeira", "marsala", "fortified", "fortificato"] };
+    const aliases = typeMap[filterType] || [filterType];
+    filtered = filtered.filter(w => {
+      const t = normalize(`${w.type || ""} ${w.name} ${w.region || ""}`);
+      return aliases.some(a => t.includes(a));
+    });
+  }
+  if (filterPriceMin !== null) filtered = filtered.filter(w => Number(w.currentPrice || w.current_price || 0) >= filterPriceMin);
+  if (filterPriceMax !== null) filtered = filtered.filter(w => Number(w.currentPrice || w.current_price || 0) <= filterPriceMax);
+  if (filterScoreMin !== null) filtered = filtered.filter(w => Number(w.investmentScore || w.investment_score || 0) >= filterScoreMin);
+  if (filterScoreMax !== null) filtered = filtered.filter(w => Number(w.investmentScore || w.investment_score || 0) <= filterScoreMax);
+  if (filterVintageMin !== null) filtered = filtered.filter(w => w.vintage && Number(w.vintage) >= filterVintageMin);
+  if (filterVintageMax !== null) filtered = filtered.filter(w => w.vintage && Number(w.vintage) <= filterVintageMax);
+  if (filterRisk) {
+    const riskMap = { basso: ["basso", "low"], medio: ["medio", "medium"], alto: ["alto", "high"] };
+    const aliases = riskMap[filterRisk] || [filterRisk];
+    filtered = filtered.filter(w => aliases.some(a => (w.risk || "").toLowerCase() === a));
+  }
+  if (filterRegion) {
+    const r = normalize(filterRegion);
+    filtered = filtered.filter(w => normalize(`${w.region || ""} ${w.country || ""}`).includes(r));
+  }
+  if (filterGrape) {
+    const g = normalize(filterGrape);
+    filtered = filtered.filter(w => normalize(`${w.grape || w.variety || w.name || ""}`).includes(g));
+  }
+
   // Sort by investmentScore desc so best wines appear first by default
   const sortBy = (req.query.sort || "score").toString();
-  if (sortBy === "score" || !search) {
+  if (sortBy === "price_asc") filtered = [...filtered].sort((a, b) => Number(a.currentPrice || a.current_price || 0) - Number(b.currentPrice || b.current_price || 0));
+  else if (sortBy === "price_desc") filtered = [...filtered].sort((a, b) => Number(b.currentPrice || b.current_price || 0) - Number(a.currentPrice || a.current_price || 0));
+  else if (sortBy === "vintage") filtered = [...filtered].sort((a, b) => Number(b.vintage || 0) - Number(a.vintage || 0));
+  else if (sortBy === "score" || !search) {
     filtered = [...filtered].sort((a, b) => (b.investmentScore || b.investment_score || 0) - (a.investmentScore || a.investment_score || 0));
   }
 
