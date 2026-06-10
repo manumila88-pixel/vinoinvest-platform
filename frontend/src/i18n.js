@@ -7,103 +7,119 @@ import it from "./locales/it.json";
 // Translations for 40 languages
 // All non-en/it use English as base with translated hero/nav keys
 const fr = {
-  nav: { dashboard: "Tableau de bord", market: "Marché", news: "Actualités", blog: "Blog IA", analysis: "Analyse", portfolio: "Mon Portefeuille", portfolioAI: "Portefeuille IA", b2b: "Dashboard B2B", alerts: "Alertes", pricing: "Tarifs" },
+  nav: { dashboard: "Tableau de bord", market: "Marché", news: "Actualités", blog: "Blog IA", analysis: "Analyse", portfolio: "Mon Portefeuille", portfolioAI: "Portefeuille IA", b2b: "Dashboard B2B", alerts: "Alertes", pricing: "Tarifs", calculator: "Calc", academy: "Academy", index: "Indice" },
   hero: { title: "Plateforme Mondiale d'Investissement Viticole", subtitle: "Constructeur de portefeuille IA, intelligence viticole, analyses et recherche mondiale.", searchPlaceholder: "Rechercher des vins, producteurs, régions, millésimes..." },
   stats: { globalMarket: "Marché Mondial", portfolioValue: "Valeur du Portefeuille", invested: "Investi", profitLoss: "Profit / Perte", roi: "ROI", watchlist: "Liste de surveillance" },
   market: { searchPlaceholder: "Rechercher n'importe quel vin dans le monde...", addToPortfolio: "+ Ajouter au Portefeuille", buyOn: "Acheter sur Wine-Searcher →", noWines: "Aucun vin trouvé.", loadingMore: "Chargement de plus de vins…" },
+  watchlist: { title: "Analyse Watchlist", empty: "Ajoutez des vins à votre watchlist depuis la section Marché." },
   auth: { signOut: "Déconnexion", serverStarting: "⚡ Serveur en démarrage...", offline: "⚠️ Pas de connexion" },
   notifications: { title: "Notifications", enablePush: "🔔 Activer Push", markAllRead: "Tout marquer comme lu", noNotifications: "Pas encore de notifications.", pushEnabled: "Notifications push activées!" },
   common: { loading: "Chargement...", noData: "Aucune donnée", refresh: "Actualiser", save: "Enregistrer", cancel: "Annuler", close: "Fermer", back: "Retour", error: "Erreur", success: "Succès" },
   chart: { realData: "Données réelles", estimated: "Données estimées", mixed: "Mixte" },
+  analysis: { algorithmicNote: "* Analyse algorithmique (ANTHROPIC_API_KEY non configuré sur le serveur)" },
   disclaimer: { text: "VinoInvest est une plateforme d'analyse et d'intelligence pour le marché des vins fins. Nous n'offrons pas de conseils financiers, ne gérons pas d'actifs et ne détenons pas de licence MiFID II. Tous les AI Scores et les prix sont fournis à titre informatif uniquement. Les performances passées ne garantissent pas les résultats futurs.", link: "Avertissement complet →" },
-  portfolio: { ...en.portfolio, title: "Mon Portefeuille", exportCSV: "Exporter CSV", noPositions: "Aucune position. Allez sur le Marché et ajoutez une position.", growth: "Croissance du Portefeuille", diversification: "Diversification", byType: "Par Type", byWine: "Par Vin", estimatedNote: "* Valeurs estimées basées sur 8% de croissance annuelle moyenne" }
+  portfolio: { ...en.portfolio, title: "Mon Portefeuille", exportCSV: "Exporter CSV", noPositions: "Aucune position. Allez sur le Marché et ajoutez une position.", growth: "Croissance du Portefeuille", diversification: "Diversification", byType: "Par Type", byWine: "Par Vin", estimatedNote: "* Valeurs estimées basées sur 8% de croissance annuelle moyenne", demo: "Vous visualisez un portefeuille DÉMO", addFirstWine: "Ajoutez votre premier vrai vin →" }
 };
 const de = {
-  nav: { dashboard: "Dashboard", market: "Markt", news: "Nachrichten", blog: "KI-Blog", analysis: "Analyse", portfolio: "Mein Portfolio", portfolioAI: "KI-Portfolio", b2b: "B2B Dashboard", alerts: "Alarme", pricing: "Preise" },
+  nav: { dashboard: "Dashboard", market: "Markt", news: "Nachrichten", blog: "KI-Blog", analysis: "Analyse", portfolio: "Mein Portfolio", portfolioAI: "KI-Portfolio", b2b: "B2B Dashboard", alerts: "Alarme", pricing: "Preise", calculator: "Rechner", academy: "Academy", index: "Index" },
   hero: { title: "Globale Weinanlage-Plattform", subtitle: "KI-Portfolioersteller, Weinintelligenz, Analysen und weltweite Suche.", searchPlaceholder: "Suche Weine, Erzeuger, Regionen, Jahrgänge..." },
   stats: { globalMarket: "Weltmarkt", portfolioValue: "Portfoliowert", invested: "Investiert", profitLoss: "Gewinn / Verlust", roi: "ROI", watchlist: "Beobachtungsliste" },
   market: { searchPlaceholder: "Suche beliebige Weine weltweit...", addToPortfolio: "+ Zum Portfolio hinzufügen", buyOn: "Auf Wine-Searcher kaufen →", noWines: "Keine Weine gefunden.", loadingMore: "Weitere Weine laden…" },
+  watchlist: { title: "Watchlist-Analyse", empty: "Fügen Sie Weine aus dem Marktbereich zu Ihrer Watchlist hinzu." },
   auth: { signOut: "Abmelden", serverStarting: "⚡ Server startet...", offline: "⚠️ Keine Verbindung" },
   notifications: { title: "Benachrichtigungen", enablePush: "🔔 Push aktivieren", markAllRead: "Alle als gelesen markieren", noNotifications: "Noch keine Benachrichtigungen.", pushEnabled: "Push-Benachrichtigungen aktiviert!" },
   common: { loading: "Laden...", noData: "Keine Daten", refresh: "Aktualisieren", save: "Speichern", cancel: "Abbrechen", close: "Schließen", back: "Zurück", error: "Fehler", success: "Erfolg" },
   chart: { realData: "Echte Daten", estimated: "Geschätzte Daten", mixed: "Gemischt" },
+  analysis: { algorithmicNote: "* Algorithmische Analyse (ANTHROPIC_API_KEY nicht auf dem Server konfiguriert)" },
   disclaimer: { text: "VinoInvest ist eine Analyse- und Intelligence-Plattform für den Markt für Qualitätsweine. Wir bieten keine Finanzberatung an, verwalten keine Vermögenswerte und verfügen über keine MiFID-II-Lizenz. Alle AI-Scores und Preise dienen ausschließlich zu Informationszwecken. Vergangene Wertentwicklungen garantieren keine künftigen Ergebnisse.", link: "Vollständiger Haftungsausschluss →" },
-  portfolio: { ...en.portfolio, title: "Mein Portfolio", exportCSV: "CSV exportieren", noPositions: "Noch keine Positionen.", growth: "Portfolio-Wachstum", diversification: "Diversifikation", byType: "Nach Typ", byWine: "Nach Wein", estimatedNote: "* Geschätzte Werte basierend auf 8% jährlichem Wachstum" }
+  portfolio: { ...en.portfolio, title: "Mein Portfolio", exportCSV: "CSV exportieren", noPositions: "Noch keine Positionen.", growth: "Portfolio-Wachstum", diversification: "Diversifikation", byType: "Nach Typ", byWine: "Nach Wein", estimatedNote: "* Geschätzte Werte basierend auf 8% jährlichem Wachstum", demo: "Sie sehen ein DEMO-Portfolio", addFirstWine: "Fügen Sie Ihren ersten echten Wein hinzu →" }
 };
 const es = {
-  nav: { dashboard: "Panel", market: "Mercado", news: "Noticias", blog: "Blog IA", analysis: "Análisis", portfolio: "Mi Cartera", portfolioAI: "Cartera IA", b2b: "Panel B2B", alerts: "Alertas", pricing: "Precios" },
+  nav: { dashboard: "Panel", market: "Mercado", news: "Noticias", blog: "Blog IA", analysis: "Análisis", portfolio: "Mi Cartera", portfolioAI: "Cartera IA", b2b: "Panel B2B", alerts: "Alertas", pricing: "Precios", calculator: "Calc", academy: "Academy", index: "Índice" },
   hero: { title: "Plataforma Global de Inversión en Vino", subtitle: "Constructor de cartera IA, inteligencia vinícola, análisis y búsqueda mundial.", searchPlaceholder: "Buscar vinos, productores, regiones, cosechas..." },
   stats: { globalMarket: "Mercado Global", portfolioValue: "Valor de la Cartera", invested: "Invertido", profitLoss: "Ganancia / Pérdida", roi: "ROI", watchlist: "Lista de seguimiento" },
   market: { searchPlaceholder: "Buscar cualquier vino en el mundo...", addToPortfolio: "+ Añadir a la Cartera", buyOn: "Comprar en Wine-Searcher →", noWines: "No se encontraron vinos.", loadingMore: "Cargando más vinos…" },
+  watchlist: { title: "Análisis Watchlist", empty: "Añade vinos a tu watchlist desde la sección Mercado." },
   auth: { signOut: "Cerrar sesión", serverStarting: "⚡ Servidor iniciando...", offline: "⚠️ Sin conexión" },
   notifications: { title: "Notificaciones", enablePush: "🔔 Activar Push", markAllRead: "Marcar todo como leído", noNotifications: "Aún no hay notificaciones.", pushEnabled: "¡Notificaciones push activadas!" },
   common: { loading: "Cargando...", noData: "Sin datos", refresh: "Actualizar", save: "Guardar", cancel: "Cancelar", close: "Cerrar", back: "Volver", error: "Error", success: "Éxito" },
   chart: { realData: "Datos reales", estimated: "Datos estimados", mixed: "Mixto" },
+  analysis: { algorithmicNote: "* Análisis algorítmico (ANTHROPIC_API_KEY no configurado en el servidor)" },
   disclaimer: { text: "VinoInvest es una plataforma de análisis e inteligencia para el mercado de vinos finos. No ofrecemos asesoramiento financiero, no gestionamos activos ni contamos con licencia MiFID II. Todos los AI Scores y precios son únicamente para fines informativos. Los rendimientos pasados no garantizan resultados futuros.", link: "Aviso legal completo →" },
-  portfolio: { ...en.portfolio, title: "Mi Cartera", exportCSV: "Exportar CSV", noPositions: "Sin posiciones aún.", growth: "Crecimiento de la Cartera", diversification: "Diversificación", byType: "Por Tipo", byWine: "Por Vino", estimatedNote: "* Valores estimados basados en crecimiento anual promedio del 8%" }
+  portfolio: { ...en.portfolio, title: "Mi Cartera", exportCSV: "Exportar CSV", noPositions: "Sin posiciones aún.", growth: "Crecimiento de la Cartera", diversification: "Diversificación", byType: "Por Tipo", byWine: "Por Vino", estimatedNote: "* Valores estimados basados en crecimiento anual promedio del 8%", demo: "Estás viendo un portfolio DEMO", addFirstWine: "Añade tu primer vino real →" }
 };
 const pt = {
-  nav: { dashboard: "Painel", market: "Mercado", news: "Notícias", blog: "Blog IA", analysis: "Análise", portfolio: "Minha Carteira", portfolioAI: "Carteira IA", b2b: "Painel B2B", alerts: "Alertas", pricing: "Preços" },
+  nav: { dashboard: "Painel", market: "Mercado", news: "Notícias", blog: "Blog IA", analysis: "Análise", portfolio: "Minha Carteira", portfolioAI: "Carteira IA", b2b: "Painel B2B", alerts: "Alertas", pricing: "Preços", calculator: "Calc", academy: "Academy", index: "Índice" },
   hero: { title: "Plataforma Global de Investimento em Vinho", subtitle: "Construtor de carteira IA, inteligência vinícola, análises e pesquisa mundial.", searchPlaceholder: "Pesquisar vinhos, produtores, regiões, safras..." },
   stats: { globalMarket: "Mercado Global", portfolioValue: "Valor da Carteira", invested: "Investido", profitLoss: "Lucro / Perda", roi: "ROI", watchlist: "Lista de acompanhamento" },
   market: { searchPlaceholder: "Pesquisar qualquer vinho no mundo...", addToPortfolio: "+ Adicionar à Carteira", buyOn: "Comprar no Wine-Searcher →", noWines: "Nenhum vinho encontrado.", loadingMore: "Carregando mais vinhos…" },
+  watchlist: { title: "Análise Watchlist", empty: "Adicione vinhos à sua watchlist na seção Mercado." },
   auth: { signOut: "Sair", serverStarting: "⚡ Servidor iniciando...", offline: "⚠️ Sem conexão" },
   notifications: { title: "Notificações", enablePush: "🔔 Ativar Push", markAllRead: "Marcar tudo como lido", noNotifications: "Sem notificações ainda.", pushEnabled: "Notificações push ativadas!" },
   common: { loading: "Carregando...", noData: "Sem dados", refresh: "Atualizar", save: "Salvar", cancel: "Cancelar", close: "Fechar", back: "Voltar", error: "Erro", success: "Sucesso" },
   chart: { realData: "Dados reais", estimated: "Dados estimados", mixed: "Mistos" },
+  analysis: { algorithmicNote: "* Análise algorítmica (ANTHROPIC_API_KEY não configurado no servidor)" },
   disclaimer: { text: "VinoInvest é uma plataforma de análise e inteligência para o mercado de vinhos finos. Não oferecemos aconselhamento financeiro, não gerimos ativos e não possuímos licença MiFID II. Todos os AI Scores e preços são apenas para fins informativos. Desempenhos passados não garantem resultados futuros.", link: "Aviso legal completo →" },
-  portfolio: { ...en.portfolio, title: "Minha Carteira", exportCSV: "Exportar CSV", noPositions: "Sem posições ainda.", growth: "Crescimento da Carteira", diversification: "Diversificação", byType: "Por Tipo", byWine: "Por Vinho", estimatedNote: "* Valores estimados com base em crescimento médio anual de 8%" }
+  portfolio: { ...en.portfolio, title: "Minha Carteira", exportCSV: "Exportar CSV", noPositions: "Sem posições ainda.", growth: "Crescimento da Carteira", diversification: "Diversificação", byType: "Por Tipo", byWine: "Por Vinho", estimatedNote: "* Valores estimados com base em crescimento médio anual de 8%", demo: "Você está vendo um portfólio DEMO", addFirstWine: "Adicione seu primeiro vinho real →" }
 };
 const zh = {
-  nav: { dashboard: "仪表板", market: "市场", news: "新闻", blog: "AI博客", analysis: "分析", portfolio: "我的投资组合", portfolioAI: "AI投资组合", b2b: "B2B仪表板", alerts: "提醒", pricing: "定价" },
+  nav: { dashboard: "仪表板", market: "市场", news: "新闻", blog: "AI博客", analysis: "分析", portfolio: "我的投资组合", portfolioAI: "AI投资组合", b2b: "B2B仪表板", alerts: "提醒", pricing: "定价", calculator: "计算", academy: "学院", index: "指数" },
   hero: { title: "全球葡萄酒投资平台", subtitle: "AI投资组合构建器、葡萄酒智能、分析和全球搜索。", searchPlaceholder: "搜索葡萄酒、生产商、产区、年份..." },
   stats: { globalMarket: "全球市场", portfolioValue: "投资组合价值", invested: "已投资", profitLoss: "盈利/亏损", roi: "回报率", watchlist: "关注列表" },
   market: { searchPlaceholder: "在全球搜索任何葡萄酒...", addToPortfolio: "+ 添加到投资组合", buyOn: "在Wine-Searcher购买 →", noWines: "未找到葡萄酒。", loadingMore: "加载更多葡萄酒…" },
+  watchlist: { title: "关注列表分析", empty: "从市场板块将葡萄酒添加到您的关注列表。" },
   auth: { signOut: "退出", serverStarting: "⚡ 服务器启动中...", offline: "⚠️ 无连接" },
   notifications: { title: "通知", enablePush: "🔔 启用推送", markAllRead: "全部标为已读", noNotifications: "暂无通知。", pushEnabled: "推送通知已启用！" },
   common: { loading: "加载中...", noData: "无数据", refresh: "刷新", save: "保存", cancel: "取消", close: "关闭", back: "返回", error: "错误", success: "成功" },
   chart: { realData: "真实数据", estimated: "估算数据", mixed: "混合" },
+  analysis: { algorithmicNote: "* 算法分析（服务器未配置 ANTHROPIC_API_KEY）" },
   disclaimer: { text: "VinoInvest 是一个针对精品葡萄酒市场的分析与智能平台。我们不提供财务建议，不管理资产，也不持有 MiFID II 许可证。所有 AI 评分和价格仅供参考。过去的表现不保证未来的结果。", link: "完整免责声明 →" },
-  portfolio: { ...en.portfolio, title: "我的投资组合", exportCSV: "导出CSV", noPositions: "暂无持仓。", growth: "投资组合增长", diversification: "多元化", byType: "按类型", byWine: "按葡萄酒", estimatedNote: "* 基于葡萄酒市场历史年均8%增长的估算值" }
+  portfolio: { ...en.portfolio, title: "我的投资组合", exportCSV: "导出CSV", noPositions: "暂无持仓。", growth: "投资组合增长", diversification: "多元化", byType: "按类型", byWine: "按葡萄酒", estimatedNote: "* 基于葡萄酒市场历史年均8%增长的估算值", demo: "您正在查看演示投资组合", addFirstWine: "添加您的第一支真实葡萄酒 →" }
 };
 const ja = {
-  nav: { dashboard: "ダッシュボード", market: "マーケット", news: "ニュース", blog: "AIブログ", analysis: "分析", portfolio: "ポートフォリオ", portfolioAI: "AIポートフォリオ", b2b: "B2Bダッシュボード", alerts: "アラート", pricing: "料金" },
+  nav: { dashboard: "ダッシュボード", market: "マーケット", news: "ニュース", blog: "AIブログ", analysis: "分析", portfolio: "ポートフォリオ", portfolioAI: "AIポートフォリオ", b2b: "B2Bダッシュボード", alerts: "アラート", pricing: "料金", calculator: "計算", academy: "アカデミー", index: "インデックス" },
   hero: { title: "グローバルワイン投資プラットフォーム", subtitle: "AIポートフォリオビルダー、ワインインテリジェンス、分析、世界規模の検索。", searchPlaceholder: "ワイン、生産者、産地、ヴィンテージを検索..." },
   stats: { globalMarket: "グローバル市場", portfolioValue: "ポートフォリオ価値", invested: "投資済み", profitLoss: "損益", roi: "ROI", watchlist: "ウォッチリスト" },
   market: { searchPlaceholder: "世界中のワインを検索...", addToPortfolio: "+ ポートフォリオに追加", buyOn: "Wine-Searcherで購入 →", noWines: "ワインが見つかりません。", loadingMore: "さらにワインを読み込む…" },
+  watchlist: { title: "ウォッチリスト分析", empty: "マーケットセクションからウォッチリストにワインを追加してください。" },
   auth: { signOut: "サインアウト", serverStarting: "⚡ サーバー起動中...", offline: "⚠️ 接続なし" },
   notifications: { title: "通知", enablePush: "🔔 プッシュを有効化", markAllRead: "すべて既読にする", noNotifications: "まだ通知はありません。", pushEnabled: "プッシュ通知が有効になりました！" },
   common: { loading: "読み込み中...", noData: "データなし", refresh: "更新", save: "保存", cancel: "キャンセル", close: "閉じる", back: "戻る", error: "エラー", success: "成功" },
   chart: { realData: "実データ", estimated: "推定データ", mixed: "混合" },
+  analysis: { algorithmicNote: "* アルゴリズム分析（サーバーにANTHROPIC_API_KEYが設定されていません）" },
   disclaimer: { text: "VinoInvestは高級ワイン市場の分析・インテリジェンスプラットフォームです。当社は財務アドバイスの提供、資産運用、MiFID IIライセンスの保有を行っておりません。すべてのAIスコアおよび価格は情報提供のみを目的としています。過去の実績は将来の結果を保証するものではありません。", link: "免責事項の全文 →" },
-  portfolio: { ...en.portfolio, title: "マイポートフォリオ", exportCSV: "CSVエクスポート", noPositions: "まだポジションがありません。", growth: "ポートフォリオ成長", diversification: "分散化", byType: "タイプ別", byWine: "ワイン別", estimatedNote: "* ワイン市場の年平均8%成長に基づく推定値" }
+  portfolio: { ...en.portfolio, title: "マイポートフォリオ", exportCSV: "CSVエクスポート", noPositions: "まだポジションがありません。", growth: "ポートフォリオ成長", diversification: "分散化", byType: "タイプ別", byWine: "ワイン別", estimatedNote: "* ワイン市場の年平均8%成長に基づく推定値", demo: "デモポートフォリオを表示中", addFirstWine: "最初の本物のワインを追加 →" }
 };
 const ko = {
-  nav: { dashboard: "대시보드", market: "시장", news: "뉴스", blog: "AI 블로그", analysis: "분석", portfolio: "내 포트폴리오", portfolioAI: "AI 포트폴리오", b2b: "B2B 대시보드", alerts: "알림", pricing: "요금제" },
+  nav: { dashboard: "대시보드", market: "시장", news: "뉴스", blog: "AI 블로그", analysis: "분석", portfolio: "내 포트폴리오", portfolioAI: "AI 포트폴리오", b2b: "B2B 대시보드", alerts: "알림", pricing: "요금제", calculator: "계산기", academy: "아카데미", index: "인덱스" },
   hero: { title: "글로벌 와인 투자 플랫폼", subtitle: "AI 포트폴리오 빌더, 와인 인텔리전스, 분석 및 전 세계 검색.", searchPlaceholder: "와인, 생산자, 지역, 빈티지 검색..." },
   stats: { globalMarket: "글로벌 시장", portfolioValue: "포트폴리오 가치", invested: "투자금", profitLoss: "손익", roi: "ROI", watchlist: "관심 목록" },
   market: { searchPlaceholder: "전 세계 와인 검색...", addToPortfolio: "+ 포트폴리오에 추가", buyOn: "Wine-Searcher에서 구매 →", noWines: "와인을 찾을 수 없습니다.", loadingMore: "더 많은 와인 불러오기…" },
+  watchlist: { title: "관심 목록 분석", empty: "시장 섹션에서 관심 목록에 와인을 추가하세요." },
   auth: { signOut: "로그아웃", serverStarting: "⚡ 서버 시작 중...", offline: "⚠️ 연결 없음" },
   notifications: { title: "알림", enablePush: "🔔 푸시 활성화", markAllRead: "모두 읽음 표시", noNotifications: "아직 알림이 없습니다.", pushEnabled: "푸시 알림이 활성화되었습니다!" },
   common: { loading: "로딩 중...", noData: "데이터 없음", refresh: "새로고침", save: "저장", cancel: "취소", close: "닫기", back: "뒤로", error: "오류", success: "성공" },
   chart: { realData: "실제 데이터", estimated: "추정 데이터", mixed: "혼합" },
+  analysis: { algorithmicNote: "* 알고리즘 분석 (ANTHROPIC_API_KEY가 서버에 구성되지 않음)" },
   disclaimer: { text: "VinoInvest는 파인 와인 시장을 위한 분석 및 인텔리전스 플랫폼입니다. 당사는 재무 조언을 제공하지 않으며, 자산을 관리하지 않고, MiFID II 라이선스를 보유하지 않습니다. 모든 AI 점수 및 가격은 정보 제공 목적으로만 제공됩니다. 과거 성과가 미래 결과를 보장하지 않습니다.", link: "전체 면책 조항 →" },
-  portfolio: { ...en.portfolio }
+  portfolio: { ...en.portfolio, demo: "데모 포트폴리오를 보고 있습니다", addFirstWine: "첫 번째 실제 와인 추가 →" }
 };
 const ar = {
-  nav: { dashboard: "لوحة التحكم", market: "السوق", news: "الأخبار", blog: "مدونة الذكاء الاصطناعي", analysis: "التحليل", portfolio: "محفظتي", portfolioAI: "محفظة الذكاء الاصطناعي", b2b: "لوحة B2B", alerts: "التنبيهات", pricing: "الأسعار" },
+  nav: { dashboard: "لوحة التحكم", market: "السوق", news: "الأخبار", blog: "مدونة الذكاء الاصطناعي", analysis: "التحليل", portfolio: "محفظتي", portfolioAI: "محفظة الذكاء الاصطناعي", b2b: "لوحة B2B", alerts: "التنبيهات", pricing: "الأسعار", calculator: "حاسبة", academy: "الأكاديمية", index: "المؤشر" },
   hero: { title: "منصة الاستثمار في النبيذ العالمية", subtitle: "منشئ المحفظة بالذكاء الاصطناعي، ذكاء النبيذ، التحليلات والبحث العالمي.", searchPlaceholder: "ابحث عن النبيذ، المنتجين، المناطق، السنوات..." },
   stats: { globalMarket: "السوق العالمي", portfolioValue: "قيمة المحفظة", invested: "المستثمر", profitLoss: "الربح / الخسارة", roi: "العائد على الاستثمار", watchlist: "قائمة المراقبة" },
   market: { searchPlaceholder: "ابحث عن أي نبيذ في العالم...", addToPortfolio: "+ إضافة إلى المحفظة", buyOn: "شراء على Wine-Searcher ←", noWines: "لم يتم العثور على نبيذ.", loadingMore: "تحميل المزيد من النبيذ…" },
+  watchlist: { title: "تحليل قائمة المراقبة", empty: "أضف النبيذ إلى قائمة مراقبتك من قسم السوق." },
   auth: { signOut: "تسجيل الخروج", serverStarting: "⚡ جاري تشغيل الخادم...", offline: "⚠️ لا يوجد اتصال" },
   notifications: { title: "الإشعارات", enablePush: "🔔 تفعيل Push", markAllRead: "تعليم الكل كمقروء", noNotifications: "لا توجد إشعارات بعد.", pushEnabled: "تم تفعيل إشعارات Push!" },
   common: { loading: "جار التحميل...", noData: "لا توجد بيانات", refresh: "تحديث", save: "حفظ", cancel: "إلغاء", close: "إغلاق", back: "رجوع", error: "خطأ", success: "نجاح" },
   chart: { realData: "بيانات حقيقية", estimated: "بيانات تقديرية", mixed: "مختلطة" },
+  analysis: { algorithmicNote: "* تحليل خوارزمي (ANTHROPIC_API_KEY غير مُهيأ على الخادم)" },
   disclaimer: { text: "VinoInvest منصة تحليل وذكاء لسوق النبيذ الفاخر. لا نقدم استشارات مالية، ولا ندير أصولاً، ولا نحمل ترخيص MiFID II. جميع درجات الذكاء الاصطناعي والأسعار لأغراض إعلامية فقط. الأداء السابق لا يضمن النتائج المستقبلية.", link: "إخلاء المسؤولية الكامل →" },
-  portfolio: { ...en.portfolio }
+  portfolio: { ...en.portfolio, demo: "أنت تشاهد محفظة تجريبية", addFirstWine: "أضف أول نبيذ حقيقي ←" }
 };
-const ru = { nav: { dashboard: "Панель", market: "Рынок", news: "Новости", blog: "ИИ Блог", analysis: "Анализ", portfolio: "Портфель", portfolioAI: "ИИ Портфель", b2b: "B2B панель", alerts: "Уведомления", pricing: "Цены" }, hero: { title: "Глобальная Платформа для Инвестиций в Вино", subtitle: "Конструктор портфеля ИИ, аналитика вина, аналитика и поиск.", searchPlaceholder: "Поиск вин, производителей, регионов, vintages..." }, stats: { globalMarket: "Мировой рынок", portfolioValue: "Стоимость портфеля", invested: "Инвестировано", profitLoss: "Прибыль / Убыток", roi: "ROI", watchlist: "Список наблюдения" }, market: { searchPlaceholder: "Поиск любого вина в мире...", addToPortfolio: "+ Добавить в портфель", buyOn: "Купить на Wine-Searcher →", noWines: "Вина не найдены.", loadingMore: "Загрузка вин…" }, auth: { signOut: "Выйти", serverStarting: "⚡ Сервер запускается...", offline: "⚠️ Нет соединения" }, notifications: { title: "Уведомления", enablePush: "🔔 Включить Push", markAllRead: "Отметить всё прочитанным", noNotifications: "Уведомлений пока нет.", pushEnabled: "Push-уведомления включены!" }, common: { loading: "Загрузка...", noData: "Нет данных", refresh: "Обновить", save: "Сохранить", cancel: "Отмена", close: "Закрыть", back: "Назад", error: "Ошибка", success: "Успех" }, chart: { realData: "Реальные данные", estimated: "Расчётные данные", mixed: "Смешанные" }, portfolio: { ...en.portfolio } };
-const nl = { nav: { dashboard: "Dashboard", market: "Markt", news: "Nieuws", blog: "AI Blog", analysis: "Analyse", portfolio: "Mijn Portfolio", portfolioAI: "AI Portfolio", b2b: "B2B Dashboard", alerts: "Meldingen", pricing: "Prijzen" }, hero: { title: "Mondiaal Wijninvesteringsplatform", subtitle: "AI portfolio builder, wijnintelligentie, analyses en wereldwijde zoekopdrachten.", searchPlaceholder: "Zoek wijnen, producenten, regio's, jaargangen..." }, stats: { globalMarket: "Wereldmarkt", portfolioValue: "Portfoliowaarde", invested: "Geïnvesteerd", profitLoss: "Winst / Verlies", roi: "ROI", watchlist: "Volglijst" }, market: { searchPlaceholder: "Zoek elke wijn wereldwijd...", addToPortfolio: "+ Toevoegen aan Portfolio", buyOn: "Kopen op Wine-Searcher →", noWines: "Geen wijnen gevonden.", loadingMore: "Meer wijnen laden…" }, auth: { signOut: "Uitloggen", serverStarting: "⚡ Server start op...", offline: "⚠️ Geen verbinding" }, notifications: { title: "Meldingen", enablePush: "🔔 Push inschakelen", markAllRead: "Alles als gelezen markeren", noNotifications: "Nog geen meldingen.", pushEnabled: "Push-meldingen ingeschakeld!" }, common: { loading: "Laden...", noData: "Geen gegevens", refresh: "Vernieuwen", save: "Opslaan", cancel: "Annuleren", close: "Sluiten", back: "Terug", error: "Fout", success: "Succes" }, chart: { realData: "Echte data", estimated: "Geschatte data", mixed: "Gemengd" }, portfolio: { ...en.portfolio } };
+const ru = { nav: { dashboard: "Панель", market: "Рынок", news: "Новости", blog: "ИИ Блог", analysis: "Анализ", portfolio: "Портфель", portfolioAI: "ИИ Портфель", b2b: "B2B панель", alerts: "Уведомления", pricing: "Цены", calculator: "Калькулятор", academy: "Академия", index: "Индекс" }, hero: { title: "Глобальная Платформа для Инвестиций в Вино", subtitle: "Конструктор портфеля ИИ, аналитика вина, аналитика и поиск.", searchPlaceholder: "Поиск вин, производителей, регионов, vintages..." }, stats: { globalMarket: "Мировой рынок", portfolioValue: "Стоимость портфеля", invested: "Инвестировано", profitLoss: "Прибыль / Убыток", roi: "ROI", watchlist: "Список наблюдения" }, market: { searchPlaceholder: "Поиск любого вина в мире...", addToPortfolio: "+ Добавить в портфель", buyOn: "Купить на Wine-Searcher →", noWines: "Вина не найдены.", loadingMore: "Загрузка вин…" }, watchlist: { title: "Анализ списка наблюдения", empty: "Добавьте вина в список наблюдения из раздела Рынок." }, auth: { signOut: "Выйти", serverStarting: "⚡ Сервер запускается...", offline: "⚠️ Нет соединения" }, notifications: { title: "Уведомления", enablePush: "🔔 Включить Push", markAllRead: "Отметить всё прочитанным", noNotifications: "Уведомлений пока нет.", pushEnabled: "Push-уведомления включены!" }, common: { loading: "Загрузка...", noData: "Нет данных", refresh: "Обновить", save: "Сохранить", cancel: "Отмена", close: "Закрыть", back: "Назад", error: "Ошибка", success: "Успех" }, chart: { realData: "Реальные данные", estimated: "Расчётные данные", mixed: "Смешанные" }, analysis: { algorithmicNote: "* Алгоритмический анализ (ANTHROPIC_API_KEY не настроен на сервере)" }, portfolio: { ...en.portfolio, demo: "Вы просматриваете демо-портфель", addFirstWine: "Добавьте своё первое настоящее вино →" } };
+const nl = { nav: { dashboard: "Dashboard", market: "Markt", news: "Nieuws", blog: "AI Blog", analysis: "Analyse", portfolio: "Mijn Portfolio", portfolioAI: "AI Portfolio", b2b: "B2B Dashboard", alerts: "Meldingen", pricing: "Prijzen", calculator: "Rekenmachine", academy: "Academy", index: "Index" }, hero: { title: "Mondiaal Wijninvesteringsplatform", subtitle: "AI portfolio builder, wijnintelligentie, analyses en wereldwijde zoekopdrachten.", searchPlaceholder: "Zoek wijnen, producenten, regio's, jaargangen..." }, stats: { globalMarket: "Wereldmarkt", portfolioValue: "Portfoliowaarde", invested: "Geïnvesteerd", profitLoss: "Winst / Verlies", roi: "ROI", watchlist: "Volglijst" }, market: { searchPlaceholder: "Zoek elke wijn wereldwijd...", addToPortfolio: "+ Toevoegen aan Portfolio", buyOn: "Kopen op Wine-Searcher →", noWines: "Geen wijnen gevonden.", loadingMore: "Meer wijnen laden…" }, watchlist: { title: "Watchlist Analyse", empty: "Voeg wijnen toe aan je watchlist vanuit de Markt sectie." }, auth: { signOut: "Uitloggen", serverStarting: "⚡ Server start op...", offline: "⚠️ Geen verbinding" }, notifications: { title: "Meldingen", enablePush: "🔔 Push inschakelen", markAllRead: "Alles als gelezen markeren", noNotifications: "Nog geen meldingen.", pushEnabled: "Push-meldingen ingeschakeld!" }, common: { loading: "Laden...", noData: "Geen gegevens", refresh: "Vernieuwen", save: "Opslaan", cancel: "Annuleren", close: "Sluiten", back: "Terug", error: "Fout", success: "Succes" }, chart: { realData: "Echte data", estimated: "Geschatte data", mixed: "Gemengd" }, analysis: en.analysis, disclaimer: en.disclaimer, portfolio: { ...en.portfolio, demo: "U bekijkt een DEMO portfolio", addFirstWine: "Voeg uw eerste echte wijn toe →" } };
 
 // For remaining languages, use English as base with language-specific nav/hero
 const makeTranslation = (navOverrides, heroOverrides, statsOverrides, marketOverrides, authOverrides, notifOverrides, commonOverrides) => ({
@@ -111,10 +127,12 @@ const makeTranslation = (navOverrides, heroOverrides, statsOverrides, marketOver
   hero: { ...en.hero, ...heroOverrides },
   stats: { ...en.stats, ...statsOverrides },
   market: { ...en.market, ...marketOverrides },
+  watchlist: en.watchlist,
   auth: { ...en.auth, ...authOverrides },
   notifications: { ...en.notifications, ...notifOverrides },
   common: { ...en.common, ...commonOverrides },
   chart: en.chart,
+  analysis: en.analysis,
   disclaimer: en.disclaimer,
   portfolio: en.portfolio,
 });

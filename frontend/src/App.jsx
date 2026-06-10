@@ -212,7 +212,7 @@ function AIPortfolioAnalysis({ holdings, totalValue, totalInvested, userId }) {
             </div>
           )}
 
-          {analysis.fallback && <p style={{ fontSize: 10, color: "#1e3050", marginTop: 10 }}>* Analisi algoritmica (ANTHROPIC_API_KEY non configurato sul server)</p>}
+          {analysis.fallback && <p style={{ fontSize: 10, color: "#1e3050", marginTop: 10 }}>{t('analysis.algorithmicNote')}</p>}
         </div>
       )}
     </div>
@@ -1028,21 +1028,21 @@ function App() {
             style={{ padding: "5px 10px", border: "1px solid rgba(96,165,250,0.25)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "var(--vi-font-sans)" }}
             onMouseEnter={e => { e.currentTarget.style.color = "#60a5fa"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.5)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.25)"; }}
-          >🧮 Calc</button>
+          >🧮 {t('nav.calculator')}</button>
           <button
             onClick={() => navigate("/academy")}
             title="Wine Investment Academy" aria-label="Vai all'Academy vino"
             style={{ padding: "5px 10px", border: "1px solid rgba(74,222,128,0.25)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "var(--vi-font-sans)" }}
             onMouseEnter={e => { e.currentTarget.style.color = "var(--vi-positive)"; e.currentTarget.style.borderColor = "rgba(74,222,128,0.5)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(74,222,128,0.25)"; }}
-          >🎓 Academy</button>
+          >🎓 {t('nav.academy')}</button>
           <button
             onClick={() => navigate("/market-index")}
             title="VinoInvest Index" aria-label="Vai al VinoInvest Market Index"
             style={{ padding: "5px 10px", border: "1px solid rgba(201,162,39,0.25)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "var(--vi-font-sans)" }}
             onMouseEnter={e => { e.currentTarget.style.color = "var(--vi-accent)"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.5)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.25)"; }}
-          >📊 Index</button>
+          >📊 {t('nav.index')}</button>
           <a href="/scan" title="Scan wine label" aria-label="Scansiona etichetta vino" style={{ padding: "6px 10px", border: "1px solid var(--vi-border)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#4a6a8a", fontSize: 11, cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center", fontWeight: 600 }}>Scan</a>
           <CurrencySelector />
           <LangSelector />
@@ -1490,8 +1490,8 @@ function App() {
           {/* ── Analysis ──────────────────────────────────────────────────── */}
           {tab === "analysis" && (
             <section className="chartPanel">
-              <h2>Analisi Watchlist</h2>
-              {!selectedWine && <p>Aggiungi vini alla watchlist dalla sezione Mercato.</p>}
+              <h2>{t('watchlist.title')}</h2>
+              {!selectedWine && <p>{t('watchlist.empty')}</p>}
               {selectedWine && (
                 <div style={{ marginBottom: 28 }}>
                   <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 26, marginBottom: 8 }}>{selectedWine.name}</h3>
@@ -1627,9 +1627,9 @@ function App() {
                     <div style={{ background: "linear-gradient(135deg,rgba(234,179,8,0.18),rgba(234,179,8,0.06))", border: "2px solid rgba(234,179,8,0.5)", borderRadius: 12, padding: "14px 20px", marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                         <span style={{ fontSize: 18 }}>📊</span>
-                        <span style={{ fontSize: 13, color: "#fef08a", fontWeight: 600 }}>Stai vedendo un portfolio DEMO</span>
+                        <span style={{ fontSize: 13, color: "#fef08a", fontWeight: 600 }}>{t('portfolio.demo')}</span>
                       </div>
-                      <button onClick={() => setTab("market")} style={{ background: "#C9A227", border: "none", borderRadius: 8, padding: "8px 16px", fontWeight: 700, color: "#0b1220", cursor: "pointer", fontSize: 12, whiteSpace: "nowrap" }}>Aggiungi il tuo primo vino reale →</button>
+                      <button onClick={() => setTab("market")} style={{ background: "#C9A227", border: "none", borderRadius: 8, padding: "8px 16px", fontWeight: 700, color: "#0b1220", cursor: "pointer", fontSize: 12, whiteSpace: "nowrap" }}>{t('portfolio.addFirstWine')}</button>
                     </div>
                     {/* Demo stats */}
                     <div className="statsGrid" style={{ marginBottom: 28 }}>

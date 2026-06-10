@@ -9,7 +9,10 @@
     "portfolioAI": "Portfolio AI",
     "b2b": "B2B Dashboard",
     "alerts": "Alerts",
-    "pricing": "Pricing"
+    "pricing": "Pricing",
+    "calculator": "Calc",
+    "academy": "Academy",
+    "index": "Index"
   },
   "hero": {
     "title": "Global Wine Investment Platform",
@@ -31,6 +34,10 @@
     "noWines": "No wines found.",
     "loadingMore": "Loading more wines…"
   },
+  "watchlist": {
+    "title": "Watchlist Analysis",
+    "empty": "Add wines to your watchlist from the Market section."
+  },
   "portfolio": {
     "title": "My Portfolio",
     "exportCSV": "Export CSV",
@@ -39,7 +46,9 @@
     "diversification": "Diversification",
     "byType": "By Type",
     "byWine": "By Wine",
-    "estimatedNote": "* Estimated values based on 8% average annual growth (wine market historical average)"
+    "estimatedNote": "* Estimated values based on 8% average annual growth (wine market historical average)",
+    "demo": "You are viewing a DEMO portfolio",
+    "addFirstWine": "Add your first real wine →"
   },
   "notifications": {
     "title": "Notifications",
@@ -68,6 +77,9 @@
     "realData": "Real data",
     "estimated": "Estimated data",
     "mixed": "Mixed"
+  },
+  "analysis": {
+    "algorithmicNote": "* Algorithmic analysis (ANTHROPIC_API_KEY not configured on server)"
   },
   "disclaimer": {
     "text": "VinoInvest is an analysis and intelligence platform for the fine wine market. We do not offer financial advice, manage assets, or hold MiFID II licensing. All AI Scores and prices are for informational purposes only. Past performance does not guarantee future results.",
