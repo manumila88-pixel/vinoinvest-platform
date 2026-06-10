@@ -1,5 +1,82 @@
 // Academy video config — embedUrl: null shows elegant placeholder with YouTube search link
 const ACADEMY_MODULE_VIDEOS = {
+  // Corso 1 – Introduzione al Vino come Asset
+  c1_01: { embedUrl: null, searchQuery: "fine wine alternative investment introduction beginner guide" },
+  c1_02: { embedUrl: null, searchQuery: "wine market history fine wine investment growth returns" },
+  c1_03: { embedUrl: null, searchQuery: "wine as asset class comparison stocks bonds gold returns" },
+  c1_04: { embedUrl: null, searchQuery: "fine wine investment risks and rewards beginner overview" },
+  c1_05: { embedUrl: null, searchQuery: "wine investment getting started budget minimum guide 2024" },
+
+  // Corso 2 – Come Funziona il Mercato del Vino
+  c2_01: { embedUrl: null, searchQuery: "fine wine market how it works supply demand auction" },
+  c2_02: { embedUrl: null, searchQuery: "wine pricing factors vintage quality critic score production" },
+  c2_03: { embedUrl: null, searchQuery: "wine market participants producer merchant buyer investor" },
+  c2_04: { embedUrl: null, searchQuery: "liv-ex wine exchange market data how professionals trade" },
+  c2_05: { embedUrl: null, searchQuery: "wine market seasonality when prices move best time buy sell" },
+
+  // Corso 3 – Le Grandi Regioni del Vino
+  c3_01: { embedUrl: null, searchQuery: "Bordeaux wine region classification investment guide Pauillac" },
+  c3_02: { embedUrl: null, searchQuery: "Burgundy Bourgogne Pinot Noir Grand Cru wine investment" },
+  c3_03: { embedUrl: null, searchQuery: "Barolo Barbaresco Piemonte Italy fine wine investment Nebbiolo" },
+  c3_04: { embedUrl: null, searchQuery: "Champagne vintage investment Dom Perignon Krug Cristal guide" },
+  c3_05: { embedUrl: null, searchQuery: "Tuscany Super Tuscans Sassicaia Masseto Ornellaia wine" },
+
+  // Corso 4 – Leggere le Etichette
+  c4_01: { embedUrl: null, searchQuery: "how to read wine label appellation vintage producer guide" },
+  c4_02: { embedUrl: null, searchQuery: "French wine label AOC AOP Grand Cru classification reading" },
+  c4_03: { embedUrl: null, searchQuery: "Italian wine label DOCG DOC IGT classification explained" },
+  c4_04: { embedUrl: null, searchQuery: "wine label authentication fraud detection physical inspection" },
+  c4_05: { embedUrl: null, searchQuery: "wine label vintage reading bottle information investor guide" },
+
+  // Corso 5 – Annate e Clima
+  c5_01: { embedUrl: null, searchQuery: "wine vintage chart investment value bordeaux burgundy rating" },
+  c5_02: { embedUrl: null, searchQuery: "climate weather wine quality how harvest conditions matter" },
+  c5_03: { embedUrl: null, searchQuery: "best wine vintages for investment 2005 2010 2015 2016 2019" },
+  c5_04: { embedUrl: null, searchQuery: "climate change wine region shift opportunity investment risk" },
+  c5_05: { embedUrl: null, searchQuery: "vintage variation why some years wine worth 10x more guide" },
+
+  // Corso 6 – Conservazione e Stoccaggio
+  c6_01: { embedUrl: null, searchQuery: "wine storage temperature humidity cellar conditions guide" },
+  c6_02: { embedUrl: null, searchQuery: "professional wine storage bonded warehouse UK France options" },
+  c6_03: { embedUrl: null, searchQuery: "wine cellar design home temperature controlled investment" },
+  c6_04: { embedUrl: null, searchQuery: "wine storage cost comparison London Paris Geneva investment" },
+  c6_05: { embedUrl: null, searchQuery: "wine cellar management software tracking inventory value" },
+
+  // Corso 7 – Autenticità e Falsi
+  c7_01: { embedUrl: null, searchQuery: "wine counterfeit fraud Rudy Kurniawan billion dollar scam" },
+  c7_02: { embedUrl: null, searchQuery: "wine authentication physical inspection ullage capsule cork" },
+  c7_03: { embedUrl: null, searchQuery: "wine provenance documentation chain of custody auction" },
+  c7_04: { embedUrl: null, searchQuery: "blockchain wine authenticity NFC chip technology guide" },
+  c7_05: { embedUrl: null, searchQuery: "how to spot fake wine bottle label inspection guide tips" },
+
+  // Corso 8 – Acquistare Vino per Investimento
+  c8_01: { embedUrl: null, searchQuery: "buying wine investment merchant auction en primeur options" },
+  c8_02: { embedUrl: null, searchQuery: "wine buying strategy selection criteria investment portfolio" },
+  c8_03: { embedUrl: null, searchQuery: "en primeur bordeaux how to buy futures wine investment" },
+  c8_04: { embedUrl: null, searchQuery: "wine auction buying guide Christie's Sotheby's bidding tips" },
+  c8_05: { embedUrl: null, searchQuery: "wine merchant buying guide Berry Bros Farr Vintners Tannico" },
+
+  // Corso 9 – Vendere Vino
+  c9_01: { embedUrl: null, searchQuery: "selling wine investment when to sell timing strategy guide" },
+  c9_02: { embedUrl: null, searchQuery: "wine auction selling consignment guide maximum price tips" },
+  c9_03: { embedUrl: null, searchQuery: "wine private sale vs auction which better maximize value" },
+  c9_04: { embedUrl: null, searchQuery: "wine selling platform comparison Sotheby's Christie's Acker" },
+  c9_05: { embedUrl: null, searchQuery: "wine exit strategy portfolio rebalancing selling long term" },
+
+  // Corso 10 – AI e Tecnologia nel Vino
+  c10_01: { embedUrl: null, searchQuery: "AI wine investment scoring machine learning price prediction" },
+  c10_02: { embedUrl: null, searchQuery: "wine technology startup innovation label scanner recognition" },
+  c10_03: { embedUrl: null, searchQuery: "wine data analytics liv-ex API price history analysis tool" },
+  c10_04: { embedUrl: null, searchQuery: "NFT wine tokenization blockchain ownership fractional" },
+  c10_05: { embedUrl: null, searchQuery: "fintech wine investment platform comparison 2024 guide" },
+
+  // Corso 11 – Rendimenti Storici
+  c11_01: { embedUrl: null, searchQuery: "fine wine investment returns historical liv-ex 100 index" },
+  c11_02: { embedUrl: null, searchQuery: "bordeaux first growths wine investment lafite mouton pauillac returns" },
+  c11_03: { embedUrl: null, searchQuery: "burgundy romanee conti DRC wine investment grand cru appreciation" },
+  c11_04: { embedUrl: null, searchQuery: "barolo brunello sassicaia italian fine wine investment returns" },
+  c11_05: { embedUrl: null, searchQuery: "fine wine vs stock market gold bonds alternative returns 30 years" },
+
   // Corso 12 – Portfolio Construction
   c12_01: { embedUrl: null, searchQuery: "wine portfolio diversification modern portfolio theory MPT" },
   c12_02: { embedUrl: null, searchQuery: "efficient frontier portfolio optimization fine wine" },

@@ -818,6 +818,88 @@ export const FAQ = [
     a: "Il report Performance Attribution scompone il rendimento per: selezione vino, timing d'acquisto, effetto annata, effetto regione. Confronto con benchmark Liv-ex Fine Wine 100 e S&P 500.",
     tags: ["performance attribution", "rendimento", "scomposizione", "benchmark", "Liv-ex"],
   },
+
+  // ── Rendimenti — Regioni specifiche ──────────────────────────────────────
+  {
+    id: "r11", cat: "rendimenti",
+    q: "La Borgogna è davvero il miglior investimento in vino?",
+    a: "In termini di rendimento puro degli ultimi 20 anni: sì, la Borgogna Grand Cru ha superato tutte le altre regioni. DRC Romanée-Conti 2000 costava €2.000 → oggi €30.000 (+1.400%). Ma l'accesso alle etichette top è quasi impossibile senza allocation. Per chi ha accesso: Borgogna batte tutto. Per chi non ce l'ha: Barolo offre il miglior rapporto qualità/upside.",
+    tags: ["borgogna", "rendimento", "DRC", "barolo", "confronto regioni"],
+  },
+  {
+    id: "r12", cat: "rendimenti",
+    q: "Il Barolo è una buona alternativa alla Borgogna per investire?",
+    a: "Sì. Il Barolo viene sempre più chiamato 'il Pinot Noir del Nebbiolo' dagli investitori. Produttori top come Giacomo Conterno e Bruno Giacosa fanno vini comparabili per longevità (20-40 anni) a prezzi ancora 3-5x inferiori al Borgogna equivalente. Il mercato è in forte crescita specialmente in Asia e USA. Rischio: liquidità ancora inferiore al Bordeaux.",
+    tags: ["barolo", "alternativa", "borgogna", "Conterno", "Giacosa", "upside"],
+  },
+  {
+    id: "r13", cat: "rendimenti",
+    q: "Il Champagne vintage è un buon investimento?",
+    a: "Per alcune etichette sì. Krug Vintage e Dom Pérignon si apprezzano del 5-8% annuo con bassa volatilità. Salon (prodotto solo nelle migliori annate) ha reso oltre il 15% annuo nell'ultimo decennio. Il vantaggio: sono vini più 'leggibili' e riconoscibili per investitori non esperti. La liquidità è buona per le etichette di punta.",
+    tags: ["champagne", "vintage", "krug", "dom perignon", "salon", "rendimento"],
+  },
+
+  // ── Come funziona — Funzionalità specifiche ───────────────────────────────
+  {
+    id: "f14", cat: "funziona",
+    q: "Come funziona il filtro AI Score > 80 nel Market?",
+    a: "Apri il Market, clicca 'Filtri' o 'Filter', e imposta AI Score minimo a 80. Il sistema mostrerà solo i vini classificati come Strong Buy (>80) dall'algoritmo. Combina con filtri per regione o fascia di prezzo per risultati più mirati.",
+    tags: ["filtro", "AI score", "80", "strong buy", "market", "ricerca"],
+  },
+  {
+    id: "f15", cat: "funziona",
+    q: "Cosa significa il badge 'Dati stimati' vs 'Dati reali'?",
+    a: "'Dati reali' = il prezzo viene da Liv-ex, Wine-Searcher o aste documentate. 'Dati stimati' = il prezzo è calcolato dall'algoritmo su vini simili per regione, produttore e annata. I dati stimati sono meno precisi ma permettono di monitorare vini con poca liquidità.",
+    tags: ["dati reali", "stimati", "badge", "Liv-ex", "algoritmo", "prezzo"],
+  },
+  {
+    id: "f16", cat: "funziona",
+    q: "Come impostare un price alert per un vino?",
+    a: "Dal Market, apri la card del vino → clicca l'icona 🔔 o 'Imposta Alerta'. Inserisci il prezzo target (es. 'notificami quando scende sotto €X'). Ricevi notifica via push/email quando il prezzo raggiunge la soglia. Disponibile per account registrati.",
+    tags: ["alert", "notifica", "prezzo", "soglia", "push", "email"],
+  },
+
+  // ── Portfolio — Gestione avanzata ─────────────────────────────────────────
+  {
+    id: "p13", cat: "portfolio",
+    q: "Come ottimizzare la diversificazione del mio portfolio?",
+    a: "Regole base: max 20% su una singola bottiglia, almeno 3 regioni diverse, mix tra vini 'blue chip' (Bordeaux Premier Cru, Borgogna Grand Cru) e vini emergenti (Barolo, Etna), bilanciare annate (alcune vecchie già apprezzate + alcune recenti in fase di crescita). L'AI Portfolio di VinoInvest calcola automaticamente un portafoglio ottimale dato il tuo budget.",
+    tags: ["diversificazione", "ottimizzare", "regioni", "blue chip", "bilanciamento"],
+  },
+  {
+    id: "p14", cat: "portfolio",
+    q: "Quando è il momento giusto per vendere un vino dal portfolio?",
+    a: "Segnali di vendita: (1) il vino ha raggiunto il picco di maturazione — prezzi smettono di crescere, (2) hai realizzato il target di ROI prefissato, (3) la liquidità personale ne ha bisogno, (4) sono cambiate le condizioni di mercato per quella regione/produttore. Evita di vendere in periodi di bassa liquidità (agosto, dicembre). Il grafico storico prezzi aiuta a identificare il trend.",
+    tags: ["vendere", "quando", "timing", "ROI", "peak", "liquidità"],
+  },
+
+  // ── Acquisti — Guida pratica ──────────────────────────────────────────────
+  {
+    id: "a12", cat: "acquisti",
+    q: "Come trovare vini a buon prezzo su Wine-Searcher?",
+    a: "Su Wine-Searcher cerca il vino, poi filtra per 'Best price'. Attenzione: i prezzi più bassi sono spesso da merchant con spedizione internazionale costosa. Valuta il prezzo totale incluso spedizione. Usa Wine-Searcher Pro (abbonamento) per accedere all'istogramma storico prezzi e capire se stai comprando sotto o sopra il fair value.",
+    tags: ["wine-searcher", "prezzo", "buon prezzo", "merchant", "spedizione"],
+  },
+  {
+    id: "a13", cat: "acquisti",
+    q: "Vale la pena comprare 6 bottiglie (mezza cassa) invece di 12?",
+    a: "Dipende dal vino. Per vini da investimento, le casse originali intatte (OWC - Original Wooden Case) valgono di più all'asta: 10-15% premium rispetto a bottiglie sfuse. Se il tuo obiettivo è rivendere, punta su casse complete di 6 o 12. Se l'obiettivo è bere parte e tenere parte, la mezza cassa va bene.",
+    tags: ["cassa", "bottiglie", "OWC", "asta", "premium", "mezza cassa"],
+  },
+
+  // ── Account — Registrazione e piani ──────────────────────────────────────
+  {
+    id: "ac1", cat: "account",
+    q: "Come mi registro su VinoInvest?",
+    a: "Clicca 'Accedi' in alto a destra → Inserisci email e password, oppure usa 'Continua con Google' per accesso istantaneo. L'account base è completamente gratuito. I dati dell'account sono protetti da Supabase (autenticazione di livello bancario).",
+    tags: ["registrazione", "account", "accedere", "google", "gratuito"],
+  },
+  {
+    id: "ac2", cat: "account",
+    q: "Qual è la differenza tra account gratuito e premium?",
+    a: "Gratuito: market completo, watchlist (max 20 vini), portfolio (max 10 posizioni), AI Score su tutti i vini, storico prezzi base. Premium: portfolio illimitato, AI Advisor avanzato, price alerts illimitati, export CSV, report PDF. I piani B2B aggiungono funzionalità per professionisti.",
+    tags: ["gratuito", "premium", "differenza", "piano", "funzionalità"],
+  },
 ];
 
 export const CATEGORIES = [
