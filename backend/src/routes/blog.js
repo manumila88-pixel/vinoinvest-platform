@@ -1,6 +1,7 @@
 import express from "express";
 import Anthropic from "@anthropic-ai/sdk";
 import { translateObjects, translateText } from "../services/translationService.js";
+import { BLOG_POSTS } from "../data/blogPosts.js";
 
 const router = express.Router();
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -41,63 +42,7 @@ let blogCache = null;
 let blogCacheTime = 0;
 const CACHE_TTL = 60 * 60 * 1000;
 
-const FALLBACK_POSTS = [
-  {
-    id: 1,
-    title: "Come Investire in Vino nel 2026: Guida Completa",
-    slug: "come-investire-in-vino-2026",
-    excerpt: "Il vino pregiato ha consegnato rendimenti medi del 12% annuo negli ultimi 10 anni. Scopri come costruire un portfolio di fine wine.",
-    content: "Investire in vino pregiato è diventato una delle strategie di diversificazione più apprezzate. A differenza degli asset finanziari tradizionali, il vino offre una correlazione bassa con i mercati azionari e una domanda strutturalmente crescente da Asia e Stati Uniti.\n\nLa chiave è selezionare vini con alte probabilità di apprezzamento: annate eccezionali di produttori iconici come Pétrus, DRC, Sassicaia o Lafite. L'AI Score di VinoInvest analizza oltre 15 variabili per identificare le opportunità più interessanti.\n\nPer iniziare, un portafoglio minimale di €10.000: 40% Bordeaux, 30% Borgogna, 20% Italia, 10% Champagne.",
-    category: "Guida",
-    author: "VinoInvest AI",
-    publishedAt: new Date(Date.now() - 2 * 86400000).toISOString(),
-    readTime: "8 min",
-  },
-  {
-    id: 2,
-    title: "Barolo 2021: Perché Questa Annata Vale il Doppio",
-    slug: "barolo-2021-annata-eccezionale",
-    excerpt: "Con punteggi da 97 a 100 dai maggiori critici, il Barolo 2021 si candida come miglior annata del decennio.",
-    content: "Il 2021 ha regalato al Piemonte condizioni climatiche eccezionali: estate calda ma non torrida, settembre freddo e soleggiato. Il risultato è un'annata di straordinaria eleganza e longevità.\n\nI top scorer: Giacomo Conterno Monfortino (99 punti), Bartolo Mascarello (98 punti), Bruno Giacosa (98 punti). Le quotazioni attuali sono ancora accessibili rispetto al potenziale 2030-2035.\n\nL'AI Score di VinoInvest assegna ai Barolo 2021 una media di 94/100, con segnale Strong Buy.",
-    category: "Analisi",
-    author: "VinoInvest AI",
-    publishedAt: new Date(Date.now() - 86400000).toISOString(),
-    readTime: "5 min",
-  },
-  {
-    id: 3,
-    title: "Bordeaux vs Borgogna: Quale Investe Meglio nel 2026?",
-    slug: "bordeaux-vs-borgogna-2026",
-    excerpt: "Due regioni, due filosofie di investimento. Analisi completa di rischio/rendimento, liquidità e outlook per i prossimi 5 anni.",
-    content: "Bordeaux offre liquidità superiore grazie al mercato Liv-ex, prezzi più accessibili e una catena di distribuzione globale. La Borgogna offre rendimenti maggiori ma minore liquidità.\n\nPer un portfolio di €50.000: 60% Bordeaux per liquidità e diversificazione, 30% Borgogna per rendimento, 10% wildcard.\n\nL'indice Liv-ex Fine Wine 100 mostra Bordeaux in ripresa (+3.2% YTD), mentre la Borgogna consolida dopo la correzione 2024.",
-    category: "Confronto",
-    author: "VinoInvest AI",
-    publishedAt: new Date().toISOString(),
-    readTime: "6 min",
-  },
-  {
-    id: 4,
-    title: "Art. 67 TUIR: Nessuna Tassa sul Vino per i Collezionisti Italiani",
-    slug: "tasse-vino-investimento-italia-art-67-tuir",
-    excerpt: "In Italia le plusvalenze da vendita di vino da collezione sono generalmente esenti da tassazione. Ecco cosa dice la legge e quando si applica.",
-    content: "In Italia, la vendita di vino pregiato da parte di privati rientra nell'art. 67, comma 1, lett. c) del TUIR. Le plusvalenze sono considerate redditi diversi solo se realizzate entro 5 anni dall'acquisto.\n\nSe acquisti Barolo 2021 oggi e lo vendi dopo il 2031, la plusvalenza sara' presumibilmente esente da tassazione. Questo e' un vantaggio fiscale unico rispetto ad altri asset finanziari.\n\nLe accise sul vino fermo in Italia sono pari a zero - un vantaggio ulteriore rispetto a birra e superalcolici. Conserva sempre la documentazione di acquisto per poter dimostrare la data e il prezzo.",
-    category: "Fiscalita'",
-    author: "VinoInvest AI",
-    publishedAt: new Date(Date.now() - 3 * 86400000).toISOString(),
-    readTime: "5 min",
-  },
-  {
-    id: 5,
-    title: "AI Score VinoInvest: Come Funziona e Come Usarlo per Investire",
-    slug: "ai-score-vinoinvest-come-funziona",
-    excerpt: "L'AI Score e' il cuore di VinoInvest: un punteggio 0-100 che sintetizza 15+ variabili per ogni vino. Ecco la metodologia completa.",
-    content: "L'AI Score di VinoInvest misura l'attrattivita' di un vino come investimento su 5 dimensioni: Performance Storica (25%), Punteggi Critici (20%), Liquidita' di Mercato (20%), Rarita' e Scalabilita' (20%), Momentum e Outlook (15%).\n\nScore 90-100: Strong Buy. Score 75-89: Buy. Score 60-74: Watch. Score 40-59: Neutral. Score sotto 40: Avoid.\n\nEsempi reali: Barolo Monfortino 2021 score 96 (Strong Buy), Chateau Petrus 2019 score 93 (Strong Buy), DRC Romanee-Conti 2020 score 91 (Buy).\n\nL'AI Score non e' una garanzia ma un supporto decisionale. Usalo sempre insieme all'analisi del grafico storico prezzi.",
-    category: "Strumenti",
-    author: "VinoInvest AI",
-    publishedAt: new Date(Date.now() - 2 * 86400000).toISOString(),
-    readTime: "7 min",
-  },
-];
+const FALLBACK_POSTS = BLOG_POSTS;
 
 async function getPostsFromDB(page = 1, limit = 10) {
   if (!pool) return null;
