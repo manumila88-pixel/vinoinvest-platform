@@ -1,6 +1,6 @@
 # VinoInvest — HANDOFF per nuova sessione
 
-> Ultimo aggiornamento: 2026-06-10
+> Ultimo aggiornamento: 2026-06-11
 > Scopo: riprendere il lavoro senza rileggere 40 file di contesto.
 
 ---
@@ -343,7 +343,35 @@ echo "=== Benchmark ===" && curl -s https://vinoinvest-backend-2.onrender.com/ap
 
 ---
 
-## ULTIMO FIX APPLICATO (2026-06-10)
+## ULTIMO FIX APPLICATO (2026-06-11)
+
+**feat(ui): B2B/B2C dashboards, i18n calc, tooltips, 5-step tour** — commit `585f89c`
+
+### Fix critico:
+- `premiumModules.js` aveva ~80+ stringhe multi-riga con doppi apici — build falliva con "Unterminated string". Script Python ha collassato tutte in singola riga con `\n`. Ora 0 stringhe non terminate.
+
+### Task 1 — Route 404:
+- Tutte le route (Cellar, Journal, Goals, En Primeur, Auctions, Sentiment, Referral, Press, Transparency) erano già definite con i componenti corretti. Il build break era l'unica causa reale dei 404.
+
+### Task 2 — i18n consistente:
+- `InvestmentCalculator.jsx`: usa ora `useTranslation()`; label "Conservativo/Bilanciato/Aggressivo" → `t('calc.conservative/balanced/aggressive')`; tutte le UI string tradotte
+- `App.jsx`: "Notifiche" → `t('notifications.title')`, "Segna tutte come lette" → `t('notifications.markAllRead')`, "(vista completa)" → "(full access)", rimosso testo italiano hard-coded dal banner server
+- Aggiunti `calc.*` e `b2b.*` keys in `en.json` e `it.json` (altri 38 lingue fallback su en)
+
+### Task 3 — B2B vs B2C dashboard distinte:
+- Nuovo `viewMode` state ('b2c'|'b2b'); si imposta automaticamente dal `account_type` al login
+- **Toggle admin** (solo manumila88@gmail.com): bottone header "⇄ View as B2B" / "↩ View as B2C"
+- **Header B2B**: "🍷 VinoInvest PRO — VinoInvest Professional" (badge blu, title blu)
+- **Sidebar B2B**: aggiunge Market Intelligence, Clients, Reports separati da divider
+- **Dashboard B2B**: hero con KPI (AUM, Clienti, Perf. Media, Invested, P&L, Watchlist), 4 quick-action cards, notice "solo vini premium >€200"
+- **Market B2B**: `priceMin = Math.max(f.priceMin, 200)` quando viewMode === 'b2b'; notice visivo
+
+### Task 4 — Investment Calculator migliorato:
+- **Tooltip** su ogni risk profile (hover): descrizione dettagliata + rendimento atteso + volatilità
+- **Tour guidato 5 step**: budget → orizzonte → rischio → KPI → chart; progress dots; highlight outline sul componente attivo
+- **Confidence band**: legenda visiva (area ombreggiata + linea centrale); pallini sul tracciato
+
+## ULTIMO FIX APPLICATO (2026-06-10) — precedente
 
 **fix(market): card vini si sovrapponevano in verticale**
 - Causa: `VirtualWineGrid` usava `react-window` con `ROW_HEIGHT=464` fisso, ma le card sono ~500px+
