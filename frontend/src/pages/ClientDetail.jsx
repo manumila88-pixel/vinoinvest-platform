@@ -411,7 +411,7 @@ export default function ClientDetail() {
           <div style={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%,-50%)", zIndex: 201, width: "min(500px,90vw)", background: "linear-gradient(145deg,#0d1829,#070d1a)", border: "1px solid rgba(59,130,246,0.3)", borderRadius: 18, padding: "28px 24px", boxShadow: "0 24px 64px rgba(0,0,0,0.7)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
               <h3 style={{ margin: 0, fontSize: 17, fontWeight: 700 }}>Modifica Cliente</h3>
-              <button onClick={() => setShowEdit(false)} style={{ background: "none", border: "none", color: "#475569", fontSize: 20, cursor: "pointer" }}>×</button>
+              <button onClick={() => setShowEdit(false)} aria-label="Chiudi" style={{ background: "none", border: "none", color: "#475569", fontSize: 20, cursor: "pointer" }}>×</button>
             </div>
             <form onSubmit={saveEdit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               {[

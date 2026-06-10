@@ -493,11 +493,14 @@ function App() {
           .then(r => r.ok ? r.json() : [])
           .then(ids => { if (Array.isArray(ids) && ids.length) setWatchlist(ids); })
           .catch(() => {});
+        identifyUser(session.user.id, { email: session.user.email, account_type: type });
+        if (event === "SIGNED_IN") track("user_login", { method: "email" });
       } else if (event === "SIGNED_OUT") {
         setIsLoggedIn(false);
         setUserEmail("");
         setAccountType("b2c");
         setWatchlist([]);
+        resetUser();
         localStorage.removeItem("vino_user");
         localStorage.removeItem("vino_user_id");
       }
@@ -832,6 +835,7 @@ function App() {
       setWatchlist(prev => [...prev, wineId]);
       setSelectedWine(wine);
       loadChart(wineId, wine.currentPrice);
+      track("watchlist_add", { wine_id: wineId, wine_name: wine.name });
       if (userId) fetch(`${API}/api/watchlist`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -854,6 +858,7 @@ function App() {
   }, []);
 
   const handleAddToPortfolio = useCallback((wine) => {
+    track("portfolio_add_intent", { wine_id: wine.id, wine_name: wine.name, price: wine.currentPrice });
     setPurchaseWine(wine);
   }, []);
 
@@ -1005,35 +1010,35 @@ function App() {
           <div className="badge">global wine intelligence</div>
           <button
             onClick={() => { resetOnboarding(); setShowOnboarding(true); }}
-            title="Riapri guida"
+            title="Riapri guida" aria-label="Riapri guida introduttiva"
             style={{ padding: "5px 10px", border: "1px solid rgba(201,162,39,0.25)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "var(--vi-font-sans)", transition: `all var(--vi-dur) var(--vi-ease)` }}
             onMouseEnter={e => { e.currentTarget.style.color = "var(--vi-accent)"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.5)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.25)"; }}
           >📖 Guida</button>
           <button
             onClick={() => { resetTour(); setShowTour(true); }}
-            title="Fai il tour guidato"
+            title="Fai il tour guidato" aria-label="Inizia tour guidato della piattaforma"
             style={{ padding: "5px 10px", border: "1px solid rgba(30,58,95,0.5)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "var(--vi-font-sans)", transition: `all var(--vi-dur) var(--vi-ease)` }}
             onMouseEnter={e => { e.currentTarget.style.color = "#60a5fa"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.4)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(30,58,95,0.5)"; }}
           >🗺 Tour</button>
           <button
             onClick={() => setShowCalculator(true)}
-            title="Investment Calculator"
+            title="Investment Calculator" aria-label="Apri calcolatore investimento"
             style={{ padding: "5px 10px", border: "1px solid rgba(96,165,250,0.25)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "var(--vi-font-sans)" }}
             onMouseEnter={e => { e.currentTarget.style.color = "#60a5fa"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.5)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.25)"; }}
           >🧮 Calc</button>
           <button
             onClick={() => navigate("/academy")}
-            title="Wine Investment Academy"
+            title="Wine Investment Academy" aria-label="Vai all'Academy vino"
             style={{ padding: "5px 10px", border: "1px solid rgba(74,222,128,0.25)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "var(--vi-font-sans)" }}
             onMouseEnter={e => { e.currentTarget.style.color = "var(--vi-positive)"; e.currentTarget.style.borderColor = "rgba(74,222,128,0.5)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(74,222,128,0.25)"; }}
           >🎓 Academy</button>
           <button
             onClick={() => navigate("/market-index")}
-            title="VinoInvest Index"
+            title="VinoInvest Index" aria-label="Vai al VinoInvest Market Index"
             style={{ padding: "5px 10px", border: "1px solid rgba(201,162,39,0.25)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "var(--vi-font-sans)" }}
             onMouseEnter={e => { e.currentTarget.style.color = "var(--vi-accent)"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.5)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.25)"; }}
@@ -1513,22 +1518,98 @@ function App() {
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 22, flexWrap: "wrap", gap: 10 }}>
                 <h2 style={{ margin: 0 }}>{t('portfolio.title')}</h2>
                 {holdings.length > 0 && (
-                  <button
-                    className="btn-primary"
-                    style={{ width: "auto", padding: "9px 18px", fontSize: 12 }}
-                    onClick={() => {
-                      const rows = [
-                        ["Wine", "Bottles", "Buy Price (€)", "Current Price (€)", "Invested (€)", "Value (€)", "Profit/Loss (€)", "ROI (%)"],
-                        ...holdings.map(h => [h.name, h.quantity, h.purchasePrice, h.currentPrice, h.invested.toFixed(2), h.currentValue.toFixed(2), h.profit.toFixed(2), h.roi]),
-                        ["TOTAL", "", "", "", totalInvested.toFixed(2), portfolioValue.toFixed(2), totalProfit.toFixed(2), portfolioROI],
-                      ];
-                      const csv = rows.map(r => r.map(c => `"${c}"`).join(",")).join("\n");
-                      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-                      const url = URL.createObjectURL(blob);
-                      const a = document.createElement("a"); a.href = url; a.download = "vinoinvest_portfolio.csv"; a.click();
-                      URL.revokeObjectURL(url);
-                    }}
-                  >Export CSV</button>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button
+                      className="btn-primary"
+                      style={{ width: "auto", padding: "9px 18px", fontSize: 12 }}
+                      onClick={() => {
+                        const rows = [
+                          ["Wine", "Bottles", "Buy Price (€)", "Current Price (€)", "Invested (€)", "Value (€)", "Profit/Loss (€)", "ROI (%)"],
+                          ...holdings.map(h => [h.name, h.quantity, h.purchasePrice, h.currentPrice, h.invested.toFixed(2), h.currentValue.toFixed(2), h.profit.toFixed(2), h.roi]),
+                          ["TOTAL", "", "", "", totalInvested.toFixed(2), portfolioValue.toFixed(2), totalProfit.toFixed(2), portfolioROI],
+                        ];
+                        const csv = rows.map(r => r.map(c => `"${c}"`).join(",")).join("\n");
+                        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement("a"); a.href = url; a.download = "vinoinvest_portfolio.csv"; a.click();
+                        URL.revokeObjectURL(url);
+                      }}
+                    >Export CSV</button>
+                    <button
+                      className="btn-primary"
+                      style={{ width: "auto", padding: "9px 18px", fontSize: 12, background: "rgba(201,162,39,0.15)", border: "1px solid rgba(201,162,39,0.4)", color: "#C9A227" }}
+                      onClick={async () => {
+                        const { jsPDF } = await import("jspdf");
+                        const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+                        const gold = [201, 162, 39];
+                        const dark = [11, 18, 32];
+                        // Header
+                        doc.setFillColor(...dark);
+                        doc.rect(0, 0, 297, 297, "F");
+                        doc.setFontSize(22); doc.setTextColor(...gold); doc.setFont("helvetica", "bold");
+                        doc.text("VinoInvest", 14, 18);
+                        doc.setFontSize(11); doc.setTextColor(148, 163, 184); doc.setFont("helvetica", "normal");
+                        doc.text(`Portfolio Report — ${new Date().toLocaleDateString("en-GB")}`, 14, 26);
+                        doc.text(`${userEmail}`, 14, 32);
+                        // KPIs
+                        doc.setFontSize(10); doc.setTextColor(...gold); doc.setFont("helvetica", "bold");
+                        const kpis = [
+                          ["Portfolio Value", `€${portfolioValue.toLocaleString("it-IT", { maximumFractionDigits: 0 })}`],
+                          ["Total Invested", `€${totalInvested.toLocaleString("it-IT", { maximumFractionDigits: 0 })}`],
+                          ["Total P&L", `€${totalProfit >= 0 ? "+" : ""}${totalProfit.toLocaleString("it-IT", { maximumFractionDigits: 0 })}`],
+                          ["ROI", `${portfolioROI}%`],
+                          ["Positions", `${holdings.length}`],
+                        ];
+                        kpis.forEach(([label, val], i) => {
+                          const x = 14 + i * 56;
+                          doc.setFillColor(30, 41, 59);
+                          doc.roundedRect(x, 38, 52, 18, 2, 2, "F");
+                          doc.setFontSize(7); doc.setTextColor(100, 116, 139); doc.setFont("helvetica", "normal");
+                          doc.text(label, x + 4, 44);
+                          doc.setFontSize(11); doc.setTextColor(...gold); doc.setFont("helvetica", "bold");
+                          doc.text(val, x + 4, 52);
+                        });
+                        // Table header
+                        const cols = [80, 18, 28, 28, 28, 28, 26, 18];
+                        const headers = ["Wine", "Qty", "Buy €", "Current €", "Invested €", "Value €", "P&L €", "ROI %"];
+                        let y = 66;
+                        doc.setFillColor(30, 41, 59); doc.rect(14, y - 5, 269, 8, "F");
+                        let x = 14;
+                        headers.forEach((h, i) => {
+                          doc.setFontSize(8); doc.setTextColor(...gold); doc.setFont("helvetica", "bold");
+                          doc.text(h, x + 1, y); x += cols[i];
+                        });
+                        y += 6;
+                        holdings.forEach((h, idx) => {
+                          if (idx % 2 === 0) { doc.setFillColor(15, 23, 42); doc.rect(14, y - 4, 269, 7, "F"); }
+                          x = 14;
+                          const row = [
+                            h.name.length > 35 ? h.name.substring(0, 35) + "…" : h.name,
+                            String(h.quantity),
+                            `€${Number(h.purchasePrice).toLocaleString("it-IT", { maximumFractionDigits: 0 })}`,
+                            `€${Number(h.currentPrice).toLocaleString("it-IT", { maximumFractionDigits: 0 })}`,
+                            `€${h.invested.toLocaleString("it-IT", { maximumFractionDigits: 0 })}`,
+                            `€${h.currentValue.toLocaleString("it-IT", { maximumFractionDigits: 0 })}`,
+                            `${h.profit >= 0 ? "+" : ""}€${h.profit.toLocaleString("it-IT", { maximumFractionDigits: 0 })}`,
+                            `${h.roi}%`,
+                          ];
+                          row.forEach((cell, i) => {
+                            doc.setFontSize(7.5); doc.setFont("helvetica", "normal");
+                            doc.setTextColor(i === 6 ? (h.profit >= 0 ? 74 : 248) : 226, i === 6 ? (h.profit >= 0 ? 222 : 113) : 232, i === 6 ? (h.profit >= 0 ? 128 : 113) : 240);
+                            doc.text(cell, x + 1, y); x += cols[i];
+                          });
+                          y += 7;
+                          if (y > 185) { doc.addPage(); doc.setFillColor(...dark); doc.rect(0, 0, 297, 210, "F"); y = 20; }
+                        });
+                        // Footer
+                        doc.setFontSize(7); doc.setTextColor(71, 85, 105);
+                        doc.text("Generated by VinoInvest · vinoinvest-platform.vercel.app · Data sources: Wine-Searcher, CellarTracker, Liv-ex", 14, 200);
+                        doc.text("⚠ Past performance does not guarantee future results. Not financial advice.", 14, 205);
+                        doc.save(`vinoinvest-portfolio-${new Date().toISOString().split("T")[0]}.pdf`);
+                        track("portfolio_export_pdf", { holdings_count: holdings.length });
+                      }}
+                    >Export PDF</button>
+                  </div>
                 )}
               </div>
               {holdings.length === 0 && (() => {
@@ -2010,6 +2091,9 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/sw.js").catch(() => {});
   });
 }
+
+// Init analytics
+initAnalytics();
 
 // Web Vitals reporting — sends to console in dev, to analytics in production
 function reportWebVitals(metric) {

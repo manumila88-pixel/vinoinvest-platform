@@ -537,7 +537,7 @@ export default function OrgDashboard() {
           <div style={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%,-50%)", zIndex: 201, width: "min(520px,90vw)", background: "linear-gradient(145deg,#0d1829,#070d1a)", border: "1px solid rgba(59,130,246,0.3)", borderRadius: 18, padding: "32px 28px", boxShadow: "0 24px 64px rgba(0,0,0,0.7)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
               <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, fontFamily: "'Playfair Display',serif" }}>Invita Cliente</h3>
-              <button onClick={() => { setShowInviteModal(false); setInviteResult(null); }} style={{ background: "none", border: "none", color: "#475569", fontSize: 20, cursor: "pointer", lineHeight: 1 }}>×</button>
+              <button onClick={() => { setShowInviteModal(false); setInviteResult(null); }} aria-label="Chiudi" style={{ background: "none", border: "none", color: "#475569", fontSize: 20, cursor: "pointer", lineHeight: 1 }}>×</button>
             </div>
 
             {!inviteResult ? (
