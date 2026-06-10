@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { authFetch } from "../lib/authFetch";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
@@ -64,6 +65,7 @@ function printReport(data, rates) {
 }
 
 export default function DashboardB2B() {
+  const { t } = useTranslation();
   const [data, setData] = useState(null);
   const [rates, setRates] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -84,7 +86,7 @@ export default function DashboardB2B() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div style={{ color: "var(--vi-text-dim)", padding: 40 }}>Caricamento dashboard...</div>;
+  if (loading) return <div style={{ color: "var(--vi-text-dim)", padding: 40 }}>{t('common.loadingDashboard')}</div>;
 
   const card = (label, value, sub) => (
     <div className="statCard" key={label}>

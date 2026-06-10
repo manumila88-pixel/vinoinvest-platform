@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "../lib/supabase";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
@@ -20,6 +21,7 @@ function StarRating({ value, onChange }) {
 }
 
 export default function WineJournal() {
+  const { t } = useTranslation();
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
@@ -98,7 +100,7 @@ export default function WineJournal() {
           ))}
         </div>
 
-        {loading && <div style={{ color: "var(--vi-text-dim)", textAlign: "center", padding: 40 }}>Caricamento...</div>}
+        {loading && <div style={{ color: "var(--vi-text-dim)", textAlign: "center", padding: 40 }}>{t('common.loading')}</div>}
 
         {!loading && filtered.length === 0 && (
           <div style={{ textAlign: "center", padding: "60px 24px", color: "var(--vi-text-dim)" }}>

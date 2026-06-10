@@ -64,6 +64,9 @@
   },
   "common": {
     "loading": "Caricamento...",
+    "loadingDashboard": "Caricamento dashboard...",
+    "loadingData": "Caricamento dati...",
+    "loadingProducers": "Caricamento dati produttori...",
     "noData": "Dati non disponibili",
     "refresh": "Aggiorna",
     "save": "Salva",
@@ -72,6 +75,25 @@
     "back": "Indietro",
     "error": "Errore",
     "success": "Successo"
+  },
+  "modal": {
+    "producer": "Produttore",
+    "vintageQuality": "Qualità Annata",
+    "vintageScore": "Annata {{year}}: {{score}}/100",
+    "searchVivino": "🍇 Cerca su Vivino"
+  },
+  "purchase": {
+    "loadingPlatforms": "Caricamento piattaforme...",
+    "addExisting": "Aggiungi al tuo portfolio un acquisto già effettuato.",
+    "pricePaid": "Prezzo pagato (€)",
+    "purchaseDate": "Data acquisto",
+    "affiliateNote": "Link affiliati — VinoInvest può ricevere una commissione sugli acquisti"
+  },
+  "market": {
+    "aiScoreHint": "Usa l'AI Score di VinoInvest per trovare le migliori opportunità di investimento."
+  },
+  "chat": {
+    "agentHint": "Chatta con il tuo consulente AI — analisi portafoglio, notizie mercato, opportunità."
   },
   "chart": {
     "realData": "Dati reali",

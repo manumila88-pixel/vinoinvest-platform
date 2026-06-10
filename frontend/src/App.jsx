@@ -1502,7 +1502,7 @@ function App() {
                   ))}
                   <div style={{ marginTop: 32, padding: "16px 20px", background: "rgba(201,162,39,0.06)", border: "1px solid rgba(201,162,39,0.2)", borderRadius: 12 }}>
                     <p style={{ fontSize: 13, color: "#C9A227", fontWeight: 700, marginBottom: 6 }}>Inizia a investire</p>
-                    <p style={{ fontSize: 12, color: "#64748b", marginBottom: 12 }}>Usa l'AI Score di VinoInvest per trovare le migliori opportunità di investimento.</p>
+                    <p style={{ fontSize: 12, color: "#64748b", marginBottom: 12 }}>{t('market.aiScoreHint')}</p>
                     <button className="btn-primary" style={{ width: "auto", padding: "10px 20px" }} onClick={() => { setSelectedPost(null); setTab("market"); }}>Esplora il Mercato →</button>
                   </div>
                 </article>
@@ -1851,7 +1851,7 @@ function App() {
               {/* ── AI Chat Advisor ────────────────────────────────────────── */}
               <div style={{ marginBottom: 36 }}>
                 <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 22, fontWeight: 800, marginBottom: 4 }}>AI Wine Advisor</h2>
-                <p style={{ color: "#64748b", fontSize: 13, marginBottom: 16 }}>Chatta con il tuo consulente AI — analisi portafoglio, notizie mercato, opportunità.</p>
+                <p style={{ color: "#64748b", fontSize: 13, marginBottom: 16 }}>{t('chat.agentHint')}</p>
                 <div style={{ background: "rgba(11,18,32,0.85)", border: "1px solid rgba(30,41,59,0.7)", borderRadius: 16, overflow: "hidden" }}>
                   <Suspense fallback={<div style={{ minHeight: 200, display: "flex", alignItems: "center", justifyContent: "center", color: "#3a5a7a", fontSize: 13 }}>Loading...</div>}>
                     <AgentChat holdings={holdings} onAddToPortfolio={handleAddToPortfolio} />

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
 import Bottle3D from "./components/Bottle3D";
 import PriceHistoryChart from "./components/PriceHistoryChart";
 import SourceBadge from "./components/SourceBadge";
@@ -139,6 +140,7 @@ function RedditSentimentBadge({ wineName }) {
 }
 
 function ProducerInfoCard({ producerName }) {
+  const { t } = useTranslation();
   const [info, setInfo] = useState(null);
 
   useEffect(() => {
@@ -166,7 +168,7 @@ function ProducerInfoCard({ producerName }) {
       border: "1px solid var(--vi-border)",
     }}>
       <p style={{ fontSize: 10, color: "#475569", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700 }}>
-        Produttore
+        {t('modal.producer')}
       </p>
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
         {info.country && (
@@ -190,6 +192,7 @@ function ProducerInfoCard({ producerName }) {
 }
 
 function VintageQualityBadge({ wine }) {
+  const { t } = useTranslation();
   const [vintageData, setVintageData] = useState(null);
 
   useEffect(() => {
@@ -225,11 +228,11 @@ function VintageQualityBadge({ wine }) {
       border: `1px solid ${border}`,
     }}>
       <p style={{ fontSize: 10, color: "#475569", marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700 }}>
-        Qualita Annata
+        {t('modal.vintageQuality')}
       </p>
       <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
         <span style={{ fontSize: 13, fontWeight: 800, color }}>
-          Annata {year}: {score}/100
+          {t('modal.vintageScore', { year, score })}
         </span>
         <span style={{ fontSize: 11, color, background: "rgba(0,0,0,0.2)", padding: "1px 7px", borderRadius: 999, border: `1px solid ${border}` }}>
           {vintageData.label}
@@ -373,6 +376,7 @@ function FoodPairings({ wineId }) {
 }
 
 export default function WineBottle3DModal({ wine, onClose }) {
+  const { t } = useTranslation();
   const placeholderImg = (() => {
     const t = `${wine.type || ""} ${wine.variety || ""} ${wine.region || ""} ${wine.name || ""}`.toLowerCase();
     if (/champagne|prosecco|cava|sparkling/.test(t)) return "https://images.unsplash.com/photo-1568213816046-0ee1c42bd559?w=400&q=80&fm=webp&fit=crop";
@@ -672,7 +676,7 @@ export default function WineBottle3DModal({ wine, onClose }) {
               onMouseEnter={e => e.currentTarget.style.background = "rgba(96,165,250,0.15)"}
               onMouseLeave={e => e.currentTarget.style.background = "rgba(96,165,250,0.08)"}
             >
-              🍇 Cerca su Vivino
+              {t('modal.searchVivino')}
             </a>
           </div>
 

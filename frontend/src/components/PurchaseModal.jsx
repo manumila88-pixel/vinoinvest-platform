@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
@@ -13,6 +14,7 @@ const PLATFORM_COLORS = {
 };
 
 export default function PurchaseModal({ wine, onClose, onImport }) {
+  const { t } = useTranslation();
   const [platforms, setPlatforms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState("buy"); // "buy" | "import"
@@ -97,7 +99,7 @@ export default function PurchaseModal({ wine, onClose, onImport }) {
         {tab === "buy" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {loading ? (
-              <div style={{ color: "#475569", textAlign: "center", padding: 20 }}>Caricamento piattaforme...</div>
+              <div style={{ color: "#475569", textAlign: "center", padding: 20 }}>{t('purchase.loadingPlatforms')}</div>
             ) : platforms.map(p => (
               <a
                 key={p.id}
@@ -121,7 +123,7 @@ export default function PurchaseModal({ wine, onClose, onImport }) {
               </a>
             ))}
             <p style={{ fontSize: 10, color: "#334155", textAlign: "center", marginTop: 8 }}>
-              Link affiliati — VinoInvest può ricevere una commissione sugli acquisti
+              {t('purchase.affiliateNote')}
             </p>
           </div>
         )}
@@ -129,13 +131,13 @@ export default function PurchaseModal({ wine, onClose, onImport }) {
         {/* Import tab */}
         {tab === "import" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <p style={{ fontSize: 13, color: "#64748b" }}>Aggiungi al tuo portfolio un acquisto già effettuato.</p>
+            <p style={{ fontSize: 13, color: "#64748b" }}>{t('purchase.addExisting')}</p>
 
             {[
-              { key: "platform", label: "Piattaforma", type: "select", options: ["wine-searcher", "vivino", "millesima", "tannico", "idealwine", "callmewine", "wine-com", "altro"] },
-              { key: "price", label: "Prezzo pagato (€)", type: "number", placeholder: "820" },
-              { key: "quantity", label: "Bottiglie", type: "number", placeholder: "1" },
-              { key: "purchaseDate", label: "Data acquisto", type: "date" },
+              { key: "platform", label: "Platform", type: "select", options: ["wine-searcher", "vivino", "millesima", "tannico", "idealwine", "callmewine", "wine-com", "altro"] },
+              { key: "price", label: t('purchase.pricePaid'), type: "number", placeholder: "820" },
+              { key: "quantity", label: "Bottles", type: "number", placeholder: "1" },
+              { key: "purchaseDate", label: t('purchase.purchaseDate'), type: "date" },
             ].map(({ key, label, type, placeholder, options }) => (
               <div key={key}>
                 <label style={{ fontSize: 11, color: "#64748b", display: "block", marginBottom: 5, textTransform: "uppercase", letterSpacing: "0.08em" }}>{label}</label>

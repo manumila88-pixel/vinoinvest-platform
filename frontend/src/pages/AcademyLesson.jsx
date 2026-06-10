@@ -302,6 +302,7 @@ function SlidesSection({ slides }) {
 
 // ── CHARTS SECTION ────────────────────────────────────────────────────────────
 function ChartsSection({ wineId, wineData, media }) {
+  const { t } = useTranslation();
   const [priceHistory, setPriceHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -333,7 +334,7 @@ function ChartsSection({ wineId, wineData, media }) {
         </div>
         <div style={{ fontSize: 12, color: "#64748b", marginBottom: 16 }}>Fonte: VinoInvest DB / Liv-ex</div>
         {loading ? (
-          <div style={{ height: 180, display: "flex", alignItems: "center", justifyContent: "center", color: "#475569" }}>Caricamento dati...</div>
+          <div style={{ height: 180, display: "flex", alignItems: "center", justifyContent: "center", color: "#475569" }}>{t('common.loadingData')}</div>
         ) : priceHistory.length > 1 ? (
           <div style={{ overflowX: "auto" }}>
             <ComposedChart width={380} height={180} data={priceHistory} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>

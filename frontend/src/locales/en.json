@@ -64,6 +64,9 @@
   },
   "common": {
     "loading": "Loading...",
+    "loadingDashboard": "Loading dashboard...",
+    "loadingData": "Loading data...",
+    "loadingProducers": "Loading producers data...",
     "noData": "No data available",
     "refresh": "Refresh",
     "save": "Save",
@@ -72,6 +75,25 @@
     "back": "Back",
     "error": "Error",
     "success": "Success"
+  },
+  "modal": {
+    "producer": "Producer",
+    "vintageQuality": "Vintage Quality",
+    "vintageScore": "Vintage {{year}}: {{score}}/100",
+    "searchVivino": "🍇 Search on Vivino"
+  },
+  "purchase": {
+    "loadingPlatforms": "Loading platforms...",
+    "addExisting": "Add an existing purchase to your portfolio.",
+    "pricePaid": "Purchase price (€)",
+    "purchaseDate": "Purchase date",
+    "affiliateNote": "Affiliate links — VinoInvest may receive a commission on purchases"
+  },
+  "market": {
+    "aiScoreHint": "Use VinoInvest AI Score to find the best investment opportunities."
+  },
+  "chat": {
+    "agentHint": "Chat with your AI advisor — portfolio analysis, market news, opportunities."
   },
   "chart": {
     "realData": "Real data",

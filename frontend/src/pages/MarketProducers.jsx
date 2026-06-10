@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
 import { API } from "../lib/constants";
 
 const BG = "#0b1220";
@@ -57,6 +58,7 @@ function NewsItem({ title, link, source, pubDate, description }) {
 
 export default function MarketProducers() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -142,7 +144,7 @@ export default function MarketProducers() {
         </div>
 
         {loading && (
-          <div style={{ color: "#64748b", textAlign: "center", padding: 60, fontSize: 15 }}>Caricamento dati produttori...</div>
+          <div style={{ color: "#64748b", textAlign: "center", padding: 60, fontSize: 15 }}>{t('common.loadingProducers')}</div>
         )}
         {error && (
           <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 12, padding: 16, color: "#f87171" }}>
