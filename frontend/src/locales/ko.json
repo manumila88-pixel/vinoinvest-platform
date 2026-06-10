@@ -1,6 +1,156 @@
 {
+  "nav": {
+    "dashboard": "대시보드",
+    "market": "시장",
+    "news": "와인 뉴스",
+    "blog": "AI 블로그",
+    "analysis": "분석",
+    "portfolio": "내 포트폴리오",
+    "portfolioAI": "AI 포트폴리오",
+    "b2b": "B2B 대시보드",
+    "alerts": "알림",
+    "pricing": "요금제",
+    "calculator": "계산기",
+    "academy": "아카데미",
+    "index": "인덱스"
+  },
+  "hero": {
+    "title": "글로벌 와인 투자 플랫폼",
+    "subtitle": "AI 포트폴리오 빌더, 와인 인텔리전스, 분석 및 전 세계 검색.",
+    "searchPlaceholder": "와인, 생산자, 지역, 빈티지 검색..."
+  },
+  "stats": {
+    "globalMarket": "글로벌 시장",
+    "portfolioValue": "포트폴리오 가치",
+    "invested": "투자금",
+    "profitLoss": "손익",
+    "roi": "ROI",
+    "watchlist": "관심 목록"
+  },
+  "market": {
+    "searchPlaceholder": "전 세계 와인 검색...",
+    "addToPortfolio": "+ 포트폴리오에 추가",
+    "buyOn": "Wine-Searcher에서 구매 →",
+    "noWines": "와인을 찾을 수 없습니다.",
+    "loadingMore": "더 많은 와인 불러오기…",
+    "aiScoreHint": "VinoInvest AI 점수를 사용해 최고의 투자 기회를 찾아보세요."
+  },
+  "watchlist": {
+    "title": "관심 목록 분석",
+    "empty": "시장 섹션에서 관심 목록에 와인을 추가하세요."
+  },
+  "portfolio": {
+    "title": "내 포트폴리오",
+    "exportCSV": "CSV 내보내기",
+    "noPositions": "아직 포지션이 없습니다. 시장으로 이동하여 포지션을 추가하세요.",
+    "growth": "포트폴리오 성장",
+    "diversification": "분산투자",
+    "byType": "유형별",
+    "byWine": "와인별",
+    "estimatedNote": "* 와인 시장 역사적 연평균 8% 성장 기반 추정값",
+    "demo": "데모 포트폴리오를 보고 있습니다",
+    "addFirstWine": "첫 번째 실제 와인 추가 →"
+  },
+  "notifications": {
+    "title": "알림",
+    "enablePush": "🔔 푸시 활성화",
+    "markAllRead": "모두 읽음 표시",
+    "noNotifications": "아직 알림이 없습니다. 시장 섹션에서 가격 알림을 설정하세요.",
+    "pushEnabled": "푸시 알림이 활성화되었습니다!"
+  },
+  "auth": {
+    "signOut": "로그아웃",
+    "serverStarting": "⚡ 서버 시작 중... 잠시만 기다려 주세요",
+    "offline": "⚠️ 연결 없음 — 일부 기능을 사용할 수 없습니다"
+  },
+  "common": {
+    "loading": "로딩 중...",
+    "loadingDashboard": "대시보드 로딩 중...",
+    "loadingData": "데이터 로딩 중...",
+    "loadingProducers": "생산자 데이터 로딩 중...",
+    "noData": "데이터 없음",
+    "refresh": "새로고침",
+    "save": "저장",
+    "cancel": "취소",
+    "close": "닫기",
+    "back": "뒤로",
+    "error": "오류",
+    "success": "성공"
+  },
+  "modal": {
+    "producer": "생산자",
+    "vintageQuality": "빈티지 품질",
+    "vintageScore": "{{year}} 빈티지: {{score}}/100",
+    "searchVivino": "🍇 Vivino에서 검색"
+  },
+  "purchase": {
+    "loadingPlatforms": "플랫폼 로딩 중...",
+    "addExisting": "기존 구매를 포트폴리오에 추가합니다.",
+    "pricePaid": "구매 가격 (€)",
+    "purchaseDate": "구매 날짜",
+    "affiliateNote": "제휴 링크 — VinoInvest는 구매에서 수수료를 받을 수 있습니다"
+  },
+  "chat": {
+    "agentHint": "AI 어드바이저와 채팅 — 포트폴리오 분석, 시장 뉴스, 투자 기회."
+  },
+  "chart": {
+    "realData": "실제 데이터",
+    "estimated": "추정 데이터",
+    "mixed": "혼합"
+  },
+  "analysis": {
+    "algorithmicNote": "* 알고리즘 분석 (ANTHROPIC_API_KEY가 서버에 구성되지 않음)"
+  },
   "disclaimer": {
     "text": "VinoInvest는 파인 와인 시장을 위한 분석 및 인텔리전스 플랫폼입니다. 당사는 재무 조언을 제공하지 않으며, 자산을 관리하지 않고, MiFID II 라이선스를 보유하지 않습니다. 모든 AI 점수 및 가격은 정보 제공 목적으로만 제공됩니다. 과거 성과가 미래 결과를 보장하지 않습니다.",
     "link": "전체 면책 조항 →"
+  },
+  "calc": {
+    "title": "투자 계산기",
+    "guidedTour": "가이드 투어",
+    "closeTour": "투어 닫기",
+    "step": "단계",
+    "initialBudget": "초기 예산",
+    "horizon": "투자 기간",
+    "year": "년",
+    "years": "년",
+    "conservative": "보수형",
+    "balanced": "균형형",
+    "aggressive": "적극형",
+    "conservativeDesc": "예상 수익률 연 4–6%, 낮은 변동성. 자산 보존에 적합. 안정적인 시장의 보르도 프르미에 크뤼 중심.",
+    "balancedDesc": "예상 수익률 연 7–10%, 중간 변동성. 보르도, 부르고뉴, 토스카나 혼합. 5–7년 투자 기간에 적합.",
+    "aggressiveDesc": "예상 수익률 연 11–15%, 높은 변동성. 신흥 산지, 최고 빈티지, 컬렉터블. 10년 이상 장기 투자 적합.",
+    "lowVolatility": "낮은 변동성",
+    "mediumVolatility": "중간 변동성",
+    "highVolatility": "높은 변동성",
+    "investment": "투자금",
+    "projectedValue": "예상 가치",
+    "totalROI": "총 ROI",
+    "confidenceBand": "신뢰 구간",
+    "centralProjection": "중심 예측",
+    "disclaimer": "파인 와인 역사적 수익률 기반 참고 예측. 금융 조언이 아닙니다. 과거 성과는 미래 결과를 보장하지 않습니다.",
+    "tourBudgetTitle": "초기 예산",
+    "tourBudgetDesc": "파인 와인 투자 금액을 설정하세요. €1,000에서 €500,000까지.",
+    "tourHorizonTitle": "투자 기간",
+    "tourHorizonDesc": "파인 와인은 5–10년에 걸쳐 크게 가치가 상승합니다. 기간이 길수록 리스크가 감소합니다.",
+    "tourRiskTitle": "리스크 프로파일",
+    "tourRiskDesc": "각 옵션에 마우스를 올려 자세한 설명, 예상 수익률, 변동성을 확인하세요.",
+    "tourSummaryTitle": "예상 가치",
+    "tourSummaryDesc": "선택한 기간 말의 포트폴리오 가치 중심 추정치.",
+    "tourChartTitle": "신뢰 구간",
+    "tourChartDesc": "음영 영역은 가능한 결과의 범위를 보여주며 시간이 지남에 따라 넓어집니다."
+  },
+  "b2b": {
+    "headerTitle": "VinoInvest Professional",
+    "badge": "PRO",
+    "aum": "운용 자산",
+    "clients": "활성 고객",
+    "performance": "평균 수익률",
+    "viewAsB2B": "B2B로 보기",
+    "viewAsB2C": "B2C로 보기",
+    "marketIntelligence": "시장 인텔리전스",
+    "reports": "보고서",
+    "clientsNav": "고객",
+    "premiumOnly": "프리미엄 와인만 (>€200)"
   }
 }

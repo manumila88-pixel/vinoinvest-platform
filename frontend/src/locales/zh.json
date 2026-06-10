@@ -1,6 +1,156 @@
 {
+  "nav": {
+    "dashboard": "仪表板",
+    "market": "市场",
+    "news": "葡萄酒新闻",
+    "blog": "AI博客",
+    "analysis": "分析",
+    "portfolio": "我的投资组合",
+    "portfolioAI": "AI投资组合",
+    "b2b": "B2B仪表板",
+    "alerts": "提醒",
+    "pricing": "定价",
+    "calculator": "计算器",
+    "academy": "学院",
+    "index": "指数"
+  },
+  "hero": {
+    "title": "全球葡萄酒投资平台",
+    "subtitle": "AI投资组合构建器、葡萄酒智能、分析和全球搜索。",
+    "searchPlaceholder": "搜索葡萄酒、生产商、产区、年份..."
+  },
+  "stats": {
+    "globalMarket": "全球市场",
+    "portfolioValue": "投资组合价值",
+    "invested": "已投资",
+    "profitLoss": "盈利/亏损",
+    "roi": "回报率",
+    "watchlist": "关注列表"
+  },
+  "market": {
+    "searchPlaceholder": "在全球搜索任何葡萄酒...",
+    "addToPortfolio": "+ 添加到投资组合",
+    "buyOn": "在Wine-Searcher购买 →",
+    "noWines": "未找到葡萄酒。",
+    "loadingMore": "加载更多葡萄酒…",
+    "aiScoreHint": "使用 VinoInvest AI 评分寻找最佳投资机会。"
+  },
+  "watchlist": {
+    "title": "关注列表分析",
+    "empty": "从市场板块将葡萄酒添加到您的关注列表。"
+  },
+  "portfolio": {
+    "title": "我的投资组合",
+    "exportCSV": "导出CSV",
+    "noPositions": "暂无持仓。前往市场板块添加持仓。",
+    "growth": "投资组合增长",
+    "diversification": "多元化",
+    "byType": "按类型",
+    "byWine": "按葡萄酒",
+    "estimatedNote": "* 基于葡萄酒市场历史年均8%增长的估算值",
+    "demo": "您正在查看演示投资组合",
+    "addFirstWine": "添加您的第一支真实葡萄酒 →"
+  },
+  "notifications": {
+    "title": "通知",
+    "enablePush": "🔔 启用推送",
+    "markAllRead": "全部标为已读",
+    "noNotifications": "暂无通知。在市场板块设置价格提醒。",
+    "pushEnabled": "推送通知已启用！"
+  },
+  "auth": {
+    "signOut": "退出",
+    "serverStarting": "⚡ 服务器启动中... 请稍候",
+    "offline": "⚠️ 无连接 — 部分功能不可用"
+  },
+  "common": {
+    "loading": "加载中...",
+    "loadingDashboard": "正在加载仪表板...",
+    "loadingData": "正在加载数据...",
+    "loadingProducers": "正在加载生产商数据...",
+    "noData": "无数据",
+    "refresh": "刷新",
+    "save": "保存",
+    "cancel": "取消",
+    "close": "关闭",
+    "back": "返回",
+    "error": "错误",
+    "success": "成功"
+  },
+  "modal": {
+    "producer": "生产商",
+    "vintageQuality": "年份质量",
+    "vintageScore": "{{year}} 年份: {{score}}/100",
+    "searchVivino": "🍇 在 Vivino 上搜索"
+  },
+  "purchase": {
+    "loadingPlatforms": "正在加载平台...",
+    "addExisting": "将已有购买添加到您的投资组合。",
+    "pricePaid": "购买价格（€）",
+    "purchaseDate": "购买日期",
+    "affiliateNote": "联盟链接 — VinoInvest 可能从购买中获得佣金"
+  },
+  "chat": {
+    "agentHint": "与您的 AI 顾问聊天 — 投资组合分析、市场新闻、投资机会。"
+  },
+  "chart": {
+    "realData": "真实数据",
+    "estimated": "估算数据",
+    "mixed": "混合"
+  },
+  "analysis": {
+    "algorithmicNote": "* 算法分析（服务器未配置 ANTHROPIC_API_KEY）"
+  },
   "disclaimer": {
     "text": "VinoInvest 是一个针对精品葡萄酒市场的分析与智能平台。我们不提供财务建议，不管理资产，也不持有 MiFID II 许可证。所有 AI 评分和价格仅供参考。过去的表现不保证未来的结果。",
     "link": "完整免责声明 →"
+  },
+  "calc": {
+    "title": "投资计算器",
+    "guidedTour": "引导式参观",
+    "closeTour": "关闭参观",
+    "step": "步骤",
+    "initialBudget": "初始预算",
+    "horizon": "投资期限",
+    "year": "年",
+    "years": "年",
+    "conservative": "保守型",
+    "balanced": "平衡型",
+    "aggressive": "激进型",
+    "conservativeDesc": "预期年化收益4–6%，低波动性。适合资本保值。重点关注流动性稳定的波尔多特级庄。",
+    "balancedDesc": "预期年化收益7–10%，中等波动性。混合配置：波尔多、勃艮第、托斯卡纳。适合5–7年期限。",
+    "aggressiveDesc": "预期年化收益11–15%，高波动性。新兴产区、顶级年份和珍稀收藏品。适合10年以上期限。",
+    "lowVolatility": "低波动性",
+    "mediumVolatility": "中等波动性",
+    "highVolatility": "高波动性",
+    "investment": "投资额",
+    "projectedValue": "预计价值",
+    "totalROI": "总回报率",
+    "confidenceBand": "置信区间",
+    "centralProjection": "中心预测",
+    "disclaimer": "基于精品葡萄酒历史收益的参考预测，不构成投资建议。过往表现不代表未来收益。",
+    "tourBudgetTitle": "初始预算",
+    "tourBudgetDesc": "设置您在精品葡萄酒的投资金额，从€1,000到€500,000。",
+    "tourHorizonTitle": "投资期限",
+    "tourHorizonDesc": "精品葡萄酒通常在5–10年内大幅升值，期限越长风险越低。",
+    "tourRiskTitle": "风险偏好",
+    "tourRiskDesc": "将鼠标悬停在每个选项上，查看详细描述、预期收益和波动率。",
+    "tourSummaryTitle": "预计价值",
+    "tourSummaryDesc": "基于历史收益，您的投资组合在选定期限末的中心估算值。",
+    "tourChartTitle": "置信区间",
+    "tourChartDesc": "阴影区域显示可能结果的范围，随时间推移不确定性增加。"
+  },
+  "b2b": {
+    "headerTitle": "VinoInvest Professional",
+    "badge": "PRO",
+    "aum": "管理资产规模",
+    "clients": "活跃客户",
+    "performance": "平均表现",
+    "viewAsB2B": "B2B视图",
+    "viewAsB2C": "B2C视图",
+    "marketIntelligence": "市场情报",
+    "reports": "报告",
+    "clientsNav": "客户",
+    "premiumOnly": "仅高端葡萄酒（>€200）"
   }
 }

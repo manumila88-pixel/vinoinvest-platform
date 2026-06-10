@@ -1,6 +1,156 @@
 {
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "market": "Marché",
+    "news": "Actualités Vins",
+    "blog": "Blog IA",
+    "analysis": "Analyse",
+    "portfolio": "Mon Portefeuille",
+    "portfolioAI": "Portefeuille IA",
+    "b2b": "Dashboard B2B",
+    "alerts": "Alertes",
+    "pricing": "Tarifs",
+    "calculator": "Calc",
+    "academy": "Académie",
+    "index": "Indice"
+  },
+  "hero": {
+    "title": "Plateforme Mondiale d'Investissement Viticole",
+    "subtitle": "Constructeur de portefeuille IA, intelligence viticole, analyses et recherche mondiale.",
+    "searchPlaceholder": "Rechercher des vins, producteurs, régions, millésimes..."
+  },
+  "stats": {
+    "globalMarket": "Marché Mondial",
+    "portfolioValue": "Valeur du Portefeuille",
+    "invested": "Investi",
+    "profitLoss": "Profit / Perte",
+    "roi": "ROI",
+    "watchlist": "Liste de surveillance"
+  },
+  "market": {
+    "searchPlaceholder": "Rechercher n'importe quel vin dans le monde...",
+    "addToPortfolio": "+ Ajouter au Portefeuille",
+    "buyOn": "Acheter sur Wine-Searcher →",
+    "noWines": "Aucun vin trouvé.",
+    "loadingMore": "Chargement de plus de vins…",
+    "aiScoreHint": "Utilisez l'AI Score de VinoInvest pour trouver les meilleures opportunités d'investissement."
+  },
+  "watchlist": {
+    "title": "Analyse Watchlist",
+    "empty": "Ajoutez des vins à votre watchlist depuis la section Marché."
+  },
+  "portfolio": {
+    "title": "Mon Portefeuille",
+    "exportCSV": "Exporter CSV",
+    "noPositions": "Aucune position. Allez sur le Marché et ajoutez une position.",
+    "growth": "Croissance du Portefeuille",
+    "diversification": "Diversification",
+    "byType": "Par Type",
+    "byWine": "Par Vin",
+    "estimatedNote": "* Valeurs estimées basées sur 8% de croissance annuelle moyenne (moyenne historique du marché viticole)",
+    "demo": "Vous visualisez un portefeuille DÉMO",
+    "addFirstWine": "Ajoutez votre premier vrai vin →"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "enablePush": "🔔 Activer Push",
+    "markAllRead": "Tout marquer comme lu",
+    "noNotifications": "Pas encore de notifications. Configurez une alerte de prix dans la section Marché.",
+    "pushEnabled": "Notifications push activées !"
+  },
+  "auth": {
+    "signOut": "Déconnexion",
+    "serverStarting": "⚡ Serveur en démarrage… quelques secondes",
+    "offline": "⚠️ Pas de connexion — certaines fonctionnalités sont indisponibles"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "loadingDashboard": "Chargement du tableau de bord...",
+    "loadingData": "Chargement des données...",
+    "loadingProducers": "Chargement des données producteurs...",
+    "noData": "Aucune donnée disponible",
+    "refresh": "Actualiser",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "back": "Retour",
+    "error": "Erreur",
+    "success": "Succès"
+  },
+  "modal": {
+    "producer": "Producteur",
+    "vintageQuality": "Qualité Millésime",
+    "vintageScore": "Millésime {{year}} : {{score}}/100",
+    "searchVivino": "🍇 Rechercher sur Vivino"
+  },
+  "purchase": {
+    "loadingPlatforms": "Chargement des plateformes...",
+    "addExisting": "Ajoutez un achat existant à votre portefeuille.",
+    "pricePaid": "Prix d'achat (€)",
+    "purchaseDate": "Date d'achat",
+    "affiliateNote": "Liens affiliés — VinoInvest peut recevoir une commission sur les achats"
+  },
+  "chat": {
+    "agentHint": "Discutez avec votre conseiller IA — analyse de portefeuille, actualités marché, opportunités."
+  },
+  "chart": {
+    "realData": "Données réelles",
+    "estimated": "Données estimées",
+    "mixed": "Mixte"
+  },
+  "analysis": {
+    "algorithmicNote": "* Analyse algorithmique (ANTHROPIC_API_KEY non configuré sur le serveur)"
+  },
   "disclaimer": {
     "text": "VinoInvest est une plateforme d'analyse et d'intelligence pour le marché des vins fins. Nous n'offrons pas de conseils financiers, ne gérons pas d'actifs et ne détenons pas de licence MiFID II. Tous les AI Scores et les prix sont fournis à titre informatif uniquement. Les performances passées ne garantissent pas les résultats futurs.",
     "link": "Avertissement complet →"
+  },
+  "calc": {
+    "title": "Calculateur d'investissement",
+    "guidedTour": "Visite guidée",
+    "closeTour": "Fermer la visite",
+    "step": "Étape",
+    "initialBudget": "Budget initial",
+    "horizon": "Horizon temporel",
+    "year": "an",
+    "years": "ans",
+    "conservative": "Conservateur",
+    "balanced": "Équilibré",
+    "aggressive": "Agressif",
+    "conservativeDesc": "Rendement attendu 4–6%/an, faible volatilité. Idéal pour la préservation du capital. Focus sur les Bordeaux Premiers Crus avec des marchés stables et liquides.",
+    "balancedDesc": "Rendement attendu 7–10%/an, volatilité moyenne. Mix de régions : Bordeaux, Bourgogne, Toscane. Bon équilibre risque/rendement pour un horizon 5–7 ans.",
+    "aggressiveDesc": "Rendement attendu 11–15%/an, forte volatilité. Régions émergentes, grands millésimes et pièces de collection. Idéal pour un horizon 10+ ans et une haute tolérance au risque.",
+    "lowVolatility": "Faible volatilité",
+    "mediumVolatility": "Volatilité moyenne",
+    "highVolatility": "Forte volatilité",
+    "investment": "Investissement",
+    "projectedValue": "Valeur projetée",
+    "totalROI": "ROI total",
+    "confidenceBand": "Intervalle de confiance",
+    "centralProjection": "Projection centrale",
+    "disclaimer": "Projection indicative basée sur les rendements historiques des vins fins. Ne constitue pas un conseil financier. Les performances passées ne garantissent pas les résultats futurs.",
+    "tourBudgetTitle": "Budget Initial",
+    "tourBudgetDesc": "Définissez le montant à investir en vins fins. De 1 000€ à 500 000€.",
+    "tourHorizonTitle": "Horizon Temporel",
+    "tourHorizonDesc": "Le vin fin s'apprécie considérablement sur 5–10 ans. Des horizons plus longs réduisent le risque.",
+    "tourRiskTitle": "Profil de Risque",
+    "tourRiskDesc": "Survolez chaque option pour voir les descriptions détaillées, les rendements attendus et les niveaux de volatilité.",
+    "tourSummaryTitle": "Valeur Projetée",
+    "tourSummaryDesc": "L'estimation centrale de la valeur de votre portefeuille à la fin de l'horizon sélectionné.",
+    "tourChartTitle": "Intervalle de Confiance",
+    "tourChartDesc": "La zone ombrée montre la gamme des résultats probables. Elle s'élargit avec le temps à mesure que l'incertitude augmente."
+  },
+  "b2b": {
+    "headerTitle": "VinoInvest Professional",
+    "badge": "PRO",
+    "aum": "AUM Géré",
+    "clients": "Clients Actifs",
+    "performance": "Perf. Moy.",
+    "viewAsB2B": "Vue B2B",
+    "viewAsB2C": "Vue B2C",
+    "marketIntelligence": "Intelligence Marché",
+    "reports": "Rapports",
+    "clientsNav": "Clients",
+    "premiumOnly": "Vins premium uniquement (>€200)"
   }
 }

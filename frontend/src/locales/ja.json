@@ -1,6 +1,156 @@
 {
+  "nav": {
+    "dashboard": "ダッシュボード",
+    "market": "マーケット",
+    "news": "ワインニュース",
+    "blog": "AIブログ",
+    "analysis": "分析",
+    "portfolio": "マイポートフォリオ",
+    "portfolioAI": "AIポートフォリオ",
+    "b2b": "B2Bダッシュボード",
+    "alerts": "アラート",
+    "pricing": "料金",
+    "calculator": "計算機",
+    "academy": "アカデミー",
+    "index": "インデックス"
+  },
+  "hero": {
+    "title": "グローバルワイン投資プラットフォーム",
+    "subtitle": "AIポートフォリオビルダー、ワインインテリジェンス、分析、世界規模の検索。",
+    "searchPlaceholder": "ワイン、生産者、産地、ヴィンテージを検索..."
+  },
+  "stats": {
+    "globalMarket": "グローバル市場",
+    "portfolioValue": "ポートフォリオ価値",
+    "invested": "投資済み",
+    "profitLoss": "損益",
+    "roi": "ROI",
+    "watchlist": "ウォッチリスト"
+  },
+  "market": {
+    "searchPlaceholder": "世界中のワインを検索...",
+    "addToPortfolio": "+ ポートフォリオに追加",
+    "buyOn": "Wine-Searcherで購入 →",
+    "noWines": "ワインが見つかりません。",
+    "loadingMore": "さらにワインを読み込む…",
+    "aiScoreHint": "VinoInvest AI スコアを使って最良の投資機会を見つけましょう。"
+  },
+  "watchlist": {
+    "title": "ウォッチリスト分析",
+    "empty": "マーケットセクションからウォッチリストにワインを追加してください。"
+  },
+  "portfolio": {
+    "title": "マイポートフォリオ",
+    "exportCSV": "CSVエクスポート",
+    "noPositions": "まだポジションがありません。マーケットに行ってポジションを追加してください。",
+    "growth": "ポートフォリオ成長",
+    "diversification": "分散化",
+    "byType": "タイプ別",
+    "byWine": "ワイン別",
+    "estimatedNote": "* ワイン市場の年平均8%成長に基づく推定値（歴史的平均）",
+    "demo": "デモポートフォリオを表示中",
+    "addFirstWine": "最初の本物のワインを追加 →"
+  },
+  "notifications": {
+    "title": "通知",
+    "enablePush": "🔔 プッシュを有効化",
+    "markAllRead": "すべて既読にする",
+    "noNotifications": "まだ通知はありません。マーケットセクションで価格アラートを設定してください。",
+    "pushEnabled": "プッシュ通知が有効になりました！"
+  },
+  "auth": {
+    "signOut": "サインアウト",
+    "serverStarting": "⚡ サーバー起動中... しばらくお待ちください",
+    "offline": "⚠️ 接続なし — 一部の機能が利用できません"
+  },
+  "common": {
+    "loading": "読み込み中...",
+    "loadingDashboard": "ダッシュボードを読み込み中...",
+    "loadingData": "データを読み込み中...",
+    "loadingProducers": "生産者データを読み込み中...",
+    "noData": "データがありません",
+    "refresh": "更新",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "close": "閉じる",
+    "back": "戻る",
+    "error": "エラー",
+    "success": "成功"
+  },
+  "modal": {
+    "producer": "生産者",
+    "vintageQuality": "ヴィンテージ品質",
+    "vintageScore": "{{year}}年: {{score}}/100",
+    "searchVivino": "🍇 Vivinoで検索"
+  },
+  "purchase": {
+    "loadingPlatforms": "プラットフォームを読み込み中...",
+    "addExisting": "既存の購入をポートフォリオに追加します。",
+    "pricePaid": "購入価格（€）",
+    "purchaseDate": "購入日",
+    "affiliateNote": "アフィリエイトリンク — VinoInvestは購入から手数料を受け取る場合があります"
+  },
+  "chat": {
+    "agentHint": "AIアドバイザーとチャット — ポートフォリオ分析、市場ニュース、投資機会。"
+  },
+  "chart": {
+    "realData": "実データ",
+    "estimated": "推定データ",
+    "mixed": "混合"
+  },
+  "analysis": {
+    "algorithmicNote": "* アルゴリズム分析（サーバーにANTHROPIC_API_KEYが設定されていません）"
+  },
   "disclaimer": {
     "text": "VinoInvestは高級ワイン市場の分析・インテリジェンスプラットフォームです。当社は財務アドバイスの提供、資産運用、MiFID IIライセンスの保有を行っておりません。すべてのAIスコアおよび価格は情報提供のみを目的としています。過去の実績は将来の結果を保証するものではありません。",
     "link": "免責事項の全文 →"
+  },
+  "calc": {
+    "title": "投資計算機",
+    "guidedTour": "ガイドツアー",
+    "closeTour": "ツアーを閉じる",
+    "step": "ステップ",
+    "initialBudget": "初期予算",
+    "horizon": "投資期間",
+    "year": "年",
+    "years": "年",
+    "conservative": "保守型",
+    "balanced": "バランス型",
+    "aggressive": "積極型",
+    "conservativeDesc": "期待リターン年4–6%、低ボラティリティ。資産保全に最適。安定した流動性の高いボルドー・プルミエクリュに特化。",
+    "balancedDesc": "期待リターン年7–10%、中程度のボラティリティ。ボルドー・ブルゴーニュ・トスカーナのミックス。5–7年の運用期間に適しています。",
+    "aggressiveDesc": "期待リターン年11–15%、高ボラティリティ。新興産地・最高年・コレクタブル。10年以上の長期運用向け。",
+    "lowVolatility": "低ボラティリティ",
+    "mediumVolatility": "中程度のボラティリティ",
+    "highVolatility": "高ボラティリティ",
+    "investment": "投資額",
+    "projectedValue": "予測価値",
+    "totalROI": "合計ROI",
+    "confidenceBand": "信頼区間",
+    "centralProjection": "中央予測",
+    "disclaimer": "ファインワインの歴史的リターンに基づく参考予測です。金融アドバイスではありません。過去の実績は将来の結果を保証しません。",
+    "tourBudgetTitle": "初期予算",
+    "tourBudgetDesc": "ファインワインへの投資額を設定します。€1,000〜€500,000。",
+    "tourHorizonTitle": "投資期間",
+    "tourHorizonDesc": "ファインワインは5〜10年で大幅に価値が上がります。期間が長いほどリスクが低減されます。",
+    "tourRiskTitle": "リスクプロファイル",
+    "tourRiskDesc": "各オプションにカーソルを合わせると、詳細、期待リターン、ボラティリティが表示されます。",
+    "tourSummaryTitle": "予測価値",
+    "tourSummaryDesc": "選択した期間の終わりにおけるポートフォリオ価値の中央推定値。",
+    "tourChartTitle": "信頼区間",
+    "tourChartDesc": "シェードエリアは確率的な結果の範囲を示し、時間とともに広がります。"
+  },
+  "b2b": {
+    "headerTitle": "VinoInvest Professional",
+    "badge": "PRO",
+    "aum": "運用資産残高",
+    "clients": "アクティブクライアント",
+    "performance": "平均パフォーマンス",
+    "viewAsB2B": "B2Bビューで見る",
+    "viewAsB2C": "B2Cビューで見る",
+    "marketIntelligence": "マーケットインテリジェンス",
+    "reports": "レポート",
+    "clientsNav": "クライアント",
+    "premiumOnly": "プレミアムワインのみ（>€200）"
   }
 }
