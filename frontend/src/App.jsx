@@ -17,7 +17,6 @@ import { supabase } from "./lib/supabase";
 import WinePriceCompare from "./components/WinePriceCompare";
 import LangSelector from "./components/LangSelector";
 import WineCard from "./components/WineCard";
-import VirtualWineGrid from "./components/VirtualWineGrid";
 import OnboardingModal, { isOnboardingCompleted, resetOnboarding } from "./components/OnboardingModal";
 import GuidedTour, { isTourCompleted, resetTour } from "./components/GuidedTour";
 import InfoTooltip from "./components/InfoTooltip";
@@ -1276,13 +1275,29 @@ function App() {
                     {Array.from({ length: 12 }).map((_, i) => <SkeletonCard key={i} />)}
                   </section>
                 ) : marketWines.length > 0 ? (
-                  <VirtualWineGrid
-                    wines={marketWines}
-                    containerWidth={marketGridW || 900}
-                    listHeight={Math.min(880, window.innerHeight - 160)}
-                    cardProps={cardProps}
-                    sentinelRef={marketSentinelRef}
-                  />
+                  <>
+                    <section className="marketGrid">
+                      {marketWines.map(wine => (
+                        <WineCard
+                          key={wine.id}
+                          wine={wine}
+                          aiScore={cardProps.aiScores[wine.id]}
+                          alerts={cardProps.alerts.filter(a => a.wine_id === wine.id && a.active)}
+                          alertInput={cardProps.alertInputs[wine.id]}
+                          inWatchlist={cardProps.watchlist.includes(wine.id)}
+                          onImageClick={cardProps.onImageClick}
+                          onAddToPortfolio={cardProps.onAddToPortfolio}
+                          onToggleWatchlist={cardProps.onToggleWatchlist}
+                          onCardTilt={cardProps.onCardTilt}
+                          onCardTiltReset={cardProps.onCardTiltReset}
+                          onCreateAlert={cardProps.onCreateAlert}
+                          onAlertInputChange={cardProps.onAlertInputChange}
+                          onDeleteAlert={cardProps.onDeleteAlert}
+                        />
+                      ))}
+                    </section>
+                    <div ref={marketSentinelRef} style={{ height: 1 }} />
+                  </>
                 ) : null}
                 {marketLoading && marketWines.length > 0 && (
                   <div style={{ textAlign: "center", padding: "20px", color: "#3a5a7a", fontSize: 12 }}>{t("market.loadingMore")}</div>
