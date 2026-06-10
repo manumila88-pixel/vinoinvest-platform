@@ -75,9 +75,14 @@ const MarketIntelligence = lazy(() => import("./pages/MarketIntelligence"));
 const B2BOnboarding = lazy(() => import("./pages/B2BOnboarding"));
 const DataSources = lazy(() => import("./pages/DataSources"));
 const B2BGuide = lazy(() => import("./pages/B2BGuide"));
+const ComeComprare = lazy(() => import("./pages/ComeComprare"));
 import ThemeToggle from "./components/ThemeToggle";
 import CommandPalette from "./components/CommandPalette";
 import VoiceInterface from "./components/VoiceInterface";
+import MarketFilters, { DEFAULT_FILTERS } from "./components/MarketFilters";
+const WinePyramid = lazy(() => import("./components/WinePyramid"));
+const PortfolioDonut = lazy(() => import("./components/PortfolioDonut"));
+const PlatformGuide = lazy(() => import("./pages/PlatformGuide"));
 import ExitIntentPopup from "./components/ExitIntentPopup";
 import ProactiveBriefing from "./components/ProactiveBriefing";
 import { getSavedTheme, applyTheme } from "./lib/theme";
@@ -361,6 +366,7 @@ function App() {
   const isAdmin = userEmail === ADMIN_EMAIL;
   const [accountType, setAccountType] = useState("b2c");
   const [institutionalView, setInstitutionalView] = useState(false);
+  const [viewMode, setViewMode] = useState("b2c"); // 'b2c' | 'b2b' — admin can toggle
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showTour, setShowTour] = useState(false);
   const [showCalculator, setShowCalculator] = useState(false);
@@ -373,6 +379,7 @@ function App() {
   const [watchlist, setWatchlist] = useState([]);
   const [recommendedWines, setRecommendedWines] = useState([]);
   const [recommendedBasedOn, setRecommendedBasedOn] = useState([]);
+  const [investorWines, setInvestorWines] = useState([]);
   const [marketWines, setMarketWines] = useState([]);
   const [marketPage, setMarketPage] = useState(1);
   const [marketSearch, setMarketSearch] = useState("");
@@ -385,6 +392,9 @@ function App() {
   const mSearchRef = useRef("");
   const mDebounceRef = useRef(null);
   const mAbortRef = useRef(null);
+  const [marketFilters, setMarketFilters] = useState(DEFAULT_FILTERS);
+  const mFiltersRef = useRef(DEFAULT_FILTERS);
+  const [marketTotal, setMarketTotal] = useState(null);
   const [portfolio, setPortfolio] = useState(null);
   const [chartData, setChartData] = useState([]);
   const [selectedWine, setSelectedWine] = useState(null);
@@ -487,6 +497,8 @@ function App() {
         setUserEmail(session.user.email);
         setAccountType(type);
         setIsLoggedIn(true);
+        const B2B_ACCOUNT_TYPES = ["b2b", "wealth_manager", "cantina", "family_office"];
+        setViewMode(B2B_ACCOUNT_TYPES.includes(type) ? "b2b" : "b2c");
         localStorage.setItem("vino_user", JSON.stringify({ email: session.user.email, account_type: type }));
         localStorage.setItem("vino_user_id", session.user.id);
         if (!isOnboardingCompleted(type)) setTimeout(() => setShowOnboarding(true), 600);
@@ -529,19 +541,31 @@ function App() {
     } catch (e) { console.error(e); }
   }
 
-  async function loadMarketWines(search, page, append) {
+  async function loadMarketWines(search, page, append, filtersOverride) {
     if (mLoadingRef.current && !append) return;
     if (mAbortRef.current) { mAbortRef.current.abort(); }
     mAbortRef.current = new AbortController();
     mLoadingRef.current = true;
     setMarketLoading(true);
     try {
+      const f = filtersOverride !== undefined ? filtersOverride : mFiltersRef.current;
       const params = new URLSearchParams({ page, limit: 20 });
       if (search) params.set("search", search);
       const isB2BUser = accountType && ["b2b", "wealth_manager", "cantina", "family_office"].includes(accountType);
       const seg = isB2BUser ? "b2b" : "";
       if (seg) params.set("segment", seg);
       if (institutionalView && isB2BUser) params.set("institutional", "true");
+      if (f.type) params.set("type", f.type);
+      const effectivePriceMin = viewMode === "b2b" ? Math.max(f.priceMin, 200) : f.priceMin;
+      if (effectivePriceMin > 0) params.set("priceMin", effectivePriceMin);
+      if (f.priceMax < 10000) params.set("priceMax", f.priceMax);
+      if (f.scoreMin > 0) params.set("scoreMin", f.scoreMin);
+      if (f.scoreMax < 100) params.set("scoreMax", f.scoreMax);
+      if (f.vintageMin > 1990) params.set("vintageMin", f.vintageMin);
+      if (f.vintageMax < 2024) params.set("vintageMax", f.vintageMax);
+      if (f.risk) params.set("risk", f.risk);
+      if (f.region) params.set("region", f.region);
+      if (f.grape) params.set("grape", f.grape);
       const res = await fetch(`${API}/api/wines?${params}`, { signal: mAbortRef.current.signal });
       const data = await res.json();
       setMarketWines(prev => append ? [...prev, ...data.results] : data.results);
@@ -549,8 +573,23 @@ function App() {
       mPageRef.current = data.page;
       setMarketHasMore(data.hasMore);
       mHasMoreRef.current = data.hasMore;
+      if (data.total != null) setMarketTotal(data.total);
     } catch (e) { if (e.name !== "AbortError") console.error(e); }
     finally { mLoadingRef.current = false; setMarketLoading(false); }
+  }
+
+  function handleMarketFiltersChange(newFilters) {
+    setMarketFilters(newFilters);
+    mFiltersRef.current = newFilters;
+    mHasMoreRef.current = true;
+    loadMarketWines(mSearchRef.current, 1, false, newFilters);
+  }
+
+  function handleMarketFiltersReset() {
+    setMarketFilters(DEFAULT_FILTERS);
+    mFiltersRef.current = DEFAULT_FILTERS;
+    mHasMoreRef.current = true;
+    loadMarketWines(mSearchRef.current, 1, false, DEFAULT_FILTERS);
   }
 
   function handleMarketSearch(value) {
@@ -580,6 +619,14 @@ function App() {
         }
       }).catch(() => {});
   }, [tab, userEmail, watchlist.length]);
+
+  useEffect(() => {
+    if (tab !== "market") return;
+    fetch(`${API}/api/wines?limit=6&scoreMin=85&sort=score`)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d?.results?.length) setInvestorWines(d.results); })
+      .catch(() => {});
+  }, [tab]);
 
   // Re-load market wines when account type resolves from Supabase (fixes B2B filter race condition)
   useEffect(() => {
@@ -1006,7 +1053,7 @@ function App() {
       {backendWaking && (
         <div style={{ background: "#1c1400", color: "var(--vi-accent)", padding: "8px 20px", fontSize: 12, fontWeight: 600, textAlign: "center", zIndex: 999, borderBottom: "1px solid rgba(201,162,39,0.2)", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
           <span style={{ width: 10, height: 10, borderRadius: "50%", border: "2px solid var(--vi-accent)", borderTopColor: "transparent", display: "inline-block", animation: "spin 0.8s linear infinite", flexShrink: 0 }} />
-          ⏳ {t("auth.serverStarting")} (prima connessione può richiedere 30s)
+          ⏳ {t("auth.serverStarting")}
         </div>
       )}
       {isOffline && (
@@ -1015,13 +1062,34 @@ function App() {
         </div>
       )}
       {/* ── Glassmorphism Header ─────────────────────────────────────────── */}
-      <header className="header">
+      <header className="header" style={viewMode === "b2b" ? { borderBottom: "1px solid rgba(96,165,250,0.25)", background: "rgba(2,6,23,0.97)" } : {}}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <button className="hamburger" onClick={() => setSidebarOpen(o => !o)} aria-label="Menu">☰</button>
-          <div className="logo">🍷 Vino<span>Invest</span></div>
+          {viewMode === "b2b" ? (
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div className="logo" style={{ color: "#60a5fa" }}>🍷 Vino<span style={{ color: "#60a5fa" }}>Invest</span></div>
+              <span style={{ fontSize: 10, color: "#60a5fa", border: "1px solid rgba(96,165,250,0.5)", borderRadius: 4, padding: "1px 7px", textTransform: "uppercase", fontWeight: 800, letterSpacing: "0.1em", background: "rgba(96,165,250,0.1)" }}>{t("b2b.badge")}</span>
+              <span style={{ fontSize: 11, color: "#3a5a7a", fontWeight: 600 }}>{t("b2b.headerTitle")}</span>
+            </div>
+          ) : (
+            <div className="logo">🍷 Vino<span>Invest</span></div>
+          )}
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div className="badge">global wine intelligence</div>
+          {viewMode === "b2b" ? (
+            <div className="badge" style={{ background: "rgba(96,165,250,0.1)", borderColor: "rgba(96,165,250,0.3)", color: "#60a5fa" }}>professional</div>
+          ) : (
+            <div className="badge">global wine intelligence</div>
+          )}
+          {/* Admin view toggle — only for manumila88@gmail.com */}
+          {isAdmin && (
+            <button
+              onClick={() => setViewMode(m => m === "b2b" ? "b2c" : "b2b")}
+              title={viewMode === "b2b" ? t("b2b.viewAsB2C") : t("b2b.viewAsB2B")}
+              aria-label={viewMode === "b2b" ? t("b2b.viewAsB2C") : t("b2b.viewAsB2B")}
+              style={{ padding: "5px 10px", border: `1px solid ${viewMode === "b2b" ? "rgba(96,165,250,0.4)" : "rgba(201,162,39,0.3)"}`, borderRadius: "var(--vi-radius-sm)", background: viewMode === "b2b" ? "rgba(96,165,250,0.08)" : "rgba(201,162,39,0.06)", color: viewMode === "b2b" ? "#60a5fa" : "var(--vi-accent)", fontSize: 10, cursor: "pointer", fontFamily: "var(--vi-font-sans)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}
+            >{viewMode === "b2b" ? `↩ ${t("b2b.viewAsB2C")}` : `⇄ ${t("b2b.viewAsB2B")}`}</button>
+          )}
           <button
             onClick={() => { resetOnboarding(); setShowOnboarding(true); }}
             title="Riapri guida" aria-label="Riapri guida introduttiva"
@@ -1066,7 +1134,7 @@ function App() {
               <a href="/admin" style={{ fontSize: 10, color: "var(--vi-accent)", border: "1px solid rgba(201,162,39,0.5)", borderRadius: 4, padding: "2px 8px", textTransform: "uppercase", fontWeight: 800, letterSpacing: "0.08em", textDecoration: "none", background: "rgba(201,162,39,0.08)" }}>
                 ADMIN
               </a>
-              <span style={{ fontSize: 9, color: "#475569", fontStyle: "italic" }}>(vista completa)</span>
+              <span style={{ fontSize: 9, color: "#475569", fontStyle: "italic" }}>(full access)</span>
             </span>
           )}
           {accountType && !isAdmin && (() => {
@@ -1102,9 +1170,9 @@ function App() {
                 <div style={{ position: "fixed", inset: 0, zIndex: 299 }} onClick={() => setShowNotifDropdown(false)} />
                 <div style={{ position: "absolute", top: "calc(100% + 8px)", right: 0, zIndex: 300, width: 320, maxHeight: 400, overflowY: "auto", background: "var(--vi-bg)", border: "1px solid var(--vi-border)", borderRadius: "var(--vi-radius-md)", boxShadow: "0 16px 48px rgba(0,0,0,0.6)", padding: "12px 0" }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px 10px", borderBottom: "1px solid var(--vi-border)" }}>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: "var(--vi-text)" }}>Notifiche</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: "var(--vi-text)" }}>{t("notifications.title")}</span>
                     {unreadCount > 0 && (
-                      <button onClick={() => { markAllRead(); }} style={{ background: "none", border: "none", color: "#64748b", fontSize: 11, cursor: "pointer", padding: 0 }}>Segna tutte come lette</button>
+                      <button onClick={() => { markAllRead(); }} style={{ background: "none", border: "none", color: "#64748b", fontSize: 11, cursor: "pointer", padding: 0 }}>{t("notifications.markAllRead")}</button>
                     )}
                   </div>
                   {notifications.length === 0 ? (
@@ -1133,7 +1201,7 @@ function App() {
                     ))
                   )}
                   <div style={{ padding: "8px 16px 4px" }}>
-                    <button onClick={() => { setShowNotifDropdown(false); setTab("notifications"); }} style={{ background: "none", border: "none", color: "#60a5fa", fontSize: 12, cursor: "pointer", padding: 0 }}>Vedi tutte →</button>
+                    <button onClick={() => { setShowNotifDropdown(false); setTab("notifications"); }} style={{ background: "none", border: "none", color: "#60a5fa", fontSize: 12, cursor: "pointer", padding: 0 }}>{t("notifications.title")} →</button>
                   </div>
                 </div>
               </>
@@ -1154,26 +1222,42 @@ function App() {
 
         {/* ── Sidebar ─────────────────────────────────────────────────────── */}
         <aside className={`sidebar ${sidebarOpen ? "open" : ""}`} style={(() => {
-          const B2B_TYPES = ["b2b", "wealth_manager", "cantina", "family_office"];
+          if (viewMode === "b2b") return { borderTop: "3px solid rgba(96,165,250,0.7)" };
           if (isAdmin) return { borderTop: "3px solid rgba(201,162,39,0.7)" };
           if (accountType === "enterprise") return { borderTop: "3px solid rgba(167,139,250,0.7)" };
-          if (B2B_TYPES.includes(accountType)) return { borderTop: "3px solid rgba(96,165,250,0.7)" };
           return {};
         })()}>
           {[
-            { id: "dashboard",  label: "Dashboard" },
-            { id: "market",     label: t("nav.market") },
-            { id: "news",       label: t("nav.news") },
-            { id: "blog",       label: t("nav.blog") },
-            { id: "analysis",   label: t("nav.analysis") },
-            { id: "myportfolio",label: t("nav.portfolio") },
-            { id: "portfolio",  label: t("nav.portfolioAI") },
+            { id: "dashboard",   label: "Dashboard" },
+            { id: "market",      label: t("nav.market") },
+            { id: "news",        label: t("nav.news") },
+            { id: "blog",        label: t("nav.blog") },
+            { id: "analysis",    label: t("nav.analysis") },
+            { id: "myportfolio", label: t("nav.portfolio") },
+            { id: "portfolio",   label: t("nav.portfolioAI") },
           ].map(({ id, label }) => (
             <button key={id} className={tab === id ? "active" : ""} onClick={() => { setTab(id); setSidebarOpen(false); }}>{label}</button>
           ))}
-          {accountType === "cantina" && (
-            <button className={tab === "b2b" ? "active" : ""} onClick={() => { setTab("b2b"); setSidebarOpen(false); }}>{t("nav.b2b")}</button>
+          {viewMode === "b2b" && (
+            <>
+              <div style={{ height: 1, background: "rgba(96,165,250,0.15)", margin: "6px 0" }} />
+              <button className={tab === "b2b" ? "active" : ""} onClick={() => { setTab("b2b"); setSidebarOpen(false); }} style={{ color: "#60a5fa" }}>
+                🏦 {t("nav.b2b")}
+              </button>
+              <button onClick={() => { navigate("/market-intelligence"); setSidebarOpen(false); }} style={{ color: "#60a5fa" }}>
+                📊 {t("b2b.marketIntelligence")}
+              </button>
+              <button onClick={() => { navigate("/org-dashboard"); setSidebarOpen(false); }} style={{ color: "#60a5fa" }}>
+                👥 {t("b2b.clientsNav")}
+              </button>
+              <button onClick={() => { navigate("/org-dashboard"); setSidebarOpen(false); }} style={{ color: "#60a5fa" }}>
+                📄 {t("b2b.reports")}
+              </button>
+            </>
           )}
+          {!viewMode || viewMode === "b2c" ? (accountType === "cantina" && (
+            <button className={tab === "b2b" ? "active" : ""} onClick={() => { setTab("b2b"); setSidebarOpen(false); }}>{t("nav.b2b")}</button>
+          )) : null}
           <button
             className={tab === "notifications" ? "active" : ""}
             onClick={() => { setTab("notifications"); markAllRead(); setSidebarOpen(false); }}
@@ -1186,8 +1270,80 @@ function App() {
 
         {/* ── Content ─────────────────────────────────────────────────────── */}
         <section className="content">
+          {/* ── B2B Dashboard ────────────────────────────────────────────── */}
+          {tab === "dashboard" && viewMode === "b2b" && (
+            <div style={{ padding: "24px 0 0" }}>
+              <section style={{ background: "linear-gradient(135deg, rgba(96,165,250,0.08) 0%, rgba(59,130,246,0.04) 100%)", border: "1px solid rgba(96,165,250,0.15)", borderRadius: 16, padding: "28px 32px", marginBottom: 24 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+                  <h1 style={{ fontSize: 22, fontWeight: 800, color: "#e2e8f0", margin: 0, fontFamily: "var(--vi-font-display)" }}>{t("b2b.headerTitle")}</h1>
+                  <span style={{ fontSize: 10, color: "#60a5fa", border: "1px solid rgba(96,165,250,0.4)", borderRadius: 4, padding: "2px 8px", fontWeight: 800, textTransform: "uppercase" }}>{t("b2b.badge")}</span>
+                </div>
+                <p style={{ color: "#3a5a7a", fontSize: 13, margin: 0 }}>Wine investment intelligence for wealth managers, family offices and institutional advisors.</p>
+                <div ref={heroSearchRef} className="hero-search-wrapper" style={{ marginTop: 20 }}>
+                  <input className="hero-search-input" placeholder={t("hero.searchPlaceholder")} value={heroSearch} onChange={e => handleHeroSearch(e.target.value)} onFocus={() => heroSearch && setShowSuggestions(true)} />
+                  <span className="hero-search-icon">🔍</span>
+                  {showSuggestions && suggestions.length > 0 && (
+                    <div className="search-suggestions">
+                      {suggestions.map(w => (
+                        <div key={w.id} className="suggestion-item" onClick={() => selectSuggestion(w)}>
+                          <span className="suggestion-name">{w.name}</span>
+                          <span className="suggestion-detail">{w.producer} · {w.vintage}</span>
+                          <span className="suggestion-type">{w.region ? w.region.split(",")[0] : "Wine"}</span>
+                          <span className="suggestion-price">€{w.currentPrice}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </section>
+
+              <section className="statsGrid" style={{ marginBottom: 24 }}>
+                {[
+                  { label: t("b2b.aum"),         value: `€ ${portfolioValue.toFixed(0)}` },
+                  { label: t("b2b.clients"),      value: "—", link: "/org-dashboard" },
+                  { label: t("b2b.performance"),  value: `${portfolioROI}%` },
+                  { label: t("stats.invested"),   value: `€ ${totalInvested.toFixed(0)}` },
+                  { label: t("stats.profitLoss"), value: `€ ${totalProfit.toFixed(0)}` },
+                  { label: t("stats.watchlist"),  value: watchlist.length },
+                ].map((s, i) => (
+                  <div key={i} className="statCard fade-up" style={{ borderTop: "2px solid rgba(96,165,250,0.2)", cursor: s.link ? "pointer" : "default" }} onClick={() => s.link && navigate(s.link)}>
+                    <small>{s.label}</small>
+                    <h2 style={{ color: "#60a5fa" }}>{s.value}</h2>
+                  </div>
+                ))}
+              </section>
+
+              <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 12, marginBottom: 24 }}>
+                {[
+                  { icon: "📊", title: t("b2b.marketIntelligence"), desc: "En primeur, auctions, movers", href: "/market-intelligence" },
+                  { icon: "👥", title: t("b2b.clientsNav"),         desc: "Client portfolios and CRM",   href: "/org-dashboard" },
+                  { icon: "📄", title: t("b2b.reports"),            desc: "PDF, CSV, audit log",         href: "/org-dashboard" },
+                  { icon: "🎓", title: "B2B Academy",               desc: "HNW/UHNW curriculum",          href: "/academy" },
+                ].map((a) => (
+                  <button key={a.title} onClick={() => navigate(a.href)}
+                    style={{ background: "rgba(96,165,250,0.04)", border: "1px solid rgba(96,165,250,0.15)", borderRadius: 12, padding: "16px 18px", textAlign: "left", cursor: "pointer", transition: "all 0.2s", fontFamily: "inherit" }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "rgba(96,165,250,0.1)"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.35)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "rgba(96,165,250,0.04)"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.15)"; }}
+                  >
+                    <div style={{ fontSize: 22, marginBottom: 8 }}>{a.icon}</div>
+                    <div style={{ fontWeight: 700, fontSize: 13, color: "#60a5fa", marginBottom: 4 }}>{a.title}</div>
+                    <div style={{ fontSize: 11, color: "#3a5a7a" }}>{a.desc}</div>
+                  </button>
+                ))}
+              </section>
+
+              <div style={{ background: "rgba(96,165,250,0.04)", border: "1px solid rgba(96,165,250,0.12)", borderRadius: 10, padding: "10px 16px", fontSize: 12, color: "#3a5a7a", display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ color: "#60a5fa" }}>💎</span>
+                {t("b2b.premiumOnly")}
+                <button onClick={() => setTab("market")} style={{ marginLeft: "auto", background: "none", border: "1px solid rgba(96,165,250,0.3)", color: "#60a5fa", borderRadius: 6, padding: "3px 10px", fontSize: 11, cursor: "pointer", fontWeight: 600 }}>
+                  {t("nav.market")} →
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* ── Dashboard ─────────────────────────────────────────────────── */}
-          {tab === "dashboard" && (
+          {tab === "dashboard" && viewMode !== "b2b" && (
             <>
               <section className="hero">
                 <h1>Global Wine Investment Platform</h1>
@@ -1286,6 +1442,22 @@ function App() {
           {tab === "market" && (
             <ErrorBoundary>
             <>
+              {/* Wine Investment Pyramid */}
+              <Suspense fallback={null}>
+                <div style={{ marginBottom: 28 }}>
+                  <WinePyramid
+                    onSelectTier={tier => {
+                      if (tier) {
+                        const priceMap = { ultra: { priceMin: 2000, priceMax: 10000 }, premium: { priceMin: 500, priceMax: 2000 }, entry: { priceMin: 100, priceMax: 500 } };
+                        const range = priceMap[tier.id] || {};
+                        handleMarketFiltersChange({ ...DEFAULT_FILTERS, ...range });
+                      } else {
+                        handleMarketFiltersReset();
+                      }
+                    }}
+                  />
+                </div>
+              </Suspense>
               <label htmlFor="market-search" className="visually-hidden">Cerca vini</label>
               <input
                 id="market-search"
@@ -1295,6 +1467,14 @@ function App() {
                 value={marketSearch}
                 onChange={e => handleMarketSearch(e.target.value)}
               />
+              <div style={{ marginTop: 10 }}>
+                <MarketFilters
+                  filters={marketFilters}
+                  onChange={handleMarketFiltersChange}
+                  onReset={handleMarketFiltersReset}
+                  resultCount={marketTotal}
+                />
+              </div>
               {accountType && ["b2b", "wealth_manager", "cantina", "family_office"].includes(accountType) && (
                 <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 8 }}>
                   <button
@@ -1315,6 +1495,12 @@ function App() {
                       Prezzo {">"}€200 · Score 80+ · Rischio Basso/Medio
                     </span>
                   )}
+                </div>
+              )}
+              {viewMode === "b2b" && (
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, background: "rgba(96,165,250,0.04)", border: "1px solid rgba(96,165,250,0.15)", borderRadius: 8, padding: "8px 12px", fontSize: 11, color: "#3a5a7a" }}>
+                  <span style={{ color: "#60a5fa" }}>💎</span>
+                  {t("b2b.premiumOnly")} — Professional view active
                 </div>
               )}
               {recommendedWines.length > 0 && (
@@ -1352,6 +1538,77 @@ function App() {
                   <hr style={{ border: "none", borderTop: "1px solid rgba(30,41,59,0.4)", margin: "20px 0 16px" }} />
                 </div>
               )}
+
+              {/* ── Trending questa settimana ─────────────────────────── */}
+              {trending.length > 0 && !marketSearch && (
+                <div style={{ marginBottom: 24 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                    <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: "#4a9eff" }}>
+                      📈 Trending questa settimana
+                    </h3>
+                    <span style={{ fontSize: 11, color: "#3a5a7a" }}>nella tua regione</span>
+                  </div>
+                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                    {trending.slice(0, 5).map((w, i) => (
+                      <button
+                        key={w.id || i}
+                        onClick={() => { setMarketSearch(w.name); mSearchRef.current = w.name; loadMarketWines(w.name, 1, false); }}
+                        style={{
+                          padding: "8px 14px", borderRadius: 10, cursor: "pointer", textAlign: "left",
+                          background: "rgba(74,158,255,0.06)", border: "1px solid rgba(74,158,255,0.2)",
+                          transition: "all 0.15s", display: "flex", alignItems: "center", gap: 8,
+                        }}
+                      >
+                        <span style={{ fontSize: 10, fontWeight: 800, color: "#4a9eff", minWidth: 16 }}>#{i + 1}</span>
+                        <div>
+                          <div style={{ fontSize: 12, fontWeight: 700, color: "#e2e8f0", fontFamily: "'Playfair Display', Georgia, serif" }}>{w.name}</div>
+                          <div style={{ fontSize: 10, color: "#64748b" }}>{w.producer}</div>
+                        </div>
+                        {w.change != null && (
+                          <span style={{ fontSize: 11, fontWeight: 700, color: w.change >= 0 ? "#4ade80" : "#f87171", marginLeft: "auto" }}>
+                            {w.change >= 0 ? "+" : ""}{w.change}%
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                  <hr style={{ border: "none", borderTop: "1px solid rgba(30,41,59,0.3)", margin: "20px 0 16px" }} />
+                </div>
+              )}
+
+              {/* ── Gli investitori guardano anche questi ──────────────── */}
+              {investorWines.length > 0 && !marketSearch && (
+                <div style={{ marginBottom: 24 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                    <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: "#a78bfa" }}>
+                      👁 Gli investitori guardano anche questi
+                    </h3>
+                    <span style={{ fontSize: 11, color: "#3a5a7a" }}>AI Score 85+</span>
+                  </div>
+                  <section className="marketGrid">
+                    {investorWines.map(wine => (
+                      <WineCard
+                        key={`inv-${wine.id}`}
+                        wine={wine}
+                        aiScore={cardProps.aiScores[wine.id]}
+                        alerts={cardProps.alerts.filter(a => a.wine_id === wine.id && a.active)}
+                        alertInput={cardProps.alertInputs[wine.id]}
+                        inWatchlist={cardProps.watchlist.includes(wine.id)}
+                        onImageClick={cardProps.onImageClick}
+                        onAddToPortfolio={cardProps.onAddToPortfolio}
+                        onToggleWatchlist={cardProps.onToggleWatchlist}
+                        onCardTilt={cardProps.onCardTilt}
+                        onCardTiltReset={cardProps.onCardTiltReset}
+                        onCreateAlert={cardProps.onCreateAlert}
+                        onAlertInputChange={cardProps.onAlertInputChange}
+                        onDeleteAlert={cardProps.onDeleteAlert}
+                      />
+                    ))}
+                  </section>
+                  <hr style={{ border: "none", borderTop: "1px solid rgba(30,41,59,0.3)", margin: "20px 0 16px" }} />
+                </div>
+              )}
+
               <div ref={marketGridRef} style={{ width: "100%" }}>
                 {marketLoading && marketWines.length === 0 ? (
                   <section className="marketGrid">
@@ -1793,48 +2050,36 @@ function App() {
                   <div style={{ marginTop: 36 }}>
                     <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 17, marginBottom: 16, color: "#C9A227" }}>Diversification</h3>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-                      {/* By type */}
+                      {/* By type — animated donut */}
                       <div style={{ background: "rgba(11,18,32,0.8)", border: "1px solid rgba(31,41,55,0.7)", borderRadius: 14, padding: 18 }}>
-                        <p style={{ fontSize: 11, color: "#3a5a7a", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12, fontWeight: 700 }}>By Type</p>
-                        {Object.entries(
-                          holdings.reduce((acc, h) => {
-                            const wineData = wines.find(w => w.id === h.id);
-                            const type = deriveWineType(wineData || { name: h.name });
-                            acc[type] = (acc[type] || 0) + h.currentValue;
-                            return acc;
-                          }, {})
-                        ).sort(([,a],[,b]) => b - a).map(([type, val]) => {
-                          const pct = portfolioValue > 0 ? ((val / portfolioValue) * 100).toFixed(1) : 0;
-                          return (
-                            <div key={type} style={{ marginBottom: 8 }}>
-                              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                                <span style={{ fontSize: 12, color: "#94a3b8" }}>{type}</span>
-                                <span style={{ fontSize: 12, color: "#C9A227", fontWeight: 700 }}>{pct}%</span>
-                              </div>
-                              <div style={{ height: 4, background: "rgba(30,41,59,0.8)", borderRadius: 2 }}>
-                                <div style={{ height: "100%", width: `${pct}%`, background: "linear-gradient(90deg,#C9A227,#e0b82d)", borderRadius: 2 }} />
-                              </div>
-                            </div>
-                          );
-                        })}
+                        <Suspense fallback={<div style={{ height: 200, display: "flex", alignItems: "center", justifyContent: "center", color: "#3a5a7a", fontSize: 12 }}>Caricamento...</div>}>
+                          <PortfolioDonut
+                            label="Per Tipo"
+                            totalValue={portfolioValue}
+                            data={Object.entries(
+                              holdings.reduce((acc, h) => {
+                                const wineData = wines.find(w => w.id === h.id);
+                                const type = deriveWineType(wineData || { name: h.name });
+                                acc[type] = (acc[type] || 0) + h.currentValue;
+                                return acc;
+                              }, {})
+                            ).sort(([,a],[,b]) => b - a).map(([label, value]) => ({ label, value }))}
+                          />
+                        </Suspense>
                       </div>
-                      {/* By position size */}
+                      {/* By wine — animated donut */}
                       <div style={{ background: "rgba(11,18,32,0.8)", border: "1px solid rgba(31,41,55,0.7)", borderRadius: 14, padding: 18 }}>
-                        <p style={{ fontSize: 11, color: "#3a5a7a", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12, fontWeight: 700 }}>By Wine</p>
-                        {[...holdings].sort((a, b) => b.currentValue - a.currentValue).slice(0, 5).map(h => {
-                          const pct = portfolioValue > 0 ? ((h.currentValue / portfolioValue) * 100).toFixed(1) : 0;
-                          return (
-                            <div key={h.id} style={{ marginBottom: 8 }}>
-                              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                                <span style={{ fontSize: 11, color: "#94a3b8", maxWidth: "70%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h.name}</span>
-                                <span style={{ fontSize: 12, color: "#60a5fa", fontWeight: 700 }}>{pct}%</span>
-                              </div>
-                              <div style={{ height: 4, background: "rgba(30,41,59,0.8)", borderRadius: 2 }}>
-                                <div style={{ height: "100%", width: `${pct}%`, background: "linear-gradient(90deg,#60a5fa,#38bdf8)", borderRadius: 2 }} />
-                              </div>
-                            </div>
-                          );
-                        })}
+                        <Suspense fallback={<div style={{ height: 200, display: "flex", alignItems: "center", justifyContent: "center", color: "#3a5a7a", fontSize: 12 }}>Caricamento...</div>}>
+                          <PortfolioDonut
+                            label="Per Vino (Top 5)"
+                            totalValue={portfolioValue}
+                            data={[...holdings].sort((a, b) => b.currentValue - a.currentValue).slice(0, 5).map(h => ({
+                              label: h.name,
+                              value: h.currentValue,
+                              roi: Number(h.roi),
+                            }))}
+                          />
+                        </Suspense>
                       </div>
                     </div>
                   </div>
@@ -2219,6 +2464,8 @@ createRoot(document.getElementById("root")).render(
           <Route path="/security" element={<SecurityPage />} />
           <Route path="/data" element={<DataDownload />} />
           <Route path="/data-sources" element={<DataSources />} />
+          <Route path="/come-comprare" element={<ComeComprare />} />
+          <Route path="/guide/piattaforme" element={<PlatformGuide />} />
           <Route path="/b2b/guide/:slug" element={<B2BGuide />} />
           <Route path="/org-dashboard" element={<OrgDashboard />} />
           <Route path="/clients/:clientId" element={<ClientDetail />} />
