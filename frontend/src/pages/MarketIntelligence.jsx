@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
+import { ADMIN_EMAIL } from "../lib/constants";
 
 const API = import.meta.env.VITE_API_URL || "https://vinoinvest-backend-2.onrender.com";
 
@@ -52,7 +53,7 @@ export default function MarketIntelligence({ user }) {
   }, []);
 
   const activeUser = user || storedUser;
-  const isB2B = activeUser?.account_type === "professional" || activeUser?.account_type === "enterprise" || activeUser?.account_type === "b2b";
+  const isB2B = activeUser?.email === ADMIN_EMAIL || activeUser?.account_type === "professional" || activeUser?.account_type === "enterprise" || activeUser?.account_type === "b2b";
 
   return (
     <div style={{ minHeight: "100vh", background: "linear-gradient(160deg,#0b1220,#040810)", color: "#e2e8f0", fontFamily: "'Inter',Arial,sans-serif" }}>
