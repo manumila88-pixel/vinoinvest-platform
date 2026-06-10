@@ -343,7 +343,31 @@ echo "=== Benchmark ===" && curl -s https://vinoinvest-backend-2.onrender.com/ap
 
 ---
 
-## ULTIMO FIX APPLICATO (2026-06-11)
+## ULTIMO FIX APPLICATO (2026-06-11) — sessione 2
+
+**feat(market): advanced filters, pyramid, donut charts, platform guide, recommendations** — commit `e3c8602`
+
+### Nuove feature:
+1. **Filtri Avanzati Market** (MarketFilters.jsx): sidebar collassabile Vivino-style — tipo, fascia prezzo, AI Score slider, uve principali, regione con flag, annata range, rischio, commercianti, solo dati reali. Backend `/api/wines` aggiornato con `type`, `priceMin/Max`, `scoreMin/Max`, `vintageMin/Max`, `risk`, `region`, `grape` + sort `price_asc/price_desc/vintage`.
+2. **Guida Piattaforme** (`/guide/piattaforme`): confronto completo Wine-Searcher, Vivino, Tannico, Millesima, iDealwine — pro/contro, costi, step-by-step primo acquisto, rating affidabilità.
+3. **Piramide Vini** (WinePyramid.jsx): SVG interattiva 3 livelli (Ultra Premium >€2k, Premium €500-2k, Entry €100-500). Click filtra automaticamente il market per fascia prezzo. Animazione hover + dettaglio card.
+4. **Portfolio Donut** (PortfolioDonut.jsx): SVG donut rotante CSS animation sostituisce le barre statiche. Hover paussa rotazione, mostra nome/valore/ROI. Due donuts: Per Tipo e Per Vino.
+5. **Raccomandazioni Vivino-style**: SimilarWines in WineBottle3DModal (stesso score ±12, stessa regione). "Trending questa settimana" e "Gli investitori guardano anche questi" (AI Score 85+) nel Market tab.
+
+### File nuovi:
+- `frontend/src/components/MarketFilters.jsx`
+- `frontend/src/components/WinePyramid.jsx`
+- `frontend/src/components/PortfolioDonut.jsx`
+- `frontend/src/pages/PlatformGuide.jsx`
+
+### File modificati:
+- `backend/src/server.js` — filtri avanzati su `/api/wines`
+- `frontend/src/App.jsx` — integrazioni pyramid, filters, donut, recommendations
+- `frontend/src/WineBottle3DModal.jsx` — SimilarWines component
+
+---
+
+## ULTIMO FIX APPLICATO (2026-06-11) — sessione 1
 
 **feat(ui): B2B/B2C dashboards, i18n calc, tooltips, 5-step tour** — commit `585f89c`
 
