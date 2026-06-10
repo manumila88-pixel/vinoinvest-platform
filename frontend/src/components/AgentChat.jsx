@@ -30,9 +30,8 @@ function Sparkline({ trend }) {
   const path = isUp ? "M2,10 L6,7 L10,5 L14,4 L18,2" : isDown ? "M2,2 L6,5 L10,7 L14,8 L18,10" : "M2,6 L6,5 L10,6 L14,5 L18,6";
   return (
     <svg width="20" height="12" viewBox="0 0 20 12" style={{ verticalAlign: "middle" }}>
-      <polyline points={path.replace(/M|L/g, "").replace(/,/g, " ").trim().split(" ").reduce((a, v, i) => a + (i % 2 === 0 ? (i > 0 ? " " : "") + v + "," : v), "")}
-        fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
-        points={path.replace(/[ML]/g, "").trim().split(" ").join(",")} />
+      <polyline points={path.replace(/[ML]/g, "").trim()}
+        fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

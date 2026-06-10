@@ -82,9 +82,25 @@ import ExitIntentPopup from "./components/ExitIntentPopup";
 import ProactiveBriefing from "./components/ProactiveBriefing";
 import { getSavedTheme, applyTheme } from "./lib/theme";
 import { API, ADMIN_EMAIL as ADMIN_EMAIL_CONST } from "./lib/constants";
+import { initAnalytics, track, identifyUser, resetUser } from "./lib/analytics";
 import "./styles/tokens.css";
 import "./styles/utilities.css";
 import "./style.css";
+
+// ── Wine type inference from name/producer ───────────────────────────────────
+function deriveWineType(wine) {
+  if (wine?.type && wine.type !== "Other") return wine.type;
+  const name = (wine?.name || "").toLowerCase();
+  const producer = (wine?.producer || "").toLowerCase();
+  const combined = `${name} ${producer}`;
+  if (/champagne|cava|prosecco|crémant|spumante|franciacorta|sekt|sparkling/.test(combined)) return "Sparkling";
+  if (/port|porto|madeira|sherry|marsala|vin doux|banyuls|passito|amarone/.test(combined)) return "Fortified";
+  if (/sauternes|tokaji|riesling|gewürz|auslese|trockenbeer|ice wine/.test(combined) && /sweet|dessert|spätlese/.test(combined)) return "Dessert";
+  if (/blanc|blanco|bianco|white|chardonnay|sauvignon|pinot gris|viognier|riesling|soave|chablis|meursault|pouilly/.test(combined)) return "White";
+  if (/rosé|rosado|rosato/.test(combined)) return "Rosé";
+  if (/barolo|barbaresco|brunello|amarone|chianti|bordeaux|burgundy|pomerol|pauillac|saint-émilion|rioja|priorat|malbec|pinot noir|syrah|shiraz|cabernet|merlot|sangiovese|nebbiolo|tempranillo|rouge|rosso|tinto|red/.test(combined)) return "Red";
+  return "Red"; // default for fine wine
+}
 
 // ── Skeleton Card ────────────────────────────────────────────────────────────
 function SkeletonCard() {
@@ -472,10 +488,16 @@ function App() {
         localStorage.setItem("vino_user", JSON.stringify({ email: session.user.email, account_type: type }));
         localStorage.setItem("vino_user_id", session.user.id);
         if (!isOnboardingCompleted(type)) setTimeout(() => setShowOnboarding(true), 600);
+        // Load persisted watchlist
+        fetch(`${API}/api/watchlist/${session.user.id}`)
+          .then(r => r.ok ? r.json() : [])
+          .then(ids => { if (Array.isArray(ids) && ids.length) setWatchlist(ids); })
+          .catch(() => {});
       } else if (event === "SIGNED_OUT") {
         setIsLoggedIn(false);
         setUserEmail("");
         setAccountType("b2c");
+        setWatchlist([]);
         localStorage.removeItem("vino_user");
         localStorage.removeItem("vino_user_id");
       }
@@ -800,14 +822,21 @@ function App() {
 
   const toggleWatchlist = useCallback((wine) => {
     const wineId = wine.id;
+    const userId = localStorage.getItem("vino_user_id");
     if (watchlist.includes(wineId)) {
       setWatchlist(prev => prev.filter(id => id !== wineId));
       setSelectedWine(null);
       setChartData([]);
+      if (userId) fetch(`${API}/api/watchlist/${userId}/${wineId}`, { method: "DELETE" }).catch(() => {});
     } else {
       setWatchlist(prev => [...prev, wineId]);
       setSelectedWine(wine);
       loadChart(wineId, wine.currentPrice);
+      if (userId) fetch(`${API}/api/watchlist`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, wineId, wineName: wine.name }),
+      }).catch(() => {});
     }
   }, [watchlist]);
 
@@ -1639,7 +1668,8 @@ function App() {
                         <p style={{ fontSize: 11, color: "#3a5a7a", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12, fontWeight: 700 }}>By Type</p>
                         {Object.entries(
                           holdings.reduce((acc, h) => {
-                            const type = wines.find(w => w.id === h.id)?.type || "Other";
+                            const wineData = wines.find(w => w.id === h.id);
+                            const type = deriveWineType(wineData || { name: h.name });
                             acc[type] = (acc[type] || 0) + h.currentValue;
                             return acc;
                           }, {})
@@ -2061,7 +2091,6 @@ createRoot(document.getElementById("root")).render(
           <Route path="/clients/:clientId" element={<ClientDetail />} />
           <Route path="/market-intelligence" element={<MarketIntelligence />} />
           <Route path="/b2b-onboarding" element={<B2BOnboarding />} />
-          <Route path="/landing" element={<LandingPage />} />
           <Route path="*" element={<App />} />
         </Routes>
         </Suspense>

@@ -1,4 +1,5 @@
 import "dotenv/config";
+import * as Sentry from "@sentry/node";
 import express from "express";
 import compression from "compression";
 import helmet from "helmet";
@@ -79,6 +80,16 @@ import orgsRouter, { setOrgsPool } from "./routes/organizations.js";
 import clientPortfoliosRouter, { setClientPortfoliosPool } from "./routes/clientPortfolios.js";
 import demoRequestRouter, { setDemoPool } from "./routes/demoRequest.js";
 import riskMetricsRouter, { setRiskPool } from "./routes/riskMetrics.js";
+import watchlistRouter, { setWatchlistPool } from "./routes/watchlist.js";
+
+// Sentry — no-op when SENTRY_DSN is not set
+if (process.env.SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    environment: process.env.NODE_ENV || "production",
+    tracesSampleRate: 0.1,
+  });
+}
 
 // Global in-memory cache
 const appCache = new NodeCache({ stdTTL: 0, checkperiod: 120 });
@@ -260,6 +271,7 @@ app.use("/api/org", orgsRouter);
 app.use("/api/client-portfolios", clientPortfoliosRouter);
 app.use("/api/demo", demoRequestRouter);
 app.use("/api/risk", riskMetricsRouter);
+app.use("/api/watchlist", watchlistRouter);
 
 // ── Public API v1 + Swagger UI ───────────────────────────────────────────────
 app.use("/api/v1", v1Router);
@@ -622,7 +634,7 @@ initDB().then(() => {
   if (pool) { setCellarPool(pool); setJournalPool(pool); setGoalsPool(pool); setReferralPool(pool); }
   if (pool) { setEmailPrefPool(pool); setFeedbackPool(pool); setAuthPool(pool); }
   if (pool) { setReportsPool(pool); }
-  if (pool) { setOrgsPool(pool); setClientPortfoliosPool(pool); setDemoPool(pool); setRiskPool(pool); }
+  if (pool) { setOrgsPool(pool); setClientPortfoliosPool(pool); setDemoPool(pool); setRiskPool(pool); setWatchlistPool(pool); }
   if (pool) { setNewsletterPool(pool); }
   if (pool) { setAgentPool(pool); }
   if (pool) { setWelcomeEmailPool(pool); }
@@ -1648,6 +1660,9 @@ app.get("/api/v1/wines", cacheFor(3600), (req, res) => {
     results: slice,
   });
 });
+
+// Sentry error handler (must be before generic error handler)
+if (process.env.SENTRY_DSN) Sentry.setupExpressErrorHandler(app);
 
 // Global error handler — must be last middleware
 app.use((err, req, res, _next) => {

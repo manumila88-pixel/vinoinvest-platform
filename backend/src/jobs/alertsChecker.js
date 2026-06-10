@@ -1,4 +1,5 @@
 import cron from "node-cron";
+import { sendPriceAlertEmail } from "../services/emailService.js";
 
 let pool = null;
 let notifTableReady = false;
@@ -60,6 +61,20 @@ async function checkAlerts() {
       );
       await db.query(`UPDATE price_alerts SET active = false WHERE id = $1`, [alert.id]);
       triggered++;
+
+      // Send email notification (fire-and-forget, don't block the loop)
+      db.query(`SELECT email, first_name FROM users WHERE id = $1`, [alert.user_id])
+        .then(({ rows: users }) => {
+          if (users[0]?.email) {
+            sendPriceAlertEmail(
+              users[0],
+              { name: alert.wine_name, investmentScore: null },
+              alert,
+              cur
+            ).catch(() => {});
+          }
+        })
+        .catch(() => {});
     }
 
     if (triggered > 0) console.log(`[alertsChecker] ${triggered} alert/i scattati.`);

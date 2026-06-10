@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
+    "@sentry/react": "^8.0.0",
     "@fontsource/playfair-display": "^5.2.8",
     "@stripe/stripe-js": "^9.7.0",
     "@supabase/supabase-js": "^2.107.0",
