@@ -315,6 +315,58 @@ export const PRODUCER_SCORES = {
   "Gaia Estate": 81, "Domaine Sigalas": 79, "Alpha Estate": 77,
   "Bodegas Roda Spain": 83,
 
+  // ── Northern Italy — Trentino, Friuli, Veneto ─────────────────────────────
+  "Movia": 86, "Gravner": 91, "Radikon": 90, "Dario Princic": 88,
+  "Josko Gravner": 91, "Stanko Radikon": 90, "Damijan Podversic": 87,
+  "La Castellada": 85, "Marco Felluga": 80, "Livio Felluga": 82,
+  "Jermann": 84, "Vie di Romans": 89, "Bastianich": 78,
+  "Foradori": 88, "Ferrari Trentino": 83, "Pojer & Sandri": 82,
+  "Keber": 85, "Renato Keber": 85, "Zidarich": 84,
+
+  // ── Sicily & Southern Italy ───────────────────────────────────────────────
+  "Benanti": 84, "Passopisciaro": 87, "Cornelissen": 88, "Frank Cornelissen": 88,
+  "Terre Nere": 86, "Girolamo Russo": 85, "Federico Curtaz": 80,
+  "Planeta": 80, "Donnafugata": 79, "Tasca d'Almerita": 78,
+  "Gulfi": 83, "COS": 84, "Arianna Occhipinti": 86,
+  "Terre del Principe": 82, "Feudi di San Gregorio": 79,
+  "Mastroberardino": 81, "Marisa Cuomo": 83,
+  "Vesevo": 74, "Cantine di Marzo": 72,
+
+  // ── Piemonte — Additional Producers ──────────────────────────────────────
+  "La Spinetta": 88, "Giacomo Ascheri": 82, "Comm. G.B. Burlotto": 89,
+  "Giacomo Fenocchio": 85, "Brovia": 87, "Oddero": 83, "Parusso": 84,
+  "Aldo Vajra": 87, "G.D. Vajra": 87, "Giacomo Borgogno": 83,
+  "Prunotto": 81, "Michele Chiarlo": 79, "Batasiolo": 76,
+  "Elio Grasso": 89, "Silvio Grasso": 83, "Marchesi di Barolo": 77,
+  "Rivetto": 82, "Mauro Molino": 81, "Luigi Einaudi": 84,
+
+  // ── Toscana — Additional Producers ───────────────────────────────────────
+  "San Felice": 79, "Riecine": 84, "Barone Ricasoli": 78,
+  "Villa Cafaggio": 80, "Monsanto": 82, "Fattoria di Felsina": 85,
+  "Badia a Coltibuono": 80, "Rocca di Castagnoli": 77,
+  "Carpineto": 75, "Lilliano": 76, "Brolio": 78, "Conti Serristori": 69,
+  "Gagliole": 82, "Rodano": 80, "Volpaia": 81,
+  "Tenuta di Biserno": 84, "Argentiera": 83, "Guado al Tasso": 87,
+  "Tua Rita": 89, "Duemani": 88, "Le Macchiole": 89,
+
+  // ── Champagne — Additional Growers ────────────────────────────────────────
+  "Cedric Bouchard": 92, "Cédric Bouchard": 92,
+  "Emmanuel Brochet": 90, "Larmandier-Bernier": 91,
+  "Bereche et Fils": 89, "Bérêche et Fils": 89,
+  "Francis Boulard": 87, "Vouette et Sorbee": 91,
+  "Chartogne-Taillet": 89, "Aspasie": 83,
+  "Marguet": 86, "Eric Rodez": 87, "Gaston Chiquet": 84,
+  "Dosnon": 85, "Laherte Frères": 87,
+
+  // ── Japan & Asia ─────────────────────────────────────────────────────────
+  "Grace Wine": 79, "Chateau Mercian": 77, "Suntory Tomi no Oka": 78,
+  "Domaine Osamu Uda": 82, "Beau Paysage": 85,
+
+  // ── South Africa — Additional ─────────────────────────────────────────────
+  "Sadie Family": 90, "Eben Sadie": 90, "AA Badenhorst": 87,
+  "Alheit": 88, "Chris Alheit": 88, "Crystallum": 87,
+  "David & Nadia": 86, "Thorne & Daughters": 85,
+
   // ── Defaults by tier ───────────────────────────────────────────────────────
   "default_premier_cru": 88,
   "default_grand_cru": 92,

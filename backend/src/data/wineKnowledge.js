@@ -385,7 +385,6 @@ export const FAQ = [
     a: "Lo Scanner usa Claude Vision AI per riconoscere il vino dalla foto dell'etichetta. Punta la fotocamera, scatta, e l'AI identifica il vino nel database e mostra: prezzo corrente, AI Score, storia prezzi, note degustazione community, premi e riconoscimenti.",
     tags: ["scanner", "label scan", "camera"],
   },
-];
 
   // ── INVESTIMENTO AVANZATO ─────────────────────────────────────────────────
   {
@@ -534,6 +533,95 @@ export const FAQ = [
     a: "Radar 2025: Vietti Barolo Castiglione (ottimo rapporto qualità-prezzo), Sandrone Barolo Aleste (ex Cannubi Boschis), La Spinetta Barbaresco Starderi, Casanova di Neri Brunello Cerretalto, Allegrini Amarone (stabile ma spesso dimenticato). Cerca queste etichette nel Market VinoInvest con AI Score >80.",
     tags: ["emergenti", "italiani", "barolo", "brunello", "2025"],
   },
+
+  // ── SICILIA & VINI NATURALI ───────────────────────────────────────────────
+  {
+    id: "ric-003",
+    category: "ricerca",
+    persona: ["intermedio", "esperto"],
+    q: "Vale la pena investire nei vini vulcanici dell'Etna?",
+    a: "Sì, con cautela. L'Etna è il terroir emergente più interessante d'Italia: vini con 30-50 anni di invecchiamento potenziale, prezzi ancora accessibili (€30-200 per le migliori etichette). Frank Cornelissen, Passopisciaro, Girolamo Russo, Terre Nere sono i nomi da seguire. Il mercato è in forte crescita ma la liquidità è ancora limitata rispetto a Barolo e Toscana.",
+    tags: ["Etna", "Sicilia", "vulcanico", "emergente"],
+  },
+  {
+    id: "ric-005",
+    category: "ricerca",
+    persona: ["esperto"],
+    q: "I vini naturali/arancioni sono un buon investimento?",
+    a: "I vini naturali (Gravner, Radikon, COS) hanno mercato di nicchia con collezionisti appassionati, ma liquidità molto limitata. Non sono raccomandati come investimento puro: prezzi volatili, difficile trovare compratori, stile divisivo. Interessanti come diversificazione per chi già ha un portfolio solido. Gravner Anfora e Radikon sono le eccezioni con domanda più strutturata.",
+    tags: ["vini naturali", "arancio", "orange wine", "Gravner", "Radikon"],
+  },
+  {
+    id: "ric-006",
+    category: "ricerca",
+    persona: ["principiante", "intermedio"],
+    q: "Come scelgo tra Barolo e Barbaresco per investire?",
+    a: "Barolo: più strutturato, longevo (20-40 anni), prezzi più alti. Barbaresco: più elegante, matura prima (10-20 anni), prezzi accessibili. Per investimento: Barolo ha mercato secondario più profondo. Giacomo Conterno, Bruno Giacosa, Gaja, Vietti per Barolo. Gaja, Produttori del Barbaresco, La Spinetta per Barbaresco. Barolo Riserva (Monfortino, Falletto) è il pinnacolo assoluto.",
+    tags: ["Barolo", "Barbaresco", "Nebbiolo", "confronto"],
+  },
+
+  // ── CHAMPAGNE & SPUMANTI ─────────────────────────────────────────────────
+  {
+    id: "edu-011",
+    category: "educativo",
+    persona: ["principiante"],
+    q: "Quale Champagne si apprezza meglio nel tempo?",
+    a: "I Vintage Champagne (non l'NV) si apprezzano nel tempo. I migliori: Krug Vintage (eccezionale longevità, 20-30 anni), Dom Pérignon (picco verso i 15-20 anni), Salon (raro, lunghissimo invecchiamento), Cristal Roederer (più accessibile). I Grower Champagne (Jacques Selosse, Cédric Bouchard) sono in forte ascesa tra i collezionisti.",
+    tags: ["Champagne", "vintage", "invecchiamento", "Krug"],
+  },
+  {
+    id: "edu-012",
+    category: "educativo",
+    persona: ["intermedio"],
+    q: "Come mai alcuni anni di Bordeaux valgono 10 volte altri?",
+    a: "Le condizioni climatiche durante la maturazione determinano tutto. Un'annata eccezionale ha: primavera senza piogge precoci, estate calda senza eccessi termici, vendemmia asciutta e tardiva. I 'grandi anni' per Bordeaux: 1982, 2000, 2005, 2009, 2010, 2015, 2016, 2019. Parker 100 su Pétrus o Latour può far triplicare il valore in anni. Un'annata mediocre (2013, 2017 parzialmente) vale 3-5 volte di meno.",
+    tags: ["annata", "vintage", "clima", "Bordeaux"],
+  },
+
+  // ── STORAGE & CONSERVAZIONE ───────────────────────────────────────────────
+  {
+    id: "pra-008",
+    category: "pratico",
+    persona: ["principiante"],
+    q: "Devo usare una cantina professionale o posso tenere il vino a casa?",
+    a: "Per investimento, cantina professionale consigliata. Requisiti: 12-14°C costanti, umidità 65-75%, buio, vibrazione zero, bottiglie orizzontali. A casa è quasi impossibile garantire queste condizioni. Servizi professionali: Octavian (UK), LCB (Londra), Iron Mountain (USA). In Italia: Vino Custode, Winelivery Storage. Costo medio: €5-15/cassa/anno. Vale sempre la spesa.",
+    tags: ["storage", "cantina", "conservazione", "temperatura"],
+  },
+  {
+    id: "pra-009",
+    category: "pratico",
+    persona: ["intermedio"],
+    q: "Cosa significa 'in bond' e perché è importante per l'investitore?",
+    a: "In-bond (IB) significa che il vino è in magazzino doganale e non ha ancora pagato accise/IVA. Vantaggi per l'investitore: (1) si vende senza pagare IVA — grande vantaggio fiscale, (2) prezzo più basso di acquisto, (3) più facile da spedire internazionalmente. Controindicazioni: non puoi aprire le bottiglie finché non esci dal bond. Tutti i merchant UK (Berry Bros, Farr) operano principalmente IB.",
+    tags: ["in bond", "IB", "IVA", "duty", "fiscale"],
+  },
+  {
+    id: "pra-010",
+    category: "pratico",
+    persona: ["esperto"],
+    q: "Come ottimizzare le tasse sull'investimento in vino in Italia?",
+    a: "Il vino in Italia è trattato come bene mobile di collezionismo, non come strumento finanziario. Plusvalenze da vendita non sono tassabili se l'importo è occasionale e non sistematico (regime collezionismo, non business). Per vendite sistematiche o importi significativi (>€10.000/anno): consulta un commercialista. Tenere traccia di prezzi d'acquisto con ricevute è essenziale. In-bond UK evita IVA italiana.",
+    tags: ["fisco", "tasse", "plusvalenza", "Italia", "tributario"],
+  },
+
+  // ── BORGOGNA PROFONDA ─────────────────────────────────────────────────────
+  {
+    id: "edu-013",
+    category: "educativo",
+    persona: ["esperto"],
+    q: "Perché DRC è così cara e l'investimento ha senso a quei prezzi?",
+    a: "DRC (Domaine de la Romanée-Conti) produce 6.000-8.000 bottiglie/anno totali da 6 Grand Cru. La Romanée-Conti 0.85 ettari produce 3.000-6.000 bottiglie. A quei volumi e con quella domanda globale, i prezzi sono strutturalmente destinati a crescere. Il track record: €2.000 nel 2000 → €30.000 nel 2024 (+1.400%). Senso come investimento: sì, se hai l'accesso tramite allocation. Il problema è proprio questo: l'accesso.",
+    tags: ["DRC", "Romanée-Conti", "Borgogna", "allocation", "rarità"],
+  },
+  {
+    id: "edu-014",
+    category: "educativo",
+    persona: ["intermedio"],
+    q: "Come funziona il sistema di allocation per i vini top?",
+    a: "I vini più richiesti (DRC, Krug Clos du Mesnil, Pétrus, Screaming Eagle) vengono venduti tramite lista d'attesa a clienti fidati. I merchant UK/USA ricevono allocation annua dal produttore e la distribuiscono a clienti selezionati in base agli acquisti passati. Non c'è modo di entrare 'da fuori' se non tramite merchant che già ha allocation. Alternativa: asta (prezzi premium +50-100%).",
+    tags: ["allocation", "lista d'attesa", "merchant", "accesso"],
+  },
+];
 
 /** Helper: get FAQs by category */
 export function getFAQByCategory(category) {
