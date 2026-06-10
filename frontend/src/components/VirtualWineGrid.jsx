@@ -3,7 +3,7 @@ import { List } from "react-window";
 import WineCard from "./WineCard";
 
 const CARDS_PER_ROW = 3;
-const ROW_HEIGHT = 464; // card ~440px + 24px gap
+const ROW_HEIGHT = 520; // card ~470px + 24px gap + buffer
 
 function RowComponent({ index, style, rows, cardProps }) {
   const row = rows[index];

@@ -522,7 +522,7 @@ export default function WineBottle3DModal({ wine, onClose }) {
   const wineAwards = getWineAwards(wine.name, wine.producer);
 
   return (
-    <div className="bottle-overlay" onClick={onClose}>
+    <div className="bottle-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
       <Helmet>
         <title>{seoTitle}</title>
         <meta name="description" content={seoDesc} />

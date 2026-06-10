@@ -106,7 +106,7 @@ const WineCard = memo(function WineCard({
       onMouseMove={onCardTilt}
       onMouseLeave={onCardTiltReset}
     >
-      <div className="wineCard-image" onClick={() => onImageClick({ ...wine, aiScoreData: aiScore })}>
+      <div className="wineCard-image" onClick={(e) => { e.stopPropagation(); onImageClick({ ...wine, aiScoreData: aiScore }); }}>
         <WineCardImage wine={wine} />
         <span className="bottle-hint">VIEW</span>
       </div>
@@ -133,7 +133,7 @@ const WineCard = memo(function WineCard({
           </InfoTooltip>
         </div>
         <div className="wineCard-price">
-          <span className="price-main">€ {wine.currentPrice}</span>
+          <span className="price-main">€ {wine.currentPrice != null && !isNaN(wine.currentPrice) ? wine.currentPrice : '—'}</span>
           <span className="price-label">/ bottle</span>
           <SourceBadge
             source={wine.priceSource || "Liv-ex est."}
