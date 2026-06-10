@@ -1,0 +1,156 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "market": "Markt",
+    "news": "Wijnnieuws",
+    "blog": "AI Blog",
+    "analysis": "Analyse",
+    "portfolio": "Mijn Portfolio",
+    "portfolioAI": "AI Portfolio",
+    "b2b": "B2B Dashboard",
+    "alerts": "Meldingen",
+    "pricing": "Prijzen",
+    "calculator": "Rekenmachine",
+    "academy": "Academy",
+    "index": "Index"
+  },
+  "hero": {
+    "title": "Mondiaal Wijninvesteringsplatform",
+    "subtitle": "AI portfolio builder, wijnintelligentie, analyses en wereldwijde zoekopdrachten.",
+    "searchPlaceholder": "Zoek wijnen, producenten, regio's, jaargangen..."
+  },
+  "stats": {
+    "globalMarket": "Wereldmarkt",
+    "portfolioValue": "Portfoliowaarde",
+    "invested": "Geïnvesteerd",
+    "profitLoss": "Winst / Verlies",
+    "roi": "ROI",
+    "watchlist": "Volglijst"
+  },
+  "market": {
+    "searchPlaceholder": "Zoek elke wijn wereldwijd...",
+    "addToPortfolio": "+ Toevoegen aan Portfolio",
+    "buyOn": "Kopen op Wine-Searcher →",
+    "noWines": "Geen wijnen gevonden.",
+    "loadingMore": "Meer wijnen laden…",
+    "aiScoreHint": "Gebruik de VinoInvest AI Score om de beste investeringsmogelijkheden te vinden."
+  },
+  "watchlist": {
+    "title": "Watchlist Analyse",
+    "empty": "Voeg wijnen toe aan je watchlist vanuit de Markt sectie."
+  },
+  "portfolio": {
+    "title": "Mijn Portfolio",
+    "exportCSV": "Exporteer CSV",
+    "noPositions": "Nog geen posities. Ga naar Markt en voeg een positie toe.",
+    "growth": "Portfoliogroei",
+    "diversification": "Diversificatie",
+    "byType": "Op Type",
+    "byWine": "Op Wijn",
+    "estimatedNote": "* Geschatte waarden op basis van 8% gemiddelde jaarlijkse groei (historisch gemiddelde wijnmarkt)",
+    "demo": "U bekijkt een DEMO portfolio",
+    "addFirstWine": "Voeg uw eerste echte wijn toe →"
+  },
+  "notifications": {
+    "title": "Meldingen",
+    "enablePush": "🔔 Push inschakelen",
+    "markAllRead": "Alles als gelezen markeren",
+    "noNotifications": "Nog geen meldingen. Stel een prijsalert in via de Markt sectie.",
+    "pushEnabled": "Push-meldingen ingeschakeld!"
+  },
+  "auth": {
+    "signOut": "Uitloggen",
+    "serverStarting": "⚡ Server start op... dit kan enkele seconden duren",
+    "offline": "⚠️ Geen verbinding — sommige functies zijn niet beschikbaar"
+  },
+  "common": {
+    "loading": "Laden...",
+    "loadingDashboard": "Dashboard laden...",
+    "loadingData": "Gegevens laden...",
+    "loadingProducers": "Producentgegevens laden...",
+    "noData": "Geen gegevens beschikbaar",
+    "refresh": "Vernieuwen",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "back": "Terug",
+    "error": "Fout",
+    "success": "Succes"
+  },
+  "modal": {
+    "producer": "Producent",
+    "vintageQuality": "Jaargangkwaliteit",
+    "vintageScore": "Jaargang {{year}}: {{score}}/100",
+    "searchVivino": "🍇 Zoeken op Vivino"
+  },
+  "purchase": {
+    "loadingPlatforms": "Platforms laden...",
+    "addExisting": "Voeg een bestaande aankoop toe aan uw portfolio.",
+    "pricePaid": "Aankoopprijs (€)",
+    "purchaseDate": "Aankoopdatum",
+    "affiliateNote": "Affiliate links — VinoInvest kan een commissie ontvangen op aankopen"
+  },
+  "chat": {
+    "agentHint": "Chat met uw AI-adviseur — portefeuilleanalyse, marktnieuws, kansen."
+  },
+  "chart": {
+    "realData": "Echte data",
+    "estimated": "Geschatte data",
+    "mixed": "Gemengd"
+  },
+  "analysis": {
+    "algorithmicNote": "* Algoritmische analyse (ANTHROPIC_API_KEY niet geconfigureerd op de server)"
+  },
+  "disclaimer": {
+    "text": "VinoInvest is een analyse- en intelligentieplatform voor de markt voor fine wines. Wij bieden geen financieel advies, beheren geen vermogen en beschikken niet over een MiFID II-licentie. Alle AI Scores en prijzen zijn uitsluitend informatief. In het verleden behaalde resultaten bieden geen garantie voor de toekomst.",
+    "link": "Volledige disclaimer →"
+  },
+  "calc": {
+    "title": "Investeringscalculator",
+    "guidedTour": "Rondleiding",
+    "closeTour": "Rondleiding sluiten",
+    "step": "Stap",
+    "initialBudget": "Beginbudget",
+    "horizon": "Tijdshorizon",
+    "year": "jaar",
+    "years": "jaar",
+    "conservative": "Conservatief",
+    "balanced": "Gebalanceerd",
+    "aggressive": "Agressief",
+    "conservativeDesc": "Verwacht rendement 4–6%/jaar, lage volatiliteit. Ideaal voor kapitaalsbehoud. Focus op Bordeaux Premiers Crus met stabiele, liquide markten.",
+    "balancedDesc": "Verwacht rendement 7–10%/jaar, gemiddelde volatiliteit. Mix van Bordeaux, Bourgondië, Toscane. Goede risico/rendement balans voor een horizon van 5–7 jaar.",
+    "aggressiveDesc": "Verwacht rendement 11–15%/jaar, hoge volatiliteit. Opkomende regio's, topjaargangen en verzamelstukken. Het beste voor een horizon van 10+ jaar.",
+    "lowVolatility": "Lage volatiliteit",
+    "mediumVolatility": "Gemiddelde volatiliteit",
+    "highVolatility": "Hoge volatiliteit",
+    "investment": "Investering",
+    "projectedValue": "Verwachte waarde",
+    "totalROI": "Totaal ROI",
+    "confidenceBand": "Betrouwbaarheidsband",
+    "centralProjection": "Centrale projectie",
+    "disclaimer": "Indicatieve projectie op basis van historische fine wine rendementen. Geen financieel advies. In het verleden behaalde resultaten bieden geen garantie voor de toekomst.",
+    "tourBudgetTitle": "Beginbudget",
+    "tourBudgetDesc": "Stel het bedrag vast dat u wilt investeren in fine wine. U kunt investeren van €1.000 tot €500.000.",
+    "tourHorizonTitle": "Tijdshorizon",
+    "tourHorizonDesc": "Fine wine stijgt doorgaans aanzienlijk in waarde over 5–10 jaar. Langere horizons verlagen het risico.",
+    "tourRiskTitle": "Risicoprofiel",
+    "tourRiskDesc": "Beweeg over elke optie voor gedetailleerde beschrijvingen, verwachte rendementen en volatiliteitsniveaus.",
+    "tourSummaryTitle": "Verwachte waarde",
+    "tourSummaryDesc": "De centrale schatting van uw portfoliowaarde aan het einde van de gekozen horizon, op basis van historische rendementen.",
+    "tourChartTitle": "Betrouwbaarheidsband",
+    "tourChartDesc": "Het gearceerde gebied toont het bereik van waarschijnlijke uitkomsten. De band wordt breder naarmate de onzekerheid toeneemt."
+  },
+  "b2b": {
+    "headerTitle": "VinoInvest Professional",
+    "badge": "PRO",
+    "aum": "Beheerd vermogen",
+    "clients": "Actieve Klanten",
+    "performance": "Gem. rendement",
+    "viewAsB2B": "B2B weergave",
+    "viewAsB2C": "B2C weergave",
+    "marketIntelligence": "Marktintelligentie",
+    "reports": "Rapporten",
+    "clientsNav": "Klanten",
+    "premiumOnly": "Alleen premium wijnen (>€200)"
+  }
+}
