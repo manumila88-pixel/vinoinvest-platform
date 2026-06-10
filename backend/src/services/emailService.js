@@ -250,3 +250,32 @@ export async function sendPersonalizedNewsDigest(user, allWines, recentNews) {
     buildEmailLayout(content, `${BASE_URL}/unsubscribe?email=${encodeURIComponent(user.email)}`)
   );
 }
+
+export async function sendClientInviteEmail({ clientEmail, clientName, advisorEmail, tempPassword, orgName }) {
+  const loginUrl = `${BASE_URL}/?login=1&email=${encodeURIComponent(clientEmail)}`;
+  const content = `
+    <h2 style="font-family:Georgia,serif;font-size:22px;margin:0 0 16px;color:#020617">Benvenuto su VinoInvest</h2>
+    <p style="font-size:15px;color:#374151">Gentile <strong>${clientName}</strong>,</p>
+    <p style="font-size:14px;color:#4b5563;line-height:1.7">
+      Il tuo advisor <strong>${advisorEmail}</strong> ti ha invitato a gestire il tuo portfolio di investimenti nel vino fine
+      tramite <strong>${orgName}</strong> su VinoInvest.
+    </p>
+    <div class="section" style="border-left:3px solid #C9A227;margin:20px 0">
+      <p style="margin:0 0 8px;font-size:13px;font-weight:700;color:#374151">Le tue credenziali di accesso:</p>
+      <p style="margin:4px 0;font-size:13px;color:#374151"><strong>Email:</strong> ${clientEmail}</p>
+      <p style="margin:4px 0;font-size:13px;color:#374151"><strong>Password temporanea:</strong>
+        <code style="background:#f3f4f6;padding:3px 8px;border-radius:4px;font-size:13px;color:#020617">${tempPassword}</code>
+      </p>
+      <p style="margin-top:10px;font-size:12px;color:#9ca3af">Cambia la password al primo accesso per mantenere il tuo portfolio sicuro.</p>
+    </div>
+    <p style="text-align:center;margin:28px 0">
+      <a href="${loginUrl}" class="btn">Accedi al tuo Portfolio →</a>
+    </p>
+    <p style="font-size:12px;color:#9ca3af">Se non hai richiesto questo accesso, ignora questa email.</p>
+  `;
+  return sendEmail(
+    clientEmail,
+    `${advisorEmail} ti ha invitato su VinoInvest — ${orgName}`,
+    buildEmailLayout(content, `${BASE_URL}/unsubscribe?email=${encodeURIComponent(clientEmail)}`)
+  );
+}

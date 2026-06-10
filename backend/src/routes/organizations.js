@@ -348,35 +348,136 @@ router.post("/invite-client", requireAuth, async (req, res) => {
       body: JSON.stringify({
         email: client_email,
         password: tempPassword,
-        data: {
-          account_type: "client",
-          full_name: client_name,
-          advisor_id: advisor_id || req.user.id,
-        },
+        data: { account_type: "client", full_name: client_name, advisor_id: advisor_id || req.user.id },
       }),
     });
     const supaData = await resp.json();
     const clientUserId = supaData.user?.id || supaData.id || null;
 
+    const { rows: orgRows } = await _pool.query(`SELECT name FROM organizations WHERE id=$1`, [org_id]);
+    const orgName = orgRows[0]?.name || "VinoInvest B2B";
+
     const { rows } = await _pool.query(
       `INSERT INTO client_portfolios(org_id, client_name, client_email, advisor_id, notes)
        VALUES($1, $2, $3, $4, 'Portfolio inizializzato dall''advisor')
-       ON CONFLICT DO NOTHING
-       RETURNING id`,
+       ON CONFLICT DO NOTHING RETURNING id`,
       [org_id, client_name, client_email, advisor_id || req.user.id]
     );
     const portfolio_id = rows[0]?.id || null;
 
     await logAudit(_pool, {
-      orgId: org_id,
-      userId: req.user.id,
-      action: "client.invite",
-      resource: "client_portfolio",
-      resourceId: portfolio_id,
+      orgId: org_id, userId: req.user.id, action: "client.invite",
+      resource: "client_portfolio", resourceId: portfolio_id,
       details: { client_email, clientUserId },
     });
 
-    res.json({ success: true, client_email, temp_password: tempPassword, portfolio_id, message: "Invito inviato" });
+    // Send welcome email — graceful fallback if email service unavailable
+    try {
+      const { sendClientInviteEmail } = await import("../services/emailService.js");
+      await sendClientInviteEmail({
+        clientEmail: client_email, clientName: client_name,
+        advisorEmail: req.user.email, tempPassword, orgName,
+      });
+    } catch (_) {}
+
+    res.json({ success: true, client_email, temp_password: tempPassword, portfolio_id, email_sent: true, message: "Invito creato e email inviata" });
+  } catch (e) {
+    res.status(e.status || 500).json({ error: e.message });
+  }
+});
+
+// ── Demo Seed ─────────────────────────────────────────────────────────────────
+
+router.post("/demo-seed", requireAuth, async (req, res) => {
+  try {
+    await ensureOrgTables(_pool);
+
+    const { rows: orgRows } = await _pool.query(
+      `INSERT INTO organizations(name, type, plan, owner_id)
+       VALUES('Family Office Demo', 'family_office', 'professional', $1) RETURNING *`,
+      [req.user.id]
+    );
+    const org = orgRows[0];
+    await _pool.query(
+      `INSERT INTO org_members(org_id, user_id, user_email, role) VALUES($1,$2,$3,'owner')`,
+      [org.id, req.user.id, req.user.email]
+    );
+
+    const demoClients = [
+      { name: "Marchese Benedetto Ricci",    email: "benedetto.ricci@demo.vi",    aum: 2450000, kyc: "approved", rev: 14  },
+      { name: "Sofia Castellani",            email: "sofia.castellani@demo.vi",   aum: 890000,  kyc: "approved", rev: 21  },
+      { name: "Famiglia Monteverdi SpA",     email: "monteverdi@demo.vi",         aum: 3200000, kyc: "approved", rev: -5  },
+      { name: "Dr. Marco Pallavicini",       email: "m.pallavicini@demo.vi",      aum: 650000,  kyc: "pending",  rev: 45  },
+      { name: "Caterina Borromeo",           email: "c.borromeo@demo.vi",         aum: 1750000, kyc: "approved", rev: 7   },
+      { name: "Visconti Family Trust",       email: "visconti.trust@demo.vi",     aum: 5600000, kyc: "approved", rev: 30  },
+      { name: "Ing. Roberto Ferretti",       email: "r.ferretti@demo.vi",         aum: 320000,  kyc: "pending",  rev: 60  },
+      { name: "Contessa Lucia Farnese",      email: "l.farnese@demo.vi",          aum: 1100000, kyc: "approved", rev: 10  },
+      { name: "Studio Zanetti & Partners",   email: "zanetti@demo.vi",            aum: 780000,  kyc: "review",   rev: 3   },
+      { name: "Alberto Grimaldi",            email: "a.grimaldi@demo.vi",         aum: 450000,  kyc: "approved", rev: 90  },
+      { name: "Famiglia Savoia-Este",        email: "savoia.este@demo.vi",        aum: 8900000, kyc: "approved", rev: 25  },
+      { name: "Dr. Elena Marconi",           email: "e.marconi@demo.vi",          aum: 290000,  kyc: "pending",  rev: 35  },
+      { name: "Palazzo Doria Capital",       email: "doria.capital@demo.vi",      aum: 2100000, kyc: "approved", rev: 18  },
+      { name: "Francesco d'Este",            email: "f.deste@demo.vi",            aum: 670000,  kyc: "approved", rev: 52  },
+      { name: "Principessa Alessandra M.",   email: "a.principessa@demo.vi",      aum: 1350000, kyc: "review",   rev: 8   },
+    ];
+
+    const interactionPool = [
+      { type: "call",    content: "Review trimestrale completata. Performance +18% YTD discussa. Cliente soddisfatto." },
+      { type: "meeting", content: "Meeting annuale in presenza. Presentato report portfolio. Interesse per en primeur Bordeaux 2025." },
+      { type: "note",    content: "Suitability assessment aggiornato. Risk tolerance: moderato-alto. Orizzonte 7+ anni confermato." },
+      { type: "call",    content: "Follow-up proposta Barolo collection. Due diligence Giacomo Conterno 2016 richiesta." },
+      { type: "email",   content: "Inviato report mensile. Performance +2.3% MoM vs benchmark +1.8%." },
+      { type: "meeting", content: "Presentazione nuovo prodotto wine futures. Cliente interessato. Follow-up settimana prossima." },
+    ];
+
+    // Fetch top wines for demo orders
+    const { rows: topWines } = await _pool.query(
+      `SELECT id, name, current_price FROM wines WHERE current_price > 300 ORDER BY investment_score DESC NULLS LAST LIMIT 45`
+    );
+
+    const portfolioIds = [];
+    for (let i = 0; i < demoClients.length; i++) {
+      const c = demoClients[i];
+      const nextReview = new Date(); nextReview.setDate(nextReview.getDate() + c.rev);
+      const lastContact = new Date(); lastContact.setDate(lastContact.getDate() - Math.floor(Math.random() * 25 + 3));
+      const { rows: pRows } = await _pool.query(
+        `INSERT INTO client_portfolios(org_id,client_name,client_email,advisor_id,aum_wine,kyc_status,next_review,last_contact,notes)
+         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id`,
+        [org.id, c.name, c.email, req.user.id, c.aum, c.kyc,
+         nextReview.toISOString(), lastContact.toISOString(),
+         `Portfolio wine fine: selezione ${c.aum > 2000000 ? "ultra-premium" : c.aum > 1000000 ? "premium" : "curated"}.`]
+      );
+      portfolioIds.push(pRows[0].id);
+
+      const numInt = Math.floor(Math.random() * 3) + 1;
+      for (let j = 0; j < numInt; j++) {
+        const t = interactionPool[(i + j) % interactionPool.length];
+        await _pool.query(
+          `INSERT INTO client_interactions(client_portfolio_id,type,content,advisor_id) VALUES($1,$2,$3,$4)`,
+          [pRows[0].id, t.type, t.content, req.user.id]
+        );
+      }
+
+      // Seed real wine orders (user_id = client_email for risk analytics lookup)
+      if (topWines.length >= 3) {
+        for (let w = 0; w < 3; w++) {
+          const wine = topWines[(i * 3 + w) % topWines.length];
+          const qty = Math.ceil(Math.random() * 6) + 1;
+          await _pool.query(
+            `INSERT INTO orders(user_id,wine_id,quantity,price,status) VALUES($1,$2,$3,$4,'completed')`,
+            [c.email, wine.id, qty, wine.current_price]
+          );
+        }
+      }
+    }
+
+    await logAudit(_pool, {
+      orgId: org.id, userId: req.user.id, action: "demo.seed",
+      resource: "organization", resourceId: org.id,
+      details: { clients: demoClients.length },
+    });
+
+    res.json({ success: true, org_id: org.id, clients_created: demoClients.length });
   } catch (e) {
     res.status(e.status || 500).json({ error: e.message });
   }
