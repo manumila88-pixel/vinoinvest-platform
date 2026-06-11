@@ -25,6 +25,7 @@ export default function SharePortfolio() {
   const [shared, setShared] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
   const [error, setError] = useState("");
+  const [isGuest, setIsGuest] = useState(false);
   const printRef = useRef(null);
   const isPublicView = window.location.pathname.startsWith("/share/");
   const portfolioId = isPublicView ? window.location.pathname.split("/share/")[1] : null;
@@ -38,7 +39,7 @@ export default function SharePortfolio() {
     setLoading(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { setLoading(false); return; }
+      if (!session) { setIsGuest(true); setLoading(false); return; }
       const res = await fetch(`${API}/api/orders/${session.user.id}`, {
         headers: { Authorization: `Bearer ${session.access_token}` }
       });
@@ -106,6 +107,15 @@ export default function SharePortfolio() {
   if (loading) return (
     <div style={{ minHeight: "100vh", background: "var(--vi-bg)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--vi-text-dim)" }}>
       Loading...
+    </div>
+  );
+
+  if (!isPublicView && isGuest) return (
+    <div style={{ minHeight: "100vh", background: "var(--vi-bg)", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12, color: "var(--vi-text-dim)" }}>
+      <div style={{ fontSize: 40 }}>📊</div>
+      <p style={{ color: "var(--vi-text)", fontSize: 16 }}>Accedi per vedere il tuo portfolio</p>
+      <p style={{ fontSize: 13 }}>Gestisci e condividi il tuo portfolio di investimenti in vino.</p>
+      <a href="/" style={{ marginTop: 8, padding: "10px 24px", background: "var(--vi-accent)", color: "#020617", borderRadius: 8, fontWeight: 700, textDecoration: "none", fontSize: 14 }}>Accedi a VinoInvest →</a>
     </div>
   );
 
