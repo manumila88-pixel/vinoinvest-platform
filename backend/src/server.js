@@ -41,6 +41,7 @@ import { startImageAgent, setImagePool } from "./agents/imageAgent.js";
 import "./jobs/priceUpdater.js";
 import "./jobs/alertsChecker.js";
 import "./jobs/cellarTrackerCron.js";
+import "./jobs/enrichmentJob.js";
 import { proactiveResults, setAnalysisPool, setWinesRef } from "./jobs/portfolioAnalysisJob.js";
 import { setWelcomeEmailPool, queueWelcomeSequence } from "./jobs/welcomeEmailJob.js";
 import { setEmailFlowPool as setJobEmailFlowPool, startEmailFlowService, enqueueUserFlow } from "./jobs/emailFlowService.js";
