@@ -2472,7 +2472,7 @@ function reportWebVitals(metric) {
   }
   // Send to backend analytics endpoint (fire-and-forget)
   try {
-    navigator.sendBeacon?.("/api/analytics/vitals", JSON.stringify({
+    navigator.sendBeacon?.(`${API}/api/analytics/vitals`, JSON.stringify({
       name: metric.name,
       value: metric.value,
       rating: metric.rating,
