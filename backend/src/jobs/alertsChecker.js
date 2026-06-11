@@ -63,7 +63,7 @@ async function checkAlerts() {
       triggered++;
 
       // Send email notification (fire-and-forget, don't block the loop)
-      db.query(`SELECT email, first_name FROM users WHERE id = $1`, [alert.user_id])
+      db.query(`SELECT email, first_name FROM users WHERE email = $1 OR id::text = $1`, [alert.user_id])
         .then(({ rows: users }) => {
           if (users[0]?.email) {
             sendPriceAlertEmail(
