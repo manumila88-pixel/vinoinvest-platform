@@ -489,6 +489,7 @@ function App() {
   const suggestDebounceRef = useRef(null);
   const [proactiveWines, setProactiveWines] = useState([]);
   const [proactiveTrigger, setProactiveTrigger] = useState(null); // wine that triggered "similar"
+  const [benchmarkData, setBenchmarkData] = useState(null);
 
   // ── ESC key closes overlays ───────────────────────────────────────────────
   useEffect(() => {
@@ -770,6 +771,15 @@ function App() {
     if (tab === "news") loadNews(newsFilter);
     if (tab === "blog") loadBlogPosts();
   }, [tab, i18n.language]);
+
+  useEffect(() => {
+    if (tab === "myportfolio" && !benchmarkData) {
+      fetch(`${API}/api/risk/benchmark`)
+        .then(r => r.ok ? r.json() : null)
+        .then(d => { if (d) setBenchmarkData(d); })
+        .catch(() => {});
+    }
+  }, [tab]);
 
   async function loadBlogPosts() {
     setBlogLoading(true);
@@ -2116,6 +2126,36 @@ function App() {
                     </LineChart>
                   </div>
                   <p style={{ marginTop: 14, fontSize: 11, color: "#1e3050" }}>* Stima basata su crescita media annua storica 8% (fonte: Liv-ex 100, 2001–2024). I rendimenti passati non garantiscono risultati futuri. Non costituisce consulenza finanziaria. <a href="/disclaimer" style={{ color: "#334155" }}>Disclaimer →</a></p>
+
+                  {/* ── Benchmark comparison ──────────────────────────────── */}
+                  {benchmarkData && (
+                    <div style={{ marginTop: 36 }}>
+                      <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 17, marginBottom: 4, color: "#C9A227" }}>Benchmark vs Asset Classes</h3>
+                      <p style={{ fontSize: 11, color: "#3a5a7a", marginBottom: 16 }}>Rendimento 12 mesi — confronto storico indicativo</p>
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 12 }}>
+                        {[
+                          { label: "Fine Wine", key: "vinoInvestIndex", color: "#C9A227", value: (benchmarkData.vinoInvestIndex?.return12m * 100).toFixed(1) },
+                          { label: "S&P 500", key: "sp500", color: "#60a5fa", value: (benchmarkData.sp500?.return12m * 100).toFixed(1) },
+                          { label: "Gold", key: "gold", color: "#fbbf24", value: (benchmarkData.gold?.return12m * 100).toFixed(1) },
+                          { label: "EU Inflation", key: "euInflation", color: "#f87171", value: (benchmarkData.euInflation?.rate * 100).toFixed(1) },
+                        ].map(b => {
+                          const pct = parseFloat(b.value);
+                          const maxPct = 20;
+                          const barW = Math.min(100, Math.max(4, (pct / maxPct) * 100));
+                          return (
+                            <div key={b.key} style={{ background: "rgba(11,18,32,0.8)", border: "1px solid rgba(31,41,55,0.7)", borderRadius: 12, padding: "14px 16px" }}>
+                              <div style={{ fontSize: 11, color: "#3a5a7a", marginBottom: 6 }}>{b.label}</div>
+                              <div style={{ fontSize: 22, fontWeight: 800, color: b.color, fontVariantNumeric: "tabular-nums", marginBottom: 10 }}>+{b.value}%</div>
+                              <div style={{ height: 4, background: "rgba(30,41,59,0.7)", borderRadius: 2 }}>
+                                <div style={{ height: 4, width: `${barW}%`, background: b.color, borderRadius: 2, opacity: 0.8 }} />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <p style={{ marginTop: 8, fontSize: 10, color: "#1e3050" }}>Fonte: Liv-ex 100, FRED/S&P500, FRED/Gold, ECB. Dati indicativi.</p>
+                    </div>
+                  )}
 
                   {/* ── Diversification breakdown ─────────────────────────── */}
                   <div style={{ marginTop: 36 }}>
