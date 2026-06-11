@@ -1,11 +1,11 @@
 // Premium Academy course content — 20 sequential modules per course
 // Each module unlocks only after 70% quiz pass on the previous one.
 export { ADMIN_EMAIL, QUIZ_PASS_THRESHOLD } from "../lib/constants";
-let _premiumModulesCache = null;
-async function _loadPremiumModules() {
-  if (_premiumModulesCache) return _premiumModulesCache;
-  const m = await import("./premiumModules.js");
-  _premiumModulesCache = {
+let _consumerCache = null;
+async function _loadConsumerModules() {
+  if (_consumerCache) return _consumerCache;
+  const m = await import("./premiumModulesConsumer.js");
+  _consumerCache = {
     12: m.PORTFOLIO_CONSTRUCTION_MODULES,
     13: m.EN_PRIMEUR_AVANZATO_MODULES,
     14: m.AUTENTICITA_PROVENIENZA_MODULES,
@@ -15,6 +15,15 @@ async function _loadPremiumModules() {
     18: m.CASE_STUDIES_MODULES,
     19: m.CANTINA_INVESTIMENTO_MODULES,
     20: m.WORKSHOP_CERTIFICATO_MODULES,
+  };
+  return _consumerCache;
+}
+
+let _b2bCache = null;
+async function _loadB2BModules() {
+  if (_b2bCache) return _b2bCache;
+  const m = await import("./premiumModulesB2B.js");
+  _b2bCache = {
     21: m.HNW_FAMILY_OFFICE_MODULES,
     22: m.ANALYTICS_B2B_MODULES,
     23: m.COMPLIANCE_MODULES,
@@ -26,7 +35,7 @@ async function _loadPremiumModules() {
     29: m.BUSINESS_WINE_MODULES,
     30: m.CERTIFICAZIONE_FINALE_MODULES,
   };
-  return _premiumModulesCache;
+  return _b2bCache;
 }
 
 // ── Course 11: Rendimenti Storici ─────────────────────────────────────────────
@@ -1362,18 +1371,19 @@ export function buildPremiumCourse(courseId, courseTitle, modules20) {
 
 export async function getModulesForCourse(courseId) {
   if (courseId === 11) return RENDIMENTI_STORICI_MODULES;
-  const extra = await _loadPremiumModules();
-  return extra[courseId] || [];
+  if (courseId <= 20) {
+    const m = await _loadConsumerModules();
+    return m[courseId] || [];
+  }
+  const m = await _loadB2BModules();
+  return m[courseId] || [];
 }
 
 export async function getModuleById(moduleId) {
   if (moduleId.startsWith("rs_")) {
     return RENDIMENTI_STORICI_MODULES.find(m => m.id === moduleId) || null;
   }
-  const extra = await _loadPremiumModules();
-  for (const modules of Object.values(extra)) {
-    const found = modules.find(m => m.id === moduleId);
-    if (found) return found;
-  }
-  return null;
+  const courseId = parseInt(moduleId.slice(1).split("_")[0]);
+  const modules = await getModulesForCourse(courseId);
+  return modules.find(m => m.id === moduleId) || null;
 }
