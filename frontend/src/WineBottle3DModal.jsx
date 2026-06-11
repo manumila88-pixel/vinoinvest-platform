@@ -630,7 +630,6 @@ export default function WineBottle3DModal({ wine, onClose }) {
             </div>
           </div>
         ) : (
-          /* ── Three.js bottle with CylinderGeometry — interactive drag built-in ── */
           <div style={{
             borderRadius: "12px 12px 0 0",
             overflow: "hidden",
