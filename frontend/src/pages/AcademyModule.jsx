@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { getModuleById, getModulesForCourse, QUIZ_PASS_THRESHOLD, ADMIN_EMAIL } from "../data/premiumContent";
+import { QUIZ_PASS_THRESHOLD, ADMIN_EMAIL } from "../lib/constants";
 import VideoLesson from "../components/VideoLesson";
 import { getModuleVideo } from "../data/academyVideos";
 
@@ -196,9 +196,11 @@ export default function AcademyModule() {
   const [bannerDismissed, setBannerDismissed] = useState(false);
   const [quizPassed, setQuizPassed] = useState(false);
   const [contentRevealed, setContentRevealed] = useState(false);
+  const [premiumLoaded, setPremiumLoaded] = useState(false);
+  const [module, setModule] = useState(null);
+  const [allModules, setAllModules] = useState([]);
   const topRef = useRef(null);
 
-  const module = getModuleById(moduleId);
   const user = getStoredUser();
   const isAdmin = user.email === ADMIN_EMAIL;
 
@@ -206,16 +208,35 @@ export default function AcademyModule() {
   const alreadyDone = progress[moduleId]?.passed;
 
   useEffect(() => {
+    import("../data/premiumContent").then(async m => {
+      const mod = await m.getModuleById(moduleId);
+      setModule(mod);
+      if (mod) setAllModules(await m.getModulesForCourse(mod.courseId));
+      setPremiumLoaded(true);
+    });
+  }, [moduleId]);
+
+  useEffect(() => {
     if (alreadyDone || isAdmin) setQuizPassed(true);
   }, [alreadyDone, isAdmin]);
 
   useEffect(() => {
     if (module && !contentRevealed) {
-      // Progressive reveal after small delay for perceived load
       const t = setTimeout(() => setContentRevealed(true), 150);
       return () => clearTimeout(t);
     }
   }, [module, contentRevealed]);
+
+  if (!premiumLoaded) {
+    return (
+      <div style={{ minHeight: "100vh", background: BG, display: "flex", alignItems: "center", justifyContent: "center", color: "#e2e8f0" }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ width: 40, height: 40, border: `3px solid ${GOLD}`, borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 16px" }} />
+          <div style={{ fontSize: 14, color: "#64748b" }}>Caricamento modulo...</div>
+        </div>
+      </div>
+    );
+  }
 
   if (!module) {
     return (
@@ -228,8 +249,6 @@ export default function AcademyModule() {
       </div>
     );
   }
-
-  const allModules = getModulesForCourse(module.courseId);
   const prevModule = allModules[module.index - 1] || null;
   const nextModule = allModules[module.index + 1] || null;
   const nextUnlocked = quizPassed || isAdmin || !nextModule;

@@ -1,27 +1,33 @@
 // Premium Academy course content — 20 sequential modules per course
 // Each module unlocks only after 70% quiz pass on the previous one.
 export { ADMIN_EMAIL, QUIZ_PASS_THRESHOLD } from "../lib/constants";
-import {
-  PORTFOLIO_CONSTRUCTION_MODULES,
-  EN_PRIMEUR_AVANZATO_MODULES,
-  AUTENTICITA_PROVENIENZA_MODULES,
-  TAX_LEGALE_MODULES,
-  MERCATO_SECONDARIO_MODULES,
-  DATA_ANALYTICS_MODULES,
-  CASE_STUDIES_MODULES,
-  CANTINA_INVESTIMENTO_MODULES,
-  WORKSHOP_CERTIFICATO_MODULES,
-  HNW_FAMILY_OFFICE_MODULES,
-  ANALYTICS_B2B_MODULES,
-  COMPLIANCE_MODULES,
-  MERCATI_INTERNAZIONALI_MODULES,
-  WINE_FUND_MODULES,
-  ESG_MODULES,
-  MASTERCLASS_DATI_MODULES,
-  AI_AUTOMATION_MODULES,
-  BUSINESS_WINE_MODULES,
-  CERTIFICAZIONE_FINALE_MODULES,
-} from "./premiumModules.js";
+let _premiumModulesCache = null;
+async function _loadPremiumModules() {
+  if (_premiumModulesCache) return _premiumModulesCache;
+  const m = await import("./premiumModules.js");
+  _premiumModulesCache = {
+    12: m.PORTFOLIO_CONSTRUCTION_MODULES,
+    13: m.EN_PRIMEUR_AVANZATO_MODULES,
+    14: m.AUTENTICITA_PROVENIENZA_MODULES,
+    15: m.TAX_LEGALE_MODULES,
+    16: m.MERCATO_SECONDARIO_MODULES,
+    17: m.DATA_ANALYTICS_MODULES,
+    18: m.CASE_STUDIES_MODULES,
+    19: m.CANTINA_INVESTIMENTO_MODULES,
+    20: m.WORKSHOP_CERTIFICATO_MODULES,
+    21: m.HNW_FAMILY_OFFICE_MODULES,
+    22: m.ANALYTICS_B2B_MODULES,
+    23: m.COMPLIANCE_MODULES,
+    24: m.MERCATI_INTERNAZIONALI_MODULES,
+    25: m.WINE_FUND_MODULES,
+    26: m.ESG_MODULES,
+    27: m.MASTERCLASS_DATI_MODULES,
+    28: m.AI_AUTOMATION_MODULES,
+    29: m.BUSINESS_WINE_MODULES,
+    30: m.CERTIFICAZIONE_FINALE_MODULES,
+  };
+  return _premiumModulesCache;
+}
 
 // ── Course 11: Rendimenti Storici ─────────────────────────────────────────────
 export const RENDIMENTI_STORICI_MODULES = [
@@ -1354,36 +1360,18 @@ export function buildPremiumCourse(courseId, courseTitle, modules20) {
   }));
 }
 
-// Lookup: courseId → modules array
-export const PREMIUM_MODULES = {
-  11: RENDIMENTI_STORICI_MODULES,
-  12: PORTFOLIO_CONSTRUCTION_MODULES,
-  13: EN_PRIMEUR_AVANZATO_MODULES,
-  14: AUTENTICITA_PROVENIENZA_MODULES,
-  15: TAX_LEGALE_MODULES,
-  16: MERCATO_SECONDARIO_MODULES,
-  17: DATA_ANALYTICS_MODULES,
-  18: CASE_STUDIES_MODULES,
-  19: CANTINA_INVESTIMENTO_MODULES,
-  20: WORKSHOP_CERTIFICATO_MODULES,
-  21: HNW_FAMILY_OFFICE_MODULES,
-  22: ANALYTICS_B2B_MODULES,
-  23: COMPLIANCE_MODULES,
-  24: MERCATI_INTERNAZIONALI_MODULES,
-  25: WINE_FUND_MODULES,
-  26: ESG_MODULES,
-  27: MASTERCLASS_DATI_MODULES,
-  28: AI_AUTOMATION_MODULES,
-  29: BUSINESS_WINE_MODULES,
-  30: CERTIFICAZIONE_FINALE_MODULES,
-};
-
-export function getModulesForCourse(courseId) {
-  return PREMIUM_MODULES[courseId] || [];
+export async function getModulesForCourse(courseId) {
+  if (courseId === 11) return RENDIMENTI_STORICI_MODULES;
+  const extra = await _loadPremiumModules();
+  return extra[courseId] || [];
 }
 
-export function getModuleById(moduleId) {
-  for (const modules of Object.values(PREMIUM_MODULES)) {
+export async function getModuleById(moduleId) {
+  if (moduleId.startsWith("rs_")) {
+    return RENDIMENTI_STORICI_MODULES.find(m => m.id === moduleId) || null;
+  }
+  const extra = await _loadPremiumModules();
+  for (const modules of Object.values(extra)) {
     const found = modules.find(m => m.id === moduleId);
     if (found) return found;
   }

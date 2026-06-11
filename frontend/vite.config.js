@@ -23,7 +23,8 @@ export default defineConfig({
 
             // ── Heavy data files (change less than UI → better cache reuse) ──
             { name: 'academy-data', test: /\/data\/academyContent/, priority: 120 },
-            { name: 'academy-premium-data', test: /\/data\/(premiumContent|premiumModules)/, priority: 120 },
+            { name: 'academy-premium-data', test: /\/data\/premiumContent/, priority: 120 },
+            { name: 'academy-premium-modules', test: /\/data\/premiumModules/, priority: 115 },
             { name: 'faq-data', test: /\/data\/faq/, priority: 110 },
 
             // ── Feature chunks ────────────────────────────────────────────────
