@@ -646,7 +646,7 @@ export default function WineBottle3DModal({ wine, onClose }) {
               <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 3, lineHeight: 1.3 }}>{wine.name}</h3>
               <p style={{ color: "#64748b", fontSize: 12 }}>{wine.producer} · {wine.vintage} · {wine.region}</p>
             </div>
-            <span style={{ fontSize: 26, fontWeight: 800, color: "var(--vi-accent)", whiteSpace: "nowrap" }}>€ {wine.currentPrice}</span>
+            <span style={{ fontSize: 26, fontWeight: 800, color: "var(--vi-accent)", whiteSpace: "nowrap" }}>€ {price || "—"}</span>
           </div>
 
           {/* ── Wikidata Producer Info ───────────────────────────────── */}
