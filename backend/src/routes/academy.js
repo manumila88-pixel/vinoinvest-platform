@@ -118,7 +118,7 @@ router.post("/certificate", async (req, res) => {
       .then(async ({ rows: u }) => {
         if (u[0]?.email) {
           const { triggerBehavioralEmail } = await import("../services/emailFlowService.js");
-          triggerBehavioralEmail(userId, u[0].email, u[0].first_name, "course_complete", { courseName: courseId }).catch(() => {});
+          triggerBehavioralEmail(userId, u[0].email, u[0].first_name, "b2c", "course_completed", { courseName: courseId }).catch(() => {});
         }
       }).catch(() => {});
 

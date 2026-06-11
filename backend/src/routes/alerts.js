@@ -58,7 +58,7 @@ router.post("/", async (req, res) => {
           const { triggerBehavioralEmail } = await import("../services/emailFlowService.js");
           // 2h delay via setTimeout
           setTimeout(() => {
-            triggerBehavioralEmail(u[0].id || userId, u[0].email, u[0].first_name, "watchlist_add", { wineName: wineName || wineId }).catch(() => {});
+            triggerBehavioralEmail(u[0].id || userId, u[0].email, u[0].first_name, "b2c", "watchlist_added", { wineName: wineName || wineId }).catch(() => {});
           }, 2 * 60 * 60 * 1000);
         }
       }).catch(() => {});

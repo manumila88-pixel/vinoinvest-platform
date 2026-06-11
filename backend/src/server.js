@@ -1621,7 +1621,7 @@ orders.push(order);
           const { rows: u } = await pool.query(`SELECT id, email, first_name FROM users WHERE email = $1 OR id::text = $1`, [userId]).catch(() => ({ rows: [] }));
           if (u[0]?.email) {
             const { triggerBehavioralEmail } = await import("./services/emailFlowService.js");
-            triggerBehavioralEmail(u[0].id || userId, u[0].email, u[0].first_name, "first_purchase", { wineName: wine.name }).catch(() => {});
+            triggerBehavioralEmail(u[0].id || userId, u[0].email, u[0].first_name, "b2c", "first_purchase", { wine: wine.name }).catch(() => {});
           }
         }
       }).catch(() => {});
