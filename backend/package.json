@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "test": "node src/test/smoke.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.101.0",
