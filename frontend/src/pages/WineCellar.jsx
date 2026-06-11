@@ -30,6 +30,7 @@ export default function WineCellar() {
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
+  const [isGuest, setIsGuest] = useState(false);
   const [activeShelf, setActiveShelf] = useState(1);
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -45,7 +46,7 @@ export default function WineCellar() {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
-      if (!token) { setLoading(false); return; }
+      if (!token) { setIsGuest(true); setLoading(false); return; }
 
       const [bRes, sRes] = await Promise.all([
         fetch(`${API}/api/cellar`, { headers: { Authorization: `Bearer ${token}` } }),
@@ -128,6 +129,16 @@ export default function WineCellar() {
             + Add Bottle
           </button>
         </div>
+
+        {/* Guest state */}
+        {!loading && isGuest && (
+          <div style={{ textAlign: "center", padding: "60px 24px", color: "var(--vi-text-dim)" }}>
+            <div style={{ fontSize: 48, marginBottom: 16 }}>🍾</div>
+            <p style={{ fontSize: 16, marginBottom: 8, color: "var(--vi-text)" }}>Accedi per gestire la tua cantina</p>
+            <p style={{ fontSize: 13, marginBottom: 20 }}>Tieni traccia delle tue bottiglie, finestre di consumo e valore del cellar.</p>
+            <a href="/" style={{ display: "inline-block", padding: "10px 24px", background: "var(--vi-accent)", color: "#020617", borderRadius: 8, fontWeight: 700, fontSize: 14, textDecoration: "none" }}>Accedi a VinoInvest →</a>
+          </div>
+        )}
 
         {/* Error state */}
         {fetchError && (

@@ -25,6 +25,7 @@ export default function WineJournal() {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(false);
+  const [isGuest, setIsGuest] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
   const [form, setForm] = useState({ wine_name: "", vintage: "", rating: 0, notes: "", occasion: "", companions: "", tasted_at: new Date().toISOString().slice(0, 10) });
   const [filter, setFilter] = useState("all");
@@ -37,7 +38,7 @@ export default function WineJournal() {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
-      if (!token) { setLoading(false); return; }
+      if (!token) { setIsGuest(true); setLoading(false); return; }
       const res = await fetch(`${API}/api/journal`, { headers: { Authorization: `Bearer ${token}` } });
       if (!res.ok) throw new Error(res.status);
       const data = await res.json();
@@ -114,7 +115,16 @@ export default function WineJournal() {
           </div>
         )}
 
-        {!loading && !fetchError && filtered.length === 0 && (
+        {!loading && isGuest && (
+          <div style={{ textAlign: "center", padding: "60px 24px", color: "var(--vi-text-dim)" }}>
+            <div style={{ fontSize: 48, marginBottom: 16 }}>📒</div>
+            <p style={{ fontSize: 16, marginBottom: 8, color: "var(--vi-text)" }}>Accedi per usare il Diario</p>
+            <p style={{ fontSize: 13, marginBottom: 20 }}>Le tue note di degustazione sono private e legate al tuo account.</p>
+            <a href="/" style={{ display: "inline-block", padding: "10px 24px", background: "var(--vi-accent)", color: "#020617", borderRadius: 8, fontWeight: 700, fontSize: 14, textDecoration: "none" }}>Accedi a VinoInvest →</a>
+          </div>
+        )}
+
+        {!loading && !isGuest && !fetchError && filtered.length === 0 && (
           <div style={{ textAlign: "center", padding: "60px 24px", color: "var(--vi-text-dim)" }}>
             <div style={{ width: 48, height: 48, borderRadius: 12, background: "rgba(201,162,39,0.15)", margin: "0 auto 16px" }} />
             <p style={{ fontSize: 16, marginBottom: 8 }}>Nessuna nota di degustazione</p>
