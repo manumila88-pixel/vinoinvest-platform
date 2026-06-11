@@ -115,7 +115,7 @@ export default function ClientDetail() {
     if (pdfLoading || !client) return;
     setPdfLoading(true);
     try {
-      const res = await authFetch(`${API}/api/reports/portfolio/${client.advisor_id}/pdf`);
+      const res = await authFetch(`${API}/api/reports/client/${clientId}/pdf`);
       if (!res.ok) throw new Error(`${res.status}`);
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
