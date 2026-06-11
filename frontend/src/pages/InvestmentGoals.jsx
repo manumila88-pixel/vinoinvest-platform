@@ -46,13 +46,14 @@ export default function InvestmentGoals() {
   }, [form.target_amount, form.target_date]);
 
   const [fetchError, setFetchError] = useState(false);
+  const [isGuest, setIsGuest] = useState(false);
 
   async function loadGoals() {
     setLoading(true);
     setFetchError(false);
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { setLoading(false); return; }
+      if (!session) { setIsGuest(true); setLoading(false); return; }
       const res = await fetch(`${API}/api/goals`, { headers: { Authorization: `Bearer ${session.access_token}` } });
       if (!res.ok) throw new Error(res.status);
       const data = await res.json();
@@ -106,7 +107,16 @@ export default function InvestmentGoals() {
           </div>
         )}
 
-        {!loading && !fetchError && goals.length === 0 && (
+        {!loading && isGuest && (
+          <div style={{ textAlign: "center", padding: "60px 24px", background: "var(--vi-surface)", border: "1px dashed var(--vi-border)", borderRadius: 16 }}>
+            <div style={{ fontSize: 48, marginBottom: 16 }}>🎯</div>
+            <p style={{ fontSize: 16, marginBottom: 8 }}>Accedi per gestire i tuoi obiettivi</p>
+            <p style={{ fontSize: 13, color: "var(--vi-text-dim)", marginBottom: 24 }}>Imposta un target e il nostro calcolatore ti mostrerà quanto investire ogni mese.</p>
+            <a href="/" style={{ display: "inline-block", padding: "12px 24px", background: "var(--vi-accent)", color: "#020617", borderRadius: 10, fontWeight: 700, fontSize: 14, textDecoration: "none" }}>Accedi a VinoInvest →</a>
+          </div>
+        )}
+
+        {!loading && !isGuest && !fetchError && goals.length === 0 && (
           <div style={{ textAlign: "center", padding: "60px 24px", background: "var(--vi-surface)", border: "1px dashed var(--vi-border)", borderRadius: 16 }}>
             <div style={{ width: 52, height: 52, borderRadius: "50%", border: "2px solid var(--vi-accent)", margin: "0 auto 16px", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--vi-accent)", fontSize: 20 }}>◎</div>
             <p style={{ fontSize: 16, marginBottom: 8 }}>No investment goals yet</p>
