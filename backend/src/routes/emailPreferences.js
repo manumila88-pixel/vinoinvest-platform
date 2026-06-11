@@ -10,7 +10,7 @@ export const setEmailPrefPool = (p) => { pool = p; };
 router.get("/", requireAuth, async (req, res) => {
   try {
     const { rows } = await pool.query(
-      "SELECT email_subscribed, notification_frequency, preferred_regions, preferred_types FROM users WHERE id = $1",
+      "SELECT email_subscribed, notification_frequency, preferred_regions, preferred_types, price_range_min, price_range_max, risk_tolerance, investment_horizon FROM users WHERE id = $1",
       [req.user.id]
     ).catch(() => ({ rows: [] }));
 
@@ -19,6 +19,10 @@ router.get("/", requireAuth, async (req, res) => {
       notification_frequency: "weekly",
       preferred_regions: [],
       preferred_types: [],
+      price_range_min: 50,
+      price_range_max: 500,
+      risk_tolerance: "medio",
+      investment_horizon: "3anni",
     });
   } catch (e) {
     res.status(500).json({ error: e.message });
