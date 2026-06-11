@@ -276,6 +276,33 @@ app.use("/api/risk", riskMetricsRouter);
 app.use("/api/watchlist", watchlistRouter);
 app.use("/api/price-estimate", priceEstimateRouter);
 
+// ── GET /api/glossary — wine investment terminology ───────────────────────────
+app.get("/api/glossary", cacheFor(86400), async (req, res) => {
+  try {
+    const { GLOSSARY, searchGlossary, getGlossaryByCategory } = await import("./data/wineGlossary.js");
+    const { q, category } = req.query;
+    let results;
+    if (q) results = searchGlossary(q);
+    else if (category && category !== "all") results = getGlossaryByCategory(category);
+    else results = GLOSSARY;
+    res.json({ terms: results, total: results.length });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// ── GET /api/critics — wine critics reference data ────────────────────────────
+app.get("/api/critics", cacheFor(86400), async (req, res) => {
+  try {
+    const { CRITICS, getCriticsForRegion } = await import("./data/wineCritics.js");
+    const { region } = req.query;
+    const results = region ? getCriticsForRegion(region) : CRITICS;
+    res.json({ critics: results, total: results.length });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // ── Public API v1 + Swagger UI ───────────────────────────────────────────────
 app.use("/api/v1", v1Router);
 // Swagger UI needs relaxed CSP (inline scripts/styles from swagger-ui-dist)
