@@ -674,7 +674,7 @@ function App() {
 
   useEffect(() => {
     if (tab !== "market" || !userEmail) return;
-    fetch(`${API}/api/wines/recommended?userId=${encodeURIComponent(userEmail)}&limit=6`)
+    fetch(`${API}/api/wines/recommended?userId=${encodeURIComponent(localStorage.getItem("vino_user_id") || userEmail)}&limit=6`)
       .then(r => r.ok ? r.json() : null)
       .then(d => {
         if (d?.wines?.length) {
