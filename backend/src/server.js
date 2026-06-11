@@ -81,6 +81,7 @@ import clientPortfoliosRouter, { setClientPortfoliosPool } from "./routes/client
 import demoRequestRouter, { setDemoPool } from "./routes/demoRequest.js";
 import riskMetricsRouter, { setRiskPool } from "./routes/riskMetrics.js";
 import watchlistRouter, { setWatchlistPool } from "./routes/watchlist.js";
+import priceEstimateRouter, { setEstimateRoutePool } from "./routes/priceEstimate.js";
 
 // Sentry — no-op when SENTRY_DSN is not set
 if (process.env.SENTRY_DSN) {
@@ -272,6 +273,7 @@ app.use("/api/client-portfolios", clientPortfoliosRouter);
 app.use("/api/demo", demoRequestRouter);
 app.use("/api/risk", riskMetricsRouter);
 app.use("/api/watchlist", watchlistRouter);
+app.use("/api/price-estimate", priceEstimateRouter);
 
 // ── Public API v1 + Swagger UI ───────────────────────────────────────────────
 app.use("/api/v1", v1Router);
@@ -634,7 +636,7 @@ initDB().then(() => {
   if (pool) { setCellarPool(pool); setJournalPool(pool); setGoalsPool(pool); setReferralPool(pool); }
   if (pool) { setEmailPrefPool(pool); setFeedbackPool(pool); setAuthPool(pool); }
   if (pool) { setReportsPool(pool); }
-  if (pool) { setOrgsPool(pool); setClientPortfoliosPool(pool); setDemoPool(pool); setRiskPool(pool); setWatchlistPool(pool); }
+  if (pool) { setOrgsPool(pool); setClientPortfoliosPool(pool); setDemoPool(pool); setRiskPool(pool); setWatchlistPool(pool); setEstimateRoutePool(pool); }
   if (pool) { setNewsletterPool(pool); }
   if (pool) { setAgentPool(pool); }
   if (pool) { setWelcomeEmailPool(pool); }
