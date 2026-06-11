@@ -44,8 +44,8 @@ export default function SharePortfolio() {
       const data = await res.json();
       const h = (Array.isArray(data) ? data : data.orders || []).filter(o => o.status !== "sold");
 
-      const totalInvested = h.reduce((s, o) => s + (parseFloat(o.purchase_price) || 0) * (o.quantity || 1), 0);
-      const totalValue = h.reduce((s, o) => s + (parseFloat(o.current_market_price) || parseFloat(o.purchase_price) || 0) * (o.quantity || 1), 0);
+      const totalInvested = h.reduce((s, o) => s + (parseFloat(o.purchasePrice || o.purchase_price) || 0) * (o.quantity || 1), 0);
+      const totalValue = h.reduce((s, o) => s + (parseFloat(o.currentMarketPrice || o.current_market_price) || parseFloat(o.purchasePrice || o.purchase_price) || 0) * (o.quantity || 1), 0);
       const roi = totalInvested > 0 ? ((totalValue - totalInvested) / totalInvested) * 100 : 0;
 
       setHoldings(h);
@@ -183,8 +183,8 @@ export default function SharePortfolio() {
             <h3 style={{ fontSize: "var(--vi-fs-sm)", fontWeight: 600, marginBottom: 16, color: "var(--vi-text-dim)", textTransform: "uppercase", letterSpacing: "0.06em" }}>Holdings</h3>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {holdings.map((h, i) => {
-                const invested = parseFloat(h.purchase_price || 0) * (h.quantity || 1);
-                const value = parseFloat(h.current_market_price || h.purchase_price || 0) * (h.quantity || 1);
+                const invested = parseFloat(h.purchasePrice || h.purchase_price || 0) * (h.quantity || 1);
+                const value = parseFloat(h.currentMarketPrice || h.current_market_price || h.purchasePrice || h.purchase_price || 0) * (h.quantity || 1);
                 const roi = invested > 0 ? ((value - invested) / invested) * 100 : 0;
                 return (
                   <div key={h.id || i} className="sp-holding vi-card" style={{
