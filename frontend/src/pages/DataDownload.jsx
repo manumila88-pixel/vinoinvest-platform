@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-const BACKEND = "https://vinoinvest-backend-2.onrender.com";
+const BACKEND = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
 export default function DataDownload() {
   const { t } = useTranslation();

@@ -85,7 +85,7 @@ jobs:
           check "enrichmentJob registered"       "grep -q 'enrichmentJob' backend/src/server.js"
           check "SourceBadge in WineCard"        "grep -q 'SourceBadge' frontend/src/components/WineCard.jsx"
           check "VITE_BACKEND_URL (no VITE_API_URL)" "! grep -r 'VITE_API_URL' frontend/src"
-          check "No Three.js in frontend"       "! grep -rq 'three\b' frontend/src --include='*.jsx' --include='*.js'"
+          check "No Three.js in frontend"       "! grep -rq \"from ['\\\"]three['\\\"]\\|require.*['\\\"]three['\\\"]\" frontend/src --include='*.jsx' --include='*.js'"
           exit $fail
 
       - name: Upload build artifacts
