@@ -40,7 +40,7 @@ export default function SharePortfolio() {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { setIsGuest(true); setLoading(false); return; }
-      const res = await fetch(`${API}/api/orders?userId=${encodeURIComponent(session.user.id)}`);
+      const res = await fetch(`${API}/api/orders?userId=${encodeURIComponent(session.user.email)}`);
       const data = await res.json();
       const h = (Array.isArray(data) ? data : data.orders || []).filter(o => o.status !== "sold");
 
