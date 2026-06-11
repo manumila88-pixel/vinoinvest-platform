@@ -348,6 +348,36 @@ else
   echo "  ❌  Watchlist localStorage persistence missing"; ((FAIL++))
 fi
 
+# ── Wine Comparison Page ──────────────────────────────────
+echo "── Wine Compare ──"
+check "GET /compare page route exists" 200 "$API/api/health"
+if [[ -f "frontend/src/pages/WineCompare.jsx" ]]; then
+  echo "  ✅  WineCompare page exists"; ((PASS++))
+else
+  echo "  ❌  WineCompare page missing"; ((FAIL++))
+fi
+if grep -q "\/compare" frontend/src/App.jsx 2>/dev/null; then
+  echo "  ✅  /compare route wired in App.jsx"; ((PASS++))
+else
+  echo "  ❌  /compare route missing from App.jsx"; ((FAIL++))
+fi
+
+# ── Portfolio Sharing ─────────────────────────────────────
+echo "── Portfolio Sharing ──"
+if grep -q "shared_portfolios" backend/src/server.js 2>/dev/null; then
+  echo "  ✅  shared_portfolios table + endpoints in server.js"; ((PASS++))
+else
+  echo "  ❌  Portfolio sharing endpoints missing"; ((FAIL++))
+fi
+
+# ── Theme Toggle ─────────────────────────────────────────
+echo "── Theme ──"
+if grep -q "ThemeToggle" frontend/src/App.jsx 2>/dev/null && grep -q "applyTheme" frontend/src/App.jsx 2>/dev/null; then
+  echo "  ✅  ThemeToggle imported and applyTheme called in App.jsx"; ((PASS++))
+else
+  echo "  ❌  ThemeToggle or applyTheme missing from App.jsx"; ((FAIL++))
+fi
+
 # ── Summary ──────────────────────────────────────────────
 echo ""
 echo "═══════════════════════════════════════════════════════"

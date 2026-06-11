@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const client = process.env.ANTHROPIC_API_KEY ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY }) : null;
 
 // Haiku: $0.80/MTok input, $4/MTok output
 // Sonnet: $3/MTok input, $15/MTok output

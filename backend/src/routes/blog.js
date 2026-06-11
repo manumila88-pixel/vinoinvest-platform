@@ -4,7 +4,7 @@ import { translateObjects, translateText } from "../services/translationService.
 import { BLOG_POSTS } from "../data/blogPosts.js";
 
 const router = express.Router();
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const client = process.env.ANTHROPIC_API_KEY ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY }) : null;
 
 let pool = null;
 export function setBlogPool(p) {

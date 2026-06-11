@@ -2,7 +2,13 @@ import express from "express";
 import Anthropic from "@anthropic-ai/sdk";
 
 const router = express.Router();
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+let _client = null;
+function getClient() {
+  if (!_client && process.env.ANTHROPIC_API_KEY) {
+    _client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  }
+  return _client;
+}
 
 // Cache per userId: 6 ore (portafoglio cambia poco)
 const analysisCache = new Map();
@@ -59,7 +65,7 @@ Respond with a JSON object (no markdown, pure JSON) with this exact structure:
 }`;
 
   try {
-    const msg = await client.messages.create({
+    const msg = await getClient().messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 1024,
       messages: [{ role: "user", content: prompt }],
