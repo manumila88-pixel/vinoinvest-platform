@@ -15,7 +15,7 @@ function markSeen() {
   localStorage.setItem(getTodayKey(), "1");
 }
 
-export default function ProactiveBriefing({ userId, holdings = [], marketWines = [] }) {
+export default function ProactiveBriefing({ userId, holdings = [], marketWines = [], onViewPortfolio }) {
   const [briefing, setBriefing] = useState(null);
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -134,7 +134,7 @@ export default function ProactiveBriefing({ userId, holdings = [], marketWines =
 
       <div style={{ marginTop: 10, display: "flex", gap: 6 }}>
         <button
-          onClick={dismiss}
+          onClick={() => { dismiss(); onViewPortfolio?.(); }}
           style={{ flex: 1, fontSize: 11, padding: "5px 10px", borderRadius: 8, border: "1px solid rgba(201,162,39,0.3)", background: "rgba(201,162,39,0.08)", color: "#C9A227", cursor: "pointer" }}
         >
           Vedi portfolio →

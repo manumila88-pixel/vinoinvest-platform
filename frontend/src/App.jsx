@@ -2392,6 +2392,7 @@ function App() {
         userId={localStorage.getItem("vino_user_id")}
         holdings={portfolio?.wines || []}
         marketWines={wines || []}
+        onViewPortfolio={() => setTab("portfolio")}
       />
 
       {/* ── PWA Install Banner ──────────────────────────────────────────── */}

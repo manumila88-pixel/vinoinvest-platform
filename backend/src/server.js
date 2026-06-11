@@ -1691,6 +1691,7 @@ const STATIC_PAGES = [
   { p: "/press",        freq: "monthly", pri: "0.5" },
   { p: "/transparency", freq: "monthly", pri: "0.5" },
   { p: "/referral",     freq: "monthly", pri: "0.4" },
+  { p: "/compare",      freq: "monthly", pri: "0.6" },
   { p: "/about",        freq: "monthly", pri: "0.6" },
   { p: "/landing",      freq: "monthly", pri: "0.7" },
   { p: "/terms",        freq: "yearly",  pri: "0.3" },
