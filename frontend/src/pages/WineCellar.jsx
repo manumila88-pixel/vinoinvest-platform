@@ -66,7 +66,7 @@ export default function WineCellar() {
     if (q.length < 2) { setSearchResults([]); return; }
     const res = await fetch(`${API}/api/wines?search=${encodeURIComponent(q)}&limit=5`);
     const data = await res.json();
-    setSearchResults(data.wines || []);
+    setSearchResults(data.results || data.wines || []);
   }
 
   async function addBottle(slot) {

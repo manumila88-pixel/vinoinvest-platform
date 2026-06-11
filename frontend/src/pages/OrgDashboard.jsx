@@ -62,6 +62,7 @@ export default function OrgDashboard() {
   // API Key creation
   const [newKeyLabel, setNewKeyLabel] = useState("");
   const [createdKey, setCreatedKey] = useState(null);
+  const [auditExporting, setAuditExporting] = useState(false);
 
   const [session, setSession] = useState(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -167,6 +168,25 @@ export default function OrgDashboard() {
 
   function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
+  }
+
+  async function downloadAuditCsv() {
+    if (auditExporting || !selectedOrg) return;
+    setAuditExporting(true);
+    try {
+      const res = await authFetch(`${API}/api/organizations/${selectedOrg.id}/audit/export.csv`);
+      if (!res.ok) throw new Error(`${res.status}`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `audit-${selectedOrg.id}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      alert(`Export error: ${e.message}`);
+    }
+    setAuditExporting(false);
   }
 
   const totalAUM = clients.reduce((s, c) => s + (Number(c.aum_wine) || 0), 0);
@@ -503,10 +523,10 @@ export default function OrgDashboard() {
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
               <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>Audit Log</h3>
-              <a href={`${API}/api/organizations/${selectedOrg?.id}/audit/export.csv`}
-                style={{ padding: "7px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600, background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.2)", color: "#60a5fa", textDecoration: "none" }}>
-                Export CSV ↓
-              </a>
+              <button onClick={downloadAuditCsv} disabled={auditExporting}
+                style={{ padding: "7px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600, background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.2)", color: "#60a5fa", cursor: "pointer", opacity: auditExporting ? 0.6 : 1 }}>
+                {auditExporting ? "Exporting…" : "Export CSV ↓"}
+              </button>
             </div>
             {auditLog.length === 0 ? (
               <p style={{ color: "#334155", fontSize: 13 }}>Nessuna attività registrata ancora.</p>
