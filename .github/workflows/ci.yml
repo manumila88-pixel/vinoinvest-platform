@@ -61,6 +61,33 @@ jobs:
           fi
           echo "Nessun secret esposto trovato"
 
+      # ── Structural checks ─────────────────────────────────
+      - name: Structural / file-based checks
+        run: |
+          set -e
+          fail=0
+          check() {
+            local label="$1"; local cmd="$2"
+            if eval "$cmd" > /dev/null 2>&1; then
+              echo "  ✅  $label"
+            else
+              echo "  ❌  $label"
+              fail=1
+            fi
+          }
+          check "premiumModules.js exists"       "test -f frontend/src/data/premiumModules.js"
+          check "WineCompare.jsx exists"         "test -f frontend/src/pages/WineCompare.jsx"
+          check "/compare route in App.jsx"      "grep -q '/compare' frontend/src/App.jsx"
+          check "vino_watchlist in App.jsx"      "grep -q 'vino_watchlist' frontend/src/App.jsx"
+          check "ThemeToggle in App.jsx"         "grep -q 'ThemeToggle' frontend/src/App.jsx"
+          check "applyTheme in App.jsx"          "grep -q 'applyTheme' frontend/src/App.jsx"
+          check "shared_portfolios in server.js" "grep -q 'shared_portfolios' backend/src/server.js"
+          check "enrichmentJob registered"       "grep -q 'enrichmentJob' backend/src/server.js"
+          check "SourceBadge in WineCard"        "grep -q 'SourceBadge' frontend/src/components/WineCard.jsx"
+          check "VITE_BACKEND_URL (no VITE_API_URL)" "! grep -r 'VITE_API_URL' frontend/src"
+          check "No Three.js in frontend"       "! grep -rq 'three\b' frontend/src --include='*.jsx' --include='*.js'"
+          exit $fail
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         if: success()
