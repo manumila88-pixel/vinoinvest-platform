@@ -33,11 +33,16 @@ Obiettivo prodotto: aggregatore dove gli utenti non escono mai dalla piattaforma
 - ✅ Wine search server-side + infinite scroll
 - ✅ Price history chart (tutti i vini)
 - ✅ Three.js rimosso, SVG bottle, bundle -53%
-- 🔄 Login reale Supabase ← PROSSIMO
-- ⬜ AI Score con Claude API
-- ⬜ Price alerts (email)
-- ⬜ Dashboard B2B
-- ⬜ Stripe webhook live
+- ✅ Login reale Supabase (email+pwd, Google OAuth, password reset)
+- ✅ AI Score con Claude API (route /api/ai-score, fallback algoritmico)
+- ✅ Price alerts (email via Resend — attivo con RESEND_API_KEY su Render)
+- ✅ Dashboard B2B (OrgDashboard, ClientDetail, MarketIntelligence)
+- ✅ Wine comparison tool (/compare)
+- ✅ Portfolio sharing/PDF, dark/light theme
+- ✅ Academy premium, wine cellar, journal, investment goals
+- ✅ CI/CD + structural smoke tests + backend syntax tests
+- 🔄 Stripe webhook live ← attivare STRIPE_WEBHOOK_SECRET su Render
+- 🔄 ANTHROPIC_API_KEY su Render ← AI reale vs fallback algoritmico
 - ⬜ AI Agent acquisti autonomo
 
 ## Architettura file
