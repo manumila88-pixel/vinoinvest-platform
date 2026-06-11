@@ -1326,9 +1326,9 @@ function App() {
               </button>
             </>
           )}
-          {!viewMode || viewMode === "b2c" ? (accountType === "cantina" && (
+          {(!viewMode || viewMode === "b2c") && ["b2b", "wealth_manager", "cantina", "family_office"].includes(accountType) && (
             <button className={tab === "b2b" ? "active" : ""} onClick={() => { setTab("b2b"); setSidebarOpen(false); }}>{t("nav.b2b")}</button>
-          )) : null}
+          )}
           <button
             className={tab === "notifications" ? "active" : ""}
             onClick={() => { setTab("notifications"); markAllRead(); setSidebarOpen(false); }}
