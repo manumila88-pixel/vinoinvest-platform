@@ -109,6 +109,27 @@ export default function ClientDetail() {
     if (r.ok) { setNoteText(""); setNotePrivate(false); loadNotes(); }
   }
 
+  const [pdfLoading, setPdfLoading] = useState(false);
+
+  async function downloadPDF() {
+    if (pdfLoading || !client) return;
+    setPdfLoading(true);
+    try {
+      const res = await authFetch(`${API}/api/reports/portfolio/${client.advisor_id}/pdf`);
+      if (!res.ok) throw new Error(`${res.status}`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `report-${client.client_name?.replace(/\s+/g, "-").toLowerCase() || "client"}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      alert(`Report error: ${e.message}`);
+    }
+    setPdfLoading(false);
+  }
+
   async function saveEdit(e) {
     e.preventDefault();
     setSaving(true);
@@ -165,9 +186,9 @@ export default function ClientDetail() {
             <button onClick={() => setShowEdit(true)} style={{ padding: "7px 14px", borderRadius: 8, border: "1px solid rgba(59,130,246,0.3)", background: "none", color: "#60a5fa", cursor: "pointer", fontSize: 12, fontWeight: 600 }}>
               ✏️ Modifica
             </button>
-            <button onClick={() => window.open(`${API}/api/reports/portfolio/${client.advisor_id}/pdf`, "_blank")}
-              style={{ padding: "7px 16px", borderRadius: 8, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 700, background: "linear-gradient(135deg,#1d4ed8,#2563eb)", color: "#fff" }}>
-              📄 Report PDF
+            <button onClick={downloadPDF} disabled={pdfLoading}
+              style={{ padding: "7px 16px", borderRadius: 8, border: "none", cursor: pdfLoading ? "default" : "pointer", fontSize: 12, fontWeight: 700, background: "linear-gradient(135deg,#1d4ed8,#2563eb)", color: "#fff", opacity: pdfLoading ? 0.7 : 1 }}>
+              {pdfLoading ? "Generating..." : "📄 Report PDF"}
             </button>
           </div>
         </div>
