@@ -47,7 +47,7 @@ export default function LandingPage() {
 
   useEffect(() => {
     fetch(`${API}/api/stats/public`).then(r => r.json()).then(d => {
-      if (d.wines) setStats({ wines: d.wines.toLocaleString() + "+", users: d.users.toLocaleString() + "+", prices: d.prices.toLocaleString() + "+" });
+      if (d.wines) setStats({ wines: d.wines.toLocaleString() + "+", users: d.users.toLocaleString() + "+", prices: (d.pricePoints || d.prices || 0).toLocaleString() + "+" });
     }).catch(() => {});
   }, []);
 
