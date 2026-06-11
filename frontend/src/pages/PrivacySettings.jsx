@@ -45,8 +45,10 @@ export default function PrivacySettings() {
       if (!userId) { setExportStatus({ error: "Accedi per esportare i dati." }); setExportLoading(false); return; }
 
       // Collect all local data
+      const storedUser = getStoredUser();
+      const userEmail = storedUser.email || userId;
       const localData = {
-        user: getStoredUser(),
+        user: storedUser,
         academy_progress: JSON.parse(localStorage.getItem("vino_academy_v1") || "{}"),
         module_progress: JSON.parse(localStorage.getItem("vino_module_progress_v1") || "{}"),
         watchlist: JSON.parse(localStorage.getItem("vino_watchlist") || "[]"),
@@ -58,7 +60,7 @@ export default function PrivacySettings() {
       // Fetch server-side data
       const headers = await getAuthHeader();
       const [ordersRes, progressRes] = await Promise.all([
-        fetch(`${API}/api/orders?userId=${encodeURIComponent(userId)}`).catch(() => null),
+        fetch(`${API}/api/orders?userId=${encodeURIComponent(userEmail)}`).catch(() => null),
         fetch(`${API}/api/academy/progress/${userId}`, { headers }).catch(() => null),
       ]);
 
