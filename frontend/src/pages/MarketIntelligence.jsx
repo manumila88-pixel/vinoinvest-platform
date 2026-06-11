@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { ADMIN_EMAIL } from "../lib/constants";
 
-const API = import.meta.env.VITE_API_URL || "https://vinoinvest-backend-2.onrender.com";
+const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
 const EN_PRIMEUR_CALENDAR = [
   { vintage: 2023, region: "Bordeaux", opens: "Apr 2025", closes: "Jun 2025", status: "open", roi12m: "+14.2%", topPick: "Château Pichon Baron", rating: 97 },

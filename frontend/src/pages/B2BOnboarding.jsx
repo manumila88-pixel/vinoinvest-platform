@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 
-const API = import.meta.env.VITE_API_URL || "https://vinoinvest-backend-2.onrender.com";
+const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
 const ORG_TYPES = [
   { id: "wealth_manager", icon: "💼", label: "Wealth Manager", desc: "Gestione patrimoni privati HNWI" },

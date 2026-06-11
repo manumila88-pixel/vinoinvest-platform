@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { authFetch } from "../lib/authFetch";
 
-const API = import.meta.env.VITE_API_URL || "https://vinoinvest-backend-2.onrender.com";
+const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
 function Section({ title, children, action }) {
   return (

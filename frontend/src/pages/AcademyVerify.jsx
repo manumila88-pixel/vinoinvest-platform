@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 const BG = "#0b1220";
-const API = import.meta.env.VITE_API_URL || "https://vinoinvest-backend-2.onrender.com";
+const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
 export default function AcademyVerify() {
   const { code } = useParams();

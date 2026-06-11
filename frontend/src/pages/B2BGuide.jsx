@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
-const API = import.meta.env.VITE_API_URL || "https://vinoinvest-backend-2.onrender.com";
+const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
 const B2B_CATEGORIES = [
   { slug: "investment", label: "Investimento Wine" },
