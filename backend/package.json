@@ -8,8 +8,8 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.101.0",
-    "@sentry/node": "^8.0.0",
     "@paypal/checkout-server-sdk": "^1.0.3",
+    "@sentry/node": "^8.0.0",
     "@supabase/supabase-js": "^2.107.0",
     "axios": "^1.17.0",
     "cheerio": "^1.2.0",
