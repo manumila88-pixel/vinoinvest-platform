@@ -26,6 +26,7 @@ router.post("/trigger", requireAuth, async (req, res) => {
       req.user.id,
       req.user.email,
       req.user.first_name || null,
+      req.body.segment || "b2c",
       event,
       { wineName, currentPrice, courseName, months }
     );
