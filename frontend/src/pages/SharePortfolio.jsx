@@ -40,11 +40,9 @@ export default function SharePortfolio() {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { setIsGuest(true); setLoading(false); return; }
-      const res = await fetch(`${API}/api/orders/${session.user.id}`, {
-        headers: { Authorization: `Bearer ${session.access_token}` }
-      });
+      const res = await fetch(`${API}/api/orders?userId=${encodeURIComponent(session.user.id)}`);
       const data = await res.json();
-      const h = (data.orders || []).filter(o => o.status !== "sold");
+      const h = (Array.isArray(data) ? data : data.orders || []).filter(o => o.status !== "sold");
 
       const totalInvested = h.reduce((s, o) => s + (parseFloat(o.purchase_price) || 0) * (o.quantity || 1), 0);
       const totalValue = h.reduce((s, o) => s + (parseFloat(o.current_market_price) || parseFloat(o.purchase_price) || 0) * (o.quantity || 1), 0);
