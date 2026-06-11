@@ -1196,6 +1196,7 @@ function App() {
           >📊 {t('nav.index')}</button>
           <a href="/scan" title="Scan wine label" aria-label="Scansiona etichetta vino" style={{ padding: "6px 10px", border: "1px solid var(--vi-border)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#4a6a8a", fontSize: 11, cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center", fontWeight: 600 }}>Scan</a>
           <CurrencySelector />
+          <ThemeToggle />
           <LangSelector />
           {userEmail && <span style={{ fontSize: 12, color: "#3a5a7a" }}>{userEmail}</span>}
           {isAdmin && (
@@ -2485,6 +2486,7 @@ onINP(reportWebVitals);
 onTTFB(reportWebVitals);
 
 initErrorReporting();
+applyTheme(getSavedTheme());
 
 createRoot(document.getElementById("root")).render(
   <HelmetProvider>
