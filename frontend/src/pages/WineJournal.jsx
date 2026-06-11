@@ -24,6 +24,7 @@ export default function WineJournal() {
   const { t } = useTranslation();
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
   const [form, setForm] = useState({ wine_name: "", vintage: "", rating: 0, notes: "", occasion: "", companions: "", tasted_at: new Date().toISOString().slice(0, 10) });
   const [filter, setFilter] = useState("all");
@@ -32,14 +33,16 @@ export default function WineJournal() {
 
   async function loadJournal() {
     setLoading(true);
+    setFetchError(false);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
       if (!token) { setLoading(false); return; }
       const res = await fetch(`${API}/api/journal`, { headers: { Authorization: `Bearer ${token}` } });
+      if (!res.ok) throw new Error(res.status);
       const data = await res.json();
       setEntries(data.entries || []);
-    } catch (e) { console.error(e); }
+    } catch (e) { setFetchError(true); }
     setLoading(false);
   }
 
@@ -102,7 +105,16 @@ export default function WineJournal() {
 
         {loading && <div style={{ color: "var(--vi-text-dim)", textAlign: "center", padding: 40 }}>{t('common.loading')}</div>}
 
-        {!loading && filtered.length === 0 && (
+        {!loading && fetchError && (
+          <div style={{ padding: "24px", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 12, textAlign: "center" }}>
+            <p style={{ color: "var(--vi-negative)", marginBottom: 12, fontSize: 14 }}>Impossibile caricare le note di degustazione.</p>
+            <button onClick={loadJournal} style={{ padding: "7px 18px", borderRadius: 8, background: "rgba(201,162,39,0.1)", border: "1px solid rgba(201,162,39,0.3)", color: "var(--vi-accent)", cursor: "pointer", fontWeight: 700, fontSize: 13 }}>
+              Riprova
+            </button>
+          </div>
+        )}
+
+        {!loading && !fetchError && filtered.length === 0 && (
           <div style={{ textAlign: "center", padding: "60px 24px", color: "var(--vi-text-dim)" }}>
             <div style={{ width: 48, height: 48, borderRadius: 12, background: "rgba(201,162,39,0.15)", margin: "0 auto 16px" }} />
             <p style={{ fontSize: 16, marginBottom: 8 }}>Nessuna nota di degustazione</p>

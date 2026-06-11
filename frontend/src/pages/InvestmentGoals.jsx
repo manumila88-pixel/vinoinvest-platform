@@ -45,15 +45,19 @@ export default function InvestmentGoals() {
     }
   }, [form.target_amount, form.target_date]);
 
+  const [fetchError, setFetchError] = useState(false);
+
   async function loadGoals() {
     setLoading(true);
+    setFetchError(false);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { setLoading(false); return; }
       const res = await fetch(`${API}/api/goals`, { headers: { Authorization: `Bearer ${session.access_token}` } });
+      if (!res.ok) throw new Error(res.status);
       const data = await res.json();
       setGoals(data.goals || []);
-    } catch (e) {}
+    } catch (e) { setFetchError(true); }
     setLoading(false);
   }
 
@@ -93,7 +97,16 @@ export default function InvestmentGoals() {
 
         {loading && <div style={{ color: "var(--vi-text-dim)", textAlign: "center", padding: 40 }}>Loading...</div>}
 
-        {!loading && goals.length === 0 && (
+        {!loading && fetchError && (
+          <div style={{ padding: "24px", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 12, textAlign: "center" }}>
+            <p style={{ color: "var(--vi-negative)", marginBottom: 12, fontSize: 14 }}>Unable to load investment goals.</p>
+            <button onClick={loadGoals} style={{ padding: "7px 18px", borderRadius: 8, background: "rgba(201,162,39,0.1)", border: "1px solid rgba(201,162,39,0.3)", color: "var(--vi-accent)", cursor: "pointer", fontWeight: 700, fontSize: 13 }}>
+              Retry
+            </button>
+          </div>
+        )}
+
+        {!loading && !fetchError && goals.length === 0 && (
           <div style={{ textAlign: "center", padding: "60px 24px", background: "var(--vi-surface)", border: "1px dashed var(--vi-border)", borderRadius: 16 }}>
             <div style={{ width: 52, height: 52, borderRadius: "50%", border: "2px solid var(--vi-accent)", margin: "0 auto 16px", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--vi-accent)", fontSize: 20 }}>◎</div>
             <p style={{ fontSize: 16, marginBottom: 8 }}>No investment goals yet</p>

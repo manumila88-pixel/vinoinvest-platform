@@ -333,6 +333,21 @@ else
   echo "  ❌  generateB2BPages.js missing"; ((FAIL++))
 fi
 
+# ── Price Estimate ───────────────────────────────────────
+echo "── Price Estimate ──"
+check "POST /api/price-estimate (wine object)" 200 "$API/api/price-estimate" \
+  -X POST -H "Content-Type: application/json" \
+  -d '{"id":"test-1","name":"Barolo Brunate","producer":"Cerretto","vintage":"2019","region":"Piemonte","current_price":95}'
+check "GET /api/price-estimate/:id" 200 "$API/api/price-estimate/test-1?name=Barolo+Brunate&producer=Cerretto&vintage=2019&region=Piemonte"
+
+# ── Watchlist localStorage Persistence ────────────────────
+echo "── Frontend Watchlist ──"
+if grep -q "vino_watchlist" frontend/src/App.jsx 2>/dev/null; then
+  echo "  ✅  Watchlist persists to localStorage (key vino_watchlist)"; ((PASS++))
+else
+  echo "  ❌  Watchlist localStorage persistence missing"; ((FAIL++))
+fi
+
 # ── Summary ──────────────────────────────────────────────
 echo ""
 echo "═══════════════════════════════════════════════════════"

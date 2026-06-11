@@ -76,6 +76,7 @@ const B2BOnboarding = lazy(() => import("./pages/B2BOnboarding"));
 const DataSources = lazy(() => import("./pages/DataSources"));
 const B2BGuide = lazy(() => import("./pages/B2BGuide"));
 const ComeComprare = lazy(() => import("./pages/ComeComprare"));
+const WineCompare = lazy(() => import("./pages/WineCompare"));
 import ThemeToggle from "./components/ThemeToggle";
 import CommandPalette from "./components/CommandPalette";
 import VoiceInterface from "./components/VoiceInterface";
@@ -2545,6 +2546,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="/clients/:clientId" element={<ClientDetail />} />
           <Route path="/market-intelligence" element={<MarketIntelligence />} />
           <Route path="/b2b-onboarding" element={<B2BOnboarding />} />
+          <Route path="/compare" element={<WineCompare />} />
           <Route path="*" element={<App />} />
         </Routes>
         </Suspense>

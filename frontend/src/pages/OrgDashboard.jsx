@@ -4,7 +4,7 @@ import { authFetch } from "../lib/authFetch";
 import { supabase } from "../lib/supabase";
 import AuthModal from "../components/AuthModal";
 
-const API = import.meta.env.VITE_API_URL || "https://vinoinvest-backend-2.onrender.com";
+const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
 function StatCard({ label, value, sub, color = "#60a5fa" }) {
   const rgb = color === "#60a5fa" ? "59,130,246" : color === "#34d399" ? "52,211,153" : color === "#fbbf24" ? "251,191,36" : "167,139,250";

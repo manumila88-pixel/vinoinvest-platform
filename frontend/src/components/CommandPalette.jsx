@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 
-const API = import.meta.env.VITE_API_URL || "https://vinoinvest-backend-2.onrender.com";
+const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
 const STATIC_COMMANDS = [
   { id: "home", label: "Home — Dashboard vini", icon: "🏠", action: () => { window.location.href = "/"; } },
@@ -9,6 +9,7 @@ const STATIC_COMMANDS = [
   { id: "org", label: "Dashboard Organizzazione", icon: "📊", action: () => { window.location.href = "/org-dashboard"; } },
   { id: "cellar", label: "La mia Cantina", icon: "🍾", action: () => { window.location.href = "/cellar"; } },
   { id: "journal", label: "Diario Degustazioni", icon: "📔", action: () => { window.location.href = "/journal"; } },
+  { id: "compare", label: "Confronta Vini (side-by-side)", icon: "⚖️", action: () => { window.location.href = "/compare"; } },
   { id: "goals", label: "Obiettivi Investimento", icon: "🎯", action: () => { window.location.href = "/goals"; } },
   { id: "market", label: "Market Index", icon: "📈", action: () => { window.location.href = "/market-index"; } },
   { id: "intelligence", label: "Market Intelligence B2B", icon: "🔬", action: () => { window.location.href = "/market-intelligence"; } },

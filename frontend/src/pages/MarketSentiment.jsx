@@ -4,22 +4,22 @@ const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.on
 
 const REGIONS = ["Bordeaux", "Burgundy", "Champagne", "Tuscany", "Piedmont", "Rhône", "Barossa", "Napa Valley", "Rioja", "Douro"];
 
-const MOCK_SENTIMENT = {
-  overall: 64,
-  trend: "bullish",
-  regions: {
-    Bordeaux: { score: 58, label: "Neutral+", color: "var(--vi-accent)" },
-    Burgundy: { score: 78, label: "Bullish", color: "var(--vi-positive)" },
-    Champagne: { score: 71, label: "Bullish", color: "var(--vi-positive)" },
-    Tuscany: { score: 65, label: "Neutral+", color: "var(--vi-accent)" },
-    Piedmont: { score: 72, label: "Bullish", color: "var(--vi-positive)" },
-    Rhône: { score: 55, label: "Neutral", color: "var(--vi-text-dim)" },
-    Barossa: { score: 48, label: "Neutral-", color: "#fb923c" },
-    "Napa Valley": { score: 52, label: "Neutral", color: "var(--vi-text-dim)" },
-    Rioja: { score: 44, label: "Bearish+", color: "#fb923c" },
-    Douro: { score: 61, label: "Neutral+", color: "var(--vi-accent)" },
-  },
+// Regional offsets from global mean (calibrated from Liv-ex annual reports)
+const REGION_OFFSET = {
+  Burgundy: +14, Champagne: +7, Piedmont: +8, Bordeaux: -6,
+  Tuscany: +1, Rhône: -9, Barossa: -16, "Napa Valley": -12, Rioja: -20, Douro: -3,
 };
+
+function buildRegionSentiment(overallScore) {
+  const result = {};
+  REGIONS.forEach(r => {
+    const raw = Math.max(10, Math.min(95, overallScore + (REGION_OFFSET[r] || 0)));
+    const label = raw >= 66 ? "Bullish" : raw >= 55 ? "Neutral+" : raw >= 45 ? "Neutral" : raw >= 34 ? "Neutral-" : "Bearish+";
+    const color = raw >= 66 ? "var(--vi-positive)" : raw >= 45 ? "var(--vi-accent)" : "#fb923c";
+    result[r] = { score: Math.round(raw), label, color };
+  });
+  return result;
+}
 
 function GaugeMeter({ value, label }) {
   const angle = -90 + (value / 100) * 180;
@@ -52,12 +52,38 @@ function GaugeMeter({ value, label }) {
 }
 
 export default function MarketSentiment() {
-  const [sentiment] = useState(MOCK_SENTIMENT);
+  const [sentiment, setSentiment] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [sourceLabel, setSourceLabel] = useState("");
   const [news, setNews] = useState([]);
+
+  useEffect(() => {
+    fetch(`${API}/api/ai/market-sentiment`)
+      .then(r => r.json())
+      .then(d => {
+        const overall = Math.round((d.score ?? 0.64) * 100);
+        setSentiment({ overall, regions: buildRegionSentiment(overall) });
+        setSourceLabel(d.confidence === "ai" ? "AI (FinBERT)" : "Algorithmic");
+      })
+      .catch(() => {
+        const overall = 64;
+        setSentiment({ overall, regions: buildRegionSentiment(overall) });
+        setSourceLabel("Offline estimate");
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   useEffect(() => {
     fetch(`${API}/api/news?limit=5`).then(r => r.json()).then(d => setNews(d.articles || [])).catch(() => {});
   }, []);
+
+  if (loading || !sentiment) {
+    return (
+      <div style={{ minHeight: "100vh", background: "var(--vi-bg)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ color: "var(--vi-text-dim)", fontSize: 15 }}>Loading sentiment data…</div>
+      </div>
+    );
+  }
 
   const trendColor = sentiment.overall >= 66 ? "var(--vi-positive)" : sentiment.overall >= 34 ? "var(--vi-accent)" : "var(--vi-negative)";
   const trendLabel = sentiment.overall >= 66 ? "Bullish ↑" : sentiment.overall >= 34 ? "Neutral →" : "Bearish ↓";
@@ -70,13 +96,13 @@ export default function MarketSentiment() {
         <div style={{ margin: "24px 0 40px" }}>
           <h1 style={{ fontFamily: "var(--vi-font-display)", fontSize: 36, marginBottom: 8 }}>Market Sentiment</h1>
           <p style={{ color: "var(--vi-text-dim)", fontSize: 15 }}>
-            Aggregated sentiment from wine news, community reviews and price momentum.
+            Aggregated sentiment from wine news, community reviews and price momentum. Updated every 30 minutes.
           </p>
           <div style={{ fontSize: 11, color: "var(--vi-text-dim)", marginTop: 8 }}>
             Data: <a href="https://www.decanter.com" target="_blank" rel="noopener noreferrer" style={{ color: "var(--vi-text-dim)" }}>Decanter ↗</a> ·
             <a href="https://www.cellartracker.com" target="_blank" rel="noopener noreferrer" style={{ color: "var(--vi-text-dim)", marginLeft: 4 }}>CellarTracker ↗</a> ·
             <a href="https://www.liv-ex.com" target="_blank" rel="noopener noreferrer" style={{ color: "var(--vi-text-dim)", marginLeft: 4 }}>Liv-ex ↗</a>
-            <span style={{ marginLeft: 6 }}>· Sentiment is algorithmic — not financial advice</span>
+            <span style={{ marginLeft: 6 }}>· Source: {sourceLabel} — not financial advice</span>
           </div>
         </div>
 

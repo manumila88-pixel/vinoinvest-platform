@@ -69,6 +69,7 @@ export default function DashboardB2B() {
   const [data, setData] = useState(null);
   const [rates, setRates] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
   const [activeTab, setActiveTab] = useState("analytics");
 
   // Wine management form state
@@ -76,17 +77,30 @@ export default function DashboardB2B() {
   const [wineFormMsg, setWineFormMsg] = useState(null);
   const [submittingWine, setSubmittingWine] = useState(false);
 
-  useEffect(() => {
+  function loadDashboard() {
+    setLoading(true);
+    setFetchError(false);
     Promise.all([
       fetch(`${API}/api/dashboard/analytics`).then(r => r.json()),
       fetch(`${API}/api/rates`).then(r => r.json()),
     ])
       .then(([analytics, ratesData]) => { setData(analytics); setRates(ratesData); })
-      .catch(console.error)
+      .catch(() => setFetchError(true))
       .finally(() => setLoading(false));
-  }, []);
+  }
+
+  useEffect(() => { loadDashboard(); }, []);
 
   if (loading) return <div style={{ color: "var(--vi-text-dim)", padding: 40 }}>{t('common.loadingDashboard')}</div>;
+
+  if (fetchError) return (
+    <div style={{ padding: "40px 24px", textAlign: "center" }}>
+      <p style={{ color: "var(--vi-negative)", marginBottom: 16 }}>Impossibile caricare i dati della dashboard.</p>
+      <button onClick={loadDashboard} style={{ padding: "8px 20px", borderRadius: 8, background: "rgba(201,162,39,0.1)", border: "1px solid rgba(201,162,39,0.3)", color: "var(--vi-accent)", cursor: "pointer", fontWeight: 700 }}>
+        Riprova
+      </button>
+    </div>
+  );
 
   const card = (label, value, sub) => (
     <div className="statCard" key={label}>

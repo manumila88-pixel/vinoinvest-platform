@@ -181,10 +181,16 @@ const WineCard = memo(function WineCard({
             href={`https://www.vivino.com/search/wines?q=${encodeURIComponent(wine.name)}`}
             target="_blank"
             rel="noopener noreferrer sponsored"
-            style={{ flex: 1, textAlign: "center", fontSize: 10, color: "#3a5a7a", textDecoration: "none", padding: "6px 0 4px", transition: `color var(--vi-dur) var(--vi-ease)` }}
+            style={{ flex: 1, textAlign: "center", fontSize: 10, color: "#3a5a7a", textDecoration: "none", padding: "6px 0 4px", transition: `color var(--vi-dur) var(--vi-ease)`, borderRight: "1px solid var(--vi-border)" }}
             onMouseEnter={e => e.currentTarget.style.color = "#aa4466"}
             onMouseLeave={e => e.currentTarget.style.color = "#3a5a7a"}
           >Vivino ↗</a>
+          <a
+            href="/compare"
+            style={{ flex: 1, textAlign: "center", fontSize: 10, color: "#3a5a7a", textDecoration: "none", padding: "6px 0 4px", transition: `color var(--vi-dur) var(--vi-ease)` }}
+            onMouseEnter={e => e.currentTarget.style.color = "var(--vi-accent)"}
+            onMouseLeave={e => e.currentTarget.style.color = "#3a5a7a"}
+          >Compare →</a>
         </div>
       </div>
     </div>
