@@ -42,7 +42,8 @@ export default function PurchaseModal({ wine, onClose, onImport }) {
     if (!importForm.price || !importForm.quantity) return setImportMsg({ type: "error", text: "Prezzo e quantità obbligatori" });
     setImporting(true);
     try {
-      const userId = localStorage.getItem("vino_user_id") || "anonymous";
+      const _u = JSON.parse(localStorage.getItem("vino_user") || "{}");
+      const userId = _u.email || localStorage.getItem("vino_device_id") || "anonymous";
       const res = await fetch(`${API}/api/purchase/import`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
