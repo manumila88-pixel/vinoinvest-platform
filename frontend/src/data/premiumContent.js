@@ -19,23 +19,32 @@ async function _loadConsumerModules() {
   return _consumerCache;
 }
 
-let _b2bCache = null;
-async function _loadB2BModules() {
-  if (_b2bCache) return _b2bCache;
+let _b2bACache = null;
+async function _loadB2BModulesA() {
+  if (_b2bACache) return _b2bACache;
   const m = await import("./premiumModulesB2B.js");
-  _b2bCache = {
+  _b2bACache = {
     21: m.HNW_FAMILY_OFFICE_MODULES,
     22: m.ANALYTICS_B2B_MODULES,
     23: m.COMPLIANCE_MODULES,
     24: m.MERCATI_INTERNAZIONALI_MODULES,
     25: m.WINE_FUND_MODULES,
+  };
+  return _b2bACache;
+}
+
+let _b2bBCache = null;
+async function _loadB2BModulesB() {
+  if (_b2bBCache) return _b2bBCache;
+  const m = await import("./premiumModulesB2B_b.js");
+  _b2bBCache = {
     26: m.ESG_MODULES,
     27: m.MASTERCLASS_DATI_MODULES,
     28: m.AI_AUTOMATION_MODULES,
     29: m.BUSINESS_WINE_MODULES,
     30: m.CERTIFICAZIONE_FINALE_MODULES,
   };
-  return _b2bCache;
+  return _b2bBCache;
 }
 
 // ── Course 11: Rendimenti Storici ─────────────────────────────────────────────
@@ -1375,7 +1384,11 @@ export async function getModulesForCourse(courseId) {
     const m = await _loadConsumerModules();
     return m[courseId] || [];
   }
-  const m = await _loadB2BModules();
+  if (courseId <= 25) {
+    const m = await _loadB2BModulesA();
+    return m[courseId] || [];
+  }
+  const m = await _loadB2BModulesB();
   return m[courseId] || [];
 }
 
