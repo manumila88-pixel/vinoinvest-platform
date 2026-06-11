@@ -1618,10 +1618,10 @@ orders.push(order);
       .then(async ({ rows }) => {
         if (parseInt(rows[0].count) === 1) {
           // This is the first purchase — fire email
-          const { rows: u } = await pool.query(`SELECT email, first_name FROM users WHERE id = $1`, [userId]).catch(() => ({ rows: [] }));
+          const { rows: u } = await pool.query(`SELECT id, email, first_name FROM users WHERE email = $1 OR id::text = $1`, [userId]).catch(() => ({ rows: [] }));
           if (u[0]?.email) {
             const { triggerBehavioralEmail } = await import("./services/emailFlowService.js");
-            triggerBehavioralEmail(userId, u[0].email, u[0].first_name, "first_purchase", { wineName: wine.name }).catch(() => {});
+            triggerBehavioralEmail(u[0].id || userId, u[0].email, u[0].first_name, "first_purchase", { wineName: wine.name }).catch(() => {});
           }
         }
       }).catch(() => {});

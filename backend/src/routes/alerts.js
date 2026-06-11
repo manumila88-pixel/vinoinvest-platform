@@ -52,13 +52,13 @@ router.post("/", async (req, res) => {
     );
 
     // Behavioral email trigger: watchlist_add (fire async, don't block response)
-    db.query(`SELECT email, first_name FROM users WHERE id = $1`, [userId])
+    db.query(`SELECT id, email, first_name FROM users WHERE email = $1 OR id::text = $1`, [userId])
       .then(async ({ rows: u }) => {
         if (u[0]?.email) {
           const { triggerBehavioralEmail } = await import("../services/emailFlowService.js");
           // 2h delay via setTimeout
           setTimeout(() => {
-            triggerBehavioralEmail(userId, u[0].email, u[0].first_name, "watchlist_add", { wineName: wineName || wineId }).catch(() => {});
+            triggerBehavioralEmail(u[0].id || userId, u[0].email, u[0].first_name, "watchlist_add", { wineName: wineName || wineId }).catch(() => {});
           }, 2 * 60 * 60 * 1000);
         }
       }).catch(() => {});
