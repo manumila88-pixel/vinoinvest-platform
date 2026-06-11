@@ -74,7 +74,7 @@ import { setUserTaggingPool, ensureUserTagTables, startUserTaggingCron } from ".
 import "./jobs/emailFlowJob.js";
 import v1Router, { setV1Wines, setV1MarketIndex, setV1NewsService } from "./routes/v1/index.js";
 import knowledgeBaseRouter from "./routes/knowledgeBase.js";
-import dataExportRouter, { setDataExportWines } from "./routes/dataExport.js";
+import dataExportRouter, { setDataExportWines, setDataExportPool } from "./routes/dataExport.js";
 import securityRouter from "./routes/security.js";
 import analyticsRouter from "./routes/analytics.js";
 import orgsRouter, { setOrgsPool } from "./routes/organizations.js";
@@ -635,7 +635,7 @@ initDB().then(() => {
   if (pool) setAnalysisPool(pool);
   if (pool) { setGamificationPool(pool); initGamificationTable(); }
   if (pool) { setCellarPool(pool); setJournalPool(pool); setGoalsPool(pool); setReferralPool(pool); }
-  if (pool) { setEmailPrefPool(pool); setFeedbackPool(pool); setAuthPool(pool); }
+  if (pool) { setEmailPrefPool(pool); setFeedbackPool(pool); setAuthPool(pool); setDataExportPool(pool); }
   if (pool) { setReportsPool(pool); }
   if (pool) { setOrgsPool(pool); setClientPortfoliosPool(pool); setDemoPool(pool); setRiskPool(pool); setWatchlistPool(pool); setEstimateRoutePool(pool); }
   if (pool) { setNewsletterPool(pool); }
@@ -1695,6 +1695,16 @@ const STATIC_PAGES = [
   { p: "/compare",      freq: "monthly", pri: "0.6" },
   { p: "/about",        freq: "monthly", pri: "0.6" },
   { p: "/landing",      freq: "monthly", pri: "0.7" },
+  { p: "/metodologia",       freq: "monthly", pri: "0.7" },
+  { p: "/glossario",         freq: "monthly", pri: "0.7" },
+  { p: "/come-comprare",     freq: "monthly", pri: "0.6" },
+  { p: "/guide/piattaforme", freq: "monthly", pri: "0.6" },
+  { p: "/security",          freq: "monthly", pri: "0.5" },
+  { p: "/data",              freq: "monthly", pri: "0.5" },
+  { p: "/data-sources",      freq: "monthly", pri: "0.5" },
+  { p: "/market-intelligence", freq: "weekly", pri: "0.7" },
+  { p: "/market/producers",  freq: "weekly",  pri: "0.8" },
+  { p: "/case-studies",      freq: "monthly", pri: "0.6" },
   { p: "/terms",        freq: "yearly",  pri: "0.3" },
   { p: "/privacy",      freq: "yearly",  pri: "0.3" },
   { p: "/cookies",      freq: "yearly",  pri: "0.3" },
