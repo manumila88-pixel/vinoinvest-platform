@@ -134,7 +134,53 @@
     <priority>0.5</priority>
   </url>
 
+  <!-- Market & Producers -->
+  <url>
+    <loc>https://vinoinvest-platform.vercel.app/market/producers</loc>
+    <lastmod>2026-06-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vinoinvest-platform.vercel.app/market-intelligence</loc>
+    <lastmod>2026-06-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Tools & Guides -->
+  <url>
+    <loc>https://vinoinvest-platform.vercel.app/compare</loc>
+    <lastmod>2026-06-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://vinoinvest-platform.vercel.app/come-comprare</loc>
+    <lastmod>2026-06-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://vinoinvest-platform.vercel.app/guide/piattaforme</loc>
+    <lastmod>2026-06-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://vinoinvest-platform.vercel.app/case-studies</loc>
+    <lastmod>2026-06-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
   <!-- E-E-A-T & Knowledge pages -->
+  <url>
+    <loc>https://vinoinvest-platform.vercel.app/about</loc>
+    <lastmod>2026-06-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
   <url>
     <loc>https://vinoinvest-platform.vercel.app/metodologia</loc>
     <lastmod>2026-06-09</lastmod>
@@ -146,6 +192,12 @@
     <lastmod>2026-06-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://vinoinvest-platform.vercel.app/data-sources</loc>
+    <lastmod>2026-06-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://vinoinvest-platform.vercel.app/data</loc>
