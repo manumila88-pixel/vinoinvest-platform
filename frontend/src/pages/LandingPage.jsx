@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { API } from "../lib/constants";
+import AuthModal from "../components/AuthModal";
 
 const FEATURES = [
   { title: "AI Score su 50.000+ vini", desc: "Algoritmo proprietario che analizza storico prezzi, punteggi critici e liquidità." },
@@ -39,17 +40,24 @@ const ACADEMY_TAGS = [
   "Dati Liv-ex reali", "Quiz e esercizi pratici", "Accesso a vita",
 ];
 
-export default function LandingPage() {
+export default function LandingPage({ onLogin }) {
   const navigate = useNavigate();
   const [stats, setStats] = useState({ wines: "50.000+", users: "2.800+", prices: "180.000+" });
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
+  const [authTab, setAuthTab] = useState("login");
 
   useEffect(() => {
     fetch(`${API}/api/stats/public`).then(r => r.json()).then(d => {
       if (d.wines) setStats({ wines: d.wines.toLocaleString() + "+", users: d.users.toLocaleString() + "+", prices: (d.pricePoints || d.prices || 0).toLocaleString() + "+" });
     }).catch(() => {});
   }, []);
+
+  function openAuth(tab = "signup") {
+    setAuthTab(tab);
+    setShowAuth(true);
+  }
 
   async function handleEmailSignup(e) {
     e.preventDefault();
@@ -132,10 +140,10 @@ export default function LandingPage() {
           <a href="#pricing" className="lp-nav-link" style={{ color: "var(--vi-text-dim)", textDecoration: "none", fontSize: "var(--vi-fs-sm)" }}>Prezzi</a>
           <button
             className="lp-btn vi-btn"
-            onClick={() => navigate("/")}
+            onClick={() => openAuth("login")}
             style={{ border: "none", fontFamily: "var(--vi-font-sans)", fontSize: "var(--vi-fs-sm)" }}
           >
-            Inizia gratis
+            Accedi
           </button>
         </div>
       </nav>
@@ -163,7 +171,7 @@ export default function LandingPage() {
         <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
           <button
             className="lp-btn vi-btn"
-            onClick={() => navigate("/")}
+            onClick={() => openAuth("signup")}
             style={{ border: "none", fontFamily: "var(--vi-font-sans)", fontSize: "var(--vi-fs-base)", padding: "15px 32px" }}
           >
             Inizia gratis →
@@ -363,6 +371,18 @@ export default function LandingPage() {
         </div>
         <div>© 2026 VinoInvest. <span style={{ color: "var(--vi-accent)" }}>Investire in vino comporta rischi. I rendimenti passati non garantiscono risultati futuri.</span></div>
       </footer>
+
+      {showAuth && (
+        <AuthModal
+          defaultTab={authTab}
+          reason={authTab === "signup" ? "Crea il tuo account gratuito" : null}
+          onSuccess={({ user, account_type }) => {
+            setShowAuth(false);
+            if (onLogin) onLogin({ user, account_type });
+          }}
+          onClose={() => setShowAuth(false)}
+        />
+      )}
     </div>
   );
 }
