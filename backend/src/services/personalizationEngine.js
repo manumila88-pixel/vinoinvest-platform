@@ -28,7 +28,7 @@ export async function getPersonalizedContent(userId, allWines = [], recentNews =
       orders = orderRows;
 
       // Get user alerts
-      const { rows: alertRows } = await pool.query("SELECT * FROM alerts WHERE user_id = $1 AND active = true LIMIT 10", [userId]).catch(() => ({ rows: [] }));
+      const { rows: alertRows } = await pool.query("SELECT * FROM price_alerts WHERE user_id = $1 AND active = true LIMIT 10", [userId]).catch(() => ({ rows: [] }));
       alerts = alertRows;
     } catch (e) { console.warn("[personalization]", e.message); }
   }

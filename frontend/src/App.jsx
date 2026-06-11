@@ -2429,7 +2429,7 @@ function App() {
 
       {/* ── Proactive AI Briefing ───────────────────────────────────────── */}
       <ProactiveBriefing
-        userId={localStorage.getItem("vino_user_id")}
+        userId={userEmail}
         holdings={portfolio?.wines || []}
         marketWines={wines || []}
         onViewPortfolio={() => setTab("portfolio")}
