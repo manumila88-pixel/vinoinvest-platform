@@ -230,6 +230,19 @@ export default function LandingPage({ onLogin }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [showModal]);
 
+  // Handle ?login=1&email=...&tab=signup deep links (e.g. from client invite emails)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("login") === "1" || params.get("signup") === "1") {
+      const emailParam = params.get("email");
+      const tabParam = params.get("tab");
+      if (emailParam) setEmail(decodeURIComponent(emailParam));
+      if (tabParam === "signup" || params.get("signup") === "1") setAuthTab("signup");
+      setModalType("investor");
+      setShowModal(true);
+    }
+  }, []);
+
   useEffect(() => {
     const el = featuresRef.current;
     if (!el) return;

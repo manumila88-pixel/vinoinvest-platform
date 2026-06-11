@@ -355,6 +355,55 @@ function PWAInstallBanner() {
   );
 }
 
+function PasswordRecoveryModal({ onClose }) {
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (password !== confirm) { setError("Le password non corrispondono."); return; }
+    if (password.length < 8) { setError("La password deve avere almeno 8 caratteri."); return; }
+    setLoading(true); setError("");
+    const { error: err } = await supabase.auth.updateUser({ password });
+    if (err) { setError(err.message); setLoading(false); return; }
+    setDone(true);
+    setTimeout(() => onClose(), 2000);
+  }
+
+  return (
+    <div onClick={(e) => { if (e.target === e.currentTarget) onClose(); }} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+      <div style={{ background: "#111827", borderRadius: 20, width: "100%", maxWidth: 380, border: "1px solid rgba(201,162,39,0.25)", padding: "28px 28px 32px", fontFamily: "Inter, sans-serif" }}>
+        <div style={{ fontSize: 22, fontWeight: 800, color: "#C9A227", marginBottom: 8 }}>VinoInvest</div>
+        {done ? (
+          <div style={{ textAlign: "center", padding: "16px 0" }}>
+            <div style={{ fontSize: 40, marginBottom: 8 }}>✅</div>
+            <div style={{ fontWeight: 700, fontSize: 17, color: "#e2e8f0" }}>Password aggiornata!</div>
+            <div style={{ color: "#64748b", fontSize: 13, marginTop: 4 }}>Reindirizzamento in corso...</div>
+          </div>
+        ) : (
+          <>
+            <div style={{ fontWeight: 700, fontSize: 17, color: "#e2e8f0", marginBottom: 4 }}>Imposta nuova password</div>
+            <div style={{ color: "#64748b", fontSize: 13, marginBottom: 20 }}>Scegli una password sicura di almeno 8 caratteri.</div>
+            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <input type="password" placeholder="Nuova password" value={password} onChange={e => setPassword(e.target.value)} required minLength={8}
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, padding: "11px 14px", color: "#e2e8f0", fontSize: 14, outline: "none" }} />
+              <input type="password" placeholder="Conferma password" value={confirm} onChange={e => setConfirm(e.target.value)} required minLength={8}
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, padding: "11px 14px", color: "#e2e8f0", fontSize: 14, outline: "none" }} />
+              {error && <div style={{ background: "rgba(248,113,113,0.1)", border: "1px solid #f87171", borderRadius: 8, padding: "8px 12px", fontSize: 13, color: "#f87171" }}>{error}</div>}
+              <button type="submit" disabled={loading} style={{ background: "#C9A227", border: "none", borderRadius: 12, padding: "12px", fontWeight: 800, color: "#0b1220", cursor: loading ? "default" : "pointer", fontSize: 15, opacity: loading ? 0.7 : 1 }}>
+                {loading ? "Salvataggio..." : "Salva nuova password →"}
+              </button>
+            </form>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const navigate = useNavigate();
   const toast = useToast();
@@ -370,13 +419,16 @@ function App() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showTour, setShowTour] = useState(false);
   const [showCalculator, setShowCalculator] = useState(false);
+  const [showPasswordRecovery, setShowPasswordRecovery] = useState(false);
   const [chatInitMsg, setChatInitMsg] = useState("");
   const [tab, setTab] = useState("dashboard");
   const [modalWine, setModalWine] = useState(null);
   const [purchaseWine, setPurchaseWine] = useState(null);
   const [wines, setWines] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [watchlist, setWatchlist] = useState([]);
+  const [watchlist, setWatchlist] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("vino_watchlist") || "[]"); } catch { return []; }
+  });
   const [recommendedWines, setRecommendedWines] = useState([]);
   const [recommendedBasedOn, setRecommendedBasedOn] = useState([]);
   const [investorWines, setInvestorWines] = useState([]);
@@ -502,10 +554,15 @@ function App() {
         localStorage.setItem("vino_user", JSON.stringify({ email: session.user.email, account_type: type }));
         localStorage.setItem("vino_user_id", session.user.id);
         if (!isOnboardingCompleted(type)) setTimeout(() => setShowOnboarding(true), 600);
-        // Load persisted watchlist
+        // Load persisted watchlist from backend, update localStorage as source of truth
         fetch(`${API}/api/watchlist/${session.user.id}`)
           .then(r => r.ok ? r.json() : [])
-          .then(ids => { if (Array.isArray(ids) && ids.length) setWatchlist(ids); })
+          .then(ids => {
+            if (Array.isArray(ids) && ids.length) {
+              setWatchlist(ids);
+              try { localStorage.setItem("vino_watchlist", JSON.stringify(ids)); } catch {}
+            }
+          })
           .catch(() => {});
         identifyUser(session.user.id, { email: session.user.email, account_type: type });
         if (event === "SIGNED_IN") track("user_login", { method: "email" });
@@ -515,8 +572,13 @@ function App() {
         setAccountType("b2c");
         setWatchlist([]);
         resetUser();
+        try { localStorage.removeItem("vino_watchlist"); } catch {}
         localStorage.removeItem("vino_user");
         localStorage.removeItem("vino_user_id");
+      }
+      if (event === "PASSWORD_RECOVERY") {
+        setAuthChecked(true);
+        setShowPasswordRecovery(true);
       }
       // Mark auth check done after INITIAL_SESSION (fired even when no session)
       if (event === "INITIAL_SESSION") setAuthChecked(true);
@@ -888,12 +950,16 @@ function App() {
     const wineId = wine.id;
     const userId = localStorage.getItem("vino_user_id");
     if (watchlist.includes(wineId)) {
-      setWatchlist(prev => prev.filter(id => id !== wineId));
+      const next = watchlist.filter(id => id !== wineId);
+      setWatchlist(next);
+      try { localStorage.setItem("vino_watchlist", JSON.stringify(next)); } catch {}
       setSelectedWine(null);
       setChartData([]);
       if (userId) fetch(`${API}/api/watchlist/${userId}/${wineId}`, { method: "DELETE" }).catch(() => {});
     } else {
-      setWatchlist(prev => [...prev, wineId]);
+      const next = [...watchlist, wineId];
+      setWatchlist(next);
+      try { localStorage.setItem("vino_watchlist", JSON.stringify(next)); } catch {}
       setSelectedWine(wine);
       loadChart(wineId, wine.currentPrice);
       track("watchlist_add", { wine_id: wineId, wine_name: wine.name });
@@ -1005,16 +1071,19 @@ function App() {
 
   if (!isLoggedIn) {
     return (
-      <LandingPage
-        onLogin={({ user, account_type }) => {
-          setUserEmail(user.email);
-          setAccountType(account_type);
-          setIsLoggedIn(true);
-          localStorage.setItem("vino_user", JSON.stringify({ email: user.email, account_type }));
-          localStorage.setItem("vino_user_id", user.id);
-          if (!isOnboardingCompleted(account_type)) setTimeout(() => setShowOnboarding(true), 600);
-        }}
-      />
+      <>
+        <LandingPage
+          onLogin={({ user, account_type }) => {
+            setUserEmail(user.email);
+            setAccountType(account_type);
+            setIsLoggedIn(true);
+            localStorage.setItem("vino_user", JSON.stringify({ email: user.email, account_type }));
+            localStorage.setItem("vino_user_id", user.id);
+            if (!isOnboardingCompleted(account_type)) setTimeout(() => setShowOnboarding(true), 600);
+          }}
+        />
+        {showPasswordRecovery && <PasswordRecoveryModal onClose={() => setShowPasswordRecovery(false)} />}
+      </>
     );
   }
 
@@ -2298,6 +2367,9 @@ function App() {
 
       {/* ── Investment Calculator ────────────────────────────────────────── */}
       {showCalculator && <InvestmentCalculator onClose={() => setShowCalculator(false)} />}
+
+      {/* ── Password Recovery Modal ─────────────────────────────────────── */}
+      {showPasswordRecovery && <PasswordRecoveryModal onClose={() => setShowPasswordRecovery(false)} />}
 
       {/* ── Disclaimer Bar finanziario ──────────────────────────────────── */}
       <DisclaimerBar />

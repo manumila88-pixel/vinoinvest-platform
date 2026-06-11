@@ -82,10 +82,11 @@
 
 | Bug | Gravità | File | Fix stimato |
 |-----|---------|------|-------------|
-| Portfolio "By Type" mostra sempre "Other" | Minore | dati vini senza campo `type` | 2h |
-| Watchlist non persiste dopo refresh | Minore | App.jsx — solo useState | 1h (salvare su Supabase) |
-| Route `/landing` definita due volte (dead code) | Minore | App.jsx righe ~1972/2020 | 5min |
-| AgentChat `<polyline>` attributo `points` duplicato | Cosmetic | AgentChat.jsx riga 33/35 | 2min |
+| Portfolio "By Type" mostra sempre "Other" | Minore | ✅ FIXATO — deriveWineType() già in App.jsx riga 96 con fallback "Red" | — |
+| Watchlist non persiste dopo refresh | Minore | ✅ FIXATO — localStorage in useState init + toggleWatchlist + logout | — |
+| Route `/landing` definita due volte (dead code) | Minore | Solo UNA route esiste (riga 2481) — già rimossa la duplicata | — |
+| AgentChat `<polyline>` attributo `points` duplicato | Cosmetic | Solo UN attributo esiste (riga 33) — già rimosso il duplicato | — |
+| PasswordRecoveryModal non appare su deep link reset | Medio | ✅ FIXATO — modal ora renderizzato anche su LandingPage | — |
 
 ---
 
@@ -159,10 +160,11 @@ Cantiners target: Antinori, Gaja, Sassicaia, Ornellaia, Quintarelli.
 | `FRONTEND_URL` | ✅ configurata | https://vinoinvest-platform.vercel.app |
 | `STRIPE_WEBHOOK_SECRET` | ❌ mancante | `whsec_...` da Stripe Dashboard — senza questo gli abbonamenti non si attivano |
 | `ANTHROPIC_API_KEY` | ❌ mancante | `sk-ant-...` da console.anthropic.com — senza questo AI Agent usa fallback algoritmico |
-| `NEWS_API_KEY` | ❌ mancante | newsapi.org free tier — senza questo news sono mock |
-| `SENDGRID_API_KEY` | ❌ mancante | per email price alerts |
-| `VAPID_PUBLIC_KEY` | ❌ mancante | `npx web-push generate-vapid-keys` — per push notifications |
-| `VAPID_PRIVATE_KEY` | ❌ mancante | generare insieme a PUBLIC_KEY |
+| `NEWS_API_KEY` | ❌ mancante | newsapi.org free tier — senza questo news fallback a RSS gratuito (funziona) |
+| `RESEND_API_KEY` | ❌ mancante | resend.com (free: 3k email/mese) — codice già scritto in emailService.js, solo env var mancante |
+| `SENTRY_DSN` | ❌ mancante | sentry.io — codice già in server.js con `if (process.env.SENTRY_DSN)`, solo env var mancante |
+| `VAPID_PUBLIC_KEY` | ⚠️ generata, non su Render | Già in `backend/.env.example` — copia su Render per attivare push |
+| `VAPID_PRIVATE_KEY` | ⚠️ generata, non su Render | Già in `backend/.env.example` — copia su Render per attivare push |
 | `ADMIN_SECRET` | ❌ mancante | stringa random sicura per endpoint admin |
 | `LIVEX_API_KEY` | ❌ mancante | Liv-ex API (paid, opzionale) |
 | `HUGGINGFACE_API_KEY` | ❌ mancante | FinBERT sentiment (opzionale, free tier funziona senza) |
@@ -177,33 +179,35 @@ Cantiners target: Antinori, Gaja, Sassicaia, Ornellaia, Quintarelli.
 | `VITE_STRIPE_PUBLISHABLE_KEY` | ✅ configurata (test) | Cambiare a `pk_live_` |
 | `VITE_PAYPAL_CLIENT_ID` | ✅ configurata | |
 | `VITE_BACKEND_URL` | ✅ configurata | https://vinoinvest-backend-2.onrender.com |
+| `VITE_SENTRY_DSN` | ❌ mancante | sentry.io — codice già in errorReporting.js con `if (!dsn) return`, solo env var mancante |
+| `VITE_POSTHOG_KEY` | ❌ mancante | app.posthog.com — codice già in analytics.js, solo env var mancante |
 
 ---
 
 ## PROSSIMI TASK TECNICI PRIORITIZZATI
 
-### Priorità 1 — Revenue (< 1h ciascuno)
+### Priorità 1 — Revenue (< 1h ciascuno, solo config Manoel)
 1. **Stripe live** — Manoel imposta env vars su Render (già scritto, solo config) → abbonamenti funzionano in prod
 2. **ANTHROPIC_API_KEY** su Render — 5 minuti, AI Agent risponde con Claude reale
-3. **NEWS_API_KEY** su Render — newsapi.org free, 10 minuti → news reali invece di mock
+3. **RESEND_API_KEY** su Render — resend.com (free: 3k email/mese) → email alerts funzionano (codice già in emailService.js)
 4. **Cron-job.org keep-alive** — evita cold start 30s per gli utenti
 
-### Priorità 2 — UX (stima 2-8h)
-5. **Email price alerts** — `alertsChecker.js` già rileva breach, manca solo `SENDGRID_API_KEY` + template email (4h)
-6. **Login UX migliorata** — password reset + social login Google/Apple (8h)
-7. **Watchlist persistente** — salvare su Supabase invece di useState (1h)
+### Priorità 2 — UX (solo config mancante)
+5. **Email price alerts** ✅ codice completo — alertsChecker.js + emailService.js usando Resend (non SendGrid). Manca solo `RESEND_API_KEY` su Render.
+6. **Login UX migliorata** ✅ già implementata — AuthModal.jsx ha Google OAuth, password reset, signup. LandingPage gestisce ?login=1&email=... deep link.
+7. **Watchlist persistente** ✅ FIXATO — ora persiste su localStorage per utenti anonimi; backend sync per utenti loggati.
 8. **200 pagine B2B** — `node backend/src/scripts/generateB2BPages.js` (usa ANTHROPIC_API_KEY, generazione batch)
 
-### Priorità 3 — Ops (stima 2-4h)
-9. **GitHub Actions CI** — aggiungere `.github/workflows/test.yml` che esegue `test-all.sh` ad ogni push (2h)
-10. **Sentry error monitoring** — `@sentry/node` + `@sentry/react`, 1h di setup (2h)
-11. **Plausible/PostHog analytics** — script in index.html, 1h
-12. **VAPID keys** — `npx web-push generate-vapid-keys` → Render env → push notifications browser attive
+### Priorità 3 — Ops (già implementate nel codice)
+9. **GitHub Actions CI** ✅ — `.github/workflows/ci.yml` già presente con build check, syntax check, secret scan
+10. **Sentry error monitoring** ✅ — codice in server.js e errorReporting.js. Manca solo `SENTRY_DSN` (backend) + `VITE_SENTRY_DSN` (frontend) su Render/Vercel.
+11. **PostHog analytics** ✅ — codice in analytics.js. Manca solo `VITE_POSTHOG_KEY` su Vercel.
+12. **VAPID keys** ⚠️ già generate in `backend/.env.example` — solo da copiare su Render env (`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`)
 
 ### Priorità 4 — Growth
 13. **Blog 100 articoli** — `node backend/src/scripts/generateBlogContent.js` (richiede ANTHROPIC_API_KEY)
-14. **Portfolio sharing/export PDF** — react-to-pdf o Puppeteer server-side (6h)
-15. **Icon-only buttons aria-label** — ~20 bottoni close/toggle senza label screen reader
+14. **Portfolio sharing/export PDF** ✅ — già implementato con jsPDF in App.jsx (bottone "Export PDF" nel portfolio)
+15. **Secondary market (P2P)** — listings table + Stripe Connect (2 settimane, grande feature)
 
 ---
 
@@ -340,6 +344,18 @@ echo "=== Wines ===" && curl -s "https://vinoinvest-backend-2.onrender.com/api/w
 echo "=== AI Score ===" && curl -s "https://vinoinvest-backend-2.onrender.com/api/ai-score/1"
 echo "=== Benchmark ===" && curl -s https://vinoinvest-backend-2.onrender.com/api/risk/benchmark | head -c 100
 ```
+
+---
+
+## ULTIMO FIX APPLICATO (2026-06-11) — sessione 3
+
+**fix(auth+watchlist): password recovery deep link, watchlist localStorage, login ?email= deep link**
+
+### Fix applicati:
+1. **PasswordRecoveryModal su LandingPage** — Il modal non appariva quando l'utente cliccava il link di reset email perché era renderizzato solo dopo `isLoggedIn`. Ora viene reso anche sopra la LandingPage.
+2. **Watchlist localStorage** — useState inizializzato da `localStorage.getItem("vino_watchlist")`. toggleWatchlist aggiorna sempre localStorage. Logout cancella la chiave. Utenti anonimi non perdono più la watchlist al refresh.
+3. **LandingPage deep link `?login=1&email=...`** — Apre automaticamente il modal di login pre-compilando l'email. Usato dalle email di invito clienti B2B.
+4. **HANDOFF.md corrections** — `SENDGRID_API_KEY` → `RESEND_API_KEY`; aggiunti `VITE_SENTRY_DSN`, `VITE_POSTHOG_KEY`, `SENTRY_DSN`; task già completati marcati ✅.
 
 ---
 

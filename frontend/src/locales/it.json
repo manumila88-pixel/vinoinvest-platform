@@ -32,7 +32,8 @@
     "addToPortfolio": "+ Aggiungi al Portfolio",
     "buyOn": "Acquista su Wine-Searcher →",
     "noWines": "Nessun vino trovato.",
-    "loadingMore": "Caricamento altri vini…"
+    "loadingMore": "Caricamento altri vini…",
+    "aiScoreHint": "Usa l'AI Score di VinoInvest per trovare le migliori opportunità di investimento."
   },
   "watchlist": {
     "title": "Analisi Watchlist",
@@ -88,9 +89,6 @@
     "pricePaid": "Prezzo pagato (€)",
     "purchaseDate": "Data acquisto",
     "affiliateNote": "Link affiliati — VinoInvest può ricevere una commissione sugli acquisti"
-  },
-  "market": {
-    "aiScoreHint": "Usa l'AI Score di VinoInvest per trovare le migliori opportunità di investimento."
   },
   "chat": {
     "agentHint": "Chatta con il tuo consulente AI — analisi portafoglio, notizie mercato, opportunità."

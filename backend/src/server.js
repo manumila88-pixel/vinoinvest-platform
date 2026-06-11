@@ -853,6 +853,50 @@ app.get("/api/email/subscribers", requireAdmin, async (req, res) => {
   }
 });
 
+// ── Portfolio Sharing ──────────────────────────────────────────────────────
+// POST /api/portfolio/share — create a shareable public snapshot
+app.post("/api/portfolio/share", requireAuth, async (req, res) => {
+  const { holdings, stats } = req.body;
+  if (!holdings || !Array.isArray(holdings)) return res.status(400).json({ error: "holdings required" });
+  if (!pool) return res.status(503).json({ error: "Database unavailable" });
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS shared_portfolios (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        holdings JSONB NOT NULL,
+        stats JSONB,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        expires_at TIMESTAMPTZ DEFAULT NOW() + INTERVAL '90 days'
+      )
+    `).catch(() => {});
+    const shareId = Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+    await pool.query(
+      `INSERT INTO shared_portfolios (id, user_id, holdings, stats) VALUES ($1,$2,$3,$4)
+       ON CONFLICT (id) DO UPDATE SET holdings=$3, stats=$4, created_at=NOW()`,
+      [shareId, req.user.id, JSON.stringify(holdings), JSON.stringify(stats || {})]
+    );
+    res.json({ shareId, url: `/share/${shareId}` });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// GET /api/portfolio/share/:id — fetch a public portfolio snapshot
+app.get("/api/portfolio/share/:id", async (req, res) => {
+  if (!pool) return res.status(503).json({ error: "Database unavailable" });
+  try {
+    const { rows } = await pool.query(
+      `SELECT holdings, stats, created_at FROM shared_portfolios WHERE id=$1 AND expires_at > NOW()`,
+      [req.params.id]
+    );
+    if (!rows.length) return res.status(404).json({ error: "Portfolio not found or expired" });
+    res.json({ holdings: rows[0].holdings, stats: rows[0].stats, sharedAt: rows[0].created_at });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.get("/", (req, res) => {
 
   res.json({
