@@ -37,7 +37,7 @@ import gamificationRouter from "./routes/gamification.js";
 import marketRouter from "./routes/market.js";
 import { setTranslationPool } from "./services/translationService.js";
 import { startBlogAgent, setBlogPool as setBlogAgentPool } from "./agents/blogAgent.js";
-import { startImageAgent, setImagePool } from "./agents/imageAgent.js";
+import { startImageAgent, setImagePool, updateImages } from "./agents/imageAgent.js";
 import "./jobs/priceUpdater.js";
 import "./jobs/alertsChecker.js";
 import "./jobs/cellarTrackerCron.js";
@@ -839,6 +839,11 @@ app.post("/api/admin/newsletter/trigger", requireAdmin, async (req, res) => {
   const { runWeeklyNewsletter } = await import("./services/newsletterService.js");
   const result = await runWeeklyNewsletter();
   res.json(result);
+});
+
+app.post("/api/admin/images/trigger", requireAdmin, async (req, res) => {
+  res.json({ started: true, message: "Image update running in background" });
+  updateImages().catch(e => console.error("[imageAgent trigger]", e.message));
 });
 
 // ── Email marketing endpoints (Resend) ──────────────────────────────────────

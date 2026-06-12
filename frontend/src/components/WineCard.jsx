@@ -13,57 +13,56 @@ const SIGNAL_TIPS = {
 };
 const AI_SCORE_TIP = "Punteggio 0-100: calcolato su rating critico, annata, produttore, trend e rischio. >80 = Strong Buy, 60-80 = Buy, 40-60 = Hold, <40 = Sell.";
 
-// Curated Unsplash images by wine type/region — no API key needed
-const TYPE_IMAGES = {
-  champagne: "https://images.unsplash.com/photo-1568213816046-0ee1c42bd559?w=300&q=75&fm=webp&fit=crop",
-  sparkling: "https://images.unsplash.com/photo-1568213816046-0ee1c42bd559?w=300&q=75&fm=webp&fit=crop",
-  rose: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=300&q=75&fm=webp&fit=crop",
-  rosato: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=300&q=75&fm=webp&fit=crop",
-  bianco: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=75&fm=webp&fit=crop",
-  white: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=75&fm=webp&fit=crop",
-  chardonnay: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=75&fm=webp&fit=crop",
-  bordeaux: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=300&q=75&fm=webp&fit=crop",
-  burgundy: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=300&q=75&fm=webp&fit=crop",
-  borgogna: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=300&q=75&fm=webp&fit=crop",
-  barolo: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=300&q=75&fm=webp&fit=crop",
-  default: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=300&q=75&fm=webp&fit=crop",
-};
+function WineBottlePlaceholder({ wine }) {
+  const raw = wine.name || "";
+  const label = raw.length > 20 ? raw.slice(0, 18) + "…" : raw;
+  const vintage = wine.vintage || "";
+  const text = raw.toLowerCase();
+  // bottle color by type
+  const bottleColor = /champagne|prosecco|cava|sparkling/.test(text)
+    ? "#c8b560"
+    : /ros[eé]|rosato/.test(text)
+    ? "#7a2a3a"
+    : /bianco|chardonnay|sauvignon|blanc|white/.test(text)
+    ? "#2a4a2a"
+    : "#1a2f4a";
 
-function getPlaceholderImage(wine) {
-  const text = `${wine.type || ""} ${wine.variety || ""} ${wine.region || ""} ${wine.name || ""}`.toLowerCase();
-  if (/champagne|prosecco|cava|sparkling|bollicine/.test(text)) return TYPE_IMAGES.champagne;
-  if (/ros[eé]|rosato/.test(text)) return TYPE_IMAGES.rose;
-  if (/bianco|chardonnay|sauvignon|blanc|white|pinot\s*g/.test(text)) return TYPE_IMAGES.bianco;
-  if (/burgundy|borgogna|pinot\s*noir/.test(text)) return TYPE_IMAGES.burgundy;
-  if (/bordeaux|cab|merlot/.test(text)) return TYPE_IMAGES.bordeaux;
-  return TYPE_IMAGES.default;
+  return (
+    <svg width="80" height="160" viewBox="0 0 80 160" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label={raw}>
+      {/* bottle body */}
+      <rect x="26" y="62" width="28" height="78" rx="8" fill={bottleColor} stroke="#C9A227" strokeWidth="0.8"/>
+      {/* shoulder curve */}
+      <path d="M26 70 Q26 62 33 58 L47 58 Q54 62 54 70" fill={bottleColor} stroke="#C9A227" strokeWidth="0.8"/>
+      {/* neck */}
+      <rect x="33" y="30" width="14" height="30" rx="3" fill={bottleColor} stroke="#C9A227" strokeWidth="0.8"/>
+      {/* capsule */}
+      <rect x="31" y="24" width="18" height="10" rx="3" fill="#C9A227" opacity="0.85"/>
+      {/* label */}
+      <rect x="29" y="84" width="22" height="42" rx="2" fill="#0B1220" stroke="#C9A227" strokeWidth="0.5" opacity="0.9"/>
+      <line x1="31" y1="90" x2="49" y2="90" stroke="#C9A227" strokeWidth="0.4" opacity="0.5"/>
+      <line x1="31" y1="122" x2="49" y2="122" stroke="#C9A227" strokeWidth="0.4" opacity="0.5"/>
+      <text x="40" y="103" textAnchor="middle" fill="#C9A227" fontSize="4.8" fontWeight="700" fontFamily="Georgia, serif"
+        style={{ letterSpacing: "0.02em" }}>{label}</text>
+      {vintage && (
+        <text x="40" y="115" textAnchor="middle" fill="#8aafc9" fontSize="5" fontFamily="monospace">{vintage}</text>
+      )}
+    </svg>
+  );
 }
 
 function WineCardImage({ wine }) {
-  const [imgSrc, setImgSrc] = useState(wine.imageUrl || getPlaceholderImage(wine));
   const [failed, setFailed] = useState(false);
 
-  if (failed) {
-    return (
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, opacity: 0.55 }}>
-        <div style={{ fontSize: 52 }}>🍷</div>
-        <div style={{ fontSize: 10, color: "#3a5a7a", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700 }}>{wine.variety || "Fine Wine"}</div>
-      </div>
-    );
+  if (failed || !wine.imageUrl) {
+    return <WineBottlePlaceholder wine={wine} />;
   }
 
   return (
     <img
-      src={imgSrc}
+      src={wine.imageUrl}
       alt={wine.name}
       loading="lazy"
-      onError={() => {
-        if (imgSrc !== getPlaceholderImage(wine)) {
-          setImgSrc(getPlaceholderImage(wine));
-        } else {
-          setFailed(true);
-        }
-      }}
+      onError={() => setFailed(true)}
       width={80} height={160}
       style={{ height: 160, width: "auto", objectFit: "contain", filter: "drop-shadow(0 8px 20px rgba(0,0,0,0.75))" }}
     />
