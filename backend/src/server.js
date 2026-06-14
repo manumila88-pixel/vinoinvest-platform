@@ -967,6 +967,7 @@ app.get("/api/wines", cacheFor(300), (req, res) => {
   const filterRisk = (req.query.risk || "").toString().trim().toLowerCase();
   const filterRegion = (req.query.region || "").toString().trim().toLowerCase();
   const filterGrape = (req.query.grape || "").toString().trim().toLowerCase();
+  const filterProducer = (req.query.producer || "").toString().trim().toLowerCase();
 
   let filtered;
   if (search) {
@@ -1018,6 +1019,10 @@ app.get("/api/wines", cacheFor(300), (req, res) => {
   if (filterGrape) {
     const g = normalize(filterGrape);
     filtered = filtered.filter(w => normalize(`${w.grape || w.variety || w.name || ""}`).includes(g));
+  }
+  if (filterProducer) {
+    const p = normalize(filterProducer);
+    filtered = filtered.filter(w => normalize(w.producer || "").includes(p));
   }
 
   // Sort by investmentScore desc so best wines appear first by default
