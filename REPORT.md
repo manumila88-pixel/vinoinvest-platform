@@ -1,190 +1,151 @@
-# REPORT — 3 User Types: B2C / B2B / CANTINA
+# REPORT — Dashboard Personalization
 
-**Branch:** `feat/user-types-b2c-b2b-cantina`
-**Commit:** `2850d3c`
-**Data:** 2026-06-14
-
----
-
-## Cosa è stato fatto
-
-### 3 esperienze utente distinte
-
-| Tipo | Account type | viewMode | Colore tema |
-|------|-------------|----------|-------------|
-| B2C — Investitore individuale | `b2c` (default) | `"b2c"` | Gold `#C9A227` |
-| B2B — Wealth manager / agenzia | `b2b`, `wealth_manager`, `family_office` | `"b2b"` | Blue `#60a5fa` |
-| CANTINA — Produttore vinicolo | `cantina` | `"cantina"` | Amber `#d97706` |
+**Branch:** `feat/dashboard-personalization`
+**Data:** 2026-06-15
 
 ---
 
-## File creati (3 nuovi)
+## Funzionalità implementate
 
-| File | Dimensione chunk | Cosa fa |
-|------|-----------------|---------|
-| `frontend/src/pages/WineryDashboard.jsx` | 9.86 kB | Dashboard cantina: stats, lista vini propri, quick actions |
-| `frontend/src/pages/WineryProfile.jsx` | 12.63 kB | Profilo pubblico + editor campi (visibile agli investitori) |
-| `frontend/src/pages/VintageStory.jsx` | 8.79 kB | Editor racconto annate → salvato in Supabase user_metadata |
+### 1. Preferenze centrali — `useUserPrefs` hook
+**File:** `frontend/src/hooks/useUserPrefs.js`
+
+Hook centrale che gestisce tutte le preferenze utente:
+- `columns` — visibilità colonne nelle wine card (badges, aiScore, price, region, alert, links)
+- `sections` — ordine e visibilità delle sezioni del menu di navigazione
+- `notes` — note personali per vino (dizionario `{ wineId: "testo" }`)
+- `savedFilters` — filtri mercato salvati (array `{ id, name, filters, savedAt }`)
+
+**Persistenza:**
+- `localStorage` per uso immediato anche senza login
+- Sincronizzazione al backend `/api/user-prefs` (debounced 1500ms) quando l'utente è autenticato
+- Al mount: carica dal backend e sovrascrive `localStorage` se l'utente è loggato
+
+**VINCOLO rispettato:** Il hook controlla solo cosa l'utente vede, non i valori dei dati (AI Score, prezzi, punteggi restano invariati e server-side).
 
 ---
 
-## File modificati
+### 2. Colonne visibili nel mercato — `MarketColumnsPanel`
+**File:** `frontend/src/components/MarketColumnsPanel.jsx`
 
-| File | Cosa cambia |
-|------|-------------|
-| `frontend/src/App.jsx` | viewMode ternario, auth logic, sidebar 3-way, header 3-way, NextStepWidget, routes cantina, cantina dashboard block |
-| `backend/src/server.js` | `?producer=` filter su `/api/wines` per filtrare per produttore esatto |
+Pulsante ⚙ con dropdown per toggle colonne:
+- AI Score (barra + punteggio + segnale)
+- Prezzo (bottiglia + fonte dati)
+- Badge (rischio + trend)
+- Regione (tag sotto produttore — off by default)
+- Alert prezzo (input + alert attivi)
+- Link esterni (Wine-Searcher, Vivino, Compare)
+
+Posizione: nella toolbar del mercato, accanto a "Salva filtri".
 
 ---
 
-## Architettura viewMode
+### 3. Note personali sui vini — `WineNotesButton`
+**File:** `frontend/src/components/WineNotesButton.jsx`
+
+Pulsante ✎ integrato in ogni wine card:
+- Apre popup textarea (max 500 caratteri)
+- Mostra dot dorato se la nota esiste
+- Ctrl+Enter per salvare, click esterno auto-salva
+- Opzione "Elimina" per rimuovere la nota
+- Si chiude automaticamente al click fuori
+
+---
+
+### 4. Wine card con colonne configurabili
+**File:** `frontend/src/components/WineCard.jsx`
+
+Modifiche:
+- Aggiunto import `WineNotesButton`
+- Nuove props: `visibleColumns = {}`, `note = ""`, `onNoteChange`
+- Helper `col(key, defaultOn)` per leggere le preferenze con fallback
+- Ogni sezione condizionale (badges, aiScore, price, region, alert, links)
+- `WineNotesButton` aggiunto nelle azioni del card (accanto al pulsante watchlist)
+- Comparatore memo aggiornato per includere `note` e `visibleColumns`
+
+Default values garantiscono backward compatibility con qualsiasi WineCard non aggiornata.
+
+---
+
+### 5. Personalizzazione sezioni dashboard — `DashboardCustomizer`
+**File:** `frontend/src/components/DashboardCustomizer.jsx`
+
+Pulsante "⊟ Sezioni" nella sidebar B2C che apre un overlay:
+- Toggle visibilità (checkbox dorata) per 8 sezioni
+- Frecce ▲▼ per cambiare ordine
+- Pulsante "Ripristina ordine" per tornare al default
+- Messaggio chiarificatore: "Non modifica i dati visualizzati"
+
+La sidebar B2C rende i bottoni dinamicamente in base all'ordine e visibilità in `userSections`.
+
+---
+
+### 6. Filtri salvati nel mercato
+Nella toolbar del mercato (accanto a MarketColumnsPanel):
+- Pulsante `+ Salva filtri` — salva i filtri correnti (ricerca + price range + tipo + annata) con un nome
+- Chips ricaricabili per ogni filtro salvato (click per applicare, × per eliminare)
+- Persistiti in localStorage + backend
+
+---
+
+### 7. Backend — `userPrefs` route
+**File:** `backend/src/routes/userPrefs.js`
 
 ```
-Supabase user_metadata.account_type
-  "cantina"                    → setViewMode("cantina")
-  "b2b" | "wealth_manager"
-  | "family_office"            → setViewMode("b2b")
-  qualsiasi altro              → setViewMode("b2c")
+GET  /api/user-prefs      → restituisce { display_prefs, wine_notes, saved_filters }
+POST /api/user-prefs      → upsert con merge parziale
 ```
 
-Admin toggle (dev/preview): ciclo 3-way nel header `b2c → b2b → cantina → b2c`
+**Tabella DB (auto-create):**
+```sql
+CREATE TABLE IF NOT EXISTS user_preferences (
+  user_id       TEXT PRIMARY KEY,
+  display_prefs JSONB NOT NULL DEFAULT '{}',
+  wine_notes    JSONB NOT NULL DEFAULT '{}',
+  saved_filters JSONB NOT NULL DEFAULT '[]',
+  updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+)
+```
+
+Entrambi gli endpoint richiedono `requireAuth` (Supabase JWT).
+
+Registrato in `server.js`:
+- Import: `import userPrefsRouter, { setUserPrefsPool } from "./routes/userPrefs.js"`
+- Route: `app.use("/api/user-prefs", userPrefsRouter)`
+- Pool: `setUserPrefsPool(pool)` nel blocco init
 
 ---
 
-## Sidebar per tipo utente
+## File modificati/creati
 
-### B2C (gold)
-Dashboard · Market · Watchlist & Portfolio · Analysis · Academy · News · Blog
-
-### B2B (blue)
-Dashboard PRO · Market Intelligence · Clienti · Reports · Market · PortfolioAI · Portfolio · B2B Academy
-
-### CANTINA (amber)
-Dashboard · I Miei Vini (`/winery`) · Profilo Cantina (`/winery/profile`) · Racconto Annata (`/winery/vintage-story`) · Mercato Globale · Analytics
-
----
-
-## Header per tipo utente
-
-| viewMode | Badge | Border |
-|----------|-------|--------|
-| b2c | — | default |
-| b2b | `B2B PRO` (blue) | `rgba(96,165,250,0.25)` |
-| cantina | `CANTINA` (amber) | `rgba(217,119,6,0.25)` |
+| File | Tipo | Descrizione |
+|------|------|-------------|
+| `frontend/src/hooks/useUserPrefs.js` | NUOVO | Hook centrale preferenze |
+| `frontend/src/components/MarketColumnsPanel.jsx` | NUOVO | Gear dropdown colonne mercato |
+| `frontend/src/components/WineNotesButton.jsx` | NUOVO | Note personali su wine card |
+| `frontend/src/components/DashboardCustomizer.jsx` | NUOVO | Panel reorder/hide sezioni |
+| `frontend/src/components/WineCard.jsx` | MODIFICA | Props visibleColumns + note + onNoteChange |
+| `frontend/src/App.jsx` | MODIFICA | Imports, hook call, sidebar dinamica, MarketColumnsPanel, saved filters, WineCard props |
+| `backend/src/routes/userPrefs.js` | NUOVO | GET/POST /api/user-prefs |
+| `backend/src/server.js` | MODIFICA | Import + registrazione route + pool |
 
 ---
 
-## NextStepWidget (B2C guided path)
+## Vincoli rispettati
 
-Logica di stato → suggerimento contestuale:
-
-```
-watchlist vuota          → "Esplora il mercato"
-watchlist ✓, no ordini  → "Fai il tuo primo investimento"
-portfolio ✓, no Academy → "Inizia l'Academy"
-tutto fatto              → null (componente non renderizzato)
-```
-
----
-
-## Nuove routes
-
-```
-/winery                  → WineryDashboard  (lazy)
-/winery/profile          → WineryProfile    (lazy)
-/winery/vintage-story    → VintageStory     (lazy)
-/cantina/:producerName   → WineryProfile    (vista pubblica investitori)
-```
-
----
-
-## Persistenza dati cantina
-
-Tutto via `supabase.auth.updateUser({ data: { ... } })` — nessuna migrazione DB:
-
-```json
-user_metadata: {
-  "organization_name": "Tenuta XYZ",
-  "account_type": "cantina",
-  "winery_profile": {
-    "displayName": "Tenuta XYZ",
-    "location": "Barolo, CN",
-    "founded": 1962,
-    "hectares": 18,
-    "description": "...",
-    "philosophy": "...",
-    "certifications": ["Bio", "Demeter"],
-    "website": "...",
-    "instagram": "@tenuta_xyz"
-  },
-  "vintage_stories": {
-    "2021": { "story": "...", "harvest": "...", "notes": "...", "updatedAt": "..." },
-    "2020": { ... }
-  }
-}
-```
-
----
-
-## Invarianti di dati rispettati
-
-**AI Score e prezzi sono SEMPRE dati di mercato reali, non modificabili:**
-- In `WineryDashboard`: colonne AI Score e Prezzo mostrate in read-only con badge "dati di mercato"
-- In `WineryProfile`: tabella vini read-only con nota "fonte: Liv-ex / Wine-Searcher / algoritmo VinoInvest"
-- In `VintageStory`: solo testo descrittivo, nota esplicita "AI Score, prezzi e dati di performance non sono modificabili dalla cantina"
-- La cantina può scrivere solo: profilo editoriale, racconto annate, note tecniche per investitori
-
----
-
-## Backend: filtro producer
-
-Aggiunto parametro `?producer=` a `GET /api/wines`:
-
-```
-/api/wines?producer=Gaja&limit=50
-```
-
-- Cerca match parziale case-insensitive nel campo `producer`
-- Complementare a `?search=` (che cerca su nome, regione, produttore insieme)
-- Usato da `WineryDashboard` e `VintageStory` per caricare solo i vini della cantina
-
----
-
-## Build
-
-```
-✓ 0 errori
-✓ 0 warning critici
-✓ WineryDashboard chunk: 9.86 kB
-✓ WineryProfile chunk: 12.63 kB
-✓ VintageStory chunk: 8.79 kB
-✓ Build completata in 7.51s
-```
-
----
-
-## Cosa NON è stato fatto (per design)
-
-- Nessun merge su `main`
-- Nessuna modifica ad AI Score o prezzi per nessun tipo utente
-- Nessuna nuova tabella DB (tutto in user_metadata Supabase)
-- La B2B "vista densa" usa già il toggle `institutionalView` esistente (prezzo >€200, score 80+)
+- L'utente sceglie cosa VEDERE, non può modificare i valori dei dati
+- AI Score, prezzi, punteggi restano oggettivi e server-side
+- Nessun merge su main
+- Nessuna funzionalità esistente rotta (WineCard con `visibleColumns={}` si comporta come prima)
+- Nessun Three.js, nessun dato inventato, zero mock
 
 ---
 
 ## Come testare
 
-1. Usa il toggle admin nel header (⇄ B2B / ⇄ Cantina / ↩ B2C) per switchare la vista
-2. **B2C**: controlla NextStepWidget sotto le stats (scomparirà man mano che completi le azioni)
-3. **B2B**: sidebar blu, market con filtro istituzionale attivo
-4. **CANTINA**: sidebar amber, naviga su `/winery` → dashboard cantina
-5. Imposta `organization_name` nei metadati Supabase per caricare vini reali in WineryDashboard
-
----
-
-## Come andare in produzione (quando vorrai)
-
-1. Mergia `feat/user-types-b2c-b2b-cantina` → `main`
-2. Vercel fa deploy automatico
-3. Nel DB Supabase, aggiungi `account_type = 'cantina'` agli utenti cantina
-4. Ogni cantina configura il proprio profilo su `/winery/profile`
+1. **Colonne mercato**: Tab Mercato → ⚙ Colonne → disabilitare "AI Score" → i punteggi scompaiono dalle card
+2. **Note personali**: Cliccare ✎ su qualsiasi card → scrivere nota → salvare → il dot dorato appare
+3. **Filtri salvati**: Applicare filtri nel mercato → "+ Salva filtri" → dare un nome → il chip appare e ricarica i filtri al click
+4. **Sezioni sidebar**: Cliccare "⊟ Sezioni" nella sidebar → nascondere "Diario" → il bottone 📓 scompare dalla nav
+5. **Persistenza**: Ricaricare la pagina → le preferenze sono mantenute (localStorage)
+6. **Sync cross-device**: Riloggare da un browser diverso → le preferenze vengono caricate dal backend

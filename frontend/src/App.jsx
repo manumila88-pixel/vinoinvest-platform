@@ -17,6 +17,9 @@ import { supabase } from "./lib/supabase";
 import WinePriceCompare from "./components/WinePriceCompare";
 import LangSelector from "./components/LangSelector";
 import WineCard from "./components/WineCard";
+import MarketColumnsPanel from "./components/MarketColumnsPanel";
+import DashboardCustomizer from "./components/DashboardCustomizer";
+import { useUserPrefs } from "./hooks/useUserPrefs";
 import OnboardingModal, { isOnboardingCompleted, resetOnboarding } from "./components/OnboardingModal";
 import GuidedTour, { isTourCompleted, resetTour } from "./components/GuidedTour";
 import InfoTooltip from "./components/InfoTooltip";
@@ -472,6 +475,22 @@ function App() {
   const [userEmail, setUserEmail] = useState("");
   const isAdmin = userEmail === ADMIN_EMAIL;
   const [accountType, setAccountType] = useState("b2c");
+
+  // User personalization preferences (columns, section order, notes, saved filters)
+  const {
+    columns: userColumns,
+    toggleColumn,
+    sections: userSections,
+    toggleSection,
+    moveSectionUp,
+    moveSectionDown,
+    notes: wineNotes,
+    setNote: setWineNote,
+    savedFilters,
+    saveFilter,
+    deleteFilter,
+    resetAllPrefs,
+  } = useUserPrefs();
   const [institutionalView, setInstitutionalView] = useState(false);
   const [viewMode, setViewMode] = useState("b2c"); // 'b2c' | 'b2b' | 'cantina'
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -1379,18 +1398,37 @@ function App() {
         })()}>
 
           {/* ── B2C navigation ────────────────────────────────────── */}
-          {viewMode === "b2c" && <>
-            <button className={tab === "dashboard"   ? "active" : ""} onClick={() => { setTab("dashboard");   setSidebarOpen(false); }}>🏠 Dashboard</button>
-            <button className={tab === "market"      ? "active" : ""} onClick={() => { setTab("market");      setSidebarOpen(false); }}>🔍 {t("nav.market")}</button>
-            <button className={tab === "myportfolio" ? "active" : ""} onClick={() => { setTab("myportfolio"); setSidebarOpen(false); }}>📦 Watchlist &amp; Portfolio</button>
-            <button className={tab === "analysis"    ? "active" : ""} onClick={() => { setTab("analysis");    setSidebarOpen(false); }}>📈 {t("nav.analysis")}</button>
-            <button onClick={() => { navigate("/academy"); setSidebarOpen(false); }}>🎓 Academy</button>
-            <button className={tab === "news"        ? "active" : ""} onClick={() => { setTab("news");        setSidebarOpen(false); }}>📰 {t("nav.news")}</button>
-            <button className={tab === "blog"        ? "active" : ""} onClick={() => { setTab("blog");        setSidebarOpen(false); }}>📖 {t("nav.blog")}</button>
-            {["b2b", "wealth_manager", "cantina", "family_office"].includes(accountType) && (
-              <button className={tab === "b2b" ? "active" : ""} onClick={() => { setTab("b2b"); setSidebarOpen(false); }}>{t("nav.b2b")}</button>
-            )}
-          </>}
+          {viewMode === "b2c" && (() => {
+            const secVis = (id) => { const s = userSections.find(s => s.id === id); return !s || s.visible; };
+            const B2C_NAV = {
+              dashboard:   () => secVis("dashboard")   && <button key="dashboard"   className={tab === "dashboard"   ? "active" : ""} onClick={() => { setTab("dashboard");   setSidebarOpen(false); }}>🏠 Dashboard</button>,
+              market:      () => secVis("market")      && <button key="market"      className={tab === "market"      ? "active" : ""} onClick={() => { setTab("market");      setSidebarOpen(false); }}>🔍 {t("nav.market")}</button>,
+              myportfolio: () => secVis("myportfolio") && <button key="myportfolio" className={tab === "myportfolio" ? "active" : ""} onClick={() => { setTab("myportfolio"); setSidebarOpen(false); }}>📦 Watchlist &amp; Portfolio</button>,
+              portfolio:   () => secVis("portfolio")   && <button key="portfolio"   className={tab === "portfolio"   ? "active" : ""} onClick={() => { setTab("portfolio");   setSidebarOpen(false); }}>🤖 {t("nav.portfolioAI")}</button>,
+              academy:     () => secVis("academy")     && <button key="academy"     onClick={() => { navigate("/academy"); setSidebarOpen(false); }}>🎓 Academy</button>,
+              cellar:      () => secVis("cellar")      && <button key="cellar"      onClick={() => { navigate("/cellar"); setSidebarOpen(false); }}>🍾 Cantina</button>,
+              journal:     () => secVis("journal")     && <button key="journal"     onClick={() => { navigate("/journal"); setSidebarOpen(false); }}>📓 Diario</button>,
+              goals:       () => secVis("goals")       && <button key="goals"       onClick={() => { navigate("/goals"); setSidebarOpen(false); }}>🎯 Obiettivi</button>,
+            };
+            return <>
+              {userSections.map(s => B2C_NAV[s.id] ? B2C_NAV[s.id]() : null)}
+              <button className={tab === "analysis" ? "active" : ""} onClick={() => { setTab("analysis"); setSidebarOpen(false); }}>📈 {t("nav.analysis")}</button>
+              <button className={tab === "news"     ? "active" : ""} onClick={() => { setTab("news");     setSidebarOpen(false); }}>📰 {t("nav.news")}</button>
+              <button className={tab === "blog"     ? "active" : ""} onClick={() => { setTab("blog");     setSidebarOpen(false); }}>📖 {t("nav.blog")}</button>
+              {["b2b", "wealth_manager", "cantina", "family_office"].includes(accountType) && (
+                <button className={tab === "b2b" ? "active" : ""} onClick={() => { setTab("b2b"); setSidebarOpen(false); }}>{t("nav.b2b")}</button>
+              )}
+              <div style={{ marginTop: "auto", paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+                <DashboardCustomizer
+                  sections={userSections}
+                  onToggle={toggleSection}
+                  onMoveUp={moveSectionUp}
+                  onMoveDown={moveSectionDown}
+                  onReset={resetAllPrefs}
+                />
+              </div>
+            </>;
+          })()}
 
           {/* ── B2B navigation ────────────────────────────────────── */}
           {viewMode === "b2b" && <>
@@ -1654,6 +1692,34 @@ function App() {
                   resultCount={marketTotal}
                 />
               </div>
+
+              {/* ── Personalizzazione colonne + filtri salvati ─────── */}
+              <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginTop: 8 }}>
+                <MarketColumnsPanel
+                  columns={userColumns}
+                  onToggle={toggleColumn}
+                  onReset={() => resetAllPrefs()}
+                />
+                <button
+                  onClick={() => {
+                    const name = prompt("Nome del filtro salvato:");
+                    if (name?.trim()) saveFilter(name.trim(), { ...marketFilters, search: marketSearch });
+                  }}
+                  style={{ fontSize: 11, fontWeight: 600, color: "#4a6a8a", background: "rgba(8,15,30,0.5)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8, padding: "5px 12px", cursor: "pointer", whiteSpace: "nowrap" }}
+                  title="Salva ricerca e filtri correnti"
+                >
+                  + Salva filtri
+                </button>
+                {savedFilters.length > 0 && savedFilters.map(f => (
+                  <div key={f.id} style={{ display: "flex", alignItems: "center", gap: 3, background: "rgba(201,162,39,0.08)", border: "1px solid rgba(201,162,39,0.25)", borderRadius: 8, padding: "3px 10px 3px 12px", fontSize: 11, color: "#C9A227", cursor: "pointer", whiteSpace: "nowrap" }}>
+                    <span onClick={() => { handleMarketFiltersChange({ ...marketFilters, ...f.filters }); if (f.filters.search) handleMarketSearch(f.filters.search); }} style={{ cursor: "pointer" }}>
+                      {f.name}
+                    </span>
+                    <button onClick={() => deleteFilter(f.id)} style={{ background: "none", border: "none", color: "#475569", fontSize: 13, cursor: "pointer", padding: "0 2px", lineHeight: 1 }} title="Elimina filtro">×</button>
+                  </div>
+                ))}
+              </div>
+
               {accountType && ["b2b", "wealth_manager", "cantina", "family_office"].includes(accountType) && (
                 <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 8 }}>
                   <button
@@ -1711,6 +1777,9 @@ function App() {
                         onCreateAlert={cardProps.onCreateAlert}
                         onAlertInputChange={cardProps.onAlertInputChange}
                         onDeleteAlert={cardProps.onDeleteAlert}
+                        visibleColumns={userColumns}
+                        note={wineNotes[wine.id] || ""}
+                        onNoteChange={setWineNote}
                       />
                     ))}
                   </section>
@@ -1781,6 +1850,9 @@ function App() {
                         onCreateAlert={cardProps.onCreateAlert}
                         onAlertInputChange={cardProps.onAlertInputChange}
                         onDeleteAlert={cardProps.onDeleteAlert}
+                        visibleColumns={userColumns}
+                        note={wineNotes[wine.id] || ""}
+                        onNoteChange={setWineNote}
                       />
                     ))}
                   </section>
@@ -1812,6 +1884,9 @@ function App() {
                           onCreateAlert={cardProps.onCreateAlert}
                           onAlertInputChange={cardProps.onAlertInputChange}
                           onDeleteAlert={cardProps.onDeleteAlert}
+                          visibleColumns={userColumns}
+                          note={wineNotes[wine.id] || ""}
+                          onNoteChange={setWineNote}
                         />
                       ))}
                     </section>

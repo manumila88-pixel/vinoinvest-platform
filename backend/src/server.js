@@ -52,6 +52,7 @@ import { fetchRSSNews } from "./services/rssNewsService.js";
 import cellarRouter, { setCellarPool } from "./routes/cellar.js";
 import journalRouter, { setJournalPool } from "./routes/journal.js";
 import goalsRouter, { setGoalsPool } from "./routes/goals.js";
+import userPrefsRouter, { setUserPrefsPool } from "./routes/userPrefs.js";
 import pairingRouter from "./routes/pairing.js";
 import referralRouter, { setReferralPool } from "./routes/referral.js";
 import labelRouter from "./routes/labelScan.js";
@@ -250,6 +251,7 @@ app.use("/api/market", cacheFor(86400), marketRouter);        // 24h — index +
 app.use("/api/cellar", cellarRouter);
 app.use("/api/journal", journalRouter);
 app.use("/api/goals", goalsRouter);
+app.use("/api/user-prefs", userPrefsRouter);
 app.use("/api/pairing", cacheFor(86400), pairingRouter);
 app.use("/api/referral", referralRouter);
 app.use("/api/label-scan", aiRateLimit, labelRouter);
@@ -661,7 +663,7 @@ initDB().then(() => {
   }
   if (pool) setAnalysisPool(pool);
   if (pool) { setGamificationPool(pool); initGamificationTable(); }
-  if (pool) { setCellarPool(pool); setJournalPool(pool); setGoalsPool(pool); setReferralPool(pool); }
+  if (pool) { setCellarPool(pool); setJournalPool(pool); setGoalsPool(pool); setReferralPool(pool); setUserPrefsPool(pool); }
   if (pool) { setEmailPrefPool(pool); setFeedbackPool(pool); setAuthPool(pool); setDataExportPool(pool); }
   if (pool) { setReportsPool(pool); }
   if (pool) { setOrgsPool(pool); setClientPortfoliosPool(pool); setDemoPool(pool); setRiskPool(pool); setWatchlistPool(pool); setEstimateRoutePool(pool); }
