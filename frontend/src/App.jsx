@@ -77,6 +77,8 @@ const DataSources = lazy(() => import("./pages/DataSources"));
 const B2BGuide = lazy(() => import("./pages/B2BGuide"));
 const ComeComprare = lazy(() => import("./pages/ComeComprare"));
 const WineCompare = lazy(() => import("./pages/WineCompare"));
+const BlogIndex = lazy(() => import("./pages/BlogIndex"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
 import ThemeToggle from "./components/ThemeToggle";
 import CommandPalette from "./components/CommandPalette";
 import VoiceInterface from "./components/VoiceInterface";
@@ -2125,7 +2127,7 @@ function App() {
                       <Line type="monotone" dataKey="value" stroke="#C9A227" strokeWidth={2.5} dot={false} />
                     </LineChart>
                   </div>
-                  <p style={{ marginTop: 14, fontSize: 11, color: "#1e3050" }}>* Stima basata su crescita media annua storica 8% (fonte: Liv-ex 100, 2001–2024). I rendimenti passati non garantiscono risultati futuri. Non costituisce consulenza finanziaria. <a href="/disclaimer" style={{ color: "#334155" }}>Disclaimer →</a></p>
+                  <p style={{ marginTop: 14, fontSize: 11, color: "#1e3050" }}>* Stima basata su crescita media annua storica 8% (fonte: Liv-ex 100, 2001–2024). I rendimenti passati non garantiscono risultati futuri. Non costituisce consulenza finanziaria. <Link to="/disclaimer" style={{ color: "#334155" }}>Disclaimer →</Link></p>
 
                   {/* ── Benchmark comparison ──────────────────────────────── */}
                   {benchmarkData && (
@@ -2451,7 +2453,7 @@ function App() {
             { label: "Auctions", href: "/auctions" }, { label: "Sentiment", href: "/sentiment" },
             { label: "Referral", href: "/referral" }, { label: "Press", href: "/press" },
             { label: "Transparency", href: "/transparency" },
-          ].map(l => <a key={l.href} href={l.href} style={{ color: "#475569", textDecoration: "none" }}>{l.label}</a>)}
+          ].map(l => <Link key={l.href} to={l.href} style={{ color: "#475569", textDecoration: "none" }}>{l.label}</Link>)}
         </div>
         <div style={{ marginBottom: 6 }}>
           Dati forniti da:{" "}
@@ -2530,6 +2532,11 @@ onTTFB(reportWebVitals);
 initErrorReporting();
 applyTheme(getSavedTheme());
 
+function LandingRoute() {
+  const navigate = useNavigate();
+  return <LandingPage onLogin={() => navigate("/")} />;
+}
+
 createRoot(document.getElementById("root")).render(
   <HelmetProvider>
   <BrowserRouter>
@@ -2537,7 +2544,7 @@ createRoot(document.getElementById("root")).render(
       <CurrencyProvider>
         <Suspense fallback={<div style={{ minHeight: "100vh", background: "#0b1220", display: "flex", alignItems: "center", justifyContent: "center", color: "#C9A227", fontSize: 14 }}>Loading...</div>}>
         <Routes>
-          <Route path="/landing" element={<LandingPage onLogin={({ user, account_type }) => { window.location.href = "/"; }} />} />
+          <Route path="/landing" element={<LandingRoute />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/b2b" element={<B2BPage />} />
           <Route path="/learn" element={<Learn />} />
@@ -2588,6 +2595,8 @@ createRoot(document.getElementById("root")).render(
           <Route path="/market-intelligence" element={<MarketIntelligence />} />
           <Route path="/b2b-onboarding" element={<B2BOnboarding />} />
           <Route path="/compare" element={<WineCompare />} />
+          <Route path="/blog" element={<BlogIndex />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="*" element={<App />} />
         </Routes>
         </Suspense>

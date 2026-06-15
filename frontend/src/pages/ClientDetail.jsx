@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { authFetch } from "../lib/authFetch";
+import BackNav from "../components/BackNav";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
@@ -172,6 +173,7 @@ export default function ClientDetail() {
 
   return (
     <div style={{ minHeight: "100vh", background: "linear-gradient(160deg,#0b1220,#040810)", color: "#e2e8f0", fontFamily: "'Inter',Arial,sans-serif" }}>
+      <BackNav title={client.client_name} backTo="/org-dashboard" />
       <Helmet><title>{client.client_name} — Cliente B2B | VinoInvest</title></Helmet>
 
       {/* Header */}

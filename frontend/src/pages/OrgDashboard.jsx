@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { authFetch } from "../lib/authFetch";
 import { supabase } from "../lib/supabase";
 import AuthModal from "../components/AuthModal";
+import BackNav from "../components/BackNav";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
@@ -250,6 +251,7 @@ export default function OrgDashboard() {
 
   return (
     <div style={{ minHeight: "100vh", background: "linear-gradient(160deg,#0b1220,#040810)", color: "#e2e8f0", fontFamily: "'Inter',Arial,sans-serif" }}>
+      <BackNav title="Dashboard B2B" />
       <Helmet><title>{selectedOrg?.name || "Organizzazione"} — Dashboard B2B | VinoInvest</title></Helmet>
 
       {/* Header */}

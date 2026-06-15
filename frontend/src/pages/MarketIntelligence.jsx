@@ -55,7 +55,8 @@ export default function MarketIntelligence({ user }) {
   }, []);
 
   const activeUser = user || storedUser;
-  const isB2B = activeUser?.email === ADMIN_EMAIL || activeUser?.account_type === "professional" || activeUser?.account_type === "enterprise" || activeUser?.account_type === "b2b";
+  const B2B_TYPES = ["b2b", "wealth_manager", "cantina", "family_office", "professional", "enterprise"];
+  const isB2B = activeUser?.email === ADMIN_EMAIL || B2B_TYPES.includes(activeUser?.account_type);
 
   return (
     <div style={{ minHeight: "100vh", background: "linear-gradient(160deg,#0b1220,#040810)", color: "#e2e8f0", fontFamily: "'Inter',Arial,sans-serif" }}>
@@ -68,6 +69,7 @@ export default function MarketIntelligence({ user }) {
       <div style={{ borderBottom: "1px solid rgba(59,130,246,0.1)", padding: "0 32px", position: "sticky", top: 0, zIndex: 50, background: "rgba(2,6,23,0.9)", backdropFilter: "blur(12px)" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 60 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <button onClick={() => navigate(-1)} style={{ background: "none", border: "1px solid rgba(96,165,250,0.3)", borderRadius: 6, color: "#60a5fa", cursor: "pointer", fontSize: 12, padding: "4px 10px", display: "flex", alignItems: "center", gap: 4 }}>← Indietro</button>
             <button onClick={() => navigate("/")} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 8, padding: 0 }}>
               <span style={{ fontSize: 20 }}>🍷</span>
               <span style={{ fontFamily: "'Playfair Display',serif", fontSize: 16, fontWeight: 700, color: "#e2e8f0" }}>VinoInvest</span>
@@ -89,9 +91,9 @@ export default function MarketIntelligence({ user }) {
               <div style={{ fontWeight: 700, fontSize: 14, color: "#fbbf24" }}>🔒 Contenuto Riservato ai Piani Professional/Enterprise</div>
               <div style={{ fontSize: 13, color: "#334155", marginTop: 4 }}>Questa sezione è disponibile per wealth manager e family office con piano Professional o Enterprise.</div>
             </div>
-            <a href="/b2b" style={{ padding: "9px 18px", borderRadius: 8, background: "linear-gradient(135deg,#1d4ed8,#2563eb)", color: "#fff", textDecoration: "none", fontWeight: 700, fontSize: 13, whiteSpace: "nowrap" }}>
+            <button onClick={() => navigate("/b2b")} style={{ padding: "9px 18px", borderRadius: 8, background: "linear-gradient(135deg,#1d4ed8,#2563eb)", color: "#fff", border: "none", fontWeight: 700, fontSize: 13, whiteSpace: "nowrap", cursor: "pointer" }}>
               Attiva Accesso →
-            </a>
+            </button>
           </div>
         )}
 
