@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ADMIN_EMAIL } from "../lib/constants";
 
@@ -29,6 +30,7 @@ const INSTITUTIONAL_MOVERS = [
 ];
 
 export default function MarketIntelligence({ user }) {
+  const navigate = useNavigate();
   const [news, setNews] = useState([]);
   const [benchmark, setBenchmark] = useState(null);
   const [storedUser, setStoredUser] = useState(null);
@@ -66,10 +68,10 @@ export default function MarketIntelligence({ user }) {
       <div style={{ borderBottom: "1px solid rgba(59,130,246,0.1)", padding: "0 32px", position: "sticky", top: 0, zIndex: 50, background: "rgba(2,6,23,0.9)", backdropFilter: "blur(12px)" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 60 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <a href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 8 }}>
+            <button onClick={() => navigate("/")} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 8, padding: 0 }}>
               <span style={{ fontSize: 20 }}>🍷</span>
               <span style={{ fontFamily: "'Playfair Display',serif", fontSize: 16, fontWeight: 700, color: "#e2e8f0" }}>VinoInvest</span>
-            </a>
+            </button>
             <span style={{ color: "#1e3a5f" }}>›</span>
             <span style={{ fontSize: 14, fontWeight: 600, color: "#60a5fa" }}>Market Intelligence</span>
             <span style={{ padding: "2px 8px", borderRadius: 6, background: "rgba(59,130,246,0.15)", border: "1px solid rgba(59,130,246,0.3)", fontSize: 10, fontWeight: 700, color: "#60a5fa" }}>B2B ESCLUSIVO</span>

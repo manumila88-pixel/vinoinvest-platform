@@ -3,7 +3,7 @@ import "./i18n";
 import { onCLS, onLCP, onINP, onTTFB } from "web-vitals";
 import { useTranslation } from "react-i18next";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate, Link } from "react-router-dom";
 import { HelmetProvider, Helmet } from "react-helmet-async";
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ComposedChart } from "recharts";
 import PriceHistoryChart from "./components/PriceHistoryChart";
@@ -1205,16 +1205,16 @@ function App() {
             onMouseEnter={e => { e.currentTarget.style.color = "var(--vi-accent)"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.5)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.25)"; }}
           >📊 {t('nav.index')}</button>
-          <a href="/scan" title="Scan wine label" aria-label="Scansiona etichetta vino" style={{ padding: "6px 10px", border: "1px solid var(--vi-border)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#4a6a8a", fontSize: 11, cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center", fontWeight: 600 }}>Scan</a>
+          <button onClick={() => navigate("/scan")} title="Scan wine label" aria-label="Scansiona etichetta vino" style={{ padding: "6px 10px", border: "1px solid var(--vi-border)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#4a6a8a", fontSize: 11, cursor: "pointer", display: "flex", alignItems: "center", fontWeight: 600, fontFamily: "var(--vi-font-sans)" }}>Scan</button>
           <CurrencySelector />
           <ThemeToggle />
           <LangSelector />
           {userEmail && <span style={{ fontSize: 12, color: "#3a5a7a" }}>{userEmail}</span>}
           {isAdmin && (
             <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-              <a href="/admin" style={{ fontSize: 10, color: "var(--vi-accent)", border: "1px solid rgba(201,162,39,0.5)", borderRadius: 4, padding: "2px 8px", textTransform: "uppercase", fontWeight: 800, letterSpacing: "0.08em", textDecoration: "none", background: "rgba(201,162,39,0.08)" }}>
+              <button onClick={() => navigate("/admin")} style={{ fontSize: 10, color: "var(--vi-accent)", border: "1px solid rgba(201,162,39,0.5)", borderRadius: 4, padding: "2px 8px", textTransform: "uppercase", fontWeight: 800, letterSpacing: "0.08em", background: "rgba(201,162,39,0.08)", cursor: "pointer", fontFamily: "var(--vi-font-sans)" }}>
                 ADMIN
-              </a>
+              </button>
               <span style={{ fontSize: 9, color: "#475569", fontStyle: "italic" }}>(full access)</span>
             </span>
           )}
@@ -2471,15 +2471,15 @@ function App() {
           ))}
         </div>
         <div style={{ background: "rgba(201,162,39,0.06)", border: "1px solid rgba(201,162,39,0.15)", borderRadius: 8, padding: "10px 14px", marginBottom: 10, fontSize: 12, lineHeight: 1.6, color: "#94a3b8" }}>
-          <strong style={{ color: "#C9A227" }}>⚠️ Disclaimer:</strong> VinoInvest provides data and analysis for informational purposes only. This does not constitute financial advice, investment recommendation or solicitation to purchase. Past returns do not guarantee future results. Investing in wine involves risk of capital loss. Prices shown are algorithmic estimates unless otherwise indicated. <a href="/disclaimer" style={{ color: "#C9A227" }}>Read full disclaimer →</a>
+          <strong style={{ color: "#C9A227" }}>⚠️ Disclaimer:</strong> VinoInvest provides data and analysis for informational purposes only. This does not constitute financial advice, investment recommendation or solicitation to purchase. Past returns do not guarantee future results. Investing in wine involves risk of capital loss. Prices shown are algorithmic estimates unless otherwise indicated. <Link to="/disclaimer" style={{ color: "#C9A227" }}>Read full disclaimer →</Link>
         </div>
         <span style={{ color: "#334155" }}>
           © {new Date().getFullYear()} VinoInvest ·{" "}
-          <a href="/terms" style={{ color: "#475569", textDecoration: "none" }}>Terms</a>{" · "}
-          <a href="/privacy" style={{ color: "#475569", textDecoration: "none" }}>Privacy</a>{" · "}
-          <a href="/cookies" style={{ color: "#475569", textDecoration: "none" }}>Cookies</a>{" · "}
-          <a href="/disclaimer" style={{ color: "#475569", textDecoration: "none" }}>Disclaimer</a>{" · "}
-          <a href="/transparency" style={{ color: "#475569", textDecoration: "none" }}>Trasparenza</a>{" · "}
+          <Link to="/terms" style={{ color: "#475569", textDecoration: "none" }}>Terms</Link>{" · "}
+          <Link to="/privacy" style={{ color: "#475569", textDecoration: "none" }}>Privacy</Link>{" · "}
+          <Link to="/cookies" style={{ color: "#475569", textDecoration: "none" }}>Cookies</Link>{" · "}
+          <Link to="/disclaimer" style={{ color: "#475569", textDecoration: "none" }}>Disclaimer</Link>{" · "}
+          <Link to="/transparency" style={{ color: "#475569", textDecoration: "none" }}>Trasparenza</Link>{" · "}
           <a href="mailto:manumila88@gmail.com" style={{ color: "#475569", textDecoration: "none" }}>Contatti</a>
         </span>
       </footer>

@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 const KEY = "vino_disclaimer_bar_dismissed";
 
 export default function DisclaimerBar() {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const [dismissed, setDismissed] = useState(() => {
     try { return !!sessionStorage.getItem(KEY); } catch { return false; }
@@ -21,7 +23,7 @@ export default function DisclaimerBar() {
       <span style={{ fontSize: 11, color: "#64748b", flex: 1, lineHeight: 1.4 }}>
         <strong style={{ color: "#C9A227" }}>⚠️</strong>{" "}
         {t("disclaimer.text")}{" "}
-        <a href="/disclaimer" style={{ color: "#C9A227", textDecoration: "none" }}>{t("disclaimer.link")}</a>
+        <button onClick={() => navigate("/disclaimer")} style={{ color: "#C9A227", background: "none", border: "none", padding: 0, cursor: "pointer", font: "inherit", textDecoration: "none" }}>{t("disclaimer.link")}</button>
       </span>
       <button
         onClick={() => {
