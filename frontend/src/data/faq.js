@@ -9,7 +9,7 @@ export const FAQ = [
   {
     id: "r2", cat: "rendimenti",
     q: "Qual è il rendimento medio del vino fine?",
-    a: "Storicamente il fine wine ha reso 8-12% annuo (Liv-ex Fine Wine 100 su 30 anni), ma con alta variabilità. Alcuni vini iconici (DRC, Pétrus, Giacomo Conterno) hanno reso 20%+, altri hanno perso valore. La media nasconde dispersione enorme.",
+    a: "Il fine wine ha mostrato storicamente rendimenti interessanti su orizzonti lunghi, ma con alta variabilità. I dati Liv-ex mostrano apprezzamenti significativi per i vini top, ma la media nasconde una dispersione enorme: alcuni vini iconici (DRC, Pétrus, Giacomo Conterno) si sono rivalutati molto, altri hanno perso valore. Per dati aggiornati consultare direttamente Liv-ex.com.",
     tags: ["rendimento", "medio", "liv-ex", "percentuale"],
   },
   {
@@ -823,7 +823,7 @@ export const FAQ = [
   {
     id: "r11", cat: "rendimenti",
     q: "La Borgogna è davvero il miglior investimento in vino?",
-    a: "In termini di rendimento puro degli ultimi 20 anni: sì, la Borgogna Grand Cru ha superato tutte le altre regioni. DRC Romanée-Conti 2000 costava €2.000 → oggi €30.000 (+1.400%). Ma l'accesso alle etichette top è quasi impossibile senza allocation. Per chi ha accesso: Borgogna batte tutto. Per chi non ce l'ha: Barolo offre il miglior rapporto qualità/upside.",
+    a: "In termini di andamento storico degli ultimi 20 anni: sì, la Borgogna Grand Cru ha mostrato apprezzamenti tra i più significativi del mercato fine wine. La Romanée-Conti ha visto una domanda crescente nei decenni, con apprezzamenti documentati nel mercato secondario che riflettono la scarsità strutturale e la reputazione consolidata del domaine. I prezzi attuali sono verificabili su Liv-ex o nelle aste pubbliche. Ma l'accesso alle etichette top è quasi impossibile senza allocation. Per chi ha accesso: Borgogna batte tutto. Per chi non ce l'ha: Barolo offre il miglior rapporto qualità/upside.",
     tags: ["borgogna", "rendimento", "DRC", "barolo", "confronto regioni"],
   },
   {
@@ -835,7 +835,7 @@ export const FAQ = [
   {
     id: "r13", cat: "rendimenti",
     q: "Il Champagne vintage è un buon investimento?",
-    a: "Per alcune etichette sì. Krug Vintage e Dom Pérignon si apprezzano del 5-8% annuo con bassa volatilità. Salon (prodotto solo nelle migliori annate) ha reso oltre il 15% annuo nell'ultimo decennio. Il vantaggio: sono vini più 'leggibili' e riconoscibili per investitori non esperti. La liquidità è buona per le etichette di punta.",
+    a: "Per alcune etichette sì. Krug Vintage e Dom Pérignon hanno mostrato apprezzamenti costanti con volatilità contenuta. Salon (prodotto solo nelle migliori annate) è molto ricercato dai collezionisti grazie alla rarità strutturale: viene prodotto solo in determinate annate, il che alimenta domanda superiore all'offerta. Il vantaggio del Champagne vintage: sono vini più 'leggibili' e riconoscibili per investitori non esperti. La liquidità è buona per le etichette di punta.",
     tags: ["champagne", "vintage", "krug", "dom perignon", "salon", "rendimento"],
   },
 

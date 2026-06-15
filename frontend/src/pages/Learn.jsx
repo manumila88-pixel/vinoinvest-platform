@@ -4,7 +4,7 @@ const COURSES = [
   {
     id: 1, title: "Perché investire nel vino?", icon: "🍷", duration: "5 min",
     level: "Principiante",
-    content: `Il vino fine è una delle asset class alternative con le performance più costanti. Il Knight Frank Luxury Investment Index mostra rendimenti medi del 10-12% annuo negli ultimi 10 anni.
+    content: `Il vino fine è una delle asset class alternative con caratteristiche storicamente interessanti per chi cerca diversificazione. Il fine wine ha storicamente mostrato caratteristiche di decorrelazione dai mercati azionari e volatilità relativamente contenuta rispetto ad altri asset alternativi.
 
 **Vantaggi principali:**
 - Bassa correlazione con i mercati azionari (resiliente nelle crisi)
@@ -19,15 +19,15 @@ const COURSES = [
 - Falsificazioni: sempre verificare provenienza e certificati
 - Liquidità variabile per vini meno noti
 
-**Performance storiche:**
-- Liv-ex Fine Wine 100: +127% in 10 anni (2014-2024)
-- Bordeaux 500: correlazione con S&P500 = 0.12 (quasi nulla)
-- Durante la crisi 2008: fine wine -8% vs equity -40%`,
+**Caratteristiche storiche:**
+- Bordeaux 500: correlazione con S&P500 storicamente bassa (quasi nulla)
+- Durante la crisi 2008: il fine wine ha tenuto molto meglio dei mercati azionari
+- Indici di riferimento: Liv-ex Fine Wine 100, Liv-ex 1000 (consultare Liv-ex per dati aggiornati)`,
     quiz: [
       { q: "Qual è la correlazione storica tra il mercato del fine wine e l'S&P500?", opts: ["0.82 (alta)", "0.12 (quasi nulla)", "0.55 (media)", "0.95 (molto alta)"], ans: 1 },
       { q: "Qual è la temperatura ideale di conservazione per il vino da investimento?", opts: ["5-8°C", "18-22°C", "12-15°C", "0-4°C"], ans: 2 },
-      { q: "Quale indice misura i rendimenti del mercato del lusso incluso il fine wine?", opts: ["Dow Jones", "FTSE 100", "Knight Frank Luxury Investment Index", "Bloomberg Wine Index"], ans: 2 },
-      { q: "Durante la crisi finanziaria del 2008, come si è comportato il fine wine vs le azioni?", opts: ["Ha perso più delle azioni", "Ha perso meno delle azioni (-8% vs -40%)", "È rimasto stabile", "Ha guadagnato valore"], ans: 1 },
+      { q: "Quale caratteristica principale distingue il fine wine da asset class come le azioni?", opts: ["Maggiore liquidità", "Bassa correlazione con i mercati azionari", "Rendimento garantito", "Assenza di costi di gestione"], ans: 1 },
+      { q: "Durante la crisi finanziaria del 2008, come si è comportato il fine wine vs le azioni?", opts: ["Ha perso più delle azioni", "Ha perso meno delle azioni", "È rimasto stabile", "Ha guadagnato valore"], ans: 1 },
     ],
   },
   {

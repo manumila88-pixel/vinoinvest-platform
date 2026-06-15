@@ -299,7 +299,7 @@ export default function Methodology() {
                 <span style={{ color: "#fbbf24" }}>92</span>
                 <span style={{ color: "#475569" }}> × 0.25 = </span>
                 <span style={{ color: "#34d399", fontWeight: 700 }}>23.00 pts</span>
-                <span style={{ color: "#475569", fontSize: 12 }}>  (Liv-ex +14.2% 12m, volume above avg → 92)</span>
+                <span style={{ color: "#475569", fontSize: 12 }}>  (trend di mercato positivo, volume above avg → 92)</span>
               </div>
               <div>
                 <span style={{ color: "#94a3b8", display: "inline-block", minWidth: 180 }}>Vintage Score:</span>
@@ -407,11 +407,11 @@ export default function Methodology() {
               </thead>
               <tbody>
                 {[
-                  ["2019–2020", "142", "118", "83.1%"],
-                  ["2020–2021", "189", "162", "85.7%"],
-                  ["2021–2022", "223", "184", "82.5%"],
-                  ["2022–2023", "198", "168", "84.8%"],
-                  ["2023–2024", "241", "207", "85.9%"],
+                  ["2019–2020", "[dati interni]", "[dati interni]", "[dati interni]"],
+                  ["2020–2021", "[dati interni]", "[dati interni]", "[dati interni]"],
+                  ["2021–2022", "[dati interni]", "[dati interni]", "[dati interni]"],
+                  ["2022–2023", "[dati interni]", "[dati interni]", "[dati interni]"],
+                  ["2023–2024", "[dati interni]", "[dati interni]", "[dati interni]"],
                 ].map(([period, buy, pos, acc], i) => (
                   <tr key={period} style={{ borderBottom: "1px solid #1e3050", background: i % 2 === 0 ? "transparent" : "rgba(15,28,46,0.3)" }}>
                     <td style={{ padding: "12px 16px", color: "#94a3b8", fontWeight: 600 }}>{period}</td>
