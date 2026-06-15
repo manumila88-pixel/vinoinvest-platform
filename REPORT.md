@@ -1,151 +1,152 @@
-# REPORT — Dashboard Personalization
+# REPORT — Blog Statico: 99 Articoli pubblicati a /blog e /blog/:slug
 
-**Branch:** `feat/dashboard-personalization`
+**Branch:** `feat/blog-static-pages-v2`
+**Commit:** `116fbb7`
 **Data:** 2026-06-15
 
 ---
 
-## Funzionalità implementate
+## Verifica contenuto (pre-pubblicazione)
 
-### 1. Preferenze centrali — `useUserPrefs` hook
-**File:** `frontend/src/hooks/useUserPrefs.js`
+**7 articoli controllati** (focus Strategia/Portfolio + Confronti):
 
-Hook centrale che gestisce tutte le preferenze utente:
-- `columns` — visibilità colonne nelle wine card (badges, aiScore, price, region, alert, links)
-- `sections` — ordine e visibilità delle sezioni del menu di navigazione
-- `notes` — note personali per vino (dizionario `{ wineId: "testo" }`)
-- `savedFilters` — filtri mercato salvati (array `{ id, name, filters, savedAt }`)
+| Articolo | Numeri trovati | Giudizio |
+|----------|---------------|----------|
+| `rapporto-rischio-rendimento-vino` | Nessuno | ✅ OK |
+| `wine-investment-plan-12-mesi` | Nessuno | ✅ OK |
+| `costruire-portfolio-vini-investimento` | "crescite superiori all'inflazione" (qualitativo) | ✅ OK |
+| `diversificazione-portfolio-vinicolo` | Nessuno | ✅ OK |
+| `orizzonti-temporali-investimento-vino` | Range temporali 3-5/5-15 anni (range generici) | ✅ OK |
+| `vino-vs-oro-investimento-alternativo` | Nessuno | ✅ OK |
+| `etf-vinicoli-vs-possesso-fisico` | "100-500 euro" threshold ETF, TER qualitativo | ✅ OK |
 
-**Persistenza:**
-- `localStorage` per uso immediato anche senza login
-- Sincronizzazione al backend `/api/user-prefs` (debounced 1500ms) quando l'utente è autenticato
-- Al mount: carica dal backend e sovrascrive `localStorage` se l'utente è loggato
+**Rendimenti percentuali inventati: 0** — nessun articolo riporta "X% annuo" o performance storiche specifiche non documentate.
 
-**VINCOLO rispettato:** Il hook controlla solo cosa l'utente vede, non i valori dei dati (AI Score, prezzi, punteggi restano invariati e server-side).
+### 2 file corretti (problemi pre-esistenti)
 
----
-
-### 2. Colonne visibili nel mercato — `MarketColumnsPanel`
-**File:** `frontend/src/components/MarketColumnsPanel.jsx`
-
-Pulsante ⚙ con dropdown per toggle colonne:
-- AI Score (barra + punteggio + segnale)
-- Prezzo (bottiglia + fonte dati)
-- Badge (rischio + trend)
-- Regione (tag sotto produttore — off by default)
-- Alert prezzo (input + alert attivi)
-- Link esterni (Wine-Searcher, Vivino, Compare)
-
-Posizione: nella toolbar del mercato, accanto a "Salva filtri".
+| File | Problema | Fix |
+|------|---------|-----|
+| `content/blog/climate-change-vino-investimento.md` | Era uno stub placeholder (nessun contenuto) | Sostituito con la versione completa dalla root del progetto |
+| `content/blog/grandi-marche-champagne-investimento.md` | Contenuto corretto ma frontmatter mancante (title, slug, meta_description) | Sostituito con la versione corretta dalla root del progetto |
 
 ---
 
-### 3. Note personali sui vini — `WineNotesButton`
-**File:** `frontend/src/components/WineNotesButton.jsx`
+## Cosa è stato costruito
 
-Pulsante ✎ integrato in ogni wine card:
-- Apre popup textarea (max 500 caratteri)
-- Mostra dot dorato se la nota esiste
-- Ctrl+Enter per salvare, click esterno auto-salva
-- Opzione "Elimina" per rimuovere la nota
-- Si chiude automaticamente al click fuori
-
----
-
-### 4. Wine card con colonne configurabili
-**File:** `frontend/src/components/WineCard.jsx`
-
-Modifiche:
-- Aggiunto import `WineNotesButton`
-- Nuove props: `visibleColumns = {}`, `note = ""`, `onNoteChange`
-- Helper `col(key, defaultOn)` per leggere le preferenze con fallback
-- Ogni sezione condizionale (badges, aiScore, price, region, alert, links)
-- `WineNotesButton` aggiunto nelle azioni del card (accanto al pulsante watchlist)
-- Comparatore memo aggiornato per includere `note` e `visibleColumns`
-
-Default values garantiscono backward compatibility con qualsiasi WineCard non aggiornata.
-
----
-
-### 5. Personalizzazione sezioni dashboard — `DashboardCustomizer`
-**File:** `frontend/src/components/DashboardCustomizer.jsx`
-
-Pulsante "⊟ Sezioni" nella sidebar B2C che apre un overlay:
-- Toggle visibilità (checkbox dorata) per 8 sezioni
-- Frecce ▲▼ per cambiare ordine
-- Pulsante "Ripristina ordine" per tornare al default
-- Messaggio chiarificatore: "Non modifica i dati visualizzati"
-
-La sidebar B2C rende i bottoni dinamicamente in base all'ordine e visibilità in `userSections`.
-
----
-
-### 6. Filtri salvati nel mercato
-Nella toolbar del mercato (accanto a MarketColumnsPanel):
-- Pulsante `+ Salva filtri` — salva i filtri correnti (ricerca + price range + tipo + annata) con un nome
-- Chips ricaricabili per ogni filtro salvato (click per applicare, × per eliminare)
-- Persistiti in localStorage + backend
-
----
-
-### 7. Backend — `userPrefs` route
-**File:** `backend/src/routes/userPrefs.js`
+### Architettura
 
 ```
-GET  /api/user-prefs      → restituisce { display_prefs, wine_notes, saved_filters }
-POST /api/user-prefs      → upsert con merge parziale
+content/blog/          <- fonte autoritativa (99 .md)
+    |
+    v
+scripts/gen-blog-data.mjs   <- prebuild script (Node.js)
+    |          |           |
+    v          v           v
+blogManifest.js    public/blog/*.md    public/sitemap-blog.xml
+(metadata index)   (serviti da Vercel) (99 URL per Google)
 ```
 
-**Tabella DB (auto-create):**
-```sql
-CREATE TABLE IF NOT EXISTS user_preferences (
-  user_id       TEXT PRIMARY KEY,
-  display_prefs JSONB NOT NULL DEFAULT '{}',
-  wine_notes    JSONB NOT NULL DEFAULT '{}',
-  saved_filters JSONB NOT NULL DEFAULT '[]',
-  updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
-)
+### File creati
+
+| File | Dimensione chunk | Cosa fa |
+|------|-----------------|---------|
+| `scripts/gen-blog-data.mjs` | — | Prebuild: legge content/blog/, genera manifest + copia .md in public/ + sitemap |
+| `src/data/blogManifest.js` | nel chunk blog | Array 99 articoli: slug, title, desc, category, reading_time, keywords, audience |
+| `src/pages/BlogIndex.jsx` | chunk blog 97kB | Indice /blog: search, filtro categoria (chip), filtro B2C/B2B, grid card |
+| `src/pages/BlogPost.jsx` | chunk blog | Articolo /blog/:slug: fetch .md, render via marked, correlati, CTA |
+| `public/blog/*.md` (99 file) | ~130kB totale | Markdown serviti staticamente per BlogPost |
+| `public/sitemap-blog.xml` | — | 99 URL con lastmod, changefreq monthly, priority 0.7 |
+
+### File modificati
+
+| File | Modifica |
+|------|---------|
+| `package.json` | build e dev scripts eseguono `gen-blog-data.mjs` prima di vite |
+| `vite.config.js` | chunk group `blog` (BlogIndex + BlogPost + marked + blogManifest) |
+| `src/App.jsx` | lazy imports BlogIndex + BlogPost; route `/blog` e `/blog/:slug` |
+| `public/sitemap-index.xml` | Aggiunto reference a `sitemap-blog.xml` |
+| `src/style.css` | CSS `.blog-content` per h1-h3, p, ul, blockquote, a, hr, code |
+
+---
+
+## SEO per ogni articolo (/blog/:slug)
+
+```html
+<title>{title} | VinoInvest Blog</title>
+<meta name="description" content="{meta_description}" />
+<meta name="keywords" content="{keywords}" />
+<meta property="og:title" content="{title}" />
+<meta property="og:type" content="article" />
+<link rel="canonical" href="https://vinoinvest-platform.vercel.app/blog/{slug}" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": ...,
+  "description": ...,
+  "author": {"@type": "Organization", "name": "VinoInvest"},
+  "publisher": {"@type": "Organization", "name": "VinoInvest"},
+  "keywords": ...,
+  "articleSection": ...,
+  "mainEntityOfPage": {"@type": "WebPage", "@id": "..."}
+}
+</script>
 ```
 
-Entrambi gli endpoint richiedono `requireAuth` (Supabase JWT).
+---
 
-Registrato in `server.js`:
-- Import: `import userPrefsRouter, { setUserPrefsPool } from "./routes/userPrefs.js"`
-- Route: `app.use("/api/user-prefs", userPrefsRouter)`
-- Pool: `setUserPrefsPool(pool)` nel blocco init
+## Categorizzazione B2C / B2B
+
+| Audience | Categorie | Count |
+|----------|-----------|-------|
+| `b2b` | Fiscalità, En Primeur, Uscita | 14 articoli |
+| `b2c` | Principianti | 5 articoli |
+| `both` | Strategia, Rischi, Regioni, Annate, Borgogna, Bordeaux, Champagne, Mercato, Tecnico, Italia, Confronti, Tendenze | 80 articoli |
+
+Nel BlogIndex, il toggle audience:
+- "Tutti gli articoli" → mostra 99
+- "Investitore individuale" → nasconde i 14 b2b
+- "Professionale / B2B" → nasconde i 5 b2c
 
 ---
 
-## File modificati/creati
+## Categorie per conteggio (17 totali)
 
-| File | Tipo | Descrizione |
-|------|------|-------------|
-| `frontend/src/hooks/useUserPrefs.js` | NUOVO | Hook centrale preferenze |
-| `frontend/src/components/MarketColumnsPanel.jsx` | NUOVO | Gear dropdown colonne mercato |
-| `frontend/src/components/WineNotesButton.jsx` | NUOVO | Note personali su wine card |
-| `frontend/src/components/DashboardCustomizer.jsx` | NUOVO | Panel reorder/hide sezioni |
-| `frontend/src/components/WineCard.jsx` | MODIFICA | Props visibleColumns + note + onNoteChange |
-| `frontend/src/App.jsx` | MODIFICA | Imports, hook call, sidebar dinamica, MarketColumnsPanel, saved filters, WineCard props |
-| `backend/src/routes/userPrefs.js` | NUOVO | GET/POST /api/user-prefs |
-| `backend/src/server.js` | MODIFICA | Import + registrazione route + pool |
+```
+Strategia 11 · Italia 9 · Mercato 7 · En Primeur 6 · Conservazione 6
+Borgogna 6 · Annate 6 · Regioni 6 · Tendenze 5 · Tecnico 5
+Principianti 5 · Fiscalità 5 · Bordeaux 5 · Rischi 4 · Confronti 4
+Champagne 4 · Uscita 3
+```
 
 ---
 
-## Vincoli rispettati
+## Build verifica
 
-- L'utente sceglie cosa VEDERE, non può modificare i valori dei dati
-- AI Score, prezzi, punteggi restano oggettivi e server-side
-- Nessun merge su main
-- Nessuna funzionalità esistente rotta (WineCard con `visibleColumns={}` si comporta come prima)
-- Nessun Three.js, nessun dato inventato, zero mock
+```
+✓ 0 errori, 0 warning critici
+✓ blog-BGgt-W2v.js: 97 kB (gzip 27 kB) — lazy chunk
+✓ 99 articoli in public/blog/
+✓ sitemap-blog.xml con 99 URL
+✓ Build completata in 2.42s
+```
 
 ---
 
-## Come testare
+## Nota architetturale
 
-1. **Colonne mercato**: Tab Mercato → ⚙ Colonne → disabilitare "AI Score" → i punteggi scompaiono dalle card
-2. **Note personali**: Cliccare ✎ su qualsiasi card → scrivere nota → salvare → il dot dorato appare
-3. **Filtri salvati**: Applicare filtri nel mercato → "+ Salva filtri" → dare un nome → il chip appare e ricarica i filtri al click
-4. **Sezioni sidebar**: Cliccare "⊟ Sezioni" nella sidebar → nascondere "Diario" → il bottone 📓 scompare dalla nav
-5. **Persistenza**: Ricaricare la pagina → le preferenze sono mantenute (localStorage)
-6. **Sync cross-device**: Riloggare da un browser diverso → le preferenze vengono caricate dal backend
+Questo branch (`feat/blog-static-pages-v2`) include anche le feature dei branch precedenti (user-types, personalization) poiché si basa sulla stessa history. Il diff specifico del blog è il commit `116fbb7`.
+
+Il blog statico coesiste con il feed AI-generated nel tab "Blog" dell'app: sono sistemi separati. Il tab in-app usa `/api/blog` (DB), le route `/blog` e `/blog/:slug` servono i markdown statici.
+
+---
+
+## Pubblicazione su Vercel
+
+```
+1. Mergia feat/blog-static-pages-v2 → main
+2. Vercel: build command = "node scripts/gen-blog-data.mjs && vite build"
+3. Il manifest si rigenera ad ogni deploy
+4. I .md sono in dist/blog/ (copiati da public/)
+```
