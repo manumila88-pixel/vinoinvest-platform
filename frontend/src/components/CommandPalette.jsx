@@ -1,31 +1,33 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useNavigate as useRouterNavigate } from "react-router-dom";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
-const STATIC_COMMANDS = [
-  { id: "home", label: "Home — Dashboard vini", icon: "🏠", action: () => { window.location.href = "/"; } },
-  { id: "pricing", label: "Prezzi e piani", icon: "💎", action: () => { window.location.href = "/pricing"; } },
-  { id: "b2b", label: "Soluzioni B2B", icon: "🏢", action: () => { window.location.href = "/b2b"; } },
-  { id: "org", label: "Dashboard Organizzazione", icon: "📊", action: () => { window.location.href = "/org-dashboard"; } },
-  { id: "cellar", label: "La mia Cantina", icon: "🍾", action: () => { window.location.href = "/cellar"; } },
-  { id: "journal", label: "Diario Degustazioni", icon: "📔", action: () => { window.location.href = "/journal"; } },
-  { id: "compare", label: "Confronta Vini (side-by-side)", icon: "⚖️", action: () => { window.location.href = "/compare"; } },
-  { id: "goals", label: "Obiettivi Investimento", icon: "🎯", action: () => { window.location.href = "/goals"; } },
-  { id: "market", label: "Market Index", icon: "📈", action: () => { window.location.href = "/market-index"; } },
-  { id: "intelligence", label: "Market Intelligence B2B", icon: "🔬", action: () => { window.location.href = "/market-intelligence"; } },
-  { id: "en-primeur", label: "En Primeur", icon: "🏰", action: () => { window.location.href = "/en-primeur"; } },
-  { id: "auctions", label: "Tracker Aste", icon: "🔨", action: () => { window.location.href = "/auctions"; } },
-  { id: "learn", label: "Wine Academy", icon: "🎓", action: () => { window.location.href = "/learn"; } },
-  { id: "metodologia", label: "Metodologia AI Score", icon: "🧠", action: () => { window.location.href = "/metodologia"; } },
-  { id: "glossario", label: "Glossario Wine Investment", icon: "📚", action: () => { window.location.href = "/glossario"; } },
-  { id: "about", label: "Chi siamo", icon: "ℹ️", action: () => { window.location.href = "/about"; } },
-  { id: "press", label: "Press Kit", icon: "📰", action: () => { window.location.href = "/press"; } },
-  { id: "transparency", label: "Trasparenza dati", icon: "🔍", action: () => { window.location.href = "/transparency"; } },
-  { id: "data", label: "Download Dataset", icon: "⬇️", action: () => { window.location.href = "/data"; } },
-  { id: "security", label: "Security & Bug Bounty", icon: "🔒", action: () => { window.location.href = "/security"; } },
+const STATIC_COMMAND_DEFS = [
+  { id: "home", label: "Home — Dashboard vini", icon: "🏠", path: "/" },
+  { id: "pricing", label: "Prezzi e piani", icon: "💎", path: "/pricing" },
+  { id: "b2b", label: "Soluzioni B2B", icon: "🏢", path: "/b2b" },
+  { id: "org", label: "Dashboard Organizzazione", icon: "📊", path: "/org-dashboard" },
+  { id: "cellar", label: "La mia Cantina", icon: "🍾", path: "/cellar" },
+  { id: "journal", label: "Diario Degustazioni", icon: "📔", path: "/journal" },
+  { id: "compare", label: "Confronta Vini (side-by-side)", icon: "⚖️", path: "/compare" },
+  { id: "goals", label: "Obiettivi Investimento", icon: "🎯", path: "/goals" },
+  { id: "market", label: "Market Index", icon: "📈", path: "/market-index" },
+  { id: "intelligence", label: "Market Intelligence B2B", icon: "🔬", path: "/market-intelligence" },
+  { id: "en-primeur", label: "En Primeur", icon: "🏰", path: "/en-primeur" },
+  { id: "auctions", label: "Tracker Aste", icon: "🔨", path: "/auctions" },
+  { id: "learn", label: "Wine Academy", icon: "🎓", path: "/learn" },
+  { id: "metodologia", label: "Metodologia AI Score", icon: "🧠", path: "/metodologia" },
+  { id: "glossario", label: "Glossario Wine Investment", icon: "📚", path: "/glossario" },
+  { id: "about", label: "Chi siamo", icon: "ℹ️", path: "/about" },
+  { id: "press", label: "Press Kit", icon: "📰", path: "/press" },
+  { id: "transparency", label: "Trasparenza dati", icon: "🔍", path: "/transparency" },
+  { id: "data", label: "Download Dataset", icon: "⬇️", path: "/data" },
+  { id: "security", label: "Security & Bug Bounty", icon: "🔒", path: "/security" },
 ];
 
 export default function CommandPalette({ onSelectWine }) {
+  const routerNavigate = useRouterNavigate();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [wines, setWines] = useState([]);
@@ -33,6 +35,11 @@ export default function CommandPalette({ onSelectWine }) {
   const [selected, setSelected] = useState(0);
   const inputRef = useRef(null);
   const debounceRef = useRef(null);
+
+  const STATIC_COMMANDS = STATIC_COMMAND_DEFS.map(c => ({
+    ...c,
+    action: () => routerNavigate(c.path),
+  }));
 
   useEffect(() => {
     const handler = (e) => {

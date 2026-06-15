@@ -67,7 +67,18 @@ self.addEventListener("fetch", (e) => {
     return;
   }
 
-  // Static: cache-first
+  // HTML documents: network-first so new deploys are picked up immediately
+  if (request.destination === "document") {
+    e.respondWith(
+      fetch(request).then(res => {
+        if (res.ok) caches.open(STATIC_CACHE).then(c => c.put(request, res.clone()));
+        return res;
+      }).catch(() => caches.match(request).then(r => r || caches.match("/offline.html")))
+    );
+    return;
+  }
+
+  // Static assets (JS/CSS/images): cache-first — hashed filenames ensure freshness
   e.respondWith(
     caches.match(request).then(cached => {
       if (cached) return cached;
@@ -76,10 +87,7 @@ self.addEventListener("fetch", (e) => {
           caches.open(STATIC_CACHE).then(c => c.put(request, res.clone()));
         }
         return res;
-      }).catch(() => {
-        if (request.destination === "document") return caches.match("/offline.html");
-        return caches.match("/index.html");
-      });
+      }).catch(() => caches.match("/index.html"));
     })
   );
 });

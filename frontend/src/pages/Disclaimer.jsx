@@ -9,7 +9,8 @@ export default function Disclaimer() {
   return (
     <div style={{ minHeight: "100vh", background: BG, color: "#e2e8f0", fontFamily: "Inter, sans-serif" }}>
       <div style={{ background: "rgba(11,18,32,0.97)", borderBottom: "1px solid rgba(30,41,59,0.7)", padding: "14px 24px", position: "sticky", top: 0, zIndex: 100 }}>
-        <div style={{ maxWidth: 780, margin: "0 auto", display: "flex", alignItems: "center", gap: 6, fontSize: 13 }}>
+        <div style={{ maxWidth: 780, margin: "0 auto", display: "flex", alignItems: "center", gap: 10, fontSize: 13 }}>
+          <button onClick={() => navigate(-1)} style={{ background: "none", border: "1px solid rgba(96,165,250,0.3)", borderRadius: 6, color: "#60a5fa", cursor: "pointer", fontSize: 12, padding: "4px 10px", display: "flex", alignItems: "center", gap: 4 }}>← Indietro</button>
           <button onClick={() => navigate("/")} style={{ background: "none", border: "none", color: GOLD, cursor: "pointer", fontWeight: 700, fontSize: 14, padding: 0 }}>VinoInvest</button>
           <span style={{ color: "#475569" }}>›</span>
           <span style={{ color: "#e2e8f0" }}>Disclaimer Finanziario</span>

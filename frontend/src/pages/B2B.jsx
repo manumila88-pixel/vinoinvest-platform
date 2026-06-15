@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { FAQ, B2B_CATS, B2B_CATEGORIES } from "../data/faq.js";
+import BackNav from "../components/BackNav";
 
 const FAQ_B2B = FAQ.filter(f => B2B_CATS.has(f.cat));
 
@@ -145,6 +146,7 @@ export default function B2BPage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--vi-bg)", color: "var(--vi-text)", fontFamily: "var(--vi-font-sans)" }}>
+      <BackNav title="B2B Solutions" />
       <style>{`
         @keyframes faqExpand { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
         .b2b-feature-card { transition: transform var(--vi-dur) var(--vi-ease), border-color var(--vi-dur-fast) linear; }

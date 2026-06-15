@@ -1,228 +1,177 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { marked } from "marked";
-import { BLOG_MANIFEST } from "../data/blogManifest.js";
 
-const GOLD = "#C9A227";
-const BASE = "https://vinoinvest-platform.vercel.app";
-
-// Configure marked: no HTML pass-through, GFM enabled
-marked.setOptions({ gfm: true, breaks: false });
-const renderer = new marked.Renderer();
-// Open external links in new tab; keep internal links as-is
-renderer.link = ({ href, text }) => {
-  const isExternal = href && (href.startsWith("http://") || href.startsWith("https://"));
-  const attrs = isExternal ? ` target="_blank" rel="noopener noreferrer"` : "";
-  return `<a href="${href}"${attrs}>${text}</a>`;
-};
-marked.use({ renderer });
-
-// ── Strip YAML frontmatter from raw .md ───────────────────────────────────────
-function stripFrontmatter(raw) {
-  return raw.replace(/^---[\s\S]*?---\n?/, "");
-}
-
-// ── Related posts (same category, excluding self) ─────────────────────────────
-function relatedPosts(current, n = 3) {
-  return BLOG_MANIFEST
-    .filter(p => p.slug !== current.slug && p.category === current.category)
-    .slice(0, n);
-}
+const API = import.meta.env.VITE_API_URL || "https://vinoinvest-backend-2.onrender.com";
 
 export default function BlogPost() {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const [html, setHtml] = useState(null);
+  const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  const meta = BLOG_MANIFEST.find(p => p.slug === slug);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!slug) return;
     setLoading(true);
-    setError(false);
-    setHtml(null);
-    window.scrollTo(0, 0);
-    fetch(`/blog/${slug}.md`)
+    setError(null);
+    fetch(`${API}/api/blog/${slug}`)
       .then(r => {
-        if (!r.ok) throw new Error("not found");
-        return r.text();
+        if (!r.ok) throw new Error("Articolo non trovato");
+        return r.json();
       })
-      .then(raw => {
-        const body = stripFrontmatter(raw);
-        setHtml(marked.parse(body));
-        setLoading(false);
-      })
-      .catch(() => {
-        setError(true);
-        setLoading(false);
-      });
+      .then(data => { setPost(data); setLoading(false); })
+      .catch(err => { setError(err.message); setLoading(false); });
   }, [slug]);
 
-  const related = meta ? relatedPosts(meta) : [];
+  if (loading) {
+    return (
+      <div style={{ minHeight: "100vh", background: "#0b1220", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, color: "#C9A227", fontSize: 14 }}>
+          <span style={{ width: 14, height: 14, borderRadius: "50%", border: "2px solid #3a5a7a", borderTopColor: "#C9A227", display: "inline-block", animation: "spin 0.8s linear infinite" }} />
+          Caricamento articolo...
+        </div>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
 
-  const schemaOrg = meta ? JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": meta.title,
-    "description": meta.meta_description,
-    "author": { "@type": "Organization", "name": "VinoInvest" },
-    "publisher": {
-      "@type": "Organization",
-      "name": "VinoInvest",
-      "url": BASE,
-      "logo": { "@type": "ImageObject", "url": `${BASE}/favicon.ico` },
-    },
-    "mainEntityOfPage": { "@type": "WebPage", "@id": `${BASE}/blog/${slug}` },
-    "keywords": (meta.keywords || []).join(", "),
-    "articleSection": meta.category,
-    "url": `${BASE}/blog/${slug}`,
-  }) : null;
+  if (error || !post) {
+    return (
+      <div style={{ minHeight: "100vh", background: "#0b1220", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 20, color: "#e2e8f0", fontFamily: "Inter, system-ui, sans-serif" }}>
+        <div style={{ fontSize: 40 }}>🍷</div>
+        <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 24, color: "#f1f5f9", margin: 0 }}>Articolo non trovato</h1>
+        <p style={{ color: "#64748b", fontSize: 14 }}>{error || "Questo articolo non è disponibile."}</p>
+        <Link to="/blog" style={{ padding: "10px 22px", borderRadius: 8, border: "1px solid rgba(201,162,39,0.4)", color: "#C9A227", textDecoration: "none", fontSize: 13 }}>
+          ← Tutti gli articoli
+        </Link>
+      </div>
+    );
+  }
+
+  const publishedDate = post.publishedAt
+    ? new Date(post.publishedAt).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })
+    : null;
 
   return (
-    <>
-      {meta && (
-        <Helmet>
-          <title>{meta.title} | VinoInvest Blog</title>
-          <meta name="description" content={meta.meta_description} />
-          <meta name="keywords" content={(meta.keywords || []).join(", ")} />
-          <meta property="og:title" content={meta.title} />
-          <meta property="og:description" content={meta.meta_description} />
-          <meta property="og:type" content="article" />
-          <meta property="og:url" content={`${BASE}/blog/${slug}`} />
-          <meta property="og:site_name" content="VinoInvest" />
-          <link rel="canonical" href={`${BASE}/blog/${slug}`} />
-          {schemaOrg && <script type="application/ld+json">{schemaOrg}</script>}
-        </Helmet>
-      )}
+    <div style={{ minHeight: "100vh", background: "#0b1220", color: "#e2e8f0", fontFamily: "Inter, system-ui, sans-serif" }}>
+      <Helmet>
+        <title>{post.title} | VinoInvest Blog</title>
+        <meta name="description" content={post.excerpt || ""} />
+      </Helmet>
 
-      <div style={{ minHeight: "100vh", background: "#0b1220", color: "#e2e8f0", fontFamily: "Inter, sans-serif" }}>
-
-        {/* ── Breadcrumb / Back ──────────────────────────────────── */}
-        <div style={{ borderBottom: "1px solid rgba(201,162,39,0.12)", padding: "14px 24px" }}>
-          <div style={{ maxWidth: 780, margin: "0 auto", display: "flex", alignItems: "center", gap: 8 }}>
-            <button onClick={() => navigate("/")}
-              style={{ background: "none", border: "none", color: "#475569", cursor: "pointer", fontSize: 12, fontFamily: "inherit" }}>
-              VinoInvest
-            </button>
-            <span style={{ color: "#334155" }}>›</span>
-            <button onClick={() => navigate("/blog")}
-              style={{ background: "none", border: "none", color: "#475569", cursor: "pointer", fontSize: 12, fontFamily: "inherit" }}>
-              Blog
-            </button>
-            {meta && <>
-              <span style={{ color: "#334155" }}>›</span>
-              <span style={{ fontSize: 12, color: "#64748b", fontWeight: 600 }}>{meta.category}</span>
-            </>}
-          </div>
+      {/* Header */}
+      <div style={{ borderBottom: "1px solid rgba(201,162,39,0.15)", padding: "16px 24px", display: "flex", alignItems: "center", gap: 16, background: "rgba(11,18,32,0.95)", position: "sticky", top: 0, zIndex: 100, backdropFilter: "blur(10px)" }}>
+        <button
+          onClick={() => navigate("/blog")}
+          style={{ background: "transparent", border: "1px solid rgba(201,162,39,0.3)", color: "#C9A227", borderRadius: 8, padding: "6px 14px", fontSize: 13, cursor: "pointer", flexShrink: 0 }}
+        >
+          ← Blog
+        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+          <span style={{ fontSize: 18, fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 800, color: "#C9A227", flexShrink: 0 }}>VinoInvest</span>
+          <span style={{ color: "rgba(201,162,39,0.4)", fontSize: 14 }}>/</span>
+          <Link to="/blog" style={{ color: "#94a3b8", textDecoration: "none", fontSize: 13, flexShrink: 0 }}>Blog</Link>
+          <span style={{ color: "rgba(201,162,39,0.4)", fontSize: 14 }}>/</span>
+          <span style={{ color: "#64748b", fontSize: 12, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{post.title}</span>
         </div>
+      </div>
 
-        <div style={{ maxWidth: 780, margin: "0 auto", padding: "36px 24px 72px" }}>
+      <div style={{ maxWidth: 760, margin: "0 auto", padding: "52px 24px 80px" }}>
+        {/* Category + read time */}
+        {(post.category || post.readTime || post.read_time) && (
+          <div style={{ fontSize: 11, color: "#C9A227", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 14 }}>
+            {post.category && <span>{post.category}</span>}
+            {(post.category && (post.readTime || post.read_time)) && <span style={{ margin: "0 8px", color: "rgba(201,162,39,0.3)" }}>·</span>}
+            {(post.readTime || post.read_time) && <span>{post.readTime || post.read_time} lettura</span>}
+          </div>
+        )}
 
-          {/* ── Loading ───────────────────────────────────────────── */}
-          {loading && (
-            <div style={{ display: "flex", flexDirection: "column", gap: 16, animation: "pulse 1.4s ease-in-out infinite" }}>
-              <style>{`@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.7}}`}</style>
-              <div style={{ height: 40, background: "#1a2535", borderRadius: 8, width: "70%" }} />
-              <div style={{ height: 18, background: "#1a2535", borderRadius: 6, width: "90%" }} />
-              <div style={{ height: 18, background: "#1a2535", borderRadius: 6, width: "80%" }} />
-            </div>
-          )}
+        {/* Title */}
+        <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(24px, 4vw, 36px)", fontWeight: 800, lineHeight: 1.25, margin: "0 0 16px", color: "#f1f5f9" }}>
+          {post.title}
+        </h1>
 
-          {/* ── Error ────────────────────────────────────────────── */}
-          {error && (
-            <div style={{ textAlign: "center", padding: "60px 0" }}>
-              <div style={{ fontSize: 48, marginBottom: 16 }}>😕</div>
-              <h2 style={{ color: "#e2e8f0", marginBottom: 12 }}>Articolo non trovato</h2>
-              <button onClick={() => navigate("/blog")}
-                style={{ background: GOLD, border: "none", borderRadius: 8, padding: "10px 20px", fontWeight: 700, color: "#0b1220", cursor: "pointer", fontSize: 14, fontFamily: "inherit" }}>
-                ← Torna al blog
-              </button>
-            </div>
-          )}
-
-          {/* ── Article ──────────────────────────────────────────── */}
-          {!loading && !error && html && (
+        {/* Author + date */}
+        <div style={{ fontSize: 12, color: "#64748b", marginBottom: 28, display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+          <span>{post.author || "VinoInvest AI"}</span>
+          {publishedDate && (
             <>
-              {/* Meta chips */}
-              {meta && (
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24, flexWrap: "wrap" }}>
-                  <span style={{ fontSize: 10, fontWeight: 700, color: GOLD, background: "rgba(201,162,39,0.12)", borderRadius: 5, padding: "3px 9px", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                    {meta.category}
-                  </span>
-                  <span style={{ fontSize: 11, color: "#475569" }}>·</span>
-                  <span style={{ fontSize: 11, color: "#475569" }}>{meta.reading_time}</span>
-                  {meta.audience !== "both" && (
-                    <>
-                      <span style={{ fontSize: 11, color: "#475569" }}>·</span>
-                      <span style={{
-                        fontSize: 10, fontWeight: 700,
-                        color: meta.audience === "b2b" ? "#60a5fa" : GOLD,
-                        background: meta.audience === "b2b" ? "rgba(96,165,250,0.1)" : "rgba(201,162,39,0.1)",
-                        borderRadius: 5, padding: "3px 9px", textTransform: "uppercase", letterSpacing: "0.06em",
-                      }}>
-                        {meta.audience === "b2b" ? "PRO" : "Investitore"}
-                      </span>
-                    </>
-                  )}
-                </div>
-              )}
-
-              {/* Article body */}
-              <div
-                className="blog-content"
-                dangerouslySetInnerHTML={{ __html: html }}
-                style={{
-                  color: "#cbd5e1",
-                  lineHeight: 1.85,
-                  fontSize: 16,
-                }}
-              />
-
-              {/* CTA */}
-              <div style={{ marginTop: 40, background: "linear-gradient(135deg, rgba(201,162,39,0.1) 0%, rgba(201,162,39,0.04) 100%)", border: "1px solid rgba(201,162,39,0.25)", borderRadius: 16, padding: "24px 28px", textAlign: "center" }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#e2e8f0", marginBottom: 8 }}>
-                  Investi nel vino con dati reali
-                </div>
-                <p style={{ fontSize: 12, color: "#64748b", margin: "0 0 16px" }}>
-                  AI Score, price history e portfolio tracking — tutto su VinoInvest.
-                </p>
-                <button onClick={() => navigate("/")}
-                  style={{ background: GOLD, border: "none", borderRadius: 8, padding: "10px 22px", fontWeight: 700, color: "#0b1220", cursor: "pointer", fontSize: 13, fontFamily: "inherit" }}>
-                  Scopri la piattaforma →
-                </button>
-              </div>
-
-              {/* Related articles */}
-              {related.length > 0 && (
-                <section style={{ marginTop: 40 }}>
-                  <h3 style={{ fontSize: 14, fontWeight: 700, color: "#94a3b8", marginBottom: 16, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                    Articoli correlati
-                  </h3>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                    {related.map(r => (
-                      <button key={r.slug} onClick={() => navigate(`/blog/${r.slug}`)}
-                        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 10, padding: "14px 18px", textAlign: "left", cursor: "pointer", fontFamily: "inherit", color: "inherit" }}>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0", marginBottom: 4 }}>{r.title}</div>
-                        <div style={{ fontSize: 11, color: "#475569" }}>{r.reading_time}</div>
-                      </button>
-                    ))}
-                  </div>
-                </section>
-              )}
-
-              {/* Back */}
-              <div style={{ marginTop: 32, paddingTop: 24, borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-                <button onClick={() => navigate("/blog")}
-                  style={{ background: "none", border: "1px solid rgba(201,162,39,0.3)", borderRadius: 8, padding: "8px 16px", color: GOLD, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: "inherit" }}>
-                  ← Tutti gli articoli
-                </button>
-              </div>
+              <span style={{ color: "rgba(100,116,139,0.4)" }}>·</span>
+              <span>{publishedDate}</span>
             </>
           )}
         </div>
+
+        {/* Excerpt */}
+        {post.excerpt && (
+          <div style={{ borderLeft: "3px solid #C9A227", paddingLeft: 18, marginBottom: 32, color: "#94a3b8", fontSize: 15, fontStyle: "italic", lineHeight: 1.7 }}>
+            {post.excerpt}
+          </div>
+        )}
+
+        {/* Divider */}
+        <div style={{ height: 1, background: "rgba(201,162,39,0.12)", marginBottom: 32 }} />
+
+        {/* Content */}
+        <div style={{ fontSize: 15, lineHeight: 1.85, color: "#cbd5e1" }}>
+          {(post.content || "").split("\n\n").map((para, i) => {
+            if (!para.trim()) return null;
+            // Detect headings (lines that start with a capital and are short)
+            if (para.length < 100 && !para.includes(".") && para === para.trimStart()) {
+              return (
+                <h2 key={i} style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 20, fontWeight: 700, color: "#f1f5f9", margin: "36px 0 14px" }}>
+                  {para.trim()}
+                </h2>
+              );
+            }
+            return <p key={i} style={{ marginBottom: 20 }}>{para.trim()}</p>;
+          })}
+        </div>
+
+        {/* Sources */}
+        {post.sources && post.sources.length > 0 && (
+          <div style={{ marginTop: 40, padding: "20px 24px", background: "rgba(30,41,59,0.5)", border: "1px solid rgba(201,162,39,0.1)", borderRadius: 12 }}>
+            <p style={{ fontSize: 12, fontWeight: 700, color: "#C9A227", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>Fonti</p>
+            <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 6 }}>
+              {post.sources.map((s, i) => (
+                <li key={i}>
+                  <a
+                    href={s.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ fontSize: 13, color: "#94a3b8", textDecoration: "none" }}
+                    onMouseEnter={e => (e.currentTarget.style.color = "#C9A227")}
+                    onMouseLeave={e => (e.currentTarget.style.color = "#94a3b8")}
+                  >
+                    ↗ {s.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* CTA */}
+        <div style={{ marginTop: 48, padding: "28px 32px", background: "rgba(201,162,39,0.06)", border: "1px solid rgba(201,162,39,0.2)", borderRadius: 14, textAlign: "center" }}>
+          <p style={{ fontSize: 15, color: "#C9A227", fontWeight: 700, marginBottom: 8 }}>Inizia a investire nel vino</p>
+          <p style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>Analizza oltre 10.000 vini con AI Score, storico prezzi e dati Liv-ex in tempo reale.</p>
+          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+            <button
+              onClick={() => navigate("/")}
+              style={{ padding: "10px 24px", borderRadius: 10, border: "none", background: "#C9A227", color: "#0b1220", fontSize: 14, fontWeight: 700, cursor: "pointer" }}
+            >
+              Esplora il Mercato →
+            </button>
+            <Link
+              to="/blog"
+              style={{ padding: "10px 24px", borderRadius: 10, border: "1px solid rgba(201,162,39,0.3)", color: "#C9A227", fontSize: 14, textDecoration: "none", display: "inline-block", lineHeight: "1.4" }}
+            >
+              ← Tutti gli articoli
+            </Link>
+          </div>
+        </div>
       </div>
-    </>
+    </div>
   );
 }
