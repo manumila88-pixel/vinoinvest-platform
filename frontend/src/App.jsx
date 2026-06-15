@@ -83,6 +83,8 @@ const WineCompare = lazy(() => import("./pages/WineCompare"));
 const WineryDashboard = lazy(() => import("./pages/WineryDashboard"));
 const WineryProfile = lazy(() => import("./pages/WineryProfile"));
 const VintageStory = lazy(() => import("./pages/VintageStory"));
+const BlogIndex = lazy(() => import("./pages/BlogIndex"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
 import ThemeToggle from "./components/ThemeToggle";
 import CommandPalette from "./components/CommandPalette";
 import VoiceInterface from "./components/VoiceInterface";
@@ -2765,6 +2767,8 @@ createRoot(document.getElementById("root")).render(
           <Route path="/winery/profile" element={<WineryProfile />} />
           <Route path="/winery/vintage-story" element={<VintageStory />} />
           <Route path="/cantina/:producerName" element={<WineryProfile />} />
+          <Route path="/blog" element={<BlogIndex />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="*" element={<App />} />
         </Routes>
         </Suspense>

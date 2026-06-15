@@ -37,6 +37,7 @@ export default defineConfig({
             { name: 'b2b', test: /\/pages\/(B2B|Dashboard|OrgDashboard|ClientDetail|B2BOnboarding)/, priority: 70 },
             { name: 'legal-pages', test: /\/pages\/(Terms|PrivacyPolicy|Cookies|Disclaimer|Pricing)/, priority: 60 },
             { name: 'market-tools', test: /\/pages\/(MarketIndex|MarketSentiment|EnPrimeur|AuctionTracker)/, priority: 60 },
+            { name: 'blog', test: /\/pages\/Blog|\/data\/blogManifest|node_modules\/marked/, priority: 65 },
           ],
         },
       },
