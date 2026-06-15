@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ComposedChart, Bar, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend, Area } from "recharts";
 import { COURSES, XP_RULES } from "../data/academyContent";
 import { useTranslation } from "react-i18next";
+import DeepDiveSection from "../components/DeepDiveSection";
 
 const BG = "#0b1220";
 const GOLD = "#C9A227";
@@ -189,6 +190,10 @@ export default function AcademyLesson() {
         {/* ── SEZIONE 1: SLIDE VISIVE ─────────────────────────────────── */}
         <SectionLabel label="SLIDE DELLA LEZIONE" icon="📺" />
         <SlidesSection slides={slides} />
+
+        {/* ── SEZIONE 1B: APPROFONDIMENTO ESPANDIBILE + MERCATO LIVE ──── */}
+        <SectionLabel label="APPROFONDIMENTO — ALBERO ESPANDIBILE" icon="🌳" />
+        <DeepDiveSection courseId={course.id} lessonId={lesson.id} />
 
         {/* ── SEZIONE 2: GRAFICI DATI REALI ──────────────────────────── */}
         <SectionLabel label="DATI DI MERCATO REALI" icon="📊" />

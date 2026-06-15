@@ -204,9 +204,9 @@ VinoInvest Professional — Documento ad uso interno advisor
 1. PREMESSA E RAZIONALE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Il fine wine come asset class:
-• Rendimento storico (Liv-ex 1000, 2004-2024): ~10% annuo
-• Volatilità media: 8-12% (vs equity 15-20%)
-• Correlazione con S&P500: ~0.1-0.2
+• Rendimento storico (Liv-ex 1000): ESEMPIO ILLUSTRATIVO — verificare su Liv-ex per il periodo corrente
+• Volatilità media: 8-12% (vs equity 15-20%) — dato indicativo, verificare su fonti primarie
+• Correlazione con S&P500: ~0.1-0.2 (storicamente bassa)
 • Correlazione con inflazione: ~0.4 (hedge parziale)
 • Liquidità: bassa (30-90 giorni per vendita)
 • Storage: £12-17/cassa/anno (UK bonded)
@@ -524,27 +524,27 @@ Posizioni che superano la soglia (indicare):
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 SEZIONE C — ESEMPIO DI CALCOLO COMPILATO
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-(Cliente fittizio per illustrazione — sostituire con dati reali)
+ESEMPIO ILLUSTRATIVO — sostituire con dati reali del cliente
 
-INPUT:
+INPUT (valori di esempio — non rappresentano rendimenti effettivi):
   AUM totale:              €3.500.000
   Portfolio wine:          €280.000  (8% di AUM — profilo moderato)
   N. posizioni:            12
   Regioni: Bordeaux 45%, Borgogna 30%, Champagne 15%, Italia 10%
-  Rendimento storico 3Y:   9.2% annuo
-  Volatilità:              11.0% annuo
-  Risk-free rate:          2.8%
+  Rendimento storico 3Y:   X% annuo  [inserire rendimento reale verificato]
+  Volatilità:              Y% annuo  [inserire volatilità reale verificata]
+  Risk-free rate:          Z%        [inserire tasso corrente, es. BTP 2Y]
 
-RISULTATI:
+RISULTATI (con valori di esempio X=9%, Y=11%, Z=2.8%):
   Sharpe Ratio:
-    = (9.2% - 2.8%) / 11.0% = 6.4% / 11.0% = 0.58  → BUONO
+    = (X% - Z%) / Y% → formula: (Rp - Rf) / σp  → ESEMPIO: (9% - 2.8%) / 11% = 0.56  → BUONO
 
   VaR (95%, 1 mese):
-    µ_mensile  = 9.2% / 12 = 0.767%
-    σ_mensile  = 11.0% / √12 = 11.0% / 3.464 = 3.176%
-    VaR input  = 0.767% - 1.65 × 3.176% = 0.767% - 5.240% = -4.473%
-    VaR (€)    = €280.000 × 4.473% = €12.524
-    → Con il 95% di confidenza, la perdita mensile max è ≤ €12.524 (4.5% del portafoglio wine)
+    µ_mensile  = X% / 12
+    σ_mensile  = Y% / √12
+    VaR input  = µ_mensile - 1.65 × σ_mensile
+    VaR (€)    = Vp × |VaR input|
+    → Con il 95% di confidenza, la perdita mensile max è ≤ VaR (€) calcolato sui dati reali
 
   HHI:
     = 0.45² + 0.30² + 0.15² + 0.10²
@@ -731,8 +731,9 @@ Fonti dati utilizzate:
   Ultimo aggiornamento dati: _______________
 
 Rendimenti storici citati:
-  Liv-ex 1000 CAGR 2004–2024: ~10% p.a. lordo (fonte: Liv-ex)
-  Volatilità storica Bordeaux 500: ~10-12% annuo
+  ESEMPIO ILLUSTRATIVO — sostituire con dati reali verificati da Liv-ex
+  Liv-ex 1000 CAGR (periodo di riferimento): X% p.a. lordo (fonte: Liv-ex — verificare aggiornamento)
+  Volatilità storica Bordeaux 500: da verificare su Liv-ex per il periodo corrente
   I rendimenti passati non sono garanzia di rendimenti futuri.
 
 DISCLAIMER LEGALE (MiFID II):

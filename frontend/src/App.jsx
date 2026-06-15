@@ -17,6 +17,9 @@ import { supabase } from "./lib/supabase";
 import WinePriceCompare from "./components/WinePriceCompare";
 import LangSelector from "./components/LangSelector";
 import WineCard from "./components/WineCard";
+import MarketColumnsPanel from "./components/MarketColumnsPanel";
+import DashboardCustomizer from "./components/DashboardCustomizer";
+import { useUserPrefs } from "./hooks/useUserPrefs";
 import OnboardingModal, { isOnboardingCompleted, resetOnboarding } from "./components/OnboardingModal";
 import GuidedTour, { isTourCompleted, resetTour } from "./components/GuidedTour";
 import InfoTooltip from "./components/InfoTooltip";
@@ -77,6 +80,11 @@ const DataSources = lazy(() => import("./pages/DataSources"));
 const B2BGuide = lazy(() => import("./pages/B2BGuide"));
 const ComeComprare = lazy(() => import("./pages/ComeComprare"));
 const WineCompare = lazy(() => import("./pages/WineCompare"));
+const WineryDashboard = lazy(() => import("./pages/WineryDashboard"));
+const WineryProfile = lazy(() => import("./pages/WineryProfile"));
+const VintageStory = lazy(() => import("./pages/VintageStory"));
+const BlogIndex = lazy(() => import("./pages/BlogIndex"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
 import ThemeToggle from "./components/ThemeToggle";
 import CommandPalette from "./components/CommandPalette";
 import VoiceInterface from "./components/VoiceInterface";
@@ -405,6 +413,60 @@ function PasswordRecoveryModal({ onClose }) {
   );
 }
 
+function NextStepWidget({ watchlist, orders, portfolio, onGoMarket, onGoPortfolio, navigate }) {
+  const GOLD = "#C9A227";
+  const hasWatchlist = watchlist && watchlist.length > 0;
+  const hasOrders = orders && orders.length > 0;
+  const hasPortfolio = portfolio && portfolio.length > 0;
+
+  let step = null;
+  if (!hasWatchlist) {
+    step = {
+      icon: "🔍",
+      title: "Inizia con la watchlist",
+      desc: "Aggiungi vini alla tua watchlist per seguire i prezzi e ricevere alert.",
+      cta: "Esplora il mercato →",
+      action: onGoMarket,
+    };
+  } else if (!hasOrders && !hasPortfolio) {
+    step = {
+      icon: "💰",
+      title: "Fai il tuo primo investimento",
+      desc: `Hai ${watchlist.length} vini in watchlist. Inizia a investire per costruire il tuo portfolio.`,
+      cta: "Vai al mercato →",
+      action: onGoMarket,
+    };
+  } else if (hasPortfolio || hasOrders) {
+    const progressKey = "vino_academy_progress";
+    const progress = (() => { try { return JSON.parse(localStorage.getItem(progressKey) || "{}"); } catch { return {}; } })();
+    const done = Object.keys(progress).length;
+    if (done === 0) {
+      step = {
+        icon: "🎓",
+        title: "Impara a investire nel vino",
+        desc: "Hai già un portfolio. Ora approfondisci con l'Academy per prendere decisioni migliori.",
+        cta: "Vai all'Academy →",
+        action: () => navigate("/academy"),
+      };
+    }
+  }
+
+  if (!step) return null;
+
+  return (
+    <div style={{ margin: "16px 0 20px", background: `linear-gradient(135deg, rgba(201,162,39,0.08) 0%, rgba(201,162,39,0.03) 100%)`, border: `1px solid rgba(201,162,39,0.22)`, borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16 }}>
+      <span style={{ fontSize: 28 }}>{step.icon}</span>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: "#e2e8f0", marginBottom: 3 }}>{step.title}</div>
+        <div style={{ fontSize: 12, color: "#64748b", lineHeight: 1.5 }}>{step.desc}</div>
+      </div>
+      <button onClick={step.action} style={{ flexShrink: 0, background: GOLD, border: "none", borderRadius: 8, padding: "8px 16px", fontWeight: 700, color: "#0b1220", cursor: "pointer", fontSize: 12, fontFamily: "inherit", whiteSpace: "nowrap" }}>
+        {step.cta}
+      </button>
+    </div>
+  );
+}
+
 function App() {
   const navigate = useNavigate();
   const toast = useToast();
@@ -415,8 +477,24 @@ function App() {
   const [userEmail, setUserEmail] = useState("");
   const isAdmin = userEmail === ADMIN_EMAIL;
   const [accountType, setAccountType] = useState("b2c");
+
+  // User personalization preferences (columns, section order, notes, saved filters)
+  const {
+    columns: userColumns,
+    toggleColumn,
+    sections: userSections,
+    toggleSection,
+    moveSectionUp,
+    moveSectionDown,
+    notes: wineNotes,
+    setNote: setWineNote,
+    savedFilters,
+    saveFilter,
+    deleteFilter,
+    resetAllPrefs,
+  } = useUserPrefs();
   const [institutionalView, setInstitutionalView] = useState(false);
-  const [viewMode, setViewMode] = useState("b2c"); // 'b2c' | 'b2b' — admin can toggle
+  const [viewMode, setViewMode] = useState("b2c"); // 'b2c' | 'b2b' | 'cantina'
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showTour, setShowTour] = useState(false);
   const [showCalculator, setShowCalculator] = useState(false);
@@ -552,7 +630,10 @@ function App() {
         setAccountType(type);
         setIsLoggedIn(true);
         const B2B_ACCOUNT_TYPES = ["b2b", "wealth_manager", "cantina", "family_office"];
-        setViewMode(B2B_ACCOUNT_TYPES.includes(type) ? "b2b" : "b2c");
+        const B2B_PROF_TYPES = ["b2b", "wealth_manager", "family_office"];
+        if (type === "cantina") setViewMode("cantina");
+        else if (B2B_PROF_TYPES.includes(type)) setViewMode("b2b");
+        else setViewMode("b2c");
         localStorage.setItem("vino_user", JSON.stringify({ email: session.user.email, account_type: type }));
         localStorage.setItem("vino_user_id", session.user.id);
         if (!isOnboardingCompleted(type)) setTimeout(() => setShowOnboarding(true), 600);
@@ -1142,7 +1223,10 @@ function App() {
         </div>
       )}
       {/* ── Glassmorphism Header ─────────────────────────────────────────── */}
-      <header className="header" style={viewMode === "b2b" ? { borderBottom: "1px solid rgba(96,165,250,0.25)", background: "rgba(2,6,23,0.97)" } : {}}>
+      <header className="header" style={
+        viewMode === "cantina" ? { borderBottom: "1px solid rgba(217,119,6,0.25)", background: "rgba(2,6,23,0.97)" } :
+        viewMode === "b2b"     ? { borderBottom: "1px solid rgba(96,165,250,0.25)",  background: "rgba(2,6,23,0.97)" } : {}
+      }>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <button className="hamburger" onClick={() => setSidebarOpen(o => !o)} aria-label="Menu">☰</button>
           {viewMode === "b2b" ? (
@@ -1151,6 +1235,11 @@ function App() {
               <span style={{ fontSize: 10, color: "#60a5fa", border: "1px solid rgba(96,165,250,0.5)", borderRadius: 4, padding: "1px 7px", textTransform: "uppercase", fontWeight: 800, letterSpacing: "0.1em", background: "rgba(96,165,250,0.1)" }}>{t("b2b.badge")}</span>
               <span style={{ fontSize: 11, color: "#3a5a7a", fontWeight: 600 }}>{t("b2b.headerTitle")}</span>
             </div>
+          ) : viewMode === "cantina" ? (
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div className="logo" style={{ color: "#d97706" }}>🍷 Vino<span style={{ color: "#d97706" }}>Invest</span></div>
+              <span style={{ fontSize: 10, color: "#d97706", border: "1px solid rgba(217,119,6,0.5)", borderRadius: 4, padding: "1px 7px", textTransform: "uppercase", fontWeight: 800, letterSpacing: "0.1em", background: "rgba(217,119,6,0.1)" }}>CANTINA</span>
+            </div>
           ) : (
             <div className="logo">🍷 Vino<span>Invest</span></div>
           )}
@@ -1158,17 +1247,17 @@ function App() {
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           {viewMode === "b2b" ? (
             <div className="badge" style={{ background: "rgba(96,165,250,0.1)", borderColor: "rgba(96,165,250,0.3)", color: "#60a5fa" }}>professional</div>
+          ) : viewMode === "cantina" ? (
+            <div className="badge" style={{ background: "rgba(217,119,6,0.1)", borderColor: "rgba(217,119,6,0.3)", color: "#d97706" }}>produttore</div>
           ) : (
             <div className="badge">global wine intelligence</div>
           )}
-          {/* Admin view toggle — only for manumila88@gmail.com */}
+          {/* Admin view toggle (3-way cycle): b2c → b2b → cantina → b2c */}
           {isAdmin && (
             <button
-              onClick={() => setViewMode(m => m === "b2b" ? "b2c" : "b2b")}
-              title={viewMode === "b2b" ? t("b2b.viewAsB2C") : t("b2b.viewAsB2B")}
-              aria-label={viewMode === "b2b" ? t("b2b.viewAsB2C") : t("b2b.viewAsB2B")}
-              style={{ padding: "5px 10px", border: `1px solid ${viewMode === "b2b" ? "rgba(96,165,250,0.4)" : "rgba(201,162,39,0.3)"}`, borderRadius: "var(--vi-radius-sm)", background: viewMode === "b2b" ? "rgba(96,165,250,0.08)" : "rgba(201,162,39,0.06)", color: viewMode === "b2b" ? "#60a5fa" : "var(--vi-accent)", fontSize: 10, cursor: "pointer", fontFamily: "var(--vi-font-sans)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}
-            >{viewMode === "b2b" ? `↩ ${t("b2b.viewAsB2C")}` : `⇄ ${t("b2b.viewAsB2B")}`}</button>
+              onClick={() => setViewMode(m => m === "b2c" ? "b2b" : m === "b2b" ? "cantina" : "b2c")}
+              style={{ padding: "5px 10px", border: `1px solid ${viewMode === "b2b" ? "rgba(96,165,250,0.4)" : viewMode === "cantina" ? "rgba(217,119,6,0.4)" : "rgba(201,162,39,0.3)"}`, borderRadius: "var(--vi-radius-sm)", background: "transparent", color: viewMode === "b2b" ? "#60a5fa" : viewMode === "cantina" ? "#d97706" : "var(--vi-accent)", fontSize: 10, cursor: "pointer", fontFamily: "var(--vi-font-sans)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}
+            >{viewMode === "b2c" ? "⇄ B2B" : viewMode === "b2b" ? "⇄ Cantina" : "↩ B2C"}</button>
           )}
           <button
             onClick={() => { resetOnboarding(); setShowOnboarding(true); }}
@@ -1303,42 +1392,72 @@ function App() {
 
         {/* ── Sidebar ─────────────────────────────────────────────────────── */}
         <aside className={`sidebar ${sidebarOpen ? "open" : ""}`} style={(() => {
+          if (viewMode === "cantina") return { borderTop: "3px solid rgba(217,119,6,0.7)" };
           if (viewMode === "b2b") return { borderTop: "3px solid rgba(96,165,250,0.7)" };
           if (isAdmin) return { borderTop: "3px solid rgba(201,162,39,0.7)" };
           if (accountType === "enterprise") return { borderTop: "3px solid rgba(167,139,250,0.7)" };
           return {};
         })()}>
-          {[
-            { id: "dashboard",   label: "Dashboard" },
-            { id: "market",      label: t("nav.market") },
-            { id: "news",        label: t("nav.news") },
-            { id: "blog",        label: t("nav.blog") },
-            { id: "analysis",    label: t("nav.analysis") },
-            { id: "myportfolio", label: t("nav.portfolio") },
-            { id: "portfolio",   label: t("nav.portfolioAI") },
-          ].map(({ id, label }) => (
-            <button key={id} className={tab === id ? "active" : ""} onClick={() => { setTab(id); setSidebarOpen(false); }}>{label}</button>
-          ))}
-          {viewMode === "b2b" && (
-            <>
-              <div style={{ height: 1, background: "rgba(96,165,250,0.15)", margin: "6px 0" }} />
-              <button className={tab === "b2b" ? "active" : ""} onClick={() => { setTab("b2b"); setSidebarOpen(false); }} style={{ color: "#60a5fa" }}>
-                🏦 {t("nav.b2b")}
-              </button>
-              <button onClick={() => { navigate("/market-intelligence"); setSidebarOpen(false); }} style={{ color: "#60a5fa" }}>
-                📊 {t("b2b.marketIntelligence")}
-              </button>
-              <button onClick={() => { navigate("/org-dashboard"); setSidebarOpen(false); }} style={{ color: "#60a5fa" }}>
-                👥 {t("b2b.clientsNav")}
-              </button>
-              <button onClick={() => { navigate("/org-dashboard"); setSidebarOpen(false); }} style={{ color: "#60a5fa" }}>
-                📄 {t("b2b.reports")}
-              </button>
-            </>
-          )}
-          {(!viewMode || viewMode === "b2c") && ["b2b", "wealth_manager", "cantina", "family_office"].includes(accountType) && (
-            <button className={tab === "b2b" ? "active" : ""} onClick={() => { setTab("b2b"); setSidebarOpen(false); }}>{t("nav.b2b")}</button>
-          )}
+
+          {/* ── B2C navigation ────────────────────────────────────── */}
+          {viewMode === "b2c" && (() => {
+            const secVis = (id) => { const s = userSections.find(s => s.id === id); return !s || s.visible; };
+            const B2C_NAV = {
+              dashboard:   () => secVis("dashboard")   && <button key="dashboard"   className={tab === "dashboard"   ? "active" : ""} onClick={() => { setTab("dashboard");   setSidebarOpen(false); }}>🏠 Dashboard</button>,
+              market:      () => secVis("market")      && <button key="market"      className={tab === "market"      ? "active" : ""} onClick={() => { setTab("market");      setSidebarOpen(false); }}>🔍 {t("nav.market")}</button>,
+              myportfolio: () => secVis("myportfolio") && <button key="myportfolio" className={tab === "myportfolio" ? "active" : ""} onClick={() => { setTab("myportfolio"); setSidebarOpen(false); }}>📦 Watchlist &amp; Portfolio</button>,
+              portfolio:   () => secVis("portfolio")   && <button key="portfolio"   className={tab === "portfolio"   ? "active" : ""} onClick={() => { setTab("portfolio");   setSidebarOpen(false); }}>🤖 {t("nav.portfolioAI")}</button>,
+              academy:     () => secVis("academy")     && <button key="academy"     onClick={() => { navigate("/academy"); setSidebarOpen(false); }}>🎓 Academy</button>,
+              cellar:      () => secVis("cellar")      && <button key="cellar"      onClick={() => { navigate("/cellar"); setSidebarOpen(false); }}>🍾 Cantina</button>,
+              journal:     () => secVis("journal")     && <button key="journal"     onClick={() => { navigate("/journal"); setSidebarOpen(false); }}>📓 Diario</button>,
+              goals:       () => secVis("goals")       && <button key="goals"       onClick={() => { navigate("/goals"); setSidebarOpen(false); }}>🎯 Obiettivi</button>,
+            };
+            return <>
+              {userSections.map(s => B2C_NAV[s.id] ? B2C_NAV[s.id]() : null)}
+              <button className={tab === "analysis" ? "active" : ""} onClick={() => { setTab("analysis"); setSidebarOpen(false); }}>📈 {t("nav.analysis")}</button>
+              <button className={tab === "news"     ? "active" : ""} onClick={() => { setTab("news");     setSidebarOpen(false); }}>📰 {t("nav.news")}</button>
+              <button className={tab === "blog"     ? "active" : ""} onClick={() => { setTab("blog");     setSidebarOpen(false); }}>📖 {t("nav.blog")}</button>
+              {["b2b", "wealth_manager", "cantina", "family_office"].includes(accountType) && (
+                <button className={tab === "b2b" ? "active" : ""} onClick={() => { setTab("b2b"); setSidebarOpen(false); }}>{t("nav.b2b")}</button>
+              )}
+              <div style={{ marginTop: "auto", paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+                <DashboardCustomizer
+                  sections={userSections}
+                  onToggle={toggleSection}
+                  onMoveUp={moveSectionUp}
+                  onMoveDown={moveSectionDown}
+                  onReset={resetAllPrefs}
+                />
+              </div>
+            </>;
+          })()}
+
+          {/* ── B2B navigation ────────────────────────────────────── */}
+          {viewMode === "b2b" && <>
+            <button className={tab === "dashboard"   ? "active" : ""} onClick={() => { setTab("dashboard");   setSidebarOpen(false); }} style={{ color: "#60a5fa" }}>🏦 Dashboard PRO</button>
+            <div style={{ height: 1, background: "rgba(96,165,250,0.12)", margin: "4px 0" }} />
+            <button onClick={() => { navigate("/market-intelligence"); setSidebarOpen(false); }} style={{ color: "#60a5fa" }}>📊 {t("b2b.marketIntelligence")}</button>
+            <button onClick={() => { navigate("/org-dashboard"); setSidebarOpen(false); }} style={{ color: "#60a5fa" }}>👥 {t("b2b.clientsNav")}</button>
+            <button onClick={() => { navigate("/org-dashboard"); setSidebarOpen(false); }} style={{ color: "#60a5fa" }}>📄 {t("b2b.reports")}</button>
+            <div style={{ height: 1, background: "rgba(96,165,250,0.12)", margin: "4px 0" }} />
+            <button className={tab === "market"      ? "active" : ""} onClick={() => { setTab("market");      setSidebarOpen(false); }}>🔍 {t("nav.market")}</button>
+            <button className={tab === "portfolio"   ? "active" : ""} onClick={() => { setTab("portfolio");   setSidebarOpen(false); }}>🤖 {t("nav.portfolioAI")}</button>
+            <button className={tab === "myportfolio" ? "active" : ""} onClick={() => { setTab("myportfolio"); setSidebarOpen(false); }}>📦 {t("nav.portfolio")}</button>
+            <button onClick={() => { navigate("/academy"); setSidebarOpen(false); }}>🎓 B2B Academy</button>
+          </>}
+
+          {/* ── CANTINA navigation ────────────────────────────────── */}
+          {viewMode === "cantina" && <>
+            <button className={tab === "dashboard"   ? "active" : ""} onClick={() => { setTab("dashboard");   setSidebarOpen(false); }} style={{ color: "#d97706" }}>🏡 Dashboard</button>
+            <div style={{ height: 1, background: "rgba(217,119,6,0.15)", margin: "4px 0" }} />
+            <button onClick={() => { navigate("/winery"); setSidebarOpen(false); }} style={{ color: "#d97706" }}>🍷 I Miei Vini</button>
+            <button onClick={() => { navigate("/winery/profile"); setSidebarOpen(false); }} style={{ color: "#d97706" }}>👤 Profilo Cantina</button>
+            <button onClick={() => { navigate("/winery/vintage-story"); setSidebarOpen(false); }} style={{ color: "#d97706" }}>📖 Racconto Annata</button>
+            <div style={{ height: 1, background: "rgba(217,119,6,0.15)", margin: "4px 0" }} />
+            <button className={tab === "market"      ? "active" : ""} onClick={() => { setTab("market");      setSidebarOpen(false); }}>🌍 Mercato Globale</button>
+            <button className={tab === "analysis"    ? "active" : ""} onClick={() => { setTab("analysis");    setSidebarOpen(false); }}>📈 Analytics</button>
+          </>}
+
           <button
             className={tab === "notifications" ? "active" : ""}
             onClick={() => { setTab("notifications"); markAllRead(); setSidebarOpen(false); }}
@@ -1423,8 +1542,17 @@ function App() {
             </div>
           )}
 
-          {/* ── Dashboard ─────────────────────────────────────────────────── */}
-          {tab === "dashboard" && viewMode !== "b2b" && (
+          {/* ── Dashboard CANTINA ──────────────────────────────────────────── */}
+          {tab === "dashboard" && viewMode === "cantina" && (
+            <ErrorBoundary>
+              <Suspense fallback={<div style={{ padding: 24, color: "#64748b" }}>Carico dashboard cantina…</div>}>
+                <WineryDashboard />
+              </Suspense>
+            </ErrorBoundary>
+          )}
+
+          {/* ── Dashboard B2C ─────────────────────────────────────────────── */}
+          {tab === "dashboard" && viewMode !== "b2b" && viewMode !== "cantina" && (
             <>
               <section className="hero">
                 <h1>Global Wine Investment Platform</h1>
@@ -1470,6 +1598,16 @@ function App() {
                   </div>
                 ))}
               </section>
+
+              {/* ── Prossimo passo (B2C guided path) ───────────────── */}
+              <NextStepWidget
+                watchlist={watchlist}
+                orders={orders}
+                portfolio={portfolio}
+                onGoMarket={() => setTab("market")}
+                onGoPortfolio={() => setTab("myportfolio")}
+                navigate={navigate}
+              />
 
               {/* Two-column: Trending + Market Watch */}
               <div className="dashboard-cols">
@@ -1556,6 +1694,34 @@ function App() {
                   resultCount={marketTotal}
                 />
               </div>
+
+              {/* ── Personalizzazione colonne + filtri salvati ─────── */}
+              <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginTop: 8 }}>
+                <MarketColumnsPanel
+                  columns={userColumns}
+                  onToggle={toggleColumn}
+                  onReset={() => resetAllPrefs()}
+                />
+                <button
+                  onClick={() => {
+                    const name = prompt("Nome del filtro salvato:");
+                    if (name?.trim()) saveFilter(name.trim(), { ...marketFilters, search: marketSearch });
+                  }}
+                  style={{ fontSize: 11, fontWeight: 600, color: "#4a6a8a", background: "rgba(8,15,30,0.5)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8, padding: "5px 12px", cursor: "pointer", whiteSpace: "nowrap" }}
+                  title="Salva ricerca e filtri correnti"
+                >
+                  + Salva filtri
+                </button>
+                {savedFilters.length > 0 && savedFilters.map(f => (
+                  <div key={f.id} style={{ display: "flex", alignItems: "center", gap: 3, background: "rgba(201,162,39,0.08)", border: "1px solid rgba(201,162,39,0.25)", borderRadius: 8, padding: "3px 10px 3px 12px", fontSize: 11, color: "#C9A227", cursor: "pointer", whiteSpace: "nowrap" }}>
+                    <span onClick={() => { handleMarketFiltersChange({ ...marketFilters, ...f.filters }); if (f.filters.search) handleMarketSearch(f.filters.search); }} style={{ cursor: "pointer" }}>
+                      {f.name}
+                    </span>
+                    <button onClick={() => deleteFilter(f.id)} style={{ background: "none", border: "none", color: "#475569", fontSize: 13, cursor: "pointer", padding: "0 2px", lineHeight: 1 }} title="Elimina filtro">×</button>
+                  </div>
+                ))}
+              </div>
+
               {accountType && ["b2b", "wealth_manager", "cantina", "family_office"].includes(accountType) && (
                 <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 8 }}>
                   <button
@@ -1613,6 +1779,9 @@ function App() {
                         onCreateAlert={cardProps.onCreateAlert}
                         onAlertInputChange={cardProps.onAlertInputChange}
                         onDeleteAlert={cardProps.onDeleteAlert}
+                        visibleColumns={userColumns}
+                        note={wineNotes[wine.id] || ""}
+                        onNoteChange={setWineNote}
                       />
                     ))}
                   </section>
@@ -1683,6 +1852,9 @@ function App() {
                         onCreateAlert={cardProps.onCreateAlert}
                         onAlertInputChange={cardProps.onAlertInputChange}
                         onDeleteAlert={cardProps.onDeleteAlert}
+                        visibleColumns={userColumns}
+                        note={wineNotes[wine.id] || ""}
+                        onNoteChange={setWineNote}
                       />
                     ))}
                   </section>
@@ -1714,6 +1886,9 @@ function App() {
                           onCreateAlert={cardProps.onCreateAlert}
                           onAlertInputChange={cardProps.onAlertInputChange}
                           onDeleteAlert={cardProps.onDeleteAlert}
+                          visibleColumns={userColumns}
+                          note={wineNotes[wine.id] || ""}
+                          onNoteChange={setWineNote}
                         />
                       ))}
                     </section>
@@ -2588,6 +2763,12 @@ createRoot(document.getElementById("root")).render(
           <Route path="/market-intelligence" element={<MarketIntelligence />} />
           <Route path="/b2b-onboarding" element={<B2BOnboarding />} />
           <Route path="/compare" element={<WineCompare />} />
+          <Route path="/winery" element={<WineryDashboard />} />
+          <Route path="/winery/profile" element={<WineryProfile />} />
+          <Route path="/winery/vintage-story" element={<VintageStory />} />
+          <Route path="/cantina/:producerName" element={<WineryProfile />} />
+          <Route path="/blog" element={<BlogIndex />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="*" element={<App />} />
         </Routes>
         </Suspense>

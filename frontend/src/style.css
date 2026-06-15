@@ -1107,3 +1107,18 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
 [dir="rtl"] .wineCard-actions { flex-direction: row-reverse; }
 [dir="rtl"] .trending-rank { margin-left: 6px; margin-right: 0; }
 
+
+/* ── Blog article content (markdown rendered by marked) ─────────────────── */
+.blog-content h1 { font-size: 2rem; font-weight: 900; color: #f1f5f9; margin: 0 0 1.2rem; font-family: 'Playfair Display', Georgia, serif; line-height: 1.25; }
+.blog-content h2 { font-size: 1.3rem; font-weight: 800; color: #e2e8f0; margin: 2rem 0 0.8rem; border-bottom: 1px solid rgba(201,162,39,0.15); padding-bottom: 0.4rem; }
+.blog-content h3 { font-size: 1.05rem; font-weight: 700; color: #cbd5e1; margin: 1.5rem 0 0.6rem; }
+.blog-content p { margin: 0 0 1.1rem; }
+.blog-content strong { color: #f1f5f9; font-weight: 700; }
+.blog-content em { color: #94a3b8; font-style: italic; }
+.blog-content a { color: #C9A227; text-decoration: underline; text-underline-offset: 3px; }
+.blog-content a:hover { color: #f0c040; }
+.blog-content ul, .blog-content ol { padding-left: 1.4rem; margin: 0 0 1.1rem; }
+.blog-content li { margin-bottom: 0.4rem; }
+.blog-content hr { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 2rem 0; }
+.blog-content blockquote { border-left: 3px solid #C9A227; padding: 0.5rem 1rem; margin: 1rem 0; color: #94a3b8; background: rgba(201,162,39,0.05); border-radius: 0 8px 8px 0; }
+.blog-content code { background: rgba(255,255,255,0.08); border-radius: 4px; padding: 0.1rem 0.35rem; font-size: 0.85em; color: #93c5fd; }

@@ -6,20 +6,17 @@ const CASE_STUDIES = [
     id: "family-office-milano",
     tag: "Family Office",
     title: "Family Office Milano — Allocazione €500k in Fine Wine",
-    subtitle: "Come un family office ha integrato il vino come asset alternativo e outperformato il benchmark di 6 punti percentuali in 18 mesi.",
+    subtitle: "Come un family office ha integrato il vino come asset alternativo, riducendo la volatilità complessiva del portafoglio nei 18 mesi successivi all'allocazione.",
     icon: "🏦",
     color: "#C9A227",
     metrics: [
       { label: "AUM totale famiglia", value: "€8M" },
       { label: "Allocazione wine", value: "€500.000" },
-      { label: "Rendimento wine (18 mesi)", value: "+14.2%" },
-      { label: "Benchmark mercato (stesso periodo)", value: "+8.1%" },
-      { label: "Alpha generato", value: "+6.1 p.p." },
-      { label: "Riduzione volatilità complessiva", value: "-2.3 p.p." },
-      { label: "Sharpe Ratio portfolio wine", value: "1.2" },
+      { label: "Andamento wine (18 mesi)", value: "Positivo" },
+      { label: "Riduzione volatilità complessiva", value: "Rilevante" },
       { label: "Famiglie beneficiarie", value: "4" },
     ],
-    disclaimer: "Dati storici VinoInvest — portafoglio anonimizzato",
+    disclaimer: "Scenario illustrativo basato su profilo tipico di family office — dati non verificati",
     story: [
       {
         heading: "Il contesto",
@@ -41,9 +38,9 @@ Allocazione finale: Bordeaux Premier Cru 40% (€200k), Borgogna Grand Cru 25% (
       },
       {
         heading: "I risultati dopo 18 mesi",
-        body: `Il portafoglio wine ha generato un rendimento del +14.2% netto nei 18 mesi successivi all'investimento, contro il +8.1% del benchmark di mercato nello stesso periodo. Lo Sharpe Ratio è risultato 1.2, superiore al portafoglio equity tradizionale (0.8).
+        body: `Il portafoglio wine ha generato un andamento positivo nei 18 mesi successivi, con volatilità inferiore al portafoglio azionario tradizionale. L'effetto decorrelazione si è manifestato concretamente in periodi di correzione del mercato, dove il wine portfolio ha registrato variazioni molto più contenute rispetto agli indici azionari.
 
-L'effetto più sorprendente: la riduzione della volatilità complessiva del patrimonio di 2.3 punti percentuali. In un trimestre di forte correzione azionaria (-9%), il portafoglio wine ha registrato solo -1.2%, fungendo da vero stabilizzatore. Le quattro famiglie ricevono ora report mensili PDF generati in tre click da VinoInvest, con benchmark, risk metrics e outlook AI.`,
+L'effetto più rilevante è stato la riduzione della volatilità complessiva del patrimonio, con il wine che ha funzionato da stabilizzatore nelle fasi di stress dei mercati finanziari. Le quattro famiglie ricevono ora report mensili PDF generati in tre click da VinoInvest, con benchmark, risk metrics e outlook AI.`,
       },
     ],
   },
@@ -96,20 +93,17 @@ Il costo di VinoInvest Professional (€200/mese = €2.400/anno) è completamen
     id: "wine-fund-fund-manager",
     tag: "Wine Fund",
     title: "Wine Investment Fund — 3 Anni di Track Record",
-    subtitle: "Come un wine investment fund ha costruito un track record verificabile e attratto €3.2M di investitori istituzionali in 36 mesi.",
+    subtitle: "Come un wine investment fund ha costruito un track record documentato e attratto €3.2M di investitori qualificati in 36 mesi utilizzando VinoInvest Professional.",
     icon: "🏆",
     color: "#34d399",
     metrics: [
       { label: "AUM finale", value: "€3.200.000" },
       { label: "Investitori partecipanti", value: "28" },
-      { label: "Rendimento netto annualizzato", value: "+13.6%" },
-      { label: "Benchmark Liv-ex 1000 stesso periodo", value: "+8.4%" },
-      { label: "Sharpe Ratio", value: "1.4" },
-      { label: "Max Drawdown", value: "-6.2%" },
+      { label: "Andamento netto annualizzato", value: "Positivo" },
       { label: "Posizioni wine in portfolio", value: "47" },
       { label: "Annate coperte", value: "2012–2022" },
     ],
-    disclaimer: "Dati storici verificati tramite audit indipendente — portafoglio anonimizzato",
+    disclaimer: "Scenario illustrativo basato su struttura tipica di wine fund — dati non verificati",
     story: [
       {
         heading: "La struttura del fondo",
@@ -121,11 +115,11 @@ Il costo di VinoInvest Professional (€200/mese = €2.400/anno) è completamen
       },
       {
         heading: "Gestione del portafoglio durante la volatilità 2022-2023",
-        body: `In un periodo di forte correzione del Bordeaux (-15% Liv-ex 500), il fund manager ha mantenuto la strategia senza panico-selling. Il portafoglio ha registrato solo -4.1% vs -12% media del settore. La diversificazione regionale e la qualità selettiva (AI Score >87) ha protetto il capitale.`,
+        body: `In un periodo di forte correzione del Bordeaux (con l'indice Liv-ex 500 in territorio negativo), il fund manager ha mantenuto la strategia senza panico-selling. La diversificazione regionale e la qualità selettiva (AI Score >87) ha permesso al portafoglio di registrare variazioni molto più contenute rispetto alla media del segmento Bordeaux, proteggendo il capitale degli investitori.`,
       },
       {
         heading: "I risultati al 36° mese",
-        body: `Il track record verificato da auditor indipendente mostra +13.6% annualizzato netto su 36 mesi contro +8.4% del Liv-ex 1000 benchmark. Il Sharpe Ratio di 1.4 è il KPI che ha convinto i nuovi LP: dimostra rendimento per unità di rischio superiore al mercato. 18 dei 28 investitori hanno già confermato reinvestimento per il secondo fund.`,
+        body: `Il track record documentato mostra un andamento positivo annualizzato su 36 mesi, con una performance che ha superato quella del Liv-ex 1000 nello stesso periodo. La riduzione del drawdown massimo rispetto al benchmark è stato il KPI che ha convinto i nuovi LP: dimostra la qualità del processo di selezione e la tenuta della strategia nelle fasi di stress. 18 dei 28 investitori hanno già confermato reinvestimento per il secondo fund.`,
       },
     ],
   },
