@@ -1160,9 +1160,11 @@ h1, h2, h3, .playfair {
   .sidebar.open { transform: translateX(0); box-shadow: 4px 0 30px rgba(0,0,0,0.5); }
   .sidebar-overlay.open { display: block; }
 
-  /* Content fills full width */
-  .content { padding: 14px 12px; }
-  .main { min-height: calc(100vh - 72px); }
+  /* Content fills full width — sidebar is position:fixed so it leaves the flex flow,
+     but some browsers may still allocate space for it; display:block on .main
+     guarantees .content takes the full viewport width */
+  .main { display: block; min-height: calc(100vh - 72px); }
+  .content { padding: 14px 12px; width: 100%; max-width: 100%; box-sizing: border-box; }
 
   /* Hero */
   .hero h1 { font-size: 24px; }

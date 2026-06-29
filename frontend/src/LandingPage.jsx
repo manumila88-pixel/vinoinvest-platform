@@ -144,10 +144,11 @@ function HeroCarousel() {
         {/* Title */}
         <h2 key={`title-${active}`} style={{
           fontFamily: "'Playfair Display', Georgia, serif",
-          fontSize: "clamp(28px, 4.5vw, 64px)",
+          fontSize: "clamp(22px, 4.5vw, 64px)",
           fontWeight: 800,
           lineHeight: 1.08,
           marginBottom: 18,
+          width: "100%",
           maxWidth: 700,
           letterSpacing: "-0.03em",
           background: "linear-gradient(140deg, #ffffff 0%, #d4b96a 55%, #f0d898 100%)",
@@ -156,14 +157,17 @@ function HeroCarousel() {
           backgroundClip: "text",
           animation: "fadeUp 0.6s 0.06s ease forwards",
           opacity: 0,
+          wordBreak: "break-word",
+          overflowWrap: "break-word",
         }}>
           {slide.title}
         </h2>
 
         {/* Subtitle */}
         <p key={`sub-${active}`} style={{
-          fontSize: "clamp(13px, 1.6vw, 17px)",
+          fontSize: "clamp(12px, 1.6vw, 17px)",
           color: "#6a8aa8",
+          width: "100%",
           maxWidth: 520,
           lineHeight: 1.7,
           animation: "fadeUp 0.6s 0.12s ease forwards",
@@ -320,7 +324,7 @@ export default function LandingPage({ onLogin }) {
         <header style={{
           position: "sticky", top: 0, zIndex: 100, height: 70,
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          padding: "0 48px",
+          padding: "0 clamp(14px, 4vw, 48px)",
           background: "rgba(2,6,23,0.80)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
           borderBottom: "1px solid rgba(201,162,39,0.10)",
           boxShadow: "0 1px 40px rgba(0,0,0,0.4)",
@@ -357,11 +361,11 @@ export default function LandingPage({ onLogin }) {
             gap: 20,
             zIndex: 4,
           }}>
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
+            <div className="landing-cta-btns" style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", boxSizing: "border-box", width: "100%" }}>
               <button
                 onClick={() => openModal("investor")}
                 style={{
-                  padding: "16px 38px", borderRadius: 10, border: "none",
+                  padding: "14px clamp(20px, 6vw, 38px)", borderRadius: 10, border: "none",
                   background: `linear-gradient(135deg, ${GOLD} 0%, #e8cc65 100%)`,
                   color: "#000", fontWeight: 800, fontSize: 15, cursor: "pointer",
                   letterSpacing: "0.01em", boxShadow: "0 6px 28px rgba(201,162,39,0.35)",
@@ -373,7 +377,7 @@ export default function LandingPage({ onLogin }) {
               <button
                 onClick={() => openModal("enterprise")}
                 style={{
-                  padding: "16px 38px", borderRadius: 10,
+                  padding: "14px clamp(20px, 6vw, 38px)", borderRadius: 10,
                   border: "1px solid rgba(255,255,255,0.14)",
                   background: "rgba(255,255,255,0.04)", color: "white",
                   fontWeight: 700, fontSize: 15, cursor: "pointer",
@@ -386,18 +390,22 @@ export default function LandingPage({ onLogin }) {
 
             {/* Stats bar */}
             <div style={{
-              display: "flex", flexWrap: "wrap", justifyContent: "center",
+              display: "flex", flexWrap: "nowrap", justifyContent: "center",
               border: "1px solid rgba(255,255,255,0.06)",
               borderRadius: 16, overflow: "hidden",
               background: "rgba(12,20,38,0.85)", backdropFilter: "blur(12px)",
+              width: "min(100%, 480px)",
+              maxWidth: "calc(100vw - 32px)",
             }}>
               {[{ value: "50,000+", label: "Wines Indexed" }, { value: "+12.4%", label: "Avg Annual Return" }, { value: "AI", label: "Powered Analysis" }].map((s, i) => (
                 <div key={i} style={{
-                  padding: "22px 44px", textAlign: "center",
+                  padding: "clamp(10px,2vw,22px) clamp(10px,3vw,44px)", textAlign: "center",
                   borderRight: i < 2 ? "1px solid rgba(255,255,255,0.06)" : "none",
+                  flex: "1 1 0",
+                  minWidth: 0,
                 }}>
-                  <div style={{ fontSize: 32, fontWeight: 900, color: GOLD, letterSpacing: "-0.03em", fontFamily: "'Playfair Display', Georgia, serif" }}>{s.value}</div>
-                  <div style={{ fontSize: 10, color: "#3a5a7a", marginTop: 5, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700 }}>{s.label}</div>
+                  <div style={{ fontSize: "clamp(20px,5vw,32px)", fontWeight: 900, color: GOLD, letterSpacing: "-0.03em", fontFamily: "'Playfair Display', Georgia, serif" }}>{s.value}</div>
+                  <div style={{ fontSize: "clamp(8px,2vw,10px)", color: "#3a5a7a", marginTop: 5, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, whiteSpace: "nowrap" }}>{s.label}</div>
                 </div>
               ))}
             </div>
@@ -405,7 +413,7 @@ export default function LandingPage({ onLogin }) {
         </section>
 
         {/* ── Features ── */}
-        <section ref={featuresRef} style={{ padding: "100px 48px", maxWidth: 1240, margin: "0 auto" }}>
+        <section ref={featuresRef} style={{ padding: "clamp(40px,8vw,100px) clamp(16px,4vw,48px)", maxWidth: 1240, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 64 }}>
             <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "clamp(26px, 3.5vw, 48px)", fontWeight: 800, marginBottom: 16, letterSpacing: "-0.03em" }}>
               Built for serious wine investors
