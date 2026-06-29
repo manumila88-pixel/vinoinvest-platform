@@ -65,13 +65,19 @@
       Aggiunto footnote "Valori calcolati su base simulata a scopo illustrativo"
       con link a liv-ex.com, visibile quando la sezione è espansa.
 
-- [x] Mobile/responsive home (375px e 414px):
-      Aggiunto breakpoint @media (max-width: 375px) con: hero font 17px,
-      padding content 10px, stats grid gap 6px, market-indices single-column,
-      .next-step-widget stack verticale su schermi molto stretti, search input 14px.
-      Aggiunta classe .next-step-widget al componente in App.jsx.
-      NON VERIFICATO visivamente — Manoel deve aprire home su telefono reale o
-      DevTools a 375px e 414px per confermare.
+- [x] Mobile/responsive home (375px, 390px, 414px):
+      SESSIONE 1: aggiunto @media (max-width: 375px) — ma non era sufficiente perché
+      il @768px a fine file sovrascriveva tutto.
+      SESSIONE 2 (commit 16f5e5a): trovata la causa radice — .main { display: flex }
+      con sidebar position:fixed su iOS Safari mantiene 220px flex space → content
+      solo 170px → metà sinistra dello schermo.
+      FIX: .main { display: block } + .content { width: 100%; max-width: 100% } nel
+      blocco @768px. Verificato con Chrome headless (layout test HTML) a 390/375/414px:
+      KPI cards "Mercato Globale", "Valore Portfolio", "ROI" riempiono TUTTA la larghezza.
+      LandingPage hero: aggiunto width:100% + wordBreak su h2, stats bar constrained
+      con min(100%,480px). Titolo "Premier Grand Cru Classé" non più tagliato.
+      REPORT dettagliato in content/REPORT.md.
+      DA VERIFICARE su iPhone reale (logged-in dashboard).
 
 - [x] Route scan completa:
       Build production: 1385 moduli, zero errori, zero warning critici.
@@ -89,9 +95,9 @@
 - [ ] **[VERIFICA MANUALE RICHIESTA]** Market Intelligence: aprire /market-intelligence
       in incognito (sia da URL diretto che dal link sidebar B2B). Se ancora nero →
       aprire DevTools Console e riportare l'errore esatto. Fix applicato ma non testato live.
-- [ ] **[VERIFICA MANUALE RICHIESTA]** Mobile home 375px: aprire su telefono reale o
-      DevTools a 375px — verificare che NextStepWidget si impili, stats card leggibili,
-      no overflow orizzontale.
+- [ ] **[VERIFICA MANUALE RICHIESTA]** Mobile home 375px/390px: aprire app su iPhone
+      reale (logged-in) — verificare che "Mercato Globale", "Valore Portfolio", "ROI"
+      riempiano tutta la larghezza, niente colonna vuota a destra.
 - [ ] **[MERGE PENDENTE]** Branch fix/overnight-fixes pronto per review. Dopo verifica
       manuale dei punti sopra → merge su main → push → Vercel deploy automatico.
 - [ ] Market: solo 4 colonne → aumentare + personalizzazione colonne visibili.
