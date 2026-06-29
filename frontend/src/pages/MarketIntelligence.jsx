@@ -1,7 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Component } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ADMIN_EMAIL } from "../lib/constants";
+
+class DarkErrorBoundary extends Component {
+  constructor(props) { super(props); this.state = { err: null }; }
+  static getDerivedStateFromError(e) { return { err: e }; }
+  render() {
+    if (!this.state.err) return this.props.children;
+    return (
+      <div style={{ minHeight: "100vh", background: "linear-gradient(160deg,#0b1220,#040810)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#e2e8f0", fontFamily: "'Inter',Arial,sans-serif", gap: 16, padding: 32 }}>
+        <div style={{ fontSize: 32 }}>⚠️</div>
+        <div style={{ fontWeight: 700, fontSize: 16 }}>Errore nel caricamento della pagina</div>
+        <div style={{ fontSize: 13, color: "#64748b", maxWidth: 400, textAlign: "center" }}>{this.state.err?.message || "Errore sconosciuto"}</div>
+        <button onClick={() => this.setState({ err: null })} style={{ padding: "8px 20px", background: "#1d4ed8", border: "none", borderRadius: 8, color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600 }}>Riprova</button>
+        <button onClick={() => window.history.back()} style={{ padding: "6px 16px", background: "none", border: "1px solid rgba(96,165,250,0.3)", borderRadius: 8, color: "#60a5fa", cursor: "pointer", fontSize: 12 }}>← Torna indietro</button>
+      </div>
+    );
+  }
+}
+
+function readStoredUser() {
+  try { const s = localStorage.getItem("vino_user"); return s ? JSON.parse(s) : null; } catch { return null; }
+}
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
@@ -29,18 +50,14 @@ const INSTITUTIONAL_MOVERS = [
   { name: "Sassicaia 2016", price: "€420", change: "+3.3%", volume: "Medio", signal: "BUY" },
 ];
 
-export default function MarketIntelligence({ user }) {
+function MarketIntelligenceInner({ user }) {
   const navigate = useNavigate();
   const [news, setNews] = useState([]);
   const [benchmark, setBenchmark] = useState(null);
-  const [storedUser, setStoredUser] = useState(null);
 
-  useEffect(() => {
-    try {
-      const s = localStorage.getItem("vino_user");
-      if (s) setStoredUser(JSON.parse(s));
-    } catch {}
-  }, []);
+  const activeUser = user || readStoredUser();
+  const B2B_TYPES = ["b2b", "wealth_manager", "cantina", "family_office", "professional", "enterprise"];
+  const isB2B = activeUser?.email === ADMIN_EMAIL || B2B_TYPES.includes(activeUser?.account_type);
 
   useEffect(() => {
     fetch(`${API}/api/news?limit=8`)
@@ -53,10 +70,6 @@ export default function MarketIntelligence({ user }) {
       .then(d => { if (d) setBenchmark(d); })
       .catch(() => {});
   }, []);
-
-  const activeUser = user || storedUser;
-  const B2B_TYPES = ["b2b", "wealth_manager", "cantina", "family_office", "professional", "enterprise"];
-  const isB2B = activeUser?.email === ADMIN_EMAIL || B2B_TYPES.includes(activeUser?.account_type);
 
   return (
     <div style={{ minHeight: "100vh", background: "linear-gradient(160deg,#0b1220,#040810)", color: "#e2e8f0", fontFamily: "'Inter',Arial,sans-serif" }}>
@@ -119,7 +132,10 @@ export default function MarketIntelligence({ user }) {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))", gap: 24 }}>
           {/* Top Movers Istituzionali */}
           <div style={{ padding: "24px", borderRadius: 16, background: "rgba(8,15,30,0.6)", border: "1px solid rgba(59,130,246,0.12)" }}>
-            <h3 style={{ margin: "0 0 16px", fontSize: 14, fontWeight: 700 }}>Top Movers Istituzionali (&gt;€500)</h3>
+            <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 16 }}>
+              <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700 }}>Top Movers Istituzionali (&gt;€500)</h3>
+              <span style={{ fontSize: 9, color: "#475569", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>dati illustrativi</span>
+            </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {INSTITUTIONAL_MOVERS.map(w => (
                 <div key={w.name} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 12px", borderRadius: 8, background: "rgba(4,8,20,0.4)", border: "1px solid rgba(255,255,255,0.03)" }}>
@@ -145,7 +161,10 @@ export default function MarketIntelligence({ user }) {
 
           {/* Upcoming Auctions */}
           <div style={{ padding: "24px", borderRadius: 16, background: "rgba(8,15,30,0.6)", border: "1px solid rgba(59,130,246,0.12)" }}>
-            <h3 style={{ margin: "0 0 16px", fontSize: 14, fontWeight: 700 }}>Aste Upcoming — Lotti Interessanti</h3>
+            <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 16 }}>
+              <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700 }}>Aste Upcoming — Lotti Interessanti</h3>
+              <span style={{ fontSize: 9, color: "#475569", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>dati illustrativi</span>
+            </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {UPCOMING_AUCTIONS.map(a => (
                 <div key={a.house + a.date} style={{
@@ -168,7 +187,10 @@ export default function MarketIntelligence({ user }) {
 
           {/* En Primeur Calendar */}
           <div style={{ padding: "24px", borderRadius: 16, background: "rgba(8,15,30,0.6)", border: "1px solid rgba(59,130,246,0.12)", gridColumn: "1 / -1" }}>
-            <h3 style={{ margin: "0 0 16px", fontSize: 14, fontWeight: 700 }}>Calendario En Primeur — ROI Storico</h3>
+            <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 16 }}>
+              <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700 }}>Calendario En Primeur — ROI Storico</h3>
+              <span style={{ fontSize: 9, color: "#475569", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>dati illustrativi · ROI indicativi</span>
+            </div>
             <div style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
                 <thead>
@@ -222,7 +244,7 @@ export default function MarketIntelligence({ user }) {
                     onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(59,130,246,0.08)"}
                   >
                     <div style={{ fontSize: 12, fontWeight: 600, color: "#e2e8f0", marginBottom: 6, lineHeight: 1.4 }}>{n.title}</div>
-                    <div style={{ fontSize: 10, color: "#334155" }}>{n.source || "VinoInvest"} · {n.published ? new Date(n.published).toLocaleDateString("it-IT") : ""}</div>
+                    <div style={{ fontSize: 10, color: "#334155" }}>{n.source?.name || "VinoInvest"} · {n.publishedAt ? new Date(n.publishedAt).toLocaleDateString("it-IT") : ""}</div>
                   </a>
                 ))}
               </div>
@@ -309,7 +331,21 @@ export default function MarketIntelligence({ user }) {
             </div>
           </div>
         )}
+
+        {/* Global disclaimer */}
+        <div style={{ marginTop: 32, padding: "12px 16px", borderRadius: 10, background: "rgba(4,8,20,0.4)", border: "1px solid rgba(59,130,246,0.06)", fontSize: 10, color: "#334155" }}>
+          ⚠️ I dati contrassegnati come "illustrativi" sono esempi di scenario e non costituiscono prezzi o rendimenti reali. Per dati live sull'indice Liv-ex, visitare{" "}
+          <a href="https://www.liv-ex.com" target="_blank" rel="noopener noreferrer" style={{ color: "#60a5fa" }}>liv-ex.com</a>. Non costituisce consulenza finanziaria.
+        </div>
       </div>
     </div>
+  );
+}
+
+export default function MarketIntelligence(props) {
+  return (
+    <DarkErrorBoundary>
+      <MarketIntelligenceInner {...props} />
+    </DarkErrorBoundary>
   );
 }

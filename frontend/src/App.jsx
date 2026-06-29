@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo, useRef, useCallback, lazy, Suspense } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import "./i18n";
 import { onCLS, onLCP, onINP, onTTFB } from "web-vitals";
 import { useTranslation } from "react-i18next";
@@ -283,7 +284,7 @@ const LIVEX_INDICES = [
   { name: "Champagne",   base: 196.8 },
 ];
 
-function MarketWatch() {
+function MarketWatch({ headless = false }) {
   const indices = useMemo(() => {
     const seed = Math.floor(Date.now() / (1000 * 3600 * 4));
     return LIVEX_INDICES.map((idx, i) => {
@@ -295,20 +296,26 @@ function MarketWatch() {
     });
   }, []);
 
+  const inner = (
+    <div className="market-indices">
+      {indices.map(idx => (
+        <div key={idx.name} className="market-index">
+          <div className="market-index-name">{idx.name}</div>
+          <div className="market-index-value">{idx.value.toLocaleString()}</div>
+          <div className={`market-index-change ${idx.changePct >= 0 ? "up" : "down"}`}>
+            {idx.changePct >= 0 ? "▲" : "▼"} {Math.abs(idx.changePct)}%
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  if (headless) return <div className="market-watch" style={{ marginTop: 0 }}>{inner}</div>;
+
   return (
     <div className="market-watch">
       <h3>Market Watch · Simulated Liv-ex Indices</h3>
-      <div className="market-indices">
-        {indices.map(idx => (
-          <div key={idx.name} className="market-index">
-            <div className="market-index-name">{idx.name}</div>
-            <div className="market-index-value">{idx.value.toLocaleString()}</div>
-            <div className={`market-index-change ${idx.changePct >= 0 ? "up" : "down"}`}>
-              {idx.changePct >= 0 ? "▲" : "▼"} {Math.abs(idx.changePct)}%
-            </div>
-          </div>
-        ))}
-      </div>
+      {inner}
     </div>
   );
 }
@@ -454,7 +461,7 @@ function NextStepWidget({ watchlist, orders, portfolio, onGoMarket, onGoPortfoli
   if (!step) return null;
 
   return (
-    <div style={{ margin: "16px 0 20px", background: `linear-gradient(135deg, rgba(201,162,39,0.08) 0%, rgba(201,162,39,0.03) 100%)`, border: `1px solid rgba(201,162,39,0.22)`, borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16 }}>
+    <div className="next-step-widget" style={{ margin: "16px 0 20px", background: `linear-gradient(135deg, rgba(201,162,39,0.08) 0%, rgba(201,162,39,0.03) 100%)`, border: `1px solid rgba(201,162,39,0.22)`, borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16 }}>
       <span style={{ fontSize: 28 }}>{step.icon}</span>
       <div style={{ flex: 1 }}>
         <div style={{ fontSize: 13, fontWeight: 700, color: "#e2e8f0", marginBottom: 3 }}>{step.title}</div>
@@ -560,6 +567,8 @@ function App() {
   const [blogLoading, setBlogLoading] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
   const [trending, setTrending] = useState([]);
+  const [trendingOpen, setTrendingOpen] = useState(true);
+  const [mwOpen, setMwOpen] = useState(false);
   const [heroSearch, setHeroSearch] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -1081,7 +1090,7 @@ function App() {
     setPurchaseWine(wine);
   }, []);
 
-  // ── 3D tilt handlers ─────────────────────────────────────────────────────
+  // ── 3D tilt + spotlight handlers ─────────────────────────────────────────
   const onCardTilt = useCallback((e) => {
     const card = e.currentTarget;
     const rect = card.getBoundingClientRect();
@@ -1091,10 +1100,14 @@ function App() {
     const rx = ((cy - y) / cy) * 7;
     const ry = ((x - cx) / cx) * 7;
     card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
+    card.style.setProperty('--mx', `${x}px`);
+    card.style.setProperty('--my', `${y}px`);
   }, []);
 
   const onCardTiltReset = useCallback((e) => {
     e.currentTarget.style.transform = "";
+    e.currentTarget.style.removeProperty('--mx');
+    e.currentTarget.style.removeProperty('--my');
   }, []);
 
   const totalMarket = useMemo(
@@ -1470,6 +1483,15 @@ function App() {
 
         {/* ── Content ─────────────────────────────────────────────────────── */}
         <section className="content">
+          <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={tab}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+            style={{ width: "100%" }}
+          >
           {/* ── B2B Dashboard ────────────────────────────────────────────── */}
           {tab === "dashboard" && viewMode === "b2b" && (
             <div style={{ padding: "24px 0 0" }}>
@@ -1613,46 +1635,75 @@ function App() {
               <div className="dashboard-cols">
                 {/* Trending Wines */}
                 <div>
-                  <div className="section-header">
+                  <div className="section-header" style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                     <div>
                       <div className="section-title">Trending Wines</div>
                       <div className="section-sub">Top movers in the last 24h</div>
                     </div>
-                    <button
-                      onClick={loadTrending}
-                      style={{ fontSize: 11, color: "var(--vi-accent)", background: "none", border: "1px solid rgba(201,162,39,0.25)", borderRadius: "var(--vi-radius-sm)", padding: "4px 10px", cursor: "pointer", fontFamily: "var(--vi-font-sans)" }}
-                    >Refresh</button>
+                    <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                      <button
+                        className="dash-collapse-btn"
+                        onClick={() => setTrendingOpen(o => !o)}
+                        aria-label={trendingOpen ? "Collassa" : "Espandi"}
+                      >{trendingOpen ? "▲" : "▼"}</button>
+                      <button
+                        onClick={loadTrending}
+                        style={{ fontSize: 11, color: "var(--vi-accent)", background: "none", border: "1px solid rgba(201,162,39,0.25)", borderRadius: "var(--vi-radius-sm)", padding: "4px 10px", cursor: "pointer", fontFamily: "var(--vi-font-sans)" }}
+                      >Refresh</button>
+                    </div>
                   </div>
-                  <div className="trending-list">
-                    {trending.length === 0
-                      ? Array.from({ length: 5 }).map((_, i) => (
-                          <div key={i} className="trending-item" style={{ minHeight: 52 }}>
-                            <div className="skeleton" style={{ width: "100%", height: 20, borderRadius: 6 }} />
-                          </div>
-                        ))
-                      : trending.map((w, i) => (
-                          <div
-                            key={w.id || i}
-                            className="trending-item"
-                            style={{ cursor: "pointer" }}
-                            onClick={() => { setMarketSearch(w.name); mSearchRef.current = w.name; setTab("market"); setTimeout(() => loadMarketWines(w.name, 1, false), 100); }}
-                          >
-                            <span className="trending-rank">{i + 1}</span>
-                            <div className="trending-info">
-                              <div className="trending-name">{w.name}</div>
-                              <div className="trending-region">{w.producer} · {w.region}</div>
+                  {trendingOpen && (
+                    <div className="trending-list">
+                      {trending.length === 0
+                        ? Array.from({ length: 5 }).map((_, i) => (
+                            <div key={i} className="trending-item" style={{ minHeight: 52 }}>
+                              <div className="skeleton" style={{ width: "100%", height: 20, borderRadius: 6 }} />
                             </div>
-                            <span className={`trending-change ${w.change >= 0 ? "up" : "down"}`}>
-                              {w.change >= 0 ? "+" : ""}{w.change}%
-                            </span>
-                          </div>
-                        ))
-                    }
-                  </div>
+                          ))
+                        : trending.map((w, i) => (
+                            <div
+                              key={w.id || i}
+                              className="trending-item"
+                              style={{ cursor: "pointer" }}
+                              onClick={() => { setMarketSearch(w.name); mSearchRef.current = w.name; setTab("market"); setTimeout(() => loadMarketWines(w.name, 1, false), 100); }}
+                            >
+                              <span className="trending-rank">{i + 1}</span>
+                              <div className="trending-info">
+                                <div className="trending-name">{w.name}</div>
+                                <div className="trending-region">{w.producer} · {w.region}</div>
+                              </div>
+                              <span className={`trending-change ${w.change >= 0 ? "up" : "down"}`}>
+                                {w.change >= 0 ? "+" : ""}{w.change}%
+                              </span>
+                            </div>
+                          ))
+                      }
+                    </div>
+                  )}
                 </div>
 
-                {/* Market Watch */}
-                <MarketWatch />
+                {/* Market Watch — collapsible on mobile */}
+                <div>
+                  <div className="section-header" style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: mwOpen ? 14 : 0 }}>
+                    <div>
+                      <div className="section-title">Market Watch</div>
+                      <div className="section-sub">Simulated Liv-ex Indices</div>
+                    </div>
+                    <button
+                      className="dash-collapse-btn"
+                      onClick={() => setMwOpen(o => !o)}
+                      aria-label={mwOpen ? "Collassa" : "Espandi"}
+                    >{mwOpen ? "▲" : "▼"}</button>
+                  </div>
+                  {mwOpen && (
+                    <>
+                      <MarketWatch headless />
+                      <p style={{ margin: "8px 0 0", fontSize: 10, color: "#334155" }}>
+                        * Valori calcolati su base simulata a scopo illustrativo. Non sono prezzi di mercato reali. Dati live su <a href="https://www.liv-ex.com" target="_blank" rel="noopener noreferrer" style={{ color: "#5a82a6" }}>liv-ex.com</a>
+                      </p>
+                    </>
+                  )}
+                </div>
               </div>
             </>
           )}
@@ -2486,6 +2537,8 @@ function App() {
               )}
             </section>
           )}
+          </motion.div>
+          </AnimatePresence>
         </section>
       </main>
 
@@ -2765,7 +2818,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="/b2b/guide/:slug" element={<B2BGuide />} />
           <Route path="/org-dashboard" element={<OrgDashboard />} />
           <Route path="/clients/:clientId" element={<ClientDetail />} />
-          <Route path="/market-intelligence" element={<MarketIntelligence />} />
+          <Route path="/market-intelligence" element={<ErrorBoundary><Suspense fallback={<div style={{ minHeight: "100vh", background: "#0b1220", display: "flex", alignItems: "center", justifyContent: "center", color: "#60a5fa", fontSize: 14 }}>Loading Market Intelligence…</div>}><MarketIntelligence /></Suspense></ErrorBoundary>} />
           <Route path="/b2b-onboarding" element={<B2BOnboarding />} />
           <Route path="/compare" element={<WineCompare />} />
           <Route path="/winery" element={<WineryDashboard />} />

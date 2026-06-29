@@ -41,6 +41,8 @@
 /* ── Reset & Base ─────────────────────────────────── */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+html { scroll-behavior: smooth; }
+
 body {
   background: var(--bg-base);
   color: var(--text-primary);
@@ -51,7 +53,29 @@ body {
   overflow-x: hidden;
 }
 
-h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
+/* ── Grain texture overlay ────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.038;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+h1, h2, h3, .playfair {
+  font-family: 'Playfair Display', Georgia, serif;
+  text-wrap: balance;
+}
+
+/* ── Global focus ring ───────────────────────────── */
+:focus-visible {
+  outline: 2px solid rgba(201, 162, 39, 0.7);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
 
 /* ── App Shell ────────────────────────────────────── */
 .app { min-height: 100vh; }
@@ -66,11 +90,14 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
   position: sticky;
   top: 0;
   z-index: 200;
-  background: rgba(2, 6, 23, 0.78);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(201, 162, 39, 0.12);
-  box-shadow: 0 1px 40px rgba(0, 0, 0, 0.4);
+  background: rgba(2, 6, 23, 0.82);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border-bottom: 1px solid rgba(201, 162, 39, 0.14);
+  box-shadow:
+    0 1px 40px rgba(0, 0, 0, 0.5),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04),
+    0 0 0 0.5px rgba(201, 162, 39, 0.06);
 }
 
 .logo {
@@ -134,11 +161,11 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
 }
 
 .sidebar button.active {
-  background: linear-gradient(135deg, #C9A227 0%, #e0b82d 100%);
-  color: #000;
-  border-color: #C9A227;
+  background: rgba(201, 162, 39, 0.1);
+  color: #e0b82d;
+  border-color: rgba(201, 162, 39, 0.28);
   font-weight: 700;
-  box-shadow: 0 4px 18px rgba(201, 162, 39, 0.22);
+  box-shadow: inset 3px 0 0 #C9A227, 0 2px 14px rgba(201, 162, 39, 0.12);
 }
 
 .content {
@@ -152,15 +179,16 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
 
 .hero h1 {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: clamp(28px, 3.5vw, 52px);
-  line-height: 1.1;
-  margin-bottom: 10px;
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  background: linear-gradient(135deg, #ffffff 0%, #d4b96a 60%, #f0d898 100%);
+  font-size: clamp(28px, 3.8vw, 58px);
+  line-height: 1.08;
+  margin-bottom: 12px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #ffffff 0%, #d4b96a 55%, #f0d898 85%, #ffffff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  text-wrap: balance;
 }
 
 .hero p {
@@ -293,8 +321,9 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
   font-size: 28px;
   font-weight: 800;
   font-family: 'Playfair Display', Georgia, serif;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   color: #e2e8f0;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ── Market Search ────────────────────────────────── */
@@ -335,16 +364,34 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
   overflow: visible;
   display: flex;
   flex-direction: column;
-  transition: border-color 0.25s, box-shadow 0.25s;
+  transition: border-color 0.28s var(--vi-ease), box-shadow 0.28s var(--vi-ease);
   transform-style: preserve-3d;
   will-change: transform;
   position: relative;
+  isolation: isolate;
+}
+
+.wineCard::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 20px;
+  background: radial-gradient(500px circle at var(--mx, 50%) var(--my, 50%), rgba(201, 162, 39, 0.08), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.35s;
+  pointer-events: none;
+  z-index: -1;
 }
 
 .wineCard:hover {
-  border-color: rgba(201, 162, 39, 0.32);
-  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(201, 162, 39, 0.06);
+  border-color: rgba(201, 162, 39, 0.28);
+  box-shadow:
+    0 20px 56px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(201, 162, 39, 0.06),
+    0 0 0 0 transparent;
 }
+
+.wineCard:hover::before { opacity: 1; }
 
 .wineCard-image {
   width: 100%;
@@ -458,9 +505,10 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
 
 .score-fill {
   height: 100%;
-  background: linear-gradient(90deg, #C9A227, #f0d060);
+  background: linear-gradient(90deg, #9a7318, #C9A227, #f0d060, #ffe99a);
   border-radius: 2px;
-  transition: width 0.7s ease;
+  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 0 6px rgba(201, 162, 39, 0.4);
 }
 
 .score-label {
@@ -496,6 +544,8 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
   font-weight: 800;
   color: #f1f5f9;
   font-family: 'Playfair Display', Georgia, serif;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
 }
 
 .price-label { font-size: 11px; color: #334155; }
@@ -526,6 +576,12 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
   box-shadow: 0 4px 16px rgba(201, 162, 39, 0.4);
 }
 
+.btn-primary:active {
+  transform: translateY(1px) scale(0.97);
+  box-shadow: none;
+  transition-duration: 80ms;
+}
+
 .btn-secondary {
   padding: 10px 13px;
   border: 1px solid rgba(30, 41, 59, 0.75);
@@ -538,6 +594,7 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
 }
 
 .btn-secondary:hover { border-color: #C9A227; color: #C9A227; }
+.btn-secondary:active { transform: scale(0.96); transition-duration: 80ms; }
 .btn-secondary.active { border-color: #C9A227; color: #C9A227; background: rgba(201, 162, 39, 0.07); }
 
 /* ── Skeleton Loading ─────────────────────────────── */
@@ -789,7 +846,7 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
 }
 
 .market-index-name  { font-size: 10px; color: #3a5a7a; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 5px; font-weight: 700; }
-.market-index-value { font-size: 19px; font-weight: 800; color: #e2e8f0; margin-bottom: 3px; font-family: 'Playfair Display', Georgia, serif; }
+.market-index-value { font-size: 19px; font-weight: 800; color: #e2e8f0; margin-bottom: 3px; font-family: 'Playfair Display', Georgia, serif; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
 .market-index-change{ font-size: 11px; font-weight: 700; }
 .market-index-change.up   { color: #4ade80; }
 .market-index-change.down { color: #f87171; }
@@ -811,7 +868,7 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
 
 .section-sub {
   font-size: 11px;
-  color: #3a5a7a;
+  color: #5a82a6;
   margin-top: 2px;
 }
 
@@ -939,6 +996,34 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
   .dashboard-cols { grid-template-columns: 1fr; }
 }
 
+/* ── Landing page mobile CTA buttons ───────────────── */
+@media (max-width: 520px) {
+  .landing-cta-btns { flex-direction: column !important; align-items: stretch !important; padding: 0 20px !important; gap: 10px !important; }
+  .landing-cta-btns button { width: 100% !important; justify-content: center; text-align: center; }
+}
+
+/* ── Dashboard collapse toggle button ──────────────── */
+.dash-collapse-btn {
+  background: none;
+  border: 1px solid rgba(201, 162, 39, 0.2);
+  border-radius: 6px;
+  color: rgba(201, 162, 39, 0.6);
+  font-size: 10px;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+  padding: 0;
+}
+.dash-collapse-btn:hover {
+  background: rgba(201, 162, 39, 0.08);
+  color: var(--vi-accent);
+}
+
 /* ── Hamburger / Mobile sidebar toggle ────────────── */
 .hamburger {
   display: none;
@@ -970,12 +1055,16 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
 }
 
 @media (max-width: 480px) {
-  .statsGrid { grid-template-columns: 1fr; }
+  .statsGrid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .statCard { padding: 12px 14px; }
+  .statCard h2 { font-size: 20px; margin-top: 5px; }
   .header { padding: 0 12px; }
   .wineCard { border-radius: 14px; }
   .bottle-modal { width: 100vw; border-radius: 0; max-height: 100vh; overflow-y: auto; }
   .hero h1 { font-size: 20px; }
-  .hero { padding: 28px 14px 20px; }
+  .hero { padding: 16px 0 12px; margin-bottom: 16px; }
+  .hero p { display: none; }
+  .hero-search-wrapper { margin-top: 8px; }
 
   /* Stack card actions vertically on very small screens */
   .wineCard-actions { flex-direction: column; gap: 6px; }
@@ -992,6 +1081,61 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
 
   /* Chart width clamp */
   .chartPanel { padding: 12px; overflow-x: auto; }
+
+  /* Dashboard secondary sections compact */
+  .dashboard-cols { margin-top: 12px; gap: 12px; }
+  .market-watch { padding: 14px 16px; }
+  .market-index { padding: 10px 12px; }
+  .market-index-value { font-size: 15px; }
+  .trending-item { padding: 10px 12px; }
+  .trending-name { font-size: 12px; }
+}
+
+/* ── 375px / iPhone SE / small phones ────────────── */
+@media (max-width: 375px) {
+  /* Content padding tighter */
+  .content { padding: 10px 10px; }
+
+  /* Hero: minimal, just search */
+  .hero { padding: 10px 0 8px; margin-bottom: 12px; }
+  .hero h1 { font-size: 17px; line-height: 1.25; }
+  .hero p { display: none; }
+
+  /* Stats: single column on very small screens */
+  .statsGrid { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .statCard { padding: 10px 12px; }
+  .statCard small { font-size: 9px; }
+  .statCard h2 { font-size: 18px; margin-top: 4px; }
+
+  /* Market indices: single column to avoid cramped values */
+  .market-indices { grid-template-columns: 1fr; gap: 6px; }
+  .market-index { padding: 8px 12px; }
+  .market-index-value { font-size: 15px; }
+  .market-index-name { font-size: 10px; }
+
+  /* NextStep widget: stack vertically */
+  .next-step-widget { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
+  .next-step-widget button { width: 100% !important; white-space: normal !important; min-height: 40px; }
+
+  /* Dashboard sections: tighter spacing */
+  .dashboard-cols { gap: 10px; margin-top: 8px; }
+  .market-watch { padding: 12px 14px; }
+  .trending-item { padding: 8px 10px; }
+
+  /* Wine card: compact on small screens */
+  .wineCard { padding: 14px 12px; }
+
+  /* Header logo smaller */
+  .logo { font-size: 18px; }
+
+  /* Section titles */
+  .section-title { font-size: 15px; }
+
+  /* Search input */
+  .hero-search-input { font-size: 14px; padding: 10px 40px 10px 14px; }
+
+  /* Bottle modal full screen */
+  .bottle-modal { border-radius: 0 !important; max-height: 100vh; }
 }
 
 @media (max-width: 768px) {
@@ -1027,6 +1171,8 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
 
   /* Grids */
   .statsGrid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .statCard { padding: 16px 18px; }
+  .statCard h2 { font-size: 24px; margin-top: 7px; }
   .marketGrid { grid-template-columns: 1fr; }
   .news-grid  { grid-template-columns: 1fr; }
   .market-indices { grid-template-columns: repeat(2, 1fr); }
@@ -1043,8 +1189,11 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
   .chartPanel { padding: 16px; }
   .chartBox { height: 260px; }
 
-  /* Section headers stack */
-  .section-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  /* Section headers — keep row to preserve toggle layout */
+  .section-header { flex-direction: row; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+
+  /* Collapse toggle button — compact, not full 44px */
+  .dash-collapse-btn { min-height: 30px !important; }
 
   /* Orders table scroll */
   .ordersPanel { overflow-x: auto; }
@@ -1072,8 +1221,8 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
   /* All inputs 16px to prevent iOS auto-zoom */
   input, textarea, select { font-size: 16px !important; }
 
-  /* All touch targets min 44px */
-  button { min-height: 44px; }
+  /* All touch targets min 44px — exclude compact utility buttons */
+  button:not(.dash-collapse-btn):not(.hamburger) { min-height: 44px; }
   a[role="button"] { min-height: 44px; display: inline-flex; align-items: center; }
 
   /* Prevent any section from causing horizontal scroll */
@@ -1091,11 +1240,6 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
-}
-
-:focus-visible {
-  outline: 2px solid #C9A227;
-  outline-offset: 2px;
 }
 
 /* ── RTL support (Arabic, Hebrew) ─────────────────── */
@@ -1122,3 +1266,125 @@ h1, h2, h3, .playfair { font-family: 'Playfair Display', Georgia, serif; }
 .blog-content hr { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 2rem 0; }
 .blog-content blockquote { border-left: 3px solid #C9A227; padding: 0.5rem 1rem; margin: 1rem 0; color: #94a3b8; background: rgba(201,162,39,0.05); border-radius: 0 8px 8px 0; }
 .blog-content code { background: rgba(255,255,255,0.08); border-radius: 4px; padding: 0.1rem 0.35rem; font-size: 0.85em; color: #93c5fd; }
+
+/* ── Premium polish layer ─────────────────────────── */
+
+/* Custom text selection */
+::selection {
+  background: rgba(201, 162, 39, 0.28);
+  color: #f1f5f9;
+}
+
+/* Logo kerning */
+.logo {
+  letter-spacing: -0.03em;
+}
+
+/* Search input — warmer placeholder */
+.hero-search-input::placeholder { color: #3a5a7a; }
+.hero-search-input:focus {
+  border-color: rgba(201, 162, 39, 0.5);
+  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.08), 0 2px 12px rgba(0,0,0,0.2);
+}
+
+/* Trending items — smooth hover */
+.trending-item {
+  transition: border-color 0.2s, transform 0.22s var(--vi-ease), box-shadow 0.22s;
+  cursor: pointer;
+}
+.trending-item:hover {
+  border-color: rgba(201, 162, 39, 0.24);
+  transform: translateX(3px);
+}
+
+/* News card — crisp transition */
+.news-card {
+  transition: border-color 0.22s, transform 0.24s var(--vi-ease), box-shadow 0.24s;
+}
+.news-card:hover {
+  border-color: rgba(201, 162, 39, 0.28);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Market index card hover */
+.market-index {
+  transition: border-color 0.2s, background 0.2s;
+}
+.market-index:hover {
+  border-color: rgba(201, 162, 39, 0.2);
+  background: rgba(10, 18, 36, 0.8);
+}
+
+/* Skeleton shimmer — deeper contrast */
+.skeleton {
+  background: linear-gradient(90deg, #080f1e 25%, #111d35 50%, #080f1e 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.7s infinite linear;
+  border-radius: 8px;
+}
+
+/* Modal backdrop — slightly more tint */
+.bottle-overlay {
+  background: rgba(1, 4, 16, 0.9);
+}
+
+/* Stat card — richer top border accent */
+.statCard::after {
+  background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.6), transparent);
+}
+
+/* Badge — tighter, more refined */
+.badge {
+  border-radius: 6px;
+  letter-spacing: 0.1em;
+}
+
+/* Chart panel headings */
+.chartPanel h2 {
+  letter-spacing: -0.025em;
+}
+
+/* Section title tighter */
+.section-title {
+  letter-spacing: -0.015em;
+}
+
+/* Bottle hint label — lowercase for elegance */
+.bottle-hint {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
+}
+
+/* Sidebar buttons — cursor default is pointer but let's be explicit */
+.sidebar button { cursor: pointer; }
+
+/* Smooth sidebar transitions */
+.sidebar button {
+  transition: all 0.18s var(--vi-ease);
+}
+
+/* Better wineCard image area — darker gradient */
+.wineCard-image {
+  background: linear-gradient(160deg, #040a16 0%, #0a1830 60%, #0d1f3a 100%);
+}
+
+/* Score bar track — slightly deeper */
+.score-bar {
+  background: rgba(20, 30, 48, 0.9);
+}
+
+/* Trending rank — more presence */
+.trending-rank {
+  color: rgba(201, 162, 39, 0.4);
+  letter-spacing: -0.02em;
+}
+
+/* prefers-reduced-motion: remove grain */
+@media (prefers-reduced-motion: reduce) {
+  body::before { display: none; }
+}
+
+/* Light theme: adjust grain opacity */
+[data-theme="light"] body::before { opacity: 0.025; }

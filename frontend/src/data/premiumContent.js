@@ -91,7 +91,7 @@ export const RENDIMENTI_STORICI_MODULES = [
       <text x="362" y="101" fill="#94a3b8" fontSize="9">S&amp;P500</text>
       <text x="40" y="196" fill="#475569" fontSize="8">2001</text>
       <text x="350" y="196" fill="#475569" fontSize="8">2024</text>
-      <text x="200" y="212" textAnchor="middle" fill="#475569" fontSize="7">Schema illustrativo — dati reali disponibili su live-ex.com</text>
+      <text x="200" y="212" textAnchor="middle" fill="#475569" fontSize="7">Schema illustrativo — dati reali disponibili su liv-ex.com</text>
     </svg>`,
     deepDive: `Il vino come asset class è ancora sottocompreso dai gestori patrimoniali tradizionali. La letteratura accademica ha studiato il fine wine come investimento almeno dagli anni 2000, con contributi pubblicati su riviste come il Journal of Financial Economics e la Journal of Wine Economics.
 
@@ -130,7 +130,7 @@ La terza dinamica è la concentrazione geografica del volume. Il Bordeaux rappre
       "Liquidità ≠ rendimento: il mercato più liquido (Bordeaux) non è necessariamente quello con il maggior potenziale",
     ],
     quiz: [
-      { q: "Dove si trovano i dati aggiornati sulle performance del Liv-ex Fine Wine 100?", options: ["Inventati dagli analisti", "Sul sito ufficiale Liv-ex (live-ex.com)", "Solo su abbonamento Bloomberg", "Parker Wine Advocate"], correct: 1 },
+      { q: "Dove si trovano i dati aggiornati sulle performance del Liv-ex Fine Wine 100?", options: ["Inventati dagli analisti", "Sul sito ufficiale Liv-ex (liv-ex.com)", "Solo su abbonamento Bloomberg", "Parker Wine Advocate"], correct: 1 },
       { q: "Perché il costo di carry riduce il rendimento lordo del fine wine?", options: ["È una tassa governativa", "Comprende storage, assicurazione e commissioni di transazione che si accumulano nel tempo", "È un costo solo per il mercato UK", "Non è significativo su orizzonti lunghi"], correct: 1 },
       { q: "Perché il fine wine ha generalmente bassa correlazione con l'azionario?", options: ["Per legge i due mercati non possono muoversi insieme", "I compratori di fine wine non subiscono margin calls e non esistono ETF che forzino vendite automatiche", "Il fine wine è garantito dallo stato", "Non è vero: la correlazione è alta"], correct: 1 },
       { q: "Quale mercato ha storicamente il maggiore volume di scambi su Liv-ex?", options: ["Borgogna", "Italia", "Bordeaux", "Champagne"], correct: 2 },
@@ -236,7 +236,7 @@ Haut-Brion è la sorpresa statistica. Ogni analisi risk-adjusted su 20+ anni mos
     slides: [
       { title: "La gerarchia borgognona", body: "Village → Premier Cru → Grand Cru. 33 Grand Cru in tutta la Côte d'Or. Chablis Grand Cru a parte. Il 2% della superficie produce il 95% del valore d'investimento." },
       { title: "DRC: monopolio e monologo", body: "Domaine de la Romanée-Conti possiede 7 Grand Cru in monopolio o quasi. La Romanée-Conti (1.8 ettari, ~5.500 bt/anno) è il vino più costoso al mondo: €18.000–€40.000/bottiglia al dettaglio." },
-      { title: "Il Burgundy 150 Liv-ex", body: "L'indice Liv-ex Burgundy 150 ha sovraperformato il Bordeaux 500 nell'ultimo decennio. Il differenziale è guidato da domanda crescente e offerta strutturalmente limitata. Per i dati aggiornati, consultare live-ex.com." },
+      { title: "Il Burgundy 150 Liv-ex", body: "L'indice Liv-ex Burgundy 150 ha sovraperformato il Bordeaux 500 nell'ultimo decennio. Il differenziale è guidato da domanda crescente e offerta strutturalmente limitata. Per i dati aggiornati, consultare liv-ex.com." },
       { title: "Masseto: il Bordeaux borgognone", body: "Masseto (Bolgheri, Italia) è spesso paragonato alla Borgogna per la sua struttura Merlot cru. Il prezzo è cresciuto significativamente nell'ultimo decennio. Capitalizzazione Liv-ex tra le prime 50 etichette mondiali." },
       { title: "I produttori emergenti", body: "Leroux, Dujac, Rossignol-Trapet, Méo-Camuzet: nomi meno noti ma qualità Grand Cru a prezzi Premier Cru. Finestra di acquisto 2–3 anni prima che i critici li scoprano." },
       { title: "Il problema della liquidità", body: "Un Grand Cru Borgogna si vende, ma il mercato è più sottile del Bordeaux. Offerta a distanza: Christie's e Acker hanno aste mensili, ma bid-ask può essere 15–20%. Patience is mandatory." },
@@ -274,7 +274,7 @@ Il rischio principale del segmento borgognone è la liquidità. Il Bordeaux si c
       ]
     },
     keyPoints: [
-      "Il Liv-ex Burgundy 150 ha sovraperformato il Bordeaux 500 nell'ultimo decennio — i dati aggiornati sono disponibili su live-ex.com",
+      "Il Liv-ex Burgundy 150 ha sovraperformato il Bordeaux 500 nell'ultimo decennio — i dati aggiornati sono disponibili su liv-ex.com",
       "DRC Romanée-Conti: ~5.500 bt/anno. Domanda globale in crescita strutturale. Offerta fisicamente immutabile",
       "Liquidità più bassa del Bordeaux: bid-ask spread 15–20% su certi Grand Cru",
       "Masseto: proxy borgognono italiano — beneficia della stessa narrativa scarsità/qualità",
@@ -294,7 +294,7 @@ Il rischio principale del segmento borgognone è la liquidità. Il Bordeaux si c
     title: "Italia: Barolo, Brunello, Sassicaia — il rinascimento dei prezzi",
     duration: 14,
     youtube: null,
-    hero: { headline: "Sassicaia 1985: il primo vino italiano a 100pt Parker — un turning point storico", stat: "L'Italy 100 Liv-ex ha registrato una forte crescita nell'ultimo decennio — i dati aggiornati sono su live-ex.com", context: "L'Italia è passata da 'curiosità regionale' a pilastro del fine wine investing. Tre categorie dominano: Barolo/Barbaresco (Piemonte), Brunello di Montalcino (Toscana), e i Super Tuscans (Sassicaia, Ornellaia, Masseto)." },
+    hero: { headline: "Sassicaia 1985: il primo vino italiano a 100pt Parker — un turning point storico", stat: "L'Italy 100 Liv-ex ha registrato una forte crescita nell'ultimo decennio — i dati aggiornati sono su liv-ex.com", context: "L'Italia è passata da 'curiosità regionale' a pilastro del fine wine investing. Tre categorie dominano: Barolo/Barbaresco (Piemonte), Brunello di Montalcino (Toscana), e i Super Tuscans (Sassicaia, Ornellaia, Masseto)." },
     objectives: ["Distinguere i tre macro-segmenti del fine wine italiano per profilo rischio/rendimento", "Analizzare il ruolo dei produttori storici vs. nuovi interpreti", "Capire perché il Brunello 2010 è considerato l'annata del secolo", "Valutare il potenziale della 'prossima generazione' italiana"],
     context: "Il mercato italiano è stato storicamente sottovalutato rispetto a Bordeaux e Borgogna. Il Liv-ex Italy 100 ha registrato una delle performance più forti tra tutti gli indici regionali nell'ultimo decennio. Il catalizzatore: riconoscimento critico internazionale (Parker, Suckling) + domanda asiatica in crescita + scarsità strutturale dei cru storici.",
     slides: [
@@ -336,7 +336,7 @@ La prossima frontiera è la 'nuova generazione': produttori come Montevertine, F
       ]
     },
     keyPoints: [
-      "L'Italy 100 Liv-ex è tra gli indici regionali più performanti dell'ultimo decennio — i dati aggiornati sono su live-ex.com",
+      "L'Italy 100 Liv-ex è tra gli indici regionali più performanti dell'ultimo decennio — i dati aggiornati sono su liv-ex.com",
       "Il Brunello 2010 è considerato 'l'annata del secolo' con punteggi perfetti da più critici — apprezzamento molto significativo",
       "Sassicaia è il primo vino italiano a 100pt Parker (annata 1985) — tra i top per volume su Liv-ex",
       "Nuovi interpreti (Montevertine, Fuligni): potenziale finestra di acquisto prima della piena scoperta critica",
@@ -356,7 +356,7 @@ La prossima frontiera è la 'nuova generazione': produttori come Montevertine, F
     title: "Champagne come asset class — il caso Cristal e Krug",
     duration: 13,
     youtube: null,
-    hero: { headline: "Il Champagne di prestige: da consumo di lusso ad asset quotato su Liv-ex", stat: "Il Champagne 50 Liv-ex monitora i millesimi di prestige — i dati aggiornati sono su live-ex.com", context: "Il Champagne è entrato nell'orbita del fine wine investing solo negli ultimi 10 anni. Prima era 'consumo di lusso'. Oggi Cristal, Krug, Dom Pérignon P2 e Salon sono asset quotati su Liv-ex." },
+    hero: { headline: "Il Champagne di prestige: da consumo di lusso ad asset quotato su Liv-ex", stat: "Il Champagne 50 Liv-ex monitora i millesimi di prestige — i dati aggiornati sono su liv-ex.com", context: "Il Champagne è entrato nell'orbita del fine wine investing solo negli ultimi 10 anni. Prima era 'consumo di lusso'. Oggi Cristal, Krug, Dom Pérignon P2 e Salon sono asset quotati su Liv-ex." },
     objectives: ["Capire perché il Champagne è diventato asset class solo di recente", "Analizzare i driver di prezzo per le cuvée di prestige", "Identificare le annate e i formati con il miglior potenziale", "Valutare i rischi specifici: corretta conservazione, mercato degli NV"],
     context: "Il Champagne ha una struttura di mercato unica: il 95% della produzione è Non-Vintage (NV), mescolato da centinaia di annate. Solo le cuvée di prestige millesimate (Cristal, Dom Pérignon, Krug Vintage, Salon, Belle Époque) sono asset investibili. La scarsità è estrema: Salon produce solo in annate eccezionali — 37 millesimi in 100 anni.",
     slides: [
@@ -374,7 +374,7 @@ La prossima frontiera è la 'nuova generazione': produttori come Montevertine, F
 
 Primo: Liv-ex ha introdotto l'indice Champagne 50 nel 2019, dando visibilità quantitativa a un mercato che esisteva ma era informale. Secondo: la pandemia ha accelerato l'interesse per gli asset alternativi — i prezzi dei grandi vini fermi erano già alti, e il Champagne di prestige sembrava undervalued. Terzo: i mercati asiatici (Singapore, Hong Kong, Giappone) hanno scoperto il Champagne come status symbol aggiuntivo rispetto al Bordeaux.
 
-Il risultato: l'indice Champagne 50 ha registrato una performance molto forte nei primi anni dalla sua introduzione, superando in certi periodi sia il Bordeaux 500 sia il Burgundy 150. Tuttavia questo confronto è parzialmente fuorviante: il punto di partenza era basso, e la volatilità è stata alta. I dati aggiornati sono disponibili su live-ex.com.
+Il risultato: l'indice Champagne 50 ha registrato una performance molto forte nei primi anni dalla sua introduzione, superando in certi periodi sia il Bordeaux 500 sia il Burgundy 150. Tuttavia questo confronto è parzialmente fuorviante: il punto di partenza era basso, e la volatilità è stata alta. I dati aggiornati sono disponibili su liv-ex.com.
 
 Il mercato del Champagne ha struttura diversa da quello del vino fermo. Le cuvée di prestige hanno quantità prodotte significativamente maggiori di un Grand Cru borgognone: Cristal produce circa 300.000 bottiglie per annata, Salon solo circa 60.000. Questo significa che la liquidità è buona per Cristal, accettabile per Krug, sottile per Salon. Il bid-ask su Liv-ex per il Champagne è mediamente più alto che per i First Growth bordolesi — dato rilevante per chi pianifica orizzonti brevi.
 
@@ -400,7 +400,7 @@ Salon Le Mesnil rimane il caso più estremo: 37 annate in 100 anni, nessuna di "
       ]
     },
     keyPoints: [
-      "Il Champagne 50 Liv-ex ha registrato performance forti dal 2019 — i dati aggiornati sono su live-ex.com",
+      "Il Champagne 50 Liv-ex ha registrato performance forti dal 2019 — i dati aggiornati sono su liv-ex.com",
       "Solo 8–10 etichette millesimate di prestige hanno mercato Liv-ex liquido",
       "Salon Le Mesnil: 37 annate in 100 anni, scarsità assoluta — tra le performance più forti del segmento",
       "Il formato Magnum matura più lentamente e ottiene generalmente un premium rispetto alla bottiglia standard",
@@ -737,7 +737,7 @@ L'arbitraggio geografico è uno dei concetti meno discussi ma più rilevanti. Il
       { title: "Fine Wine 100: il benchmark principale", body: "100 vini con maggiore liquidità su Liv-ex. Dominato da Bordeaux (70%), con Borgogna e Champagne. Calcolato su prezzi di trade reali, non stime. Il '100' è spesso citato come proxy del mercato fine wine globale." },
       { title: "Fine Wine 1000: la visione ampia", body: "1000 vini da 24 regioni. Il più diversificato. Pubblicato mensilmente. Componenti: Bordeaux 500 (50%), Burgundy 150 (15%), Champagne 50 (5%), Italy 100 (10%), altre regioni (20%). Il benchmark per chi investe in più categorie." },
       { title: "Bordeaux 500: il cuore del mercato", body: "500 vini bordolesi: i 5 First Growth per 20 vintage + classificati storici. Ponderato per volume di trade. Il Bordeaux 500 ha subito una significativa correzione tra 2011 e 2014 (la 'correzione asiatica') — la maggiore drawdown dell'era moderna." },
-      { title: "Burgundy 150: il mercato più volatile", body: "150 vini borgognoni: DRC, Leroy, Rousseau, Raveneau, altri top. Alta volatilità rispetto agli altri indici. La bassa liquidità amplifica i movimenti — sia al rialzo che al ribasso. Dati aggiornati su live-ex.com." },
+      { title: "Burgundy 150: il mercato più volatile", body: "150 vini borgognoni: DRC, Leroy, Rousseau, Raveneau, altri top. Alta volatilità rispetto agli altri indici. La bassa liquidità amplifica i movimenti — sia al rialzo che al ribasso. Dati aggiornati su liv-ex.com." },
       { title: "Italy 100: il segmento con il trend più forte", body: "100 vini italiani: Barolo, Brunello, Super Tuscans. Creato nel 2010. Ha sovraperformato il Bordeaux 500 per anni consecutivi di recente. La crescita strutturale è guidata da riconoscimento critico + domanda asiatica." },
       { title: "Champagne 50: il newcomer", body: "50 Champagne di prestige. Creato nel 2019. Ha registrato forte performance nei primi anni. Volatilità: media. Il segmento più 'giovane' degli indici Liv-ex — dati storici limitati, interpretare con cautela." },
       { title: "Come leggere un indice Liv-ex", body: "Baseline: 100 al 2004 per la maggior parte degli indici. Un indice a 450 = +350% dalla baseline. Check mensili: confronta la performance del tuo portfolio vs. l'indice di riferimento. Se sei sotto, analizza il perché." },
@@ -750,7 +750,7 @@ La comprensione degli indici parte dalla loro metodologia. Il Fine Wine 1000 inc
 
 La divergenza tra indici è il segnale più utile per un investitore attivo. Quando il Burgundy 150 sovraperforma il Bordeaux 500, il mercato sta allocando più capitale verso la Borgogna — segnale che il prezzo della Borgogna è in fase di apprezzamento relativo. Se possiedi sia Bordeaux che Borgogna, puoi ribilanciare il portfolio in risposta a questi segnali.
 
-L'Italy 100 ha dimostrato una forte crescita strutturale negli anni recenti, sovraperformando il Bordeaux 500 per periodi consecutivi. Questo non è casuale: riflette il crescente riconoscimento critico dei vini italiani, la domanda asiatica emergente e la percezione di sottovalutazione relativa rispetto a Borgogna e Bordeaux. I dati aggiornati sono disponibili su live-ex.com.`,
+L'Italy 100 ha dimostrato una forte crescita strutturale negli anni recenti, sovraperformando il Bordeaux 500 per periodi consecutivi. Questo non è casuale: riflette il crescente riconoscimento critico dei vini italiani, la domanda asiatica emergente e la percezione di sottovalutazione relativa rispetto a Borgogna e Bordeaux. I dati aggiornati sono disponibili su liv-ex.com.`,
     caseStudies: [
       { wine: "Portfolio diversificato Bordeaux/Borgogna 2016", buy: null, sell: null, year_buy: 2016, year_sell: 2023, roi: "Esempio illustrativo", note: "Ribilanciamento basato su segnali di divergenza indici. Sovrappeso Italy 100 dal 2020 — ha contribuito a sovraperformare il solo Bordeaux." },
       { wine: "Solo Bordeaux 500 portfolio 2011–2014", buy: null, sell: null, year_buy: 2011, year_sell: 2014, roi: "Perdita significativa", note: "Il Bordeaux 500 ha subito una forte correzione in questo periodo. La diversificazione avrebbe mitigato la perdita." },
@@ -759,20 +759,20 @@ L'Italy 100 ha dimostrato una forte crescita strutturale negli anni recenti, sov
       "Usa il Fine Wine 1000 come benchmark mensile del tuo portfolio — se underperformi per 6 mesi, rivedi l'allocazione",
       "Monitora le divergenze tra Italy 100 e Bordeaux 500 — segnale di rotazione settoriale",
       "Il Burgundy 150 è ad alta volatilità: usa stop-loss concettuale se la concentrazione supera il 40% del portfolio",
-      "Liv-ex pubblica i dati gratuitamente in forma aggregata mensile — iscriviti alla newsletter live-ex.com",
+      "Liv-ex pubblica i dati gratuitamente in forma aggregata mensile — iscriviti alla newsletter liv-ex.com",
     ],
     exercise: {
       title: "Costruisci il tuo indice portfolio personalizzato",
       steps: [
         "Lista tutti i vini nel tuo portfolio (o in quello simulato del modulo 15)",
         "Assegna a ciascuno l'indice Liv-ex di riferimento (Italy 100, Bordeaux 500, ecc.)",
-        "Scarica l'andamento mensile degli indici da live-ex.com (dati pubblici)",
+        "Scarica l'andamento mensile degli indici da liv-ex.com (dati pubblici)",
         "Confronta la performance del tuo portfolio con la composizione pesata degli indici",
         "Identifica dove sei in outperformance e dove sei in ritardo — decidi se agire",
       ]
     },
     keyPoints: [
-      "L'Italy 100 ha mostrato forte outperformance vs. Bordeaux 500 negli anni recenti — dati aggiornati su live-ex.com",
+      "L'Italy 100 ha mostrato forte outperformance vs. Bordeaux 500 negli anni recenti — dati aggiornati su liv-ex.com",
       "Il Burgundy 150 è il più volatile degli indici regionali — massima performance potenziale ma massimo rischio",
       "Il Fine Wine 1000 è il benchmark ampio (24 regioni) — usarlo come riferimento per portfolio diversificati",
       "La divergenza tra indici è un segnale di rotazione settoriale — come per i settori azionari",
@@ -781,7 +781,7 @@ L'Italy 100 ha dimostrato una forte crescita strutturale negli anni recenti, sov
     quiz: [
       { q: "Quanti vini compone il Fine Wine 1000 di Liv-ex?", options: ["100", "500", "1000", "2000"], correct: 2 },
       { q: "Quale indice Liv-ex è il più volatile?", options: ["Bordeaux 500", "Italy 100", "Burgundy 150", "Champagne 50"], correct: 2 },
-      { q: "Dove vengono pubblicati i dati mensili aggregati di Liv-ex?", options: ["Solo su abbonamento premium", "live-ex.com (forma aggregata gratuita)", "Christie's wine report", "Decanter magazine"], correct: 1 },
+      { q: "Dove vengono pubblicati i dati mensili aggregati di Liv-ex?", options: ["Solo su abbonamento premium", "liv-ex.com (forma aggregata gratuita)", "Christie's wine report", "Decanter magazine"], correct: 1 },
       { q: "Il Bordeaux 500 ha subito la sua maggiore correzione in quale periodo?", options: ["2008–2009 (crisi finanziaria)", "2011–2014 (correzione asiatica)", "2016–2017 (Brexit)", "2020 (COVID)"], correct: 1 },
       { q: "Quando Italy 100 sale e Bordeaux 500 scende, cosa indica?", options: ["Il mercato complessivo è in calo", "Una rotazione settoriale verso l'Italia", "La crisi del fine wine europeo", "Un problema con i dati Liv-ex"], correct: 1 },
     ],
@@ -828,7 +828,7 @@ La letteratura accademica (Masset & Henderson, 2010; Sanning, Shaffer & Sharratt
     exercise: {
       title: "Ottimizzazione portfolio con Modern Portfolio Theory",
       steps: [
-        "Dati storici: prendi i rendimenti mensili 2014–2024 del Liv-ex 100 (dal sito live-ex.com)",
+        "Dati storici: prendi i rendimenti mensili 2014–2024 del Liv-ex 100 (dal sito liv-ex.com)",
         "Confronta con i rendimenti S&P 500 e un indice obbligazionario (es. Barclays Aggregate)",
         "Calcola la correlazione tra Liv-ex 100 e S&P 500 usando Excel (funzione CORREL)",
         "Simula 3 portfolio: 60/40, 50/40/10 (con fine wine), 50/30/20 (con fine wine)",
@@ -1301,10 +1301,10 @@ Il meta-errore — sottovalutare la propria ignoranza — è il più difficile d
       { title: "Passo 1: Definisci il tuo profilo", body: "Capitale disponibile: da €3.000 (entry level) a €100.000+ (professionista). Orizzonte: minimo 7 anni, ottimale 10–15. Tolleranza al rischio: conservativo (Bordeaux First Growth, poca volatilità) vs. aggressivo (emerging markets, cult wines). Tempo: passive (2h/mese) vs. attiva (4–8h/mese)." },
       { title: "Passo 2: L'allocazione iniziale per fascia", body: "€3k–10k: 1–2 regioni, max 4 vini, focus qualità non quantità. €10k–30k: 3 regioni, 6–10 vini, primo ribilanciamento dopo 2 anni. €30k–100k: 4+ regioni, 15–25 vini, gestione semi-attiva. >€100k: diversificazione completa, potenziale struttura holding." },
       { title: "Passo 3: I primi 3 acquisti", body: "Primo acquisto: vino liquido su Liv-ex, annata top, produttore riconosciuto (es. Léoville Barton 2016, Lynch-Bages 2018, Barolo Gaja 2016). Secondo acquisto: stessa logica, regione diversa. Terzo acquisto: più rischioso, candidato emergente. Impara progressivamente." },
-      { title: "Passo 4: Il sistema di monitoraggio", body: "Mensile: controlla i prezzi Liv-ex dei tuoi vini (15 minuti). Trimestrale: confronta performance vs. indice di riferimento. Annuale: valutazione completa portfolio, decisione di ribilanciamento. Strumenti: live-ex.com, Wine-Searcher, CellarTracker (gratuiti)." },
+      { title: "Passo 4: Il sistema di monitoraggio", body: "Mensile: controlla i prezzi Liv-ex dei tuoi vini (15 minuti). Trimestrale: confronta performance vs. indice di riferimento. Annuale: valutazione completa portfolio, decisione di ribilanciamento. Strumenti: liv-ex.com, Wine-Searcher, CellarTracker (gratuiti)." },
       { title: "Passo 5: Quando (e come) uscire", body: "Target di rendimento: definisci ex-ante (+60% netto, +80% netto). Quando raggiungi il target: vendi il 50%, mantieni il resto. Stop-loss concettuale: se un vino perde il 20% dal prezzo di acquisto dopo 3 anni, rivaluta. Documenta ogni decisione di exit — imparai più dalle uscite che dagli acquisti." },
       { title: "Il portafoglio €5.000 — esempio concreto", body: "50% Bordeaux (€2.500): Léoville Barton 2016 (6bt a €420). 25% Italia (€1.250): Barolo Mascarello 2016 (3bt a €420). 15% Borgogna (€750): Gevrey-Chambertin Rousseau 2017 (1bt a €750). 10% Champagne (€500): Cristal 2014 (1bt a €500). Totale: €2.390 reale + €2.610 di riserva." },
-      { title: "Le risorse per continuare", body: "Informazione gratuita: live-ex.com (dati mensili), Decanter.com (news e punteggi), Wine-Searcher.com (prezzi). Comunità: Liv-ex forum, Reddit r/wine (sezione investment), Discord VinoInvest (link nel profilo). Formazione avanzata: Weinakademie WSET, Wine MBA dei collezionisti." },
+      { title: "Le risorse per continuare", body: "Informazione gratuita: liv-ex.com (dati mensili), Decanter.com (news e punteggi), Wine-Searcher.com (prezzi). Comunità: Liv-ex forum, Reddit r/wine (sezione investment), Discord VinoInvest (link nel profilo). Formazione avanzata: Weinakademie WSET, Wine MBA dei collezionisti." },
       { title: "Il manifesto dell'investitore in vino", body: "1. Compra solo quello che capisci. 2. Calcola sempre il rendimento netto, non lordo. 3. La pazienza è la competenza più remunerativa. 4. Diversifica: il tuo ego non è una strategia. 5. Impara dagli errori — ne farai. 6. Il fine wine è un viaggio, non una transazione. Goditi anche il vino." },
     ],
     mapSvg: `<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="200" fill="#0b1220"/><text x="200" y="18" textAnchor="middle" fill="#C9A227" fontSize="12" fontWeight="bold">Portfolio €5.000 — allocazione iniziale</text><circle cx="200" cy="110" r="70" fill="none" stroke="#1e3050" strokeWidth="1"/><path d="M200 110 L200 40 A70 70 0 0 1 270 145 Z" fill="#3b82f6" opacity="0.8"/><path d="M200 110 L270 145 A70 70 0 0 1 165 178 Z" fill="#4ade80" opacity="0.8"/><path d="M200 110 L165 178 A70 70 0 0 1 132 65 Z" fill="#a78bfa" opacity="0.8"/><path d="M200 110 L132 65 A70 70 0 0 1 200 40 Z" fill="#f9a8d4" opacity="0.8"/><text x="240" y="90" fill="#e2e8f0" fontSize="9">Bordeaux 50%</text><text x="235" y="165" fill="#e2e8f0" fontSize="9">Italia 25%</text><text x="110" y="145" fill="#e2e8f0" fontSize="9">Borgogna 15%</text><text x="148" y="55" fill="#e2e8f0" fontSize="9">Champagne 10%</text></svg>`,

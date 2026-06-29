@@ -107,7 +107,7 @@ const ACADEMY_MODULE_VIDEOS = {
   c15_04: { embedUrl: null, searchQuery: "wine inheritance estate planning succession tax minimization" },
   c15_05: { embedUrl: null, searchQuery: "wine investment company structure vehicle tax efficient" },
   // Corso 16 – Mercato Secondario
-  c16_01: { embedUrl: null, searchQuery: "fine wine secondary market auction exchange live-ex guide" },
+  c16_01: { embedUrl: null, searchQuery: "fine wine secondary market auction exchange liv-ex guide" },
   c16_02: { embedUrl: null, searchQuery: "liv-ex wine exchange how to use professional trading" },
   c16_03: { embedUrl: null, searchQuery: "wine auction Christie's Hart Davis Hart bidding guide tips" },
   c16_04: { embedUrl: null, searchQuery: "wine exchange platform Cavex WineBid Acker Merrall how to" },
