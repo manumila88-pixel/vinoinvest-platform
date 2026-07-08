@@ -1,7 +1,45 @@
 # VinoInvest — HANDOFF per nuova sessione
 
-> Ultimo aggiornamento: 2026-06-11
+> Ultimo aggiornamento: 2026-07-08
 > Scopo: riprendere il lavoro senza rileggere 40 file di contesto.
+
+---
+
+## HANDOFF Agente Contenuti → Agente 1 (2026-07-08)
+
+### Cookie banner — NESSUN CODICE NECESSARIO
+`frontend/src/components/CookieBanner.jsx` esiste già ed è conforme GDPR per l'uso
+attuale (solo cookie tecnici): "Accetta" / "Solo essenziali", link a Privacy e Cookie
+Policy, consenso in localStorage `vino_cookie_consent_v1`. Nulla da fare finché non
+si aggiungono analytics/marketing.
+
+### Pagine legali JSX da allineare alle bozze in `legal/`
+Bozze complete IT+EN con placeholder ([NOME TITOLARE], [INDIRIZZO], [EMAIL CONTATTO],
+[PARTITA IVA / CODICE FISCALE], [DATA DI ENTRATA IN VIGORE], [FORO COMPETENTE]):
+`legal/privacy-policy.{it,en}.md` · `legal/cookie-policy.{it,en}.md` ·
+`legal/termini-di-servizio.it.md` · `legal/terms-of-service.en.md`.
+**Prima Manoel compila i placeholder e fa revisionare a un legale**, poi Agente 1
+aggiorna le pagine JSX. Incoerenze da correggere nei JSX attuali:
+1. `PrivacyPolicy.jsx` non menziona PayPal (pagamenti) né Resend (email transazionali).
+2. `Cookies.jsx` dichiara analytics Umami (`_umami_*`) e categoria marketing, ma
+   Umami è DISATTIVATO (script commentato in `frontend/index.html` ~riga 151).
+   Decisione Manoel: rimuovere dalla policy o attivare Umami. Le bozze riflettono
+   la realtà attuale (nessun analytics).
+3. `Cookies.jsx` cita chiavi `vino_cookie_consent`/`vino_cookie_prefs`; quella reale
+   è `vino_cookie_consent_v1`.
+4. `Terms.jsx` ha Foro di Milano hardcoded; bozze usano [FORO COMPETENTE] con
+   salvezza del foro del consumatore.
+5. Date incoerenti: `Cookies.jsx` "1 giugno 2025" vs altre "1 giugno 2026".
+6. Email privacy@/legal@/support@vinoinvest.io hardcoded: verificare che esistano.
+
+### Verifiche umane richieste (contenuti, non codice)
+- `content/blog/fiscalita-vino-investimento-italia.md`: quadro RW per vino fisico in
+  Italia + "esclusioni dopo 6 anni" — da verificare con un commercialista.
+- `content/blog/igt-vs-docg-classificazioni-valore.md`: "79 zone DOCG" — il numero
+  reale è ~77, verificare.
+- `frontend/src/data/awards.js`: spot-check dei premi (Tre Bicchieri, Decanter
+  Platinum, WS Top 100 con anni) prima del lancio. Già corretto l'errore che
+  attribuiva il Sassicaia ad Antinori (è di Tenuta San Guido).
 
 ---
 

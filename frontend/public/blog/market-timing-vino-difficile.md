@@ -23,7 +23,7 @@ La disponibilità complessiva di una verticale rappresenta un'altra variabile qu
 
 Uno degli errori più comuni è trascurare completamente l'impatto dei costi nel calcolo del timing. Chi decide "quando comprare vino" raramente considera il quadro completo dell'operazione: commissioni di acquisto, assicurazione di trasporto, stoccaggio in cantine climatizzate, certificazione di autenticità, tasse di passaggio di proprietà, e infine le commissioni di vendita all'asta.
 
-Questi costi non sono marginali. Una volta sommati, possono facilmente assorbire il 20-30% del valore di acquisto nel corso di un periodo di holding. Questo significa che per pareggiare l'investimento, il vino deve apprezzarsi non solo in termini nominali, ma ben oltre. Se un investitore compra al momento "sbagliato" e paga 1.000 euro per una bottiglia, dovrà aspettare che raggiunga almeno 1.300-1.400 euro di valore di mercato solo per recuperare i costi del ciclo di vita dell'investimento.
+Questi costi non sono marginali. Una volta sommati, possono assorbire una quota significativa del valore di acquisto nel corso di un periodo di holding. Questo significa che per pareggiare l'investimento, il vino deve apprezzarsi non solo in termini nominali, ma ben oltre. Un investitore che compra al momento "sbagliato" dovrà aspettare che la bottiglia raggiunga un valore di mercato sensibilmente superiore al prezzo pagato solo per recuperare i costi del ciclo di vita dell'investimento.
 
 Il timing perfetto diventa ancora più illusorio quando si considerano le variabili fiscali. In Italia, come in altri paesi europei, la tassazione sulle plusvalenze da investimento nel vino non è standardizzata e dipende da circostanze specifiche. Nessun investitore può prevedere con certezza quale regime fiscale applicherà al momento della vendita.
 
@@ -39,7 +39,7 @@ Inoltre, il volume di transazioni nel mercato vinicolo fine è microscopico risp
 
 Un fenomeno ricorrente nel mercato del vino è il "consensus shift": improvvisi cambiamenti nella valutazione collettiva di una regione, di un produttore o di uno stile. I collezionisti e i merchant internazionali operano con incertezza sistemica e spesso si muovono in branco, creando bolle e crolli improvvisi.
 
-Un territorio può essere sottovalutato durante un decennio, con prezzi stagnanti, e poi improvvisamente scoperto da critici influenti o da un grande fondo di investimento istituzionale. I prezzi possono triplicarsi in pochi anni. Al contrario, regioni che erano considerate "sicure" possono perdere consenso altrettanto rapidamente quando le preferenze dei collezionisti si spostano verso varietà o stili diversi.
+Un territorio può essere sottovalutato durante un decennio, con prezzi stagnanti, e poi improvvisamente scoperto da critici influenti o da un grande fondo di investimento istituzionale. I prezzi possono aumentare marcatamente in pochi anni. Al contrario, regioni che erano considerate "sicure" possono perdere consenso altrettanto rapidamente quando le preferenze dei collezionisti si spostano verso varietà o stili diversi.
 
 Il **market timing vino** presuppone che l'investitore riesca a prevedere questi shift culturali e di mercato. In realtà, persino i merchant professionisti con decenni di esperienza e reti globali falliscono regolarmente nell'anticipare questi movimenti. Un investitore individuale, basandosi su dati pubblici e su una prospettiva limitata geograficamente, ha probabilità ancora minori di successo.
 

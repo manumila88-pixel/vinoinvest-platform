@@ -13,7 +13,7 @@ export const AWARDS = [
   // ── Gambero Rosso Tre Bicchieri ────────────────────────────────────────
   {
     producer: "Antinori",
-    wine_keywords: ["sassicaia", "solaia", "tignanello"],
+    wine_keywords: ["solaia", "tignanello"],
     award: "Tre Bicchieri",
     year: 2024,
     emoji: "🏆",

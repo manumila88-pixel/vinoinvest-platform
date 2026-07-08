@@ -43,9 +43,9 @@ Nel mercato secondario del vino fine, il fill level è uno dei criteri primari d
 
 Una bottiglia con **Top Shoulder o Upper Shoulder fill level** è considerata in condizioni ottimali, specialmente se l'etichetta è integra e la capsula non mostra corrosione. Il prezzo riflette il valore nominale della bottiglia.
 
-Una bottiglia con **Mid Shoulder** subisce una riduzione di prezzo modesta — solitamente tra il 10% e il 25% rispetto alla stessa bottiglia in Upper Shoulder — a meno che la bottiglia sia particolarmente rara, nel qual caso la riduzione potrebbe essere inferiore. I collezionisti la vedono ancora come drinkable e investibile, ma con margini di rischio leggermente più alti.
+Una bottiglia con **Mid Shoulder** subisce una riduzione di prezzo contenuta rispetto alla stessa bottiglia in Upper Shoulder — a meno che la bottiglia sia particolarmente rara, nel qual caso la riduzione potrebbe essere inferiore. I collezionisti la vedono ancora come drinkable e investibile, ma con margini di rischio leggermente più alti.
 
-Una bottiglia con **Low Shoulder o Below Low Shoulder** affronta penalizzazioni serie. Il prezzo può crollare del 30%-50% o più, poiché il rischio di deterioramento accelerato è concreto. Queste bottiglie finiscono spesso nel mercato delle cantine, vendute a collezionisti disposti a berle rapidamente piuttosto che mantenerle come investimento.
+Una bottiglia con **Low Shoulder o Below Low Shoulder** affronta penalizzazioni serie. Il prezzo può ridursi in misura sostanziale, poiché il rischio di deterioramento accelerato è concreto. Queste bottiglie finiscono spesso nel mercato delle cantine, vendute a collezionisti disposti a berle rapidamente piuttosto che mantenerle come investimento.
 
 Alcuni mercati, come Bordeaux e Borgogna, applicano criteri ancora più rigidi. Qui il fill level è documentato nei cataloghi delle aste e diventa parte della "story" ufficiale della bottiglia. Un vino Château Lafite 1945 con Below Low Shoulder avrà comunque valore collezionistico per la sua rarità storica, ma verrà esplicitamente annotato nei cataloghi, e gli acquirenti avranno piena trasparenza prima di fare offerte.
 

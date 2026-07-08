@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { SITE_URL } from "../lib/constants";
 
 const FACTORS = [
   {
@@ -8,8 +9,8 @@ const FACTORS = [
     color: "#C9A227",
     icon: "★",
     desc: "Aggregiamo valutazioni da Wine Spectator, Robert Parker Wine Advocate, Decanter, James Suckling e Gambero Rosso. Ogni critico ha un peso calibrato per regione di competenza. Il consenso critico è il predittore più affidabile del potenziale di apprezzamento a lungo termine.",
-    why: "Studi Liv-ex mostrano correlazione 0.72 tra consensus critico >95pts e apprezzamento prezzi a 5 anni.",
-    example: "Petrus 2019: 100/100 Parker + 98/100 Spectator → critic_score = 99 → contributo 29.7 punti",
+    why: "Il consenso critico elevato (>95 pts) è storicamente associato a maggiore domanda e migliore tenuta di prezzo sul mercato secondario nel lungo periodo.",
+    example: "Esempio ipotetico — Pétrus 2019: 100/100 Parker + 98/100 Spectator → critic_score = 99 → contributo 29.7 punti",
   },
   {
     weight: "25%",
@@ -17,8 +18,8 @@ const FACTORS = [
     color: "#60a5fa",
     icon: "◎",
     desc: "Il Liv-ex (London International Vintners Exchange) fornisce i benchmark di prezzo più affidabili per il fine wine. Monitoriamo volumi di transazione, spread bid/ask, momentum su 3/6/12 mesi e posizionamento rispetto all'indice Liv-ex 1000.",
-    why: "Il momentum di prezzo su 6 mesi ha potere predittivo sui successivi 12 mesi con accuratezza del 68%.",
-    example: "Vino con +12% su Liv-ex negli ultimi 6 mesi e volumi sopra media → market_trend_score = 78",
+    why: "Il momentum di prezzo recente è storicamente un indicatore utile della direzione del mercato nei mesi successivi, pur senza valore predittivo garantito.",
+    example: "Esempio ipotetico — vino con +12% su Liv-ex negli ultimi 6 mesi e volumi sopra media → market_trend_score = 78",
   },
   {
     weight: "20%",
@@ -26,8 +27,8 @@ const FACTORS = [
     color: "#34d399",
     icon: "◐",
     desc: "Vintage Climate Score proprietario basato su dati climatici ERA5 (Open-Meteo). Analizziamo temperatura media aprile-settembre, precipitazioni durante fioritura e raccolta, escursione termica e radiation solare per ogni zona di produzione. Combinato con consensus critico sull'annata.",
-    why: "Le grandi annate apprezzano in media il 340% in più delle annate difficili sullo stesso produttore su 10 anni.",
-    example: "Borgogna 2015: temperatura ottimale, precipitazioni sotto media, VCS = 94 → contributo 18.8 punti",
+    why: "A parità di produttore, le grandi annate tendono storicamente a registrare domanda e apprezzamento superiori rispetto alle annate difficili.",
+    example: "Esempio ipotetico — Borgogna 2015: temperatura ottimale, precipitazioni sotto media, VCS = 94 → contributo 18.8 punti",
   },
   {
     weight: "15%",
@@ -35,8 +36,8 @@ const FACTORS = [
     color: "#a78bfa",
     icon: "◈",
     desc: "Producer Score costruito su: storia e consistenza qualitativa, allocazioni limitate (domanda > offerta), presenza e volumi su Liv-ex, riconoscimenti internazionali, management stabile, transizioni generazionali.",
-    why: "I produttori con Producer Score >80 mantengono premium di prezzo del 45% rispetto alla media regionale.",
-    example: "DRC: storia 400+ anni, allocazioni limitate, 100% su Liv-ex → producer_score = 98",
+    why: "I produttori più affermati tendono a mantenere un premium di prezzo rispetto alla media della loro regione.",
+    example: "Esempio ipotetico — DRC: lunga storia, allocazioni limitate, forte presenza su Liv-ex → producer_score = 98",
   },
   {
     weight: "10%",
@@ -44,8 +45,8 @@ const FACTORS = [
     color: "#f87171",
     icon: "◉",
     desc: "Misuriamo la facilità di compravendita: transazioni mensili Liv-ex, disponibilità su Wine-Searcher, frequenza aste internazionali (Sotheby's, Christie's, Acker, Hart Davis Hart). Un vino illiquido è più rischioso indipendentemente dalla qualità.",
-    why: "Vini con alta liquidità hanno bid/ask spread <3%, riducendo il costo implicito di transazione.",
-    example: "Margaux 2016: 450+ transazioni Liv-ex/mese, 1.200 offer Wine-Searcher → liquidity_score = 88",
+    why: "I vini più liquidi tendono ad avere spread bid/ask ridotti, abbassando il costo implicito di transazione.",
+    example: "Esempio ipotetico — Margaux 2016: numerose transazioni Liv-ex mensili e ampia disponibilità su Wine-Searcher → liquidity_score = 88",
   },
 ];
 
@@ -71,7 +72,7 @@ export default function Methodology() {
       <Helmet>
         <title>Metodologia AI Score | VinoInvest — Trasparenza Totale sul Calcolo</title>
         <meta name="description" content="Come VinoInvest calcola l'AI Score: formula esatta con pesi, fonti dati, limitazioni oneste. Trasparenza istituzionale sul modello di valutazione del fine wine." />
-        <link rel="canonical" href="https://vinoinvest-platform.vercel.app/metodologia" />
+        <link rel="canonical" href={`${SITE_URL}/metodologia`} />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "HowTo",
@@ -279,13 +280,13 @@ export default function Methodology() {
 
         {/* Section 1: Formula Completa — Esempio Petrus 2019 */}
         <section style={{ marginTop: 64, marginBottom: 64 }}>
-          <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 8 }}>Formula Completa — Esempio Pétrus 2019</h2>
-          <p style={{ color: "#64748b", marginBottom: 28, fontSize: 14 }}>Calcolo passo-passo dell'AI Score su un caso reale.</p>
+          <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 8 }}>Formula Completa — Esempio Ipotetico (Pétrus 2019)</h2>
+          <p style={{ color: "#64748b", marginBottom: 28, fontSize: 14 }}>Calcolo passo-passo dell'AI Score su un esempio illustrativo. I valori sono a scopo dimostrativo.</p>
           <div style={{ background: "#060e1a", border: "1px solid #1e3050", borderRadius: 16, padding: "32px 32px", fontFamily: "'Courier New', Courier, monospace", fontSize: 13, lineHeight: 2.0, color: "#e2e8f0", overflowX: "auto" }}>
             <div style={{ color: "#60a5fa", marginBottom: 16, fontSize: 14, fontWeight: 700 }}>
               AI Score = (critic_score × 0.30) + (market_score × 0.25) + (vintage_score × 0.20) + (producer_score × 0.15) + (liquidity_score × 0.10)
             </div>
-            <div style={{ color: "#C9A227", fontWeight: 700, marginBottom: 12, fontSize: 13 }}>Esempio: Pétrus 2019</div>
+            <div style={{ color: "#C9A227", fontWeight: 700, marginBottom: 12, fontSize: 13 }}>Esempio ipotetico: Pétrus 2019</div>
             <div style={{ borderTop: "1px solid #1e3050", borderBottom: "1px solid #1e3050", padding: "16px 0", display: "flex", flexDirection: "column", gap: 6 }}>
               <div>
                 <span style={{ color: "#94a3b8", display: "inline-block", minWidth: 180 }}>Critico Score:</span>

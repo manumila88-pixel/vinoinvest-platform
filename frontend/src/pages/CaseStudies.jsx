@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { SITE_URL } from "../lib/constants";
 
 const CASE_STUDIES = [
   {
@@ -139,7 +140,7 @@ export default function CaseStudies() {
       <Helmet>
         <title>Case Study B2B — VinoInvest Professional</title>
         <meta name="description" content="Casi studio reali di wealth manager e family office che usano VinoInvest Professional per gestire portfolio fine wine per clienti HNWI." />
-        <link rel="canonical" href="https://vinoinvest-platform.vercel.app/case-studies" />
+        <link rel="canonical" href={`${SITE_URL}/case-studies`} />
       </Helmet>
 
       {/* Nav */}

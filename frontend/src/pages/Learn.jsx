@@ -10,7 +10,7 @@ const COURSES = [
 - Bassa correlazione con i mercati azionari (resiliente nelle crisi)
 - Asset fisico: non può andare a zero come un'azione
 - Valore intrinseco che aumenta con l'invecchiamento
-- Mercato liquido: Wine-Searcher aggrega 10M+ offerte
+- Mercato con aggregatori globali: Wine-Searcher confronta le offerte di migliaia di merchant nel mondo
 - Diversificazione geografica: Bordeaux, Borgogna, Toscana, Champagne
 
 **Rischi da considerare:**
@@ -48,10 +48,8 @@ I vini di Bordeaux vengono venduti ancora in botte a prezzi scontati. Il prezzo 
 - Liv-ex Bordeaux 500: focus su Bordeaux
 - VinoInvest Index (VII): basato sui vini più seguiti sulla piattaforma
 
-**Prezzi medi storici:**
-Château Petrus 2015: €5.000/bt → €8.500/bt in 5 anni (+70%)
-Barolo Monfortino 2010: €400/bt → €850/bt in 8 anni (+112%)
-Dom Pérignon 2012: €180/bt → €240/bt in 4 anni (+33%)
+**Andamento storico dei prezzi:**
+I vini di punta di Bordeaux, Barolo e Champagne hanno storicamente mostrato apprezzamento nel tempo, sostenuto da rarità, qualità dell'annata e domanda sul mercato secondario. L'entità varia moltissimo da etichetta a etichetta e non è garantita: alcuni vini iconici si sono rivalutati in modo marcato, altri molto meno. Per prezzi reali e aggiornati consultare liv-ex.com o Wine-Searcher.
 
 **Market makers:**
 Il mercato è dominato da UK (Liv-ex, Bonhams) e Hong Kong (Zachys, Acker Asia).`,
@@ -59,7 +57,7 @@ Il mercato è dominato da UK (Liv-ex, Bonhams) e Hong Kong (Zachys, Acker Asia).
       { q: "Cos'è l'en primeur?", opts: ["Un vino già imbottigliato e pronto", "Acquisto di vino ancora in botte, 18 mesi prima dell'imbottigliamento", "Un tipo di bottiglia da 3 litri", "Una denominazione francese"], ans: 1 },
       { q: "Cos'è il Liv-ex Fine Wine 100?", opts: ["Una classifica dei 100 migliori sommelier", "L'indice dei 100 vini fine wine più scambiati al mondo", "Una borsa merci a Londra", "Un'asta annuale di Christie's"], ans: 1 },
       { q: "In quale mercato si commercializzano principalmente i fine wines?", opts: ["New York e Tokyo", "Londra e Hong Kong", "Parigi e Roma", "Sydney e Dubai"], ans: 1 },
-      { q: "Quale piattaforma online aggrega oltre 10 milioni di offerte di vino?", opts: ["Vivino", "Wine-Searcher", "Idealwine", "Millesima"], ans: 1 },
+      { q: "Quale piattaforma online è il principale aggregatore globale di offerte di vino?", opts: ["Vivino", "Wine-Searcher", "Idealwine", "Millesima"], ans: 1 },
     ],
   },
   {

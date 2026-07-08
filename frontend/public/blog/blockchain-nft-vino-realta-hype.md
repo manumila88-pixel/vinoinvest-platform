@@ -13,7 +13,7 @@ Nel corso degli ultimi anni, termini come "blockchain" e "NFT" hanno fatto irruz
 
 ## Blockchain nel Vino: Tracciabilità e Autenticazione
 
-La tracciabilità è uno dei problemi più concreti del mercato vinicolo globale. Dalle etichette false alle bottiglie contraffatte, il settore perde miliardi ogni anno a causa di frodi. Qui la blockchain mostra un vero valore: crea un registro immutabile delle transazioni che consente di tracciare una bottiglia dalla cantina fino al consumatore finale.
+La tracciabilità è uno dei problemi più concreti del mercato vinicolo globale. Dalle etichette false alle bottiglie contraffatte, il settore subisce perdite significative a causa di frodi. Qui la blockchain mostra un vero valore: crea un registro immutabile delle transazioni che consente di tracciare una bottiglia dalla cantina fino al consumatore finale.
 
 Diverse aziende stanno già utilizzando blockchain per registrare informazioni critiche: data di produzione, condizioni di stoccaggio, certificazioni di autenticità e passaggi di proprietà. Questo approccio elimina intermediari e riduce l'incertezza, soprattutto nei vini di lusso dove l'autenticità è fondamentale. Un viticoltore può così dimostrare l'origine e la qualità della sua produzione senza necessità di certificazioni di terze parti.
 

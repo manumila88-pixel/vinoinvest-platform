@@ -33,7 +33,7 @@ Inoltre, la stagionalità gioca un ruolo. Le aste primavera e autunno attirano p
 
 La **illiquidità del mercato vinicolo** non riguarda solo il tempo: riguarda anche il denaro che lasci per strada.
 
-Le commissioni per la vendita variano considerevolmente. Le case d'asta applicano commissioni di vendita (buyer's premium) che possono raggiungere il 20-25% del prezzo di aggiudicazione. Se stai vendendo, il merchant potrebbe applicare una commissione seller's anche del 5-10%. In un mercato già difficile, queste percentuali erodono significativamente il tuo ritorno.
+Le commissioni per la vendita variano considerevolmente. Le case d'asta applicano commissioni di vendita (buyer's premium) che possono incidere in misura rilevante sul prezzo di aggiudicazione. Se stai vendendo, il merchant potrebbe applicare a sua volta una commissione seller's. In un mercato già difficile, questi costi erodono significativamente il tuo ritorno.
 
 Oltre alle commissioni, consideri i costi fissi: assicurazione durante il transito, custodia presso strutture specializzate, documentazione e autenticazione. Se il tuo vino non è regolarmente conservato in celle predisposte, il valore scende comunque — il danno da cattiva conservazione è irreversibile e rende il vino invendibile.
 

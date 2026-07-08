@@ -13,7 +13,7 @@ La scarsità di Borgogna rappresenta uno dei principali driver di valore nel mer
 
 ## Perché il Borgogna è Naturalmente Scarso
 
-Il Borgogna rappresenta circa il 3% della produzione mondiale di vino, nonostante sia una delle regioni più prestigiose globalmente. Questa sproporzione tra fama e quantità non è casuale. La regione è caratterizzata da vitigni molto specifici—Pinot Nero e Chardonnay principalmente—che prosperano solo in condizioni terroir molto precise. I vigneti più rinomati occupano superfici minuscole: alcuni cru famosi contano solo poche decine di ettari divisi tra decine di produttori diversi.
+Il Borgogna rappresenta una frazione molto piccola della produzione mondiale di vino, nonostante sia una delle regioni più prestigiose globalmente. Questa sproporzione tra fama e quantità non è casuale. La regione è caratterizzata da vitigni molto specifici—Pinot Nero e Chardonnay principalmente—che prosperano solo in condizioni terroir molto precise. I vigneti più rinomati occupano superfici minuscole: alcuni cru famosi contano solo poche decine di ettari divisi tra decine di produttori diversi.
 
 La produzione limitata borgogna è ulteriormente vincolata da normative rigorose che regolamentano i rendimenti per ettaro. L'Appellation d'Origine Contrôlée (AOC) specifica quantità massime di uva che possono essere prodotte per metro quadrato di vigna. Questi limiti, implementati decenni fa, impediscono qualsiasi tentativo di massimizzare il volume a discapito della qualità. Di conseguenza, anche nei migliori annate, la produzione rimane relativamente fissa, creando un "collo di bottiglia" naturale che non può essere eliminato semplicemente investendo in infrastrutture.
 

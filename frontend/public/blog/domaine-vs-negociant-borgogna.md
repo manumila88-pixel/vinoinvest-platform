@@ -15,7 +15,7 @@ Chi decide di investire in vini della Borgogna si trova di fronte a una scelta f
 
 Un **domaine borgognone** è un'azienda agricola che possiede vigneti propri e produce vino esclusivamente dalle uve coltivate in casa. Il proprietario controlla l'intero processo dalla viticoltura alla vinificazione, garantendo tracciabilità totale e coerenza di stile. Esempi storici come Romanée-Conti o Leroy incarnano questa filosofia: ogni bottiglia riflette la realtà terroir-specifica del domaine.
 
-Un **négociant**, invece, è un'azienda che acquista uve o vino già in botte da diversi produttori e poi completa la vinificazione, l'affinamento e l'imbottigliamento in cantina propria. Il ruolo del négociant è quello di commerciante ed enologo: seleziona materie prime da viticoltori locali, aggiunge know-how tecnico e commerciale, e distribuisce il prodotto. Questo modello, praticato da aziende come Jadot o Drouhin, rappresenta circa il 75% della produzione totale borgognona.
+Un **négociant**, invece, è un'azienda che acquista uve o vino già in botte da diversi produttori e poi completa la vinificazione, l'affinamento e l'imbottigliamento in cantina propria. Il ruolo del négociant è quello di commerciante ed enologo: seleziona materie prime da viticoltori locali, aggiunge know-how tecnico e commerciale, e distribuisce il prodotto. Questo modello, praticato da aziende come Jadot o Drouhin, rappresenta storicamente una quota molto ampia della produzione totale borgognona.
 
 La differenza non è una questione di qualità assoluta, ma di percorso e responsabilità. Un domaine risponde dei propri vigneti; un négociant risponde della selezione della materia prima altrui.
 

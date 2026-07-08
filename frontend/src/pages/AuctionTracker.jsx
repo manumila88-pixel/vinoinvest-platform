@@ -52,7 +52,7 @@ export default function AuctionTracker() {
             <a href="https://www.ackerwinebid.com" target="_blank" rel="noopener noreferrer" style={{ color: "var(--vi-text-dim)" }}>Acker</a>
             {" · "}
             <a href="https://www.idealwine.com" target="_blank" rel="noopener noreferrer" style={{ color: "var(--vi-text-dim)" }}>Idealwine</a>
-            {" · "}Indicative data for reference only
+            {" · "}<strong>Illustrative sample data for demonstration purposes — not actual auction listings or results.</strong> See the auction houses' official websites for real calendars and results.
           </div>
         </div>
 

@@ -45,7 +45,7 @@ Inoltre, non sottovalutare il valore educativo. Investire nella knowledge (libri
 
 Una volta stabilito il tuo **minimo vino investimento**, dovrai monitorare la performance. A differenza dei mercati finanziari, i dati sui prezzi del vino non sono facilmente accessibili in tempo reale. Per questo, mantieni un foglio di calcolo con date di acquisto, prezzi pagati, e condizioni della bottiglia.
 
-Periodicamente, verifica il valore di mercato attuale attraverso aste online, merchant specializzati, e price guide aggiornate. Calcola il ritorno totale considerando anche i costi di stoccaggio e assicurazione. Un vino acquistato a 100 euro che aumenta a 150 euro in cinque anni, ma costa 20 euro al anno di storage, ha un ROI diverso da quello apparente.
+Periodicamente, verifica il valore di mercato attuale attraverso aste online, merchant specializzati, e price guide aggiornate. Calcola il ritorno totale considerando anche i costi di stoccaggio e assicurazione. Un vino il cui valore di mercato cresce nel tempo, ma che comporta un costo di storage annuale ricorrente, ha un ROI netto diverso da quello apparente.
 
 Questa pratica ti aiuta a comprendere quali segmenti del mercato funzionano meglio per te e come ottimizzare l'allocazione di capitale nel **costo iniziale vino** futuro.
 

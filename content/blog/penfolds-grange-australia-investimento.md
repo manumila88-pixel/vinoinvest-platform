@@ -43,7 +43,7 @@ L'autenticazione è un altro elemento critico. Sebbene Penfolds grange e altri v
 
 L'integrazione di vini australiani investimento in una strategia di investimento patrimoniale richiede coerenza con l'orizzonte temporale dell'investitore. Se l'orizzonte è decennale o superiore, il Penfolds Grange e altre etichette australiane di qualità riconosciuta offrono potenziale di apprezzamento moderato, compensato da fruibilità sensoriale durante la tenuta dell'asset (a differenza di un oro o un'obbligazione).
 
-Una allocation tipica per un collezionista con patrimonio diversificato potrebbe dedicare il 5-10% della componente vino a vini australiani, ripartito tra Penfolds Grange (60-70% della sub-allocation) e vini australiani complementari (30-40%). Questa struttura equilibra concentrazione su un asset "core" affidabile con diversificazione geografica entro la classe d'asset.
+A titolo puramente esemplificativo — non si tratta di una raccomandazione di investimento — un collezionista con patrimonio diversificato potrebbe dedicare una quota contenuta della componente vino ai vini australiani, ripartita tra un asset di riferimento come Penfolds Grange e vini australiani complementari. Una struttura di questo tipo bilancia la concentrazione su un asset consolidato con la diversificazione geografica entro la classe d'asset; le proporzioni dipendono dal profilo e dagli obiettivi di ciascun investitore.
 
 La documentazione rigorosa è fondamentale: conservare certificati di autenticità, ricevute di acquisto, registri di temperatura di storage e fotografie per polizze assicurative. Nel momento della liquidazione, questa documentazione trasforma la percezione di rischio per un potenziale acquirente, sostenendo il prezzo di negoziazione.
 

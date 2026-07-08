@@ -1,3 +1,5 @@
+import { SITE_HOST } from "../lib/constants";
+
 export const FAQ = [
   // ── Rendimenti ──────────────────────────────────────────────────────────
   {
@@ -217,13 +219,13 @@ export const FAQ = [
   {
     id: "b4", cat: "b2b",
     q: "Come si costruisce un portafoglio vino diversificato per un family office?",
-    a: "Allocazione consigliata: 40% Bordeaux premier cru, 25% Borgogna grand cru, 15% Italia (Barolo/Brunello), 10% Champagne prestige, 10% emerging (Napa, Spagna). Orizzonte 7-10 anni.",
+    a: "Esempio di diversificazione (non è una raccomandazione): un mix bilanciato tra Bordeaux, Borgogna, Italia, Champagne e regioni emergenti, con orizzonte di lungo periodo. La composizione dipende dal profilo di ciascun investitore.",
     tags: ["portafoglio", "diversificato", "allocazione", "family office"],
   },
   {
     id: "b5", cat: "b2b",
     q: "Qual è la correlazione del vino con altri asset class?",
-    a: "Il fine wine ha correlazione bassa con equity (~0.1) e obbligazioni (~0.05). Eccellente diversificatore in periodi di volatilità. Durante crisi 2008 Liv-ex 100 perse solo 8% vs -40% S&P500.",
+    a: "Il fine wine ha storicamente mostrato una correlazione bassa con azioni e obbligazioni, il che lo rende un potenziale diversificatore nei periodi di volatilità. Per le serie storiche reali degli indici: liv-ex.com.",
     tags: ["correlazione", "asset class", "diversificazione", "equity", "obbligazioni"],
   },
   {
@@ -327,7 +329,7 @@ export const FAQ = [
   {
     id: "b22", cat: "b2b",
     q: "Come scarico i template professionali?",
-    a: "Vai su vinoinvest-platform.vercel.app/b2b/templates. Trovi 4 template scaricabili: Suitability Assessment, Due Diligence Checklist, Report Portfolio, Framework Allocazione Multi-Asset.",
+    a: `Vai su ${SITE_HOST}/b2b/templates. Trovi 4 template scaricabili: Suitability Assessment, Due Diligence Checklist, Report Portfolio, Framework Allocazione Multi-Asset.`,
     tags: ["template", "scaricabili", "suitability", "due diligence", "framework"],
   },
   {
