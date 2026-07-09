@@ -2,7 +2,25 @@
 
 > Questo file è il CERVELLO del progetto. Non si perde niente perché è scritto qui.
 > REGOLA: ogni agente lo LEGGE all'inizio e lo AGGIORNA alla fine di ogni sessione.
-> Ultimo aggiornamento: 9 luglio 2026 (audit backend flusso pagamenti/abbonamenti)
+> Ultimo aggiornamento: 9 luglio 2026 (audit backend pagamenti + sessione frontend
+> mobile-perfection/audit fondamenta — vedi sezione "Sessione 9 luglio FRONTEND")
+
+---
+
+## ⚠️ ALLARME CRITICO (scoperto 9 luglio 2026) — LOGIN ROTTO IN PRODUZIONE
+Il progetto Supabase `xghuyfgftvrhnmuezbbz.supabase.co` **NON RISOLVE PIÙ nel DNS**
+(NXDOMAIN verificato con Google DNS 8.8.8.8 e Cloudflare 1.1.1.1). Il bundle live
+su Vercel punta a quell'URL → **signup, login email+password, Google OAuth e
+password reset sono TUTTI rotti sul sito live**. Nessun utente può accedere.
+Non è fixabile da frontend/.
+AZIONE MANOEL (urgente, ~15 min):
+1. Aprire https://supabase.com/dashboard → verificare il progetto: se è in PAUSA
+   (free tier inattivo) → "Restore project"; se è stato cancellato → crearne uno
+   nuovo e ricreare la tabella `users` (id uuid PK, email text, account_type text).
+2. Se l'URL del progetto è cambiato: aggiornare `VITE_SUPABASE_URL` e
+   `VITE_SUPABASE_ANON_KEY` nelle Environment Variables di Vercel → redeploy.
+3. Supabase → Authentication → URL Configuration: verificare Site URL/Redirect.
+L'UI di login mostra correttamente l'errore ("Failed to fetch") ma resta inutilizzabile.
 
 ---
 
@@ -261,13 +279,115 @@ Scope: solo backend/ + STATO. Testato in locale contro il DB reale (server su po
 5. ~90 occorrenze residue di err.message in route non critiche (non stack
    trace) — priorità bassa, da bonificare a lotti.
 
+### Sessione 9 luglio 2026 (FRONTEND — mobile perfection + audit "marcio vs mancante")
+Scope: solo frontend/. Branch fix/overnight-fixes. vercel.json NON toccato.
+Metodo: build di produzione servita in locale (vite preview :5173, CORS ok col
+backend Render live) + Chrome headless che misura scrollWidth vs viewport e
+raccoglie pageerror/console su OGNI route.
+
+- [x] **MOBILE — VERA causa radice trovata e fixata** (il fix del 29/6 era
+      necessario ma NON sufficiente):
+      · Riprodotto il bug sulla dashboard LOGGATA (build locale con login forzato
+        temporaneo, poi revertito): documento largo **807px** a qualsiasi viewport
+        → su iPhone il layout viewport si espande e il contenuto (375px) appare
+        schiacciato a sinistra con vuoto a destra. ESATTAMENTE il sintomo storico.
+      · Colpevole: la fila di quick-link nell'header loggato (📖 Guida, 🗺 Tour,
+        🧮 Calc, 🎓 Academy, 📊 Indice, Scan + valuta/tema/lingua/email/Esci) —
+        646px incomprimibili. I test precedenti non lo vedevano perché testavano
+        solo landing/pagine pubbliche (header magro) o un HTML sintetico.
+      · FIX (style.css blocco @768px — che è in FONDO al file e VINCE sui blocchi
+        @480/@375, trappola già nota): quick-link ed email nascosti su mobile
+        (display:none !important — Scan ha display:flex inline), selettori
+        valuta/lingua nascosti <520px (default EUR/it restano attivi), header con
+        padding/gap/logo fluidi (clamp), .dashboard-cols > * { min-width: 0 }
+        (il trending forzava 492px e veniva tagliato).
+      · LEZIONE TECNICA scritta nel CSS: una media query max-width:375px NON può
+        fixare questo bug — appena il viewport si espande a 382px la query smette
+        di applicarsi (circolo vizioso). Le regole header vivono nel blocco @768.
+      · VERIFICATO (build finale, Chrome headless): dashboard loggata, TUTTI i
+        9 tab interni (Dashboard, Mercato, Watchlist&Portfolio, Portfolio AI,
+        Analisi, Notizie, Blog AI, Sezioni, Alert) a 360/375/390/414px =
+        **zero overflow, zero pageerror**. Più 30 route pubbliche × 3 larghezze
+        (90 controlli: home, landing, pricing, academy, blog, learn, market-index,
+        compare, cellar, journal, goals, en-primeur, auctions, sentiment,
+        market-intelligence B2B, org-dashboard, b2b, regioni, produttori, annate,
+        metodologia, glossario, about, terms, privacy, disclaimer, come-comprare,
+        data-sources, notification-settings) = zero overflow, zero pagine bianche.
+      · **NON dichiarato risolto: in attesa di verifica su dispositivo reale da
+        parte di Manoel** (iPhone, logged-in, dopo il deploy).
+
+- [x] **AUDIT lista (a) — MARCIO, tutto fixato in questa sessione:**
+      1. /sentiment CRASHAVA con dati live (React #31: `a.source` è un oggetto
+         {name} renderizzato diretto + campi url/publishedAt vs link/pubDate) →
+         pagina vuota. Fixato e verificato: 0 errori, contenuto completo.
+         (Con backend spento non crashava — per questo era sfuggito.)
+      2. Notification API senza guardia in App.jsx (riga ~1025 e ~2493, la
+         seconda con guardia nell'ORDINE SBAGLIATO) → ReferenceError su iOS
+         Safari (l'API non esiste) → crash della dashboard su iPhone quando
+         arriva una notifica o si apre il tab Alert. Fixato ("Notification" in
+         window PRIMA dell'accesso).
+      3. /favicon.ico non esisteva → 404 console su OGNI pagina + icona rotta
+         nelle notifiche push (sw.js e App.jsx la referenziano). Aggiunto
+         public/favicon.ico + sw.js ora usa icon-192.png.
+      4. Font preload in index.html puntava a un woff2 di fonts.gstatic.com che
+         risponde 404 (i font sono self-hosted @fontsource) → rimosso preload
+         e preconnect a fonts.googleapis.com.
+      5. Link "Swagger UI" in /data (DataDownload) era href="/api/docs" relativo
+         → su Vercel apriva la SPA, non la doc API. Ora punta al backend.
+      6. AcademyModule: dynamic import senza .catch → spinner INFINITO se il
+         chunk fallisce (tipico dopo un deploy con hash nuovi). Ora fallback
+         alla schermata "Modulo non trovato".
+      7. Nessun ErrorBoundary globale (solo su /market-intelligence) → qualsiasi
+         crash = schermata bianca. Ora <ErrorBoundary> avvolge tutte le Routes
+         (messaggio "Qualcosa è andato storto" + Riprova + reportError).
+      8. (+ il bug mobile qui sopra, che è il capo-lista.)
+      Più il CRITICO Supabase NXDOMAIN in cima al file (non fixabile da frontend).
+
+- [x] **AUDIT loading/error su tutte le 34 pagine** (3 agenti, tabelle complete
+      nei transcript): quadro generale BUONO — quasi tutte hanno loading state
+      testuale/skeleton + error state con Riprova; stati init sicuri ([], null
+      guardato) → nessun rischio schermo bianco da fetch fallito. Peggiori
+      sistemati (AcademyModule, boundary globale). Restano i "silenzi" della
+      lista (b).
+
+- [x] **Commit & push**: NOTA — il branch locale era stato spostato dalla
+      sessione backend su fix/backend-payment-flow; i 5 commit frontend sono
+      pubblicati sul branch remoto **fix/frontend-mobile-audit** (build finale
+      pulita, login-hack di test revertito e verificato nel diff). Il framer-motion tap-feedback
+      su WineCard trovato non committato nel working tree è stato incluso
+      (verificato dagli scan: nessun impatto layout).
+
+**LISTA (b) — MANCANTE / da pianificare (non bug, non bloccanti):**
+1. `src/pages/LandingPage.jsx` è ORFANO (quello vero è `src/LandingPage.jsx`) e
+   contiene un link sbagliato /methodology → rimuoverlo o consolidare.
+2. `src/components/PageTransition.jsx` creato ma mai importato (transizioni
+   pagina framer-motion a metà) → decidere se integrarlo o eliminarlo.
+3. `src/data/blog/budget-minimo-investimento-vino.md` orfano, non importato.
+4. NotificationSettings: catch silenziosi — se il load delle preferenze fallisce
+   l'utente vede i default come se fossero i suoi.
+5. ReferralPage: fetch fallito mostrato come "Please sign in" (fuorviante).
+6. OrgDashboard/ClientDetail: POST falliti silenziosi o con alert() — serve
+   toast/error UX coerente.
+7. MarketIndex: catch vuoto → "Index not available." senza bottone Riprova
+   (l'endpoint /api/market/index live funziona, testato 200).
+8. Currency/Lang selector nascosti <520px: valutare un punto d'accesso mobile
+   (es. in fondo alla sidebar hamburger).
+9. sw.js: il fallback offline per asset falliti risponde con index.html anche
+   per JS/CSS (MIME sbagliato) — raro, solo offline, da pulire.
+10. frontend/.env locale ha VITE_BACKEND_URL=http://localhost:3000: qualsiasi
+    build fatta in locale "cuoce" localhost nel bundle (Vercel non è affetto,
+    builda da git con le sue env). Fonte di falsi bug nei test locali.
+11. localStorage `vino_user` NON basta per entrare (serve sessione Supabase
+    vera via onAuthStateChange) — ricordarselo nei test.
+
 ## 5. APERTO / DA FARE (in ordine di priorità)
+- [ ] **[CRITICO — INFRA]** Ripristinare progetto Supabase (vedi ALLARME in cima).
+- [ ] **[VERIFICA MANUALE RICHIESTA]** Mobile su iPhone reale (logged-in) dopo il
+      deploy del fix header: niente più contenuto schiacciato a sinistra.
+      Lo stato resta "in attesa di verifica su dispositivo reale da parte di Manoel".
 - [ ] **[VERIFICA MANUALE RICHIESTA]** Market Intelligence: aprire /market-intelligence
       in incognito (sia da URL diretto che dal link sidebar B2B). Se ancora nero →
       aprire DevTools Console e riportare l'errore esatto. Fix applicato ma non testato live.
-- [ ] **[VERIFICA MANUALE RICHIESTA]** Mobile home 375px/390px: aprire app su iPhone
-      reale (logged-in) — verificare che "Mercato Globale", "Valore Portfolio", "ROI"
-      riempiano tutta la larghezza, niente colonna vuota a destra.
 - [ ] **[MERGE PENDENTE]** Branch fix/overnight-fixes pronto per review. Dopo verifica
       manuale dei punti sopra → merge su main → push → Vercel deploy automatico.
 - [ ] Market: solo 4 colonne → aumentare + personalizzazione colonne visibili.
