@@ -98,8 +98,8 @@ self.addEventListener("push", (e) => {
   const title = data.title || "VinoInvest Alert";
   const options = {
     body: data.body || "Aggiornamento disponibile",
-    icon: "/favicon.ico",
-    badge: "/favicon.ico",
+    icon: "/icon-192.png",
+    badge: "/icon-192.png",
     data: { url: data.url || "/" },
     actions: data.actions || [],
   };
