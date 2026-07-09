@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Redirect to sitemap index -->
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
     <loc>https://vinoinvest-platform.vercel.app/sitemap-static.xml</loc>
+    <lastmod>2026-07-07</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://vinoinvest-platform.vercel.app/sitemap-wines.xml</loc>
+    <lastmod>2026-07-07</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://vinoinvest-platform.vercel.app/sitemap-blog.xml</loc>
+    <lastmod>2026-07-07</lastmod>
   </sitemap>
 </sitemapindex>

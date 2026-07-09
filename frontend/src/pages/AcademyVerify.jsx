@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { SITE_HOST } from "../lib/constants";
 
 const BG = "#0b1220";
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
@@ -55,7 +56,7 @@ export default function AcademyVerify() {
           </div>
           <div style={{ fontSize: 12, color: "#475569" }}>
             Questo certificato è stato emesso e verificato da VinoInvest Academy.
-            Qualsiasi datore di lavoro o istituzione può verificare l'autenticità su vinoinvest-platform.vercel.app/verify/{cert.code}
+            Qualsiasi datore di lavoro o istituzione può verificare l'autenticità su {SITE_HOST}/verify/{cert.code}
           </div>
         </div>
       )}

@@ -1,4 +1,5 @@
 import { createRequire } from "module";
+import { SITE_HOST } from "../config/site.js";
 const require = createRequire(import.meta.url);
 const PDFDocument = require("pdfkit");
 
@@ -50,7 +51,7 @@ function _footer(doc, pageNum, totalPages, orgName) {
   doc.rect(0, fy, PAGE_W, 32).fill(DARK);
   doc.fillColor(GOLD).font("Helvetica-Bold").fontSize(8).text("VinoInvest", ML, fy + 10);
   doc.fillColor(WHITE).font("Helvetica").fontSize(7)
-    .text("vinoinvest-platform.vercel.app", ML, fy + 20);
+    .text(SITE_HOST, ML, fy + 20);
   if (orgName) {
     doc.fillColor(GRAY).font("Helvetica").fontSize(7)
       .text(`Prepared by ${orgName}`, 0, fy + 10, { width: PAGE_W - ML, align: "right" });

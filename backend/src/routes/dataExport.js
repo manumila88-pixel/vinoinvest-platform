@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { SITE_URL } from "../config/site.js";
 
 const router = Router();
 let winesRef = [];
@@ -86,7 +87,7 @@ router.get("/metadata.json", (_req, res) => {
   res.json({
     name: "VinoInvest Wine Investment Dataset",
     description: "Open dataset of fine wine investment metrics, prices, and AI scores.",
-    url: "https://vinoinvest-platform.vercel.app",
+    url: SITE_URL,
     license: "Creative Commons Attribution 4.0 International",
     updated: new Date().toISOString().split("T")[0],
     records: winesRef.length,
@@ -95,7 +96,7 @@ router.get("/metadata.json", (_req, res) => {
       csv: `${process.env.BACKEND_URL || "https://vinoinvest-backend-2.onrender.com"}/api/data/wines.csv`,
       prices: `${process.env.BACKEND_URL || "https://vinoinvest-backend-2.onrender.com"}/api/data/prices.csv`,
     },
-    citation: "VinoInvest AI Research Team. (2026). Fine Wine Investment Dataset. VinoInvest. https://vinoinvest-platform.vercel.app/data"
+    citation: `VinoInvest AI Research Team. (2026). Fine Wine Investment Dataset. VinoInvest. ${SITE_URL}/data`
   });
 });
 

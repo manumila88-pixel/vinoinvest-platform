@@ -15,7 +15,8 @@ const SRC_DIR = join(ROOT, "content/blog");
 const OUT_DIR = join(__dir, "../public/blog");
 const MANIFEST_OUT = join(__dir, "../src/data/blogManifest.js");
 const SITEMAP_OUT = join(__dir, "../public/sitemap-blog.xml");
-const BASE_URL = "https://vinoinvest-platform.vercel.app";
+// Base URL centralizzato: override con SITE_URL env, fallback aggiornabile via scripts/set-site-url.js
+const BASE_URL = (process.env.SITE_URL || "https://vinoinvest-platform.vercel.app").replace(/\/$/, "");
 const TODAY = new Date().toISOString().slice(0, 10);
 
 // Category → audience mapping
@@ -119,7 +120,7 @@ export const BLOG_CATEGORIES = [
   </url>`
   );
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/9/0.1">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.join("\n")}
 </urlset>
 `;

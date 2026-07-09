@@ -3,9 +3,10 @@
  * No API key required. Cache 24h.
  */
 import NodeCache from "node-cache";
+import { SITE_URL } from "../config/site.js";
 
 const cache = new NodeCache({ stdTTL: 86400 });
-const UA = "VinoInvest/1.0 (manumila88@gmail.com; https://vinoinvest-platform.vercel.app)";
+const UA = `VinoInvest/1.0 (manumila88@gmail.com; ${SITE_URL})`;
 
 async function fetchWithTimeout(url, opts = {}) {
   return fetch(url, {

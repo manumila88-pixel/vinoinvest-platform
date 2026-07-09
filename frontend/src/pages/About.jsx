@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { SITE_URL } from "../lib/constants";
 
 const STEPS = [
   { num: "01", icon: "◈", title: "Aggregazione dati", desc: "Raccogliamo prezzi da Liv-ex, CellarTracker e 40+ fonti. Ogni dato ha un badge di affidabilità: verificato, stimato, elaborato." },
@@ -45,12 +46,12 @@ export default function About() {
         <meta name="description" content="VinoInvest democratizza l'intelligenza del mercato del vino. AI Score, dati Liv-ex, risk analytics istituzionali e Academy per wealth manager e family office." />
         <meta property="og:title" content="Chi Siamo | VinoInvest" />
         <meta property="og:description" content="Intelligence per chi investe seriamente nel vino. 50.000 vini, 1.8M dati storici, 40 fonti integrate." />
-        <link rel="canonical" href="https://vinoinvest-platform.vercel.app/about" />
+        <link rel="canonical" href={`${SITE_URL}/about`} />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Organization",
           "name": "VinoInvest",
-          "url": "https://vinoinvest-platform.vercel.app",
+          "url": SITE_URL,
           "description": "Piattaforma di intelligence per investimento in fine wine",
           "email": "manumila88@gmail.com",
           "foundingLocation": "Italia",

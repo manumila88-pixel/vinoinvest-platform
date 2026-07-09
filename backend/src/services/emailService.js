@@ -3,10 +3,11 @@
  * https://resend.com (free tier: 3,000/month)
  */
 import { getPersonalizedContent, generatePersonalizedIntro } from "./personalizationEngine.js";
+import { SITE_URL } from "../config/site.js";
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM_EMAIL = "VinoInvest <noreply@vinoinvest.com>";
-const BASE_URL = "https://vinoinvest-platform.vercel.app";
+const BASE_URL = SITE_URL;
 
 async function sendEmail(to, subject, html, text) {
   if (!RESEND_API_KEY) {

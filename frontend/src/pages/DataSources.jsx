@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { SITE_URL } from "../lib/constants";
 
 // Fonti verificate: Giugno 2026
 const SOURCES = [
@@ -228,15 +229,15 @@ export default function DataSources() {
       <Helmet>
         <title>Fonti dei Dati | VinoInvest — Trasparenza Totale sulla Nostra Metodologia</title>
         <meta name="description" content="Scopri da dove provengono i dati di VinoInvest: Liv-ex, CellarTracker, Open-Meteo, Wine-Searcher e molto altro. Trasparenza completa su fonti, frequenza e affidabilità." />
-        <link rel="canonical" href="https://vinoinvest-platform.vercel.app/data-sources" />
+        <link rel="canonical" href={`${SITE_URL}/data-sources`} />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Dataset",
           "name": "VinoInvest Fine Wine Data",
           "description": "Dataset aggregato per investimento in fine wine: prezzi, punteggi, dati climatici, sentiment.",
           "publisher": { "@type": "Organization", "name": "VinoInvest" },
-          "license": "https://vinoinvest-platform.vercel.app/terms",
-          "url": "https://vinoinvest-platform.vercel.app/data-sources",
+          "license": `${SITE_URL}/terms`,
+          "url": `${SITE_URL}/data-sources`,
         })}</script>
       </Helmet>
 

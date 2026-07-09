@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { SITE_URL } from "../lib/constants";
 
 const BACKEND = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
@@ -53,7 +54,7 @@ export default function DataDownload() {
   ];
 
   const citation = `VinoInvest AI Research Team. (2026). Fine Wine Investment Dataset. VinoInvest.
-URL: https://vinoinvest-platform.vercel.app/data
+URL: ${SITE_URL}/data
 Accessed: ${new Date().toISOString().split("T")[0]}`;
 
   return (

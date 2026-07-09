@@ -7,10 +7,11 @@
  * Day 21: Academy upgrade (IT)
  */
 import cron from "node-cron";
+import { SITE_URL } from "../config/site.js";
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM_EMAIL = "VinoInvest <noreply@vinoinvest.com>";
-const BASE_URL = "https://vinoinvest-platform.vercel.app";
+const BASE_URL = SITE_URL;
 
 let _pool = null;
 export function setWelcomeEmailPool(p) { _pool = p; }

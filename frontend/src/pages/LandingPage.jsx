@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { API } from "../lib/constants";
+import { API, SITE_URL } from "../lib/constants";
 import AuthModal from "../components/AuthModal";
 
 const FEATURES = [
@@ -100,7 +100,7 @@ export default function LandingPage({ onLogin }) {
         <meta property="og:description" content="La piattaforma #1 per investire in fine wine. AI Score su 50.000+ vini, prezzi storici Liv-ex, Academy 20 moduli, portfolio tracker." />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <link rel="canonical" href="https://vinoinvest-platform.vercel.app/landing" />
+        <link rel="canonical" href={`${SITE_URL}/landing`} />
       </Helmet>
 
       {/* B2B strip */}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { SITE_URL } from "../lib/constants";
 
 const API = import.meta.env.VITE_API_URL || "https://vinoinvest-backend-2.onrender.com";
 
@@ -58,6 +59,34 @@ export default function BlogPost() {
       <Helmet>
         <title>{post.title} | VinoInvest Blog</title>
         <meta name="description" content={post.excerpt || ""} />
+        <link rel="canonical" href={`${SITE_URL}/blog/${slug}`} />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={`${post.title} | VinoInvest Blog`} />
+        <meta property="og:description" content={post.excerpt || ""} />
+        <meta property="og:url" content={`${SITE_URL}/blog/${slug}`} />
+        <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
+        <meta property="og:site_name" content="VinoInvest" />
+        <meta property="og:locale" content="it_IT" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${post.title} | VinoInvest Blog`} />
+        <meta name="twitter:description" content={post.excerpt || ""} />
+        <meta name="twitter:image" content={`${SITE_URL}/og-image.jpg`} />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: post.title,
+          description: post.excerpt || "",
+          image: `${SITE_URL}/og-image.jpg`,
+          author: { "@type": "Organization", name: post.author || "VinoInvest" },
+          publisher: {
+            "@type": "Organization",
+            name: "VinoInvest",
+            logo: { "@type": "ImageObject", url: `${SITE_URL}/icon-512.png` },
+          },
+          mainEntityOfPage: `${SITE_URL}/blog/${slug}`,
+          ...(post.publishedAt ? { datePublished: post.publishedAt } : {}),
+          inLanguage: "it",
+        })}</script>
       </Helmet>
 
       {/* Header */}

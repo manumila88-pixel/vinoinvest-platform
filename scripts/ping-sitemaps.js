@@ -9,10 +9,14 @@
 import https from "https";
 import http from "http";
 
+// Base URL centralizzato: override con SITE_URL env, fallback aggiornabile via scripts/set-site-url.js
+const SITE_URL = (process.env.SITE_URL || "https://vinoinvest-platform.vercel.app").replace(/\/$/, "");
+
 const SITEMAPS = [
-  "https://vinoinvest-platform.vercel.app/sitemap.xml",
-  "https://vinoinvest-platform.vercel.app/sitemap-static.xml",
-  "https://vinoinvest-platform.vercel.app/sitemap-wines.xml",
+  `${SITE_URL}/sitemap.xml`,
+  `${SITE_URL}/sitemap-static.xml`,
+  `${SITE_URL}/sitemap-wines.xml`,
+  `${SITE_URL}/sitemap-blog.xml`,
 ];
 
 // Bing supports GET pings; Google deprecated their ping endpoint in 2023
@@ -46,9 +50,9 @@ async function pingIndexNow() {
   }
   // IndexNow bulk submission
   const body = JSON.stringify({
-    host: "vinoinvest-platform.vercel.app",
+    host: SITE_URL.replace(/^https?:\/\//, ""),
     key: INDEXNOW_KEY,
-    keyLocation: `https://vinoinvest-platform.vercel.app/${INDEXNOW_KEY}.txt`,
+    keyLocation: `${SITE_URL}/${INDEXNOW_KEY}.txt`,
     urlList: SITEMAPS,
   });
   return new Promise((resolve) => {

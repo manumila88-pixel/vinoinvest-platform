@@ -10,10 +10,11 @@
 import { fetchRSSNews } from "./rssNewsService.js";
 import { cachedCall } from "./aiOptimizer.js";
 import cron from "node-cron";
+import { SITE_URL } from "../config/site.js";
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM_EMAIL = "VinoInvest <noreply@vinoinvest.com>";
-const BASE_URL = process.env.FRONTEND_URL || "https://vinoinvest-platform.vercel.app";
+const BASE_URL = process.env.FRONTEND_URL || SITE_URL;
 
 let pool = null;
 let allWines = [];

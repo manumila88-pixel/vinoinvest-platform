@@ -11,6 +11,7 @@ import {
   getEmailAnalytics,
   ensureEmailFlowTables,
 } from "../services/emailFlowService.js";
+import { SITE_URL } from "../config/site.js";
 
 const router = express.Router();
 let pool;
@@ -59,7 +60,7 @@ router.get("/track/click/:flowId", async (req, res) => {
   if (flowId && !isNaN(flowId)) {
     trackEmailClick(parseInt(flowId)).catch(() => {});
   }
-  const safeUrl = url && url.startsWith("https://vinoinvest") ? url : "https://vinoinvest-platform.vercel.app";
+  const safeUrl = url && url.startsWith("https://vinoinvest") ? url : SITE_URL;
   res.redirect(302, safeUrl);
 });
 
@@ -156,7 +157,7 @@ router.post("/frequency", async (req, res) => {
     `UPDATE users SET notification_frequency = $1 WHERE email = $2`,
     [freq, email]
   ).catch(() => {});
-  res.redirect(302, `https://vinoinvest-platform.vercel.app/?msg=preferences_updated`);
+  res.redirect(302, `${SITE_URL}/?msg=preferences_updated`);
 });
 
 export default router;

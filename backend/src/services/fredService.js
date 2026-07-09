@@ -5,8 +5,10 @@
  * Falls back to long-run historical averages if FRED unreachable.
  */
 
+import { SITE_URL } from "../config/site.js";
+
 const FRED_CSV = "https://fred.stlouisfed.org/graph/fredgraph.csv";
-const UA = "VinoInvest/1.0 (+https://vinoinvest-platform.vercel.app)";
+const UA = `VinoInvest/1.0 (+${SITE_URL})`;
 
 const FALLBACK = {
   sp500Return12m: 0.117,

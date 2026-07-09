@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { SITE_URL } from "../config/site.js";
 
 const router = Router();
 
@@ -11,15 +12,15 @@ router.get("/", (_req, res) => {
   res.json({
     securityPolicy: {
       version: "1.0",
-      url: "https://vinoinvest-platform.vercel.app/security",
+      url: `${SITE_URL}/security`,
       contact: "security@vinoinvest.com",
       pgp: null,
       preferredLanguages: ["it", "en"],
-      canonical: "https://vinoinvest-platform.vercel.app/.well-known/security.txt"
+      canonical: `${SITE_URL}/.well-known/security.txt`
     },
     bugBounty: {
       scope: [
-        "https://vinoinvest-platform.vercel.app",
+        SITE_URL,
         "https://vinoinvest-backend-2.onrender.com"
       ],
       outOfScope: [

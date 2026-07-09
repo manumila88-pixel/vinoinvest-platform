@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { SITE_URL } from "../lib/constants";
 
 // Slugs and titles from BLOG_POSTS in backend/src/data/blogPosts.js
 const ARTICLES = [
@@ -138,6 +139,13 @@ export default function BlogIndex() {
       <Helmet>
         <title>Wine Investment Blog | VinoInvest</title>
         <meta name="description" content="Articoli su investimento nel vino: guide fiscali, analisi di mercato, strategie di portfolio e piattaforme. Aggiornati settimanalmente." />
+        <link rel="canonical" href={`${SITE_URL}/blog`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Wine Investment Blog | VinoInvest" />
+        <meta property="og:description" content="Articoli su investimento nel vino: guide fiscali, analisi di mercato, strategie di portfolio e piattaforme." />
+        <meta property="og:url" content={`${SITE_URL}/blog`} />
+        <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
+        <meta property="og:site_name" content="VinoInvest" />
       </Helmet>
 
       {/* Header */}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { API } from "../lib/constants";
+import { API, SITE_URL } from "../lib/constants";
 
 const REGIONS = [
   { name: "Bordeaux", country: "Francia", flag: "🇫🇷", description: "Patria dei Grands Crus Classés. Château Lafite, Margaux, Pétrus. I vini più scambiati al mondo sul mercato Liv-ex.", keywords: "bordeaux investimento, château lafite prezzo, cabernet sauvignon investimento" },
@@ -55,7 +55,7 @@ export default function Regioni() {
         <title>Regioni Vinicole per Investimento | VinoInvest</title>
         <meta name="description" content="Guida completa alle regioni vinicole per investimento: Bordeaux, Borgogna, Toscana, Piemonte, Champagne, Napa Valley. Prezzi, score AI e performance storiche." />
         <meta name="keywords" content="regioni vinicole investimento, bordeaux investimento, borgogna investimento, toscana investimento, barolo investimento, champagne investimento" />
-        <link rel="canonical" href="https://vinoinvest-platform.vercel.app/regioni" />
+        <link rel="canonical" href={`${SITE_URL}/regioni`} />
         <script type="application/ld+json">{JSON.stringify(SCHEMA)}</script>
       </Helmet>
 

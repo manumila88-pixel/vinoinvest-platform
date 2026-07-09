@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { getEducationTopicsForKnowledgeBase } from "../services/educationService.js";
+import { SITE_URL } from "../config/site.js";
 
 const router = Router();
 
@@ -15,12 +16,12 @@ router.get("/", (_req, res) => {
     "@context": "https://schema.org",
     "@type": "KnowledgeBase",
     "name": "VinoInvest Wine Investment Knowledge Base",
-    "url": "https://vinoinvest-platform.vercel.app",
+    "url": SITE_URL,
     "description": "Comprehensive knowledge base for fine wine investment, covering market data, AI scoring methodology, risk assessment, and investment strategies.",
     "publisher": {
       "@type": "Organization",
       "name": "VinoInvest",
-      "url": "https://vinoinvest-platform.vercel.app",
+      "url": SITE_URL,
       "expertise": ["Fine Wine Investment", "Wine Market Analysis", "Portfolio Management", "Wine Valuation"]
     },
     "dateModified": new Date().toISOString().split("T")[0],
@@ -28,7 +29,7 @@ router.get("/", (_req, res) => {
       {
         "name": "AI Score Methodology",
         "description": "VinoInvest calculates AI Scores by combining critic ratings (Parker, Wine Spectator, Decanter), Liv-ex market data, vintage quality scores, producer reputation, regional factors, and liquidity metrics. Score range: 0-100.",
-        "url": "https://vinoinvest-platform.vercel.app/metodologia"
+        "url": `${SITE_URL}/metodologia`
       },
       {
         "name": "Fine Wine as an Asset Class",

@@ -5,6 +5,7 @@ import Bottle3D from "./components/Bottle3D";
 import PriceHistoryChart from "./components/PriceHistoryChart";
 import SourceBadge from "./components/SourceBadge";
 import { getWineAwards } from "./data/awards";
+import { SITE_URL } from "./lib/constants";
 
 function SimilarWines({ wine, onWineClick }) {
   const [similar, setSimilar] = useState([]);
@@ -530,10 +531,10 @@ export default function WineBottle3DModal({ wine, onClose }) {
   };
 
   const breadcrumbItems = [
-    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://vinoinvest-platform.vercel.app/" },
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": `${SITE_URL}/` },
   ];
-  if (wine.region) breadcrumbItems.push({ "@type": "ListItem", "position": 2, "name": wine.region, "item": `https://vinoinvest-platform.vercel.app/?region=${encodeURIComponent(wine.region)}` });
-  if (wine.producer) breadcrumbItems.push({ "@type": "ListItem", "position": breadcrumbItems.length + 1, "name": wine.producer, "item": `https://vinoinvest-platform.vercel.app/?producer=${encodeURIComponent(wine.producer)}` });
+  if (wine.region) breadcrumbItems.push({ "@type": "ListItem", "position": 2, "name": wine.region, "item": `${SITE_URL}/?region=${encodeURIComponent(wine.region)}` });
+  if (wine.producer) breadcrumbItems.push({ "@type": "ListItem", "position": breadcrumbItems.length + 1, "name": wine.producer, "item": `${SITE_URL}/?producer=${encodeURIComponent(wine.producer)}` });
   breadcrumbItems.push({ "@type": "ListItem", "position": breadcrumbItems.length + 1, "name": wineTitle });
 
   const breadcrumbSchema = {
@@ -586,11 +587,11 @@ export default function WineBottle3DModal({ wine, onClose }) {
         <meta property="og:image" content={wineImage} />
         <meta property="og:type" content="product" />
         <meta property="og:site_name" content="VinoInvest" />
-        <link rel="alternate" hreflang="it" href={`https://vinoinvest-platform.vercel.app/?wine=${encodeURIComponent(wine.name)}&lang=it`} />
-        <link rel="alternate" hreflang="en" href={`https://vinoinvest-platform.vercel.app/?wine=${encodeURIComponent(wine.name)}&lang=en`} />
-        <link rel="alternate" hreflang="fr" href={`https://vinoinvest-platform.vercel.app/?wine=${encodeURIComponent(wine.name)}&lang=fr`} />
-        <link rel="alternate" hreflang="de" href={`https://vinoinvest-platform.vercel.app/?wine=${encodeURIComponent(wine.name)}&lang=de`} />
-        <link rel="alternate" hreflang="es" href={`https://vinoinvest-platform.vercel.app/?wine=${encodeURIComponent(wine.name)}&lang=es`} />
+        <link rel="alternate" hreflang="it" href={`${SITE_URL}/?wine=${encodeURIComponent(wine.name)}&lang=it`} />
+        <link rel="alternate" hreflang="en" href={`${SITE_URL}/?wine=${encodeURIComponent(wine.name)}&lang=en`} />
+        <link rel="alternate" hreflang="fr" href={`${SITE_URL}/?wine=${encodeURIComponent(wine.name)}&lang=fr`} />
+        <link rel="alternate" hreflang="de" href={`${SITE_URL}/?wine=${encodeURIComponent(wine.name)}&lang=de`} />
+        <link rel="alternate" hreflang="es" href={`${SITE_URL}/?wine=${encodeURIComponent(wine.name)}&lang=es`} />
         <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>

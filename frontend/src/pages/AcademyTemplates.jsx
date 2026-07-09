@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { SITE_HOST } from "../lib/constants";
 
 const TEMPLATES = [
   {
@@ -752,7 +753,7 @@ Firma Advisor: _______________    Data: _______________
 Firma Cliente per ricevuta: _______________    Data: _______________
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-VinoInvest Professional Platform | vinoinvest-platform.vercel.app
+VinoInvest Professional Platform | ${SITE_HOST}
 `,
   },
   {
@@ -1094,7 +1095,7 @@ Firma Advisor: _______________    Firma Cliente (ricevuta): _______________
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Documento ad uso interno. Conservare nel dossier cliente.
-VinoInvest Professional Platform | vinoinvest-platform.vercel.app
+VinoInvest Professional Platform | ${SITE_HOST}
 `,
   },
 ];

@@ -1,6 +1,7 @@
 import express from "express";
 import { requireAuth } from "../middleware/auth.js";
 import crypto from "crypto";
+import { SITE_URL } from "../config/site.js";
 
 const router = express.Router();
 let pool;
@@ -38,7 +39,7 @@ router.get("/my", requireAuth, async (req, res) => {
       uses: ref.uses,
       conversions: convRows.length,
       referrals: convRows,
-      share_url: `https://vinoinvest-platform.vercel.app/?ref=${ref.code}`,
+      share_url: `${SITE_URL}/?ref=${ref.code}`,
     });
   } catch (e) {
     res.status(500).json({ error: e.message });

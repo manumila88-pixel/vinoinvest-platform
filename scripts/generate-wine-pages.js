@@ -13,13 +13,11 @@ import { TOP_WINES } from "./wine-catalog.js";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 const OUT_DIR = join(ROOT, "frontend", "public", "vini");
-const BASE_URL = "https://vinoinvest-platform.vercel.app";
+// Base URL centralizzato: override con SITE_URL env, fallback aggiornabile via scripts/set-site-url.js
+const BASE_URL = (process.env.SITE_URL || "https://vinoinvest-platform.vercel.app").replace(/\/$/, "");
 const BACKEND_URL = "https://vinoinvest-backend-2.onrender.com";
 
 if (!existsSync(OUT_DIR)) mkdirSync(OUT_DIR, { recursive: true });
-
-const LANGS = ["it","en","fr","de","es","pt","zh","ja","ko","ar"];
-const LANG_NAMES = { it:"Italiano",en:"English",fr:"Français",de:"Deutsch",es:"Español",pt:"Português",zh:"中文",ja:"日本語",ko:"한국어",ar:"العربية" };
 
 function slug(s) {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -58,7 +56,9 @@ function faqs(wine) {
 
 function htmlPage(wine) {
   const pageUrl = `${BASE_URL}/vini/${wine.id}.html`;
-  const canonicalUrl = `${BASE_URL}/vini/${wine.id}`;
+  // Canonical DEVE essere self-referencing: /vini/x (senza .html) non esiste come
+  // file statico e via rewrite Vercel servirebbe la SPA, non questa pagina.
+  const canonicalUrl = pageUrl;
   const appUrl = `${BASE_URL}/?wine=${wine.id}`;
   const desc = investmentDescription(wine);
   const title = `${wine.name} — Prezzo, Investimento & AI Score | VinoInvest`;
@@ -81,20 +81,13 @@ function htmlPage(wine) {
     "description": desc,
     "brand": { "@type": "Brand", "name": wine.producer },
     "category": wine.type,
+    "image": `${BASE_URL}/og-image.jpg`,
     "offers": {
-      "@type": "AggregateOffer",
-      "lowPrice": (wine.priceEur * 0.92).toFixed(0),
-      "highPrice": (wine.priceEur * 1.08).toFixed(0),
+      "@type": "Offer",
+      "price": wine.priceEur,
       "priceCurrency": "EUR",
-      "offerCount": "12",
-      "availability": "https://schema.org/InStock"
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": wine.criticScore,
-      "bestRating": 100,
-      "ratingCount": 847,
-      "reviewCount": 312
+      "availability": "https://schema.org/InStock",
+      "url": pageUrl
     },
     "additionalProperty": [
       { "@type": "PropertyValue", "name": "vintage", "value": wine.vintage },
@@ -115,10 +108,6 @@ function htmlPage(wine) {
       { "@type": "ListItem", "position": 4, "name": wine.name, "item": canonicalUrl }
     ]
   };
-
-  const hreflangLinks = LANGS.map(l =>
-    `  <link rel="alternate" hreflang="${l}" href="${BASE_URL}/vini/${wine.id}.html?lang=${l}">`
-  ).join("\n");
 
   const faqHtml = faqList.map(f => `
     <div class="faq-item">
@@ -149,19 +138,17 @@ function htmlPage(wine) {
   <meta property="og:title" content="${wine.name} — Wine Investment | VinoInvest">
   <meta property="og:description" content="${desc}">
   <meta property="og:url" content="${pageUrl}">
+  <meta property="og:image" content="${BASE_URL}/og-image.jpg">
   <meta property="og:site_name" content="VinoInvest">
   <meta property="og:locale" content="it_IT">
   <meta property="product:price:amount" content="${wine.priceEur}">
   <meta property="product:price:currency" content="EUR">
 
   <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${wine.name} — AI Score ${wine.criticScore}/100">
   <meta name="twitter:description" content="${desc}">
-
-  <!-- hreflang -->
-${hreflangLinks}
-  <link rel="alternate" hreflang="x-default" href="${canonicalUrl}">
+  <meta name="twitter:image" content="${BASE_URL}/og-image.jpg">
 
   <!-- Structured Data -->
   <script type="application/ld+json">${JSON.stringify(productSchema)}</script>
@@ -316,7 +303,9 @@ ${urls.map(u => `  <url>
 
 writeFileSync(join(ROOT, "frontend", "public", "sitemap-wines.xml"), sitemapXml, "utf8");
 
-// Update sitemap-index.xml
+// Sitemap index: sitemap.xml è l'index canonico (referenziato da robots.txt);
+// sitemap-index.xml è mantenuto identico per retrocompatibilità.
+// DEVE includere tutte e tre le sitemap figlie (static, wines, blog).
 const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
@@ -327,11 +316,16 @@ const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
     <loc>${BASE_URL}/sitemap-wines.xml</loc>
     <lastmod>${today}</lastmod>
   </sitemap>
+  <sitemap>
+    <loc>${BASE_URL}/sitemap-blog.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
 </sitemapindex>`;
 
 writeFileSync(join(ROOT, "frontend", "public", "sitemap-index.xml"), sitemapIndex, "utf8");
+writeFileSync(join(ROOT, "frontend", "public", "sitemap.xml"), sitemapIndex, "utf8");
 
 console.log(`✅ Generated ${count} static wine pages in frontend/public/vini/`);
 console.log(`✅ Generated sitemap-wines.xml with ${urls.length} URLs`);
-console.log(`✅ Generated sitemap-index.xml`);
+console.log(`✅ Generated sitemap.xml + sitemap-index.xml (static + wines + blog)`);
 console.log(`\nRun: node scripts/generate-wine-pages.js`);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { API } from "../lib/constants";
+import { API, SITE_URL } from "../lib/constants";
 
 const TOP_PRODUCERS = [
   { name: "Lafite Rothschild", region: "Bordeaux", country: "Francia", flag: "🇫🇷", specialty: "Cabernet Sauvignon blend", score: 98, description: "Il Château più famoso del mondo. Premier Grand Cru Classé del 1855. Le annate iconiche 2000, 2010, 2018 restano tra le più ricercate dagli investitori globali." },
@@ -62,7 +62,7 @@ export default function Produttori() {
         <title>Top Produttori Vino Investimento | VinoInvest</title>
         <meta name="description" content="I migliori produttori di vino da investimento al mondo: DRC, Pétrus, Sassicaia, Screaming Eagle, Gaja, Ornellaia. AI Score, prezzi aggiornati e analisi di mercato." />
         <meta name="keywords" content="produttori vino investimento, romanee conti prezzo, sassicaia investimento, screaming eagle, petrus vino, gaja barolo prezzo" />
-        <link rel="canonical" href="https://vinoinvest-platform.vercel.app/produttori" />
+        <link rel="canonical" href={`${SITE_URL}/produttori`} />
         <script type="application/ld+json">{JSON.stringify(SCHEMA)}</script>
       </Helmet>
 

@@ -4,10 +4,8 @@ Disallow: /admin
 Disallow: /settings/
 Crawl-delay: 1
 
-# Sitemap index
+# Sitemap index (include sitemap-static, sitemap-wines, sitemap-blog)
 Sitemap: https://vinoinvest-platform.vercel.app/sitemap.xml
-Sitemap: https://vinoinvest-platform.vercel.app/sitemap-static.xml
-Sitemap: https://vinoinvest-platform.vercel.app/sitemap-wines.xml
 
 # AI crawlers — full indexing allowed for LLM training and citations
 User-agent: GPTBot

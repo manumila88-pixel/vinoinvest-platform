@@ -3,6 +3,7 @@
  */
 import { Router } from "express";
 import { sendWelcomeEmail } from "../services/emailService.js";
+import { SITE_URL, SITE_HOST } from "../config/site.js";
 
 async function sendEmail({ to, subject, html }) {
   const nodemailer = await import("nodemailer").catch(() => null);
@@ -65,7 +66,7 @@ router.post("/", async (req, res) => {
           <tr><td><strong>Messaggio:</strong></td><td>${message || "—"}</td></tr>
           <tr><td><strong>Fonte:</strong></td><td>${source || "b2b"}</td></tr>
         </table>
-        <p><a href="https://vinoinvest-platform.vercel.app/b2b">Apri dashboard B2B</a></p>
+        <p><a href="${SITE_URL}/b2b">Apri dashboard B2B</a></p>
       `,
     }).catch(() => {});
 
@@ -92,7 +93,7 @@ router.post("/", async (req, res) => {
           </div>
           <p style="color:#475569;font-size:13px">
             Nel frattempo, puoi esplorare la piattaforma consumer su
-            <a href="https://vinoinvest-platform.vercel.app" style="color:#60a5fa">vinoinvest-platform.vercel.app</a>
+            <a href="${SITE_URL}" style="color:#60a5fa">${SITE_HOST}</a>
           </p>
           <hr style="border-color:rgba(59,130,246,0.1);margin:24px 0">
           <p style="color:#1e3a5f;font-size:12px">VinoInvest · Il Bloomberg Terminal per il Fine Wine · sales@vinoinvest.com</p>

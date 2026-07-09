@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { SITE_URL } from "../lib/constants";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
 
@@ -60,16 +61,16 @@ export default function B2BGuide() {
       <Helmet>
         <title>{post.title} | VinoInvest Professional</title>
         <meta name="description" content={post.excerpt || post.meta_description || post.title} />
-        <link rel="canonical" href={`https://vinoinvest-platform.vercel.app/b2b/guide/${slug}`} />
+        <link rel="canonical" href={`${SITE_URL}/b2b/guide/${slug}`} />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Article",
           "headline": post.title,
           "description": post.excerpt || post.meta_description,
           "author": { "@type": "Organization", "name": "VinoInvest" },
-          "publisher": { "@type": "Organization", "name": "VinoInvest", "url": "https://vinoinvest-platform.vercel.app" },
+          "publisher": { "@type": "Organization", "name": "VinoInvest", "url": SITE_URL },
           "datePublished": post.published_at,
-          "url": `https://vinoinvest-platform.vercel.app/b2b/guide/${slug}`,
+          "url": `${SITE_URL}/b2b/guide/${slug}`,
         })}</script>
       </Helmet>
 

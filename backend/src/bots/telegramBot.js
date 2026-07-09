@@ -12,6 +12,7 @@
  * /help      — Command list
  */
 import TelegramBot from "node-telegram-bot-api";
+import { SITE_URL, SITE_HOST } from "../config/site.js";
 
 let bot = null;
 let allWinesRef = [];
@@ -45,7 +46,7 @@ Sono il tuo assistente per investimenti in vino pregiato.
 /index — VinoInvest Index
 /help — Aiuto
 
-🌐 Visita: vinoinvest-platform.vercel.app`, { parse_mode: "Markdown" });
+🌐 Visita: ${SITE_HOST}`, { parse_mode: "Markdown" });
   });
 
   bot.onText(/\/help/, (msg) => {
@@ -63,7 +64,7 @@ Sono il tuo assistente per investimenti in vino pregiato.
 /vintage bordeaux 2015
 /vintage barolo 2019
 
-📱 App completa: vinoinvest-platform.vercel.app`, { parse_mode: "Markdown" });
+📱 App completa: ${SITE_HOST}`, { parse_mode: "Markdown" });
   });
 
   bot.onText(/\/price (.+)/, async (msg, match) => {
@@ -84,7 +85,7 @@ ${signal}
 📍 ${wine.region || ""} ${wine.country ? `(${wine.country})` : ""}
 
 🔗 [Vedi su Wine-Searcher](https://www.wine-searcher.com/find/${encodeURIComponent(wine.name)}/${wine.vintage || ""}?utm_source=vinoinvest_bot)
-📱 [Analisi completa](https://vinoinvest-platform.vercel.app)`, { parse_mode: "Markdown", disable_web_page_preview: true });
+📱 [Analisi completa](${SITE_URL})`, { parse_mode: "Markdown", disable_web_page_preview: true });
   });
 
   bot.onText(/\/score (.+)/, async (msg, match) => {
@@ -106,7 +107,7 @@ Rischio: ${wine.risk || "Medio"}
 Trend: ${wine.marketTrend || wine.market_trend || "Stabile"}
 
 💡 Score calcolato su: rating critico, annata, produttore, trend di mercato e rischio.
-📱 [Portfolio completo](https://vinoinvest-platform.vercel.app)`, { parse_mode: "Markdown" });
+📱 [Portfolio completo](${SITE_URL})`, { parse_mode: "Markdown" });
   });
 
   bot.onText(/\/vintage (\w+) (\d{4})/, async (msg, match) => {
@@ -166,7 +167,7 @@ vs benchmark (1 anno):
 • Oro: +${idx.benchmark.gold_1y}%
 • Vino: ${idx.changes["1Y"] > 0 ? "+" : ""}${idx.changes["1Y"]}%
 
-📱 [Grafico completo](https://vinoinvest-platform.vercel.app)`, { parse_mode: "Markdown" });
+📱 [Grafico completo](${SITE_URL})`, { parse_mode: "Markdown" });
     } catch {
       bot.sendMessage(msg.chat.id, "📊 Index temporaneamente non disponibile.");
     }

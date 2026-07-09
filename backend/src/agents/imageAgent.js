@@ -1,9 +1,10 @@
 import cron from "node-cron";
+import { SITE_URL } from "../config/site.js";
 
 let pool = null;
 export function setImagePool(p) { pool = p; }
 
-const UA = "VinoInvest/1.0 (manumila88@gmail.com; https://vinoinvest-platform.vercel.app)";
+const UA = `VinoInvest/1.0 (manumila88@gmail.com; ${SITE_URL})`;
 
 async function fetchJson(url, timeout = 6000) {
   const r = await fetch(url, {

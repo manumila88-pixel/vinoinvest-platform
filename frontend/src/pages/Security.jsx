@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { SITE_URL, SITE_HOST } from "../lib/constants";
 
 const OWASP = [
   { id: "A01", name: "Broken Access Control", status: "Mitigato", color: "#34d399", notes: "requireAuth / requireAdmin middleware su tutte le route protette. Role-based access per org members." },
@@ -39,7 +40,7 @@ export default function Security() {
       <Helmet>
         <title>Sicurezza & Bug Bounty | VinoInvest — Security Policy Professionale</title>
         <meta name="description" content="VinoInvest security policy: OWASP Top 10 compliance, GDPR, bug bounty program, security headers. Report vulnerabilità responsabilmente." />
-        <link rel="canonical" href="https://vinoinvest-platform.vercel.app/security" />
+        <link rel="canonical" href={`${SITE_URL}/security`} />
       </Helmet>
 
       {/* Nav */}
@@ -108,7 +109,7 @@ export default function Security() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div style={{ background: "#0f1c2e", border: "1px solid rgba(52,211,153,0.2)", borderRadius: 12, padding: "20px 24px" }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: "#34d399", marginBottom: 12 }}>✓ In scope</div>
-              {["vinoinvest-platform.vercel.app", "vinoinvest-backend-2.onrender.com", "API pubbliche (/api/v1/*)", "Endpoint autenticati (/api/organizations/*, /api/client-portfolios/*)"].map(s => (
+              {[SITE_HOST, "vinoinvest-backend-2.onrender.com", "API pubbliche (/api/v1/*)", "Endpoint autenticati (/api/organizations/*, /api/client-portfolios/*)"].map(s => (
                 <div key={s} style={{ fontSize: 13, color: "#94a3b8", marginBottom: 8, paddingLeft: 12 }}>{s}</div>
               ))}
             </div>

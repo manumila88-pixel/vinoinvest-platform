@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { SITE_URL } from "../config/site.js";
 
 const router = Router();
 let winesRef = [];
@@ -69,7 +70,7 @@ router.get("/schema/organization", (_req, res) => {
     "logo": "https://vinoinvest.com/logo.png",
     "description": "The Bloomberg Terminal for Fine Wine Investment — data-driven platform for wine investors",
     "sameAs": [
-      "https://vinoinvest-platform.vercel.app",
+      SITE_URL,
     ],
     "contactPoint": {
       "@type": "ContactPoint",

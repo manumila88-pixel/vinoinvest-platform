@@ -2,7 +2,7 @@
 
 > Questo file è il CERVELLO del progetto. Non si perde niente perché è scritto qui.
 > REGOLA: ogni agente lo LEGGE all'inizio e lo AGGIORNA alla fine di ogni sessione.
-> Ultimo aggiornamento: 7 luglio 2026 (sessione SEO / preparazione cambio dominio)
+> Ultimo aggiornamento: 9 luglio 2026 (audit backend flusso pagamenti/abbonamenti)
 
 ---
 
@@ -190,6 +190,77 @@
       verificare con commercialista fiscalita-vino (quadro RW, "6 anni") e
       successione; decidere su Umami (policy lo dichiara ma è spento).
 
+### Sessione 7-9 luglio 2026 (BACKEND — audit "utente sconosciuto → abbonato pagante")
+Scope: solo backend/ + STATO. Testato in locale contro il DB reale (server su porta
+3399), 118 smoke test passano, dati di test rimossi dal DB dopo la verifica.
+
+- [x] **Webhook Stripe riscritto** (routes/payments.js) — prima gestiva SOLO
+      checkout.session.completed e subscription.deleted; ora copre tutto il ciclo:
+      · checkout.session.completed → attivazione (email anche da customer_details)
+      · invoice.paid / invoice.payment_succeeded → rinnovo confermato
+      · invoice.payment_failed (carta scaduta/fondi insufficienti) → status
+        past_due; l'accesso resta finché Stripe ritenta l'addebito
+      · customer.subscription.updated → sync stato (unpaid/canceled → downgrade)
+      · customer.subscription.deleted → downgrade definitivo a free
+      Idempotenza + audit log su nuova tabella payment_events (ogni evento
+      registrato una volta, outcome loggato). Se la scrittura DB fallisce risponde
+      500 → Stripe RITENTA la consegna (prima rispondeva 200 e l'evento era perso).
+      Fail-closed se STRIPE_WEBHOOK_SECRET manca. Piano propagato in
+      subscription_data.metadata così rinnovi/cancellazioni sanno il piano.
+      VERIFICATO E2E con eventi firmati (src/test/webhookE2E.mjs): attivazione →
+      duplicato ignorato → failed (accesso resta) → rinnovo → unpaid (features
+      azzerate) → cancellazione (accesso corso pro negato). Tutti i passaggi OK.
+- [x] **SQL injection corretta** (jobs/emailFlowService.js → enqueueUserFlow):
+      email/nome arrivavano da POST /api/auth/login-result e finivano interpolati
+      crudi nella INSERT. Ora query parametrizzata. Grep su tutto il backend:
+      nessun'altra query interpolata.
+- [x] **PayPal: buco di prezzo + attivazione mancante** — prima l'importo lo
+      decideva il client (pagare €0.01 per enterprise era possibile) e il capture
+      NON attivava mai l'abbonamento (pagavi e restavi free). Ora: listino
+      server-side (PLAN_PRICES), importo validato contro il piano, tabella
+      paypal_orders, al capture COMPLETED l'abbonamento si attiva nel DB.
+      VERIFICATO: importo taroccato → 400.
+      CAVEAT frontend: PaymentModal non passa l'email su create-order → si usa
+      l'email del payer PayPal, che può differire dall'account VinoInvest.
+- [x] **Crypto (NOWPayments): aggiunto endpoint IPN** /api/payments/crypto/ipn
+      con verifica firma HMAC-SHA512 — prima i pagamenti crypto non attivavano
+      MAI l'abbonamento. Richiede NOWPAYMENTS_IPN_SECRET su Render (fail-closed
+      senza: VERIFICATO → 500).
+- [x] **requireAuth fail-closed** (middleware/auth.js): se Supabase non è
+      configurato ora risponde 503 — prima faceva next() e tutti gli endpoint
+      "protetti" restavano aperti a chiunque.
+- [x] **Paywall verificato con curl** (utente free / senza token):
+      /api/subscriptions/status → active:false · /api/academy/access
+      courseLevel=professional → hasAccess:false · /api/user-prefs e
+      /api/email/price-alert senza token → 401. /status e /access ora
+      preferiscono l'email dal Bearer token quando presente (il query param
+      resta come fallback per compatibilità col frontend attuale).
+- [x] **Errori sanitizzati sui percorsi critici**: niente più err.message al
+      client su payments, subscriptions, academy, alerts, purchase,
+      emailPreferences, userPrefs e sulle route inline di server.js
+      (glossary/critics/newsletter/share/orders/email) — messaggio generico +
+      console.error server-side. Aggiunto try/catch alle route async che ne
+      erano prive sul percorso email/ordini. Il global error handler già non
+      esponeva stack trace.
+- [x] **Chiavi: zero hardcoded** (grep completo su sk_live/sk_test/whsec/re_/
+      sk-ant/postgres://): tutte da process.env. backend/.env (segreti reali)
+      non è tracciato in git ma mancava il .gitignore → creato backend/.gitignore.
+      Eccezione innocua: password del demo account in scripts/createDemoAccount.js.
+
+**LIMITI RESIDUI del funnel (richiedono lavoro frontend, fuori scope):**
+1. Il contenuto premium Academy vive nel bundle frontend (premiumContent.js,
+   premiumModules*.js): un utente tecnico può leggerlo dal JS senza pagare.
+   Paywall vero = servire quel contenuto da endpoint backend autenticato.
+2. Il frontend non invia il Bearer token su /academy/access e
+   /subscriptions/status → finché non lo invia, chiunque può interrogare lo
+   stato abbonamento di un'email altrui (info leak, non bypass del paywall).
+3. Quiz onboarding: vive solo in localStorage, nessuna persistenza backend.
+   Lo skip con profilo default funziona ma il profilo si perde cambiando device.
+4. Welcome email day-3/7/14/21: partono solo se il frontend chiama
+   /api/email-preferences/subscribe con source="signup" alla registrazione.
+5. ~90 occorrenze residue di err.message in route non critiche (non stack
+   trace) — priorità bassa, da bonificare a lotti.
+
 ## 5. APERTO / DA FARE (in ordine di priorità)
 - [ ] **[VERIFICA MANUALE RICHIESTA]** Market Intelligence: aprire /market-intelligence
       in incognito (sia da URL diretto che dal link sidebar B2B). Se ancora nero →
@@ -278,3 +349,46 @@ commit + push (deploy automatico).
   dopo ogni rigenerazione delle pagine.
 - `scripts/generate-og-image.mjs` — rigenera l'og-image placeholder
 - `xmllint --noout frontend/public/sitemap*.xml` — validazione XML sitemap
+
+## 10. CHECKLIST STRIPE TEST→LIVE (quando Manoel attiva le chiavi live)
+
+> Zero chiavi nel codice: il passaggio è SOLO variabili d'ambiente + 8 price ID
+> nel frontend. Ordine consigliato:
+
+### Render (backend) — Environment
+1. [ ] `STRIPE_SECRET_KEY` = `sk_live_...` (da dashboard.stripe.com → Developers
+       → API keys, con toggle "Test mode" SPENTO)
+2. [ ] `STRIPE_WEBHOOK_SECRET` = `whsec_...` — creare PRIMA il webhook live:
+       Stripe dashboard (live mode) → Developers → Webhooks → Add endpoint →
+       URL `https://vinoinvest-backend-2.onrender.com/api/payments/stripe/webhook`
+       → eventi: `checkout.session.completed`, `invoice.paid`,
+       `invoice.payment_succeeded`, `invoice.payment_failed`,
+       `customer.subscription.updated`, `customer.subscription.deleted`.
+       Il secret whsec_ del webhook TEST non vale per il live.
+3. [ ] `FRONTEND_URL` — verificare che punti al dominio attivo (success/cancel
+       URL del checkout tornano lì)
+4. [ ] PayPal live (se si attiva): `PAYPAL_CLIENT_ID` + `PAYPAL_CLIENT_SECRET`
+       (credenziali LIVE, non sandbox) + `PAYPAL_BASE_URL=https://api-m.paypal.com`
+       (senza questa resta in sandbox!)
+5. [ ] Crypto (se si attiva): `NOWPAYMENTS_API_KEY` + `NOWPAYMENTS_IPN_SECRET`
+       (da nowpayments.io → Settings → IPN) — senza IPN secret i pagamenti
+       crypto NON attivano l'abbonamento (fail-closed voluto)
+6. [ ] `BACKEND_URL=https://vinoinvest-backend-2.onrender.com` (usato per
+       l'ipn_callback_url crypto)
+
+### Frontend (repo + Vercel)
+7. [ ] Creare i prodotti/prezzi in Stripe LIVE mode (i price_ test non esistono
+       in live) e sostituire gli 8 price ID in `frontend/src/pages/Pricing.jsx`
+       (stripePriceMonthly/stripePriceAnnual dei 4 piani; oggi due piani
+       riusano lo stesso ID annual — probabilmente da correggere in live) +
+       eventuali price ID in AcademyCourse.jsx.
+8. [ ] Commit + push → deploy Vercel.
+
+### Verifica post-switch (10 min)
+9. [ ] `GET /api/payments/stripe/mode` → deve dire `testMode:false`
+10. [ ] Acquisto reale con carta vera a piano Basic (€9) → controllare:
+        riga in `subscriptions` (active=true), riga in `payment_events`
+        (outcome activated:basic), accesso Academy investor sbloccato.
+11. [ ] Stripe dashboard → Webhooks → controllare che le consegne siano 200.
+12. [ ] Cancellare l'abbonamento di prova da Stripe → dopo il webhook l'utente
+        deve tornare free (active=false in subscriptions).
