@@ -25,7 +25,8 @@ router.get("/", requireAuth, async (req, res) => {
       investment_horizon: "3anni",
     });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    console.error("[emailPreferences]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
   }
 });
 
@@ -49,7 +50,8 @@ router.patch("/", requireAuth, async (req, res) => {
 
     res.json({ ok: true });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    console.error("[emailPreferences]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
   }
 });
 
@@ -64,7 +66,8 @@ router.post("/test", requireAuth, async (req, res) => {
 
     res.json({ ok: result.ok, id: result.id, error: result.error });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    console.error("[emailPreferences]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
   }
 });
 
@@ -103,7 +106,8 @@ router.post("/subscribe", async (req, res) => {
 
     res.json({ ok: true });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    console.error("[emailPreferences]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
   }
 });
 
@@ -117,7 +121,8 @@ router.post("/unsubscribe", async (req, res) => {
 
     res.json({ ok: true, message: "You have been unsubscribed." });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    console.error("[emailPreferences]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
   }
 });
 

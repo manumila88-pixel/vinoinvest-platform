@@ -48,7 +48,11 @@ function extractToken(req) {
 }
 
 export async function requireAuth(req, res, next) {
-  if (!supabase) return next();
+  // Fail closed: senza Supabase configurato gli endpoint protetti restano chiusi
+  if (!supabase) {
+    console.error("[auth] SUPABASE_URL/SUPABASE_ANON_KEY mancanti — endpoint protetto rifiutato");
+    return res.status(503).json({ error: "Authentication not configured" });
+  }
 
   const token = extractToken(req);
   if (!token) return res.status(401).json({ error: "Authentication required" });

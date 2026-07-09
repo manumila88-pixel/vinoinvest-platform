@@ -128,7 +128,8 @@ router.post("/import", async (req, res) => {
         [Date.now(), userId, wineId, Number(quantity), Number(price), purchaseDate || new Date().toISOString().slice(0, 10), new Date().toISOString()]
       );
     } catch (e) {
-      return res.status(500).json({ error: e.message });
+      console.error("[purchase]", e.message);
+      return res.status(500).json({ error: "Errore interno. Riprova." });
     }
   }
 

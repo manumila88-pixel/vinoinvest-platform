@@ -1,14 +1,16 @@
 import express from "express";
 import pg from "pg";
-import { ADMIN_EMAIL } from "../middleware/auth.js";
+import { ADMIN_EMAIL, optionalAuth } from "../middleware/auth.js";
 
 const router = express.Router();
 const { Pool } = pg;
 const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
 
 // GET /api/subscriptions/status?email=
-router.get("/status", async (req, res) => {
-  const { email } = req.query;
+// Con Bearer token valido l'email viene dal token; ?email= resta come fallback
+// per compatibilità col frontend attuale.
+router.get("/status", optionalAuth, async (req, res) => {
+  const email = req.user?.email || req.query.email;
   if (!email) return res.json({ active: false, plan: null });
 
   if (email === ADMIN_EMAIL) {

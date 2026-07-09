@@ -10,10 +10,11 @@
  */
 
 import cron from "node-cron";
+import { SITE_URL } from "../config/site.js";
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM_EMAIL = "VinoInvest <noreply@vinoinvest.com>";
-const BASE_URL = process.env.FRONTEND_URL || "https://vinoinvest-platform.vercel.app";
+const BASE_URL = process.env.FRONTEND_URL || SITE_URL;
 
 let _pool = null;
 export function setEmailFlowPool(p) { _pool = p; }
@@ -286,17 +287,21 @@ export async function enqueueUserFlow(email, firstName, userType = "b2c") {
   const schedule = userType === "b2b" ? ALL_B2B : ALL_B2C;
   const now = new Date();
 
-  const values = schedule.map(({ day }) => {
-    const sendAfter = new Date(now.getTime() + day * 86400000);
-    return `('${email}', '${firstName?.replace(/'/g, "''")}', '${userType}', ${day}, '${sendAfter.toISOString()}')`;
+  // Query parametrizzata: email/firstName arrivano dal client (login-result)
+  const placeholders = [];
+  const params = [];
+  schedule.forEach(({ day }, i) => {
+    const base = i * 5;
+    placeholders.push(`($${base + 1}, $${base + 2}, $${base + 3}, $${base + 4}, $${base + 5})`);
+    params.push(email, firstName || null, userType, day, new Date(now.getTime() + day * 86400000).toISOString());
   });
 
-  if (values.length) {
+  if (placeholders.length) {
     await _pool.query(`
       INSERT INTO email_flows(user_email, first_name, user_type, day_num, send_after)
-      VALUES ${values.join(",")}
+      VALUES ${placeholders.join(",")}
       ON CONFLICT DO NOTHING
-    `).catch(() => {});
+    `, params).catch(() => {});
   }
 }
 

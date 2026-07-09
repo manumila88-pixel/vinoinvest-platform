@@ -29,7 +29,8 @@ router.get("/", requireAuth, async (req, res) => {
     if (!rows.length) return res.json({ display_prefs: {}, wine_notes: {}, saved_filters: [] });
     res.json(rows[0]);
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    console.error("[userPrefs]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
   }
 });
 
@@ -62,7 +63,8 @@ router.post("/", requireAuth, async (req, res) => {
     );
     res.json({ ok: true });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    console.error("[userPrefs]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
   }
 });
 

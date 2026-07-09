@@ -1,7 +1,7 @@
 import express from "express";
 import pg from "pg";
 import crypto from "crypto";
-import { ADMIN_EMAIL, checkCourseAccess } from "../middleware/auth.js";
+import { ADMIN_EMAIL, checkCourseAccess, optionalAuth } from "../middleware/auth.js";
 import {
   getModules,
   getModuleById,
@@ -54,8 +54,12 @@ async function initAcademyTables() {
 initAcademyTables();
 
 // GET /api/academy/access?email=&courseLevel=  — check if user can access a course tier
-router.get("/access", async (req, res) => {
-  const { email, courseLevel } = req.query;
+// Se arriva un Bearer token valido, l'email viene presa dal token (non dal query
+// param, che è client-controlled). Il fallback ?email= resta per compatibilità
+// col frontend attuale che non invia il token su questa chiamata.
+router.get("/access", optionalAuth, async (req, res) => {
+  const email = req.user?.email || req.query.email;
+  const { courseLevel } = req.query;
   if (!email) return res.json({ hasAccess: false });
   try {
     const hasAccess = await checkCourseAccess(email, courseLevel || "investor", pool);
@@ -74,7 +78,8 @@ router.get("/progress/:userId", async (req, res) => {
     );
     res.json({ progress: r.rows });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    console.error("[academy]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
   }
 });
 
@@ -93,7 +98,8 @@ router.post("/progress", async (req, res) => {
     `, [userId, courseId, lessonId, quizScore || 0, xpEarned || 0]);
     res.json({ ok: true });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    console.error("[academy]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
   }
 });
 
@@ -124,7 +130,8 @@ router.post("/certificate", async (req, res) => {
 
     res.json({ code });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    console.error("[academy]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
   }
 });
 
@@ -135,7 +142,8 @@ router.get("/verify/:code", async (req, res) => {
     if (!r.rows.length) return res.status(404).json({ valid: false });
     res.json({ valid: true, certificate: r.rows[0] });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    console.error("[academy]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
   }
 });
 

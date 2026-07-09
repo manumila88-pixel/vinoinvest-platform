@@ -11,6 +11,7 @@ import { createRequire } from "module";
 const _require = createRequire(import.meta.url);
 const swaggerJsdoc = _require("swagger-jsdoc");
 const swaggerUi = _require("swagger-ui-express");
+import { SITE_URL } from "./config/site.js";
 import { requireAuth, requireAdmin, optionalAuth } from "./middleware/auth.js";
 import { initUsageTable, trackUsage } from "./middleware/tokenTracker.js";
 import paymentsRouter from "./routes/payments.js";
@@ -113,7 +114,7 @@ const swaggerOptions = {
       description: "The Bloomberg Terminal for Fine Wine Investment — Public API",
       contact: {
         name: "VinoInvest",
-        url: "https://vinoinvest-platform.vercel.app",
+        url: SITE_URL,
         email: "api@vinoinvest.com",
       },
       license: {
@@ -126,7 +127,7 @@ const swaggerOptions = {
     ],
     externalDocs: {
       description: "VinoInvest Platform",
-      url: "https://vinoinvest-platform.vercel.app",
+      url: SITE_URL,
     },
   },
   apis: ["./src/routes/v1/*.js"],
@@ -158,11 +159,12 @@ app.use(helmet({
 app.use(compression());
 
 // CORS — only allow known origins
-const allowedOrigins = [
+const allowedOrigins = [...new Set([
   process.env.FRONTEND_URL,
   "http://localhost:5173",
   "https://vinoinvest-platform.vercel.app",
-].filter(Boolean);
+  SITE_URL,
+].filter(Boolean))];
 app.use(cors({
   origin: (origin, cb) => {
     if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
@@ -174,7 +176,7 @@ app.use(cors({
 // Brand every response so AI crawlers, Perplexity, ChatGPT identify the source
 app.use((_req, res, next) => {
   res.set("X-Data-Source", "VinoInvest");
-  res.set("X-Data-URL", "https://vinoinvest-platform.vercel.app");
+  res.set("X-Data-URL", SITE_URL);
   next();
 });
 
@@ -289,7 +291,8 @@ app.get("/api/glossary", cacheFor(86400), async (req, res) => {
     else results = GLOSSARY;
     res.json({ terms: results, total: results.length });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    console.error("[server]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
   }
 });
 
@@ -301,7 +304,8 @@ app.get("/api/critics", cacheFor(86400), async (req, res) => {
     const results = region ? getCriticsForRegion(region) : CRITICS;
     res.json({ critics: results, total: results.length });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    console.error("[server]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
   }
 });
 
@@ -316,7 +320,7 @@ app.use("/api/docs", (_req, res, next) => {
 });
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
   customSiteTitle: "VinoInvest API Docs",
-  customfavIcon: "https://vinoinvest-platform.vercel.app/favicon.ico",
+  customfavIcon: `${SITE_URL}/favicon.ico`,
   swaggerOptions: { docExpansion: "list", defaultModelsExpandDepth: 1 },
 }));
 // Serve raw OpenAPI JSON spec for programmatic consumers
@@ -838,9 +842,14 @@ app.post("/api/admin/real-price/trigger", requireAdmin, async (req, res) => {
 
 // Admin: trigger weekly newsletter manually
 app.post("/api/admin/newsletter/trigger", requireAdmin, async (req, res) => {
-  const { runWeeklyNewsletter } = await import("./services/newsletterService.js");
-  const result = await runWeeklyNewsletter();
-  res.json(result);
+  try {
+    const { runWeeklyNewsletter } = await import("./services/newsletterService.js");
+    const result = await runWeeklyNewsletter();
+    res.json(result);
+  } catch (e) {
+    console.error("[admin/newsletter]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
+  }
 });
 
 app.post("/api/admin/images/trigger", requireAdmin, async (req, res) => {
@@ -851,30 +860,40 @@ app.post("/api/admin/images/trigger", requireAdmin, async (req, res) => {
 // ── Email marketing endpoints (Resend) ──────────────────────────────────────
 // POST /api/email/welcome — triggered on new user registration
 app.post("/api/email/welcome", optionalAuth, async (req, res) => {
-  const { to, name } = req.body;
-  if (!to) return res.status(400).json({ error: "Email required" });
-  const { sendWelcomeEmail } = await import("./services/emailService.js").catch(() => ({ sendWelcomeEmail: null }));
-  if (!sendWelcomeEmail) return res.json({ ok: false, reason: "email_service_unavailable" });
-  const result = await sendWelcomeEmail({ email: to, first_name: name });
-  res.json(result);
+  try {
+    const { to, name } = req.body;
+    if (!to) return res.status(400).json({ error: "Email required" });
+    const { sendWelcomeEmail } = await import("./services/emailService.js").catch(() => ({ sendWelcomeEmail: null }));
+    if (!sendWelcomeEmail) return res.json({ ok: false, reason: "email_service_unavailable" });
+    const result = await sendWelcomeEmail({ email: to, first_name: name });
+    res.json(result);
+  } catch (e) {
+    console.error("[email/welcome]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
+  }
 });
 
 // POST /api/email/price-alert — send price alert email
 app.post("/api/email/price-alert", requireAuth, async (req, res) => {
-  const { wineId, targetPrice, currentPrice } = req.body;
-  const userEmail = req.user?.email;
-  if (!wineId || !userEmail) return res.status(400).json({ error: "Missing fields" });
-  const wine = allWines.find(w => w.id === wineId || w.id === parseInt(wineId));
-  if (!wine) return res.status(404).json({ error: "Wine not found" });
-  const { sendPriceAlertEmail } = await import("./services/emailService.js").catch(() => ({ sendPriceAlertEmail: null }));
-  if (!sendPriceAlertEmail) return res.json({ ok: false, reason: "email_service_unavailable" });
-  const result = await sendPriceAlertEmail(
-    { email: userEmail, first_name: userEmail.split("@")[0] },
-    wine,
-    { target_price: targetPrice || wine.current_price },
-    parseFloat(currentPrice || wine.current_price)
-  );
-  res.json(result);
+  try {
+    const { wineId, targetPrice, currentPrice } = req.body;
+    const userEmail = req.user?.email;
+    if (!wineId || !userEmail) return res.status(400).json({ error: "Missing fields" });
+    const wine = allWines.find(w => w.id === wineId || w.id === parseInt(wineId));
+    if (!wine) return res.status(404).json({ error: "Wine not found" });
+    const { sendPriceAlertEmail } = await import("./services/emailService.js").catch(() => ({ sendPriceAlertEmail: null }));
+    if (!sendPriceAlertEmail) return res.json({ ok: false, reason: "email_service_unavailable" });
+    const result = await sendPriceAlertEmail(
+      { email: userEmail, first_name: userEmail.split("@")[0] },
+      wine,
+      { target_price: targetPrice || wine.current_price },
+      parseFloat(currentPrice || wine.current_price)
+    );
+    res.json(result);
+  } catch (e) {
+    console.error("[email/price-alert]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
+  }
 });
 
 // GET /api/email/subscribers — admin: list newsletter subscribers
@@ -886,7 +905,8 @@ app.get("/api/email/subscribers", requireAdmin, async (req, res) => {
     );
     res.json({ subscribers: rows, total: rows.length });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    console.error("[server]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
   }
 });
 
@@ -915,7 +935,8 @@ app.post("/api/portfolio/share", requireAuth, async (req, res) => {
     );
     res.json({ shareId, url: `/share/${shareId}` });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    console.error("[server]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
   }
 });
 
@@ -930,7 +951,8 @@ app.get("/api/portfolio/share/:id", async (req, res) => {
     if (!rows.length) return res.status(404).json({ error: "Portfolio not found or expired" });
     res.json({ holdings: rows[0].holdings, stats: rows[0].stats, sharedAt: rows[0].created_at });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    console.error("[server]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
   }
 });
 
@@ -1567,13 +1589,18 @@ app.post(
 );
 
 app.get("/api/orders", async (req, res) => {
-  const userId = req.query.userId || null;
-  if (userId) {
-    const userOrders = await getOrders(userId);
-    return res.json(userOrders);
+  try {
+    const userId = req.query.userId || null;
+    if (userId) {
+      const userOrders = await getOrders(userId);
+      return res.json(userOrders);
+    }
+    await loadOrdersFromDB();
+    res.json(orders);
+  } catch (e) {
+    console.error("[orders]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
   }
-  await loadOrdersFromDB();
-  res.json(orders);
 });
 
 app.post(
@@ -1770,7 +1797,7 @@ app.get("/sitemap-index.xml", (_req, res) => {
 
 // GET /sitemap-pages.xml — static pages with hreflang
 app.get("/sitemap-pages.xml", (_req, res) => {
-  const base = "https://vinoinvest-platform.vercel.app";
+  const base = SITE_URL;
   const today = new Date().toISOString().slice(0, 10);
   const langs = ["it", "en", "fr", "de", "es"];
   const urls = STATIC_PAGES.map(({ p, freq, pri }) => {
@@ -1787,7 +1814,7 @@ ${urls.join("\n")}
 
 // GET /sitemap-wines.xml — full wine catalog with image tags
 app.get("/sitemap-wines.xml", cacheFor(3600), (_req, res) => {
-  const base = "https://vinoinvest-platform.vercel.app";
+  const base = SITE_URL;
   const today = new Date().toISOString().slice(0, 10);
   const urls = allWines.slice(0, 50000).map(w => {
     const slug = (w.id || w.name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -1807,7 +1834,7 @@ ${urlsetClose()}`;
 
 // GET /sitemap-blog.xml — blog articles
 app.get("/sitemap-blog.xml", cacheFor(3600), (_req, res) => {
-  const base = "https://vinoinvest-platform.vercel.app";
+  const base = SITE_URL;
   const today = new Date().toISOString().slice(0, 10);
   const urls = BLOG_SLUGS.map(s =>
     `  <url>\n    <loc>${base}/blog/${s}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>`

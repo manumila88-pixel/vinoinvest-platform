@@ -66,7 +66,8 @@ router.post("/", async (req, res) => {
     res.json({ success: true, alert: rows[0] });
   } catch (e) {
     console.error("[alerts] Create error:", e.message);
-    res.status(500).json({ error: e.message });
+    console.error("[alerts]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
   }
 });
 
@@ -83,7 +84,8 @@ router.get("/:userId", async (req, res) => {
     res.json(rows);
   } catch (e) {
     console.error("[alerts] List error:", e.message);
-    res.status(500).json({ error: e.message });
+    console.error("[alerts]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
   }
 });
 
@@ -96,7 +98,8 @@ router.delete("/:alertId", async (req, res) => {
     res.json({ success: true });
   } catch (e) {
     console.error("[alerts] Delete error:", e.message);
-    res.status(500).json({ error: e.message });
+    console.error("[alerts]", e.message);
+    res.status(500).json({ error: "Errore interno. Riprova." });
   }
 });
 
