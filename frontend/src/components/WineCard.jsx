@@ -1,4 +1,5 @@
 import React, { memo, useState } from "react";
+import { motion } from "framer-motion";
 import WinePriceCompare from "./WinePriceCompare";
 import WineNotesButton from "./WineNotesButton";
 import { useTranslation } from "react-i18next";
@@ -105,6 +106,10 @@ const WineCard = memo(function WineCard({
   })();
 
   return (
+    <motion.div
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+    >
     <div
       className="wineCard fade-up vi-interactive"
       onMouseMove={onCardTilt}
@@ -223,6 +228,7 @@ const WineCard = memo(function WineCard({
         )}
       </div>
     </div>
+    </motion.div>
   );
 }, (prev, next) =>
   prev.wine === next.wine &&

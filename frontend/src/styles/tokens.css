@@ -30,6 +30,8 @@
   --vi-fs-xl:   1.125rem;   /*  18px */
   --vi-fs-2xl:  1.5rem;     /*  24px */
   --vi-fs-3xl:  1.875rem;   /*  30px */
+  --vi-fs-4xl:  2.25rem;    /*  36px */
+  --vi-fs-5xl:  3rem;       /*  48px */
 
   /* ── Radius ── */
   --vi-radius-sm:   8px;
@@ -40,6 +42,7 @@
   /* ── Elevation / Glow ── */
   --vi-elev-1: 0 1px 2px rgba(0, 0, 0, 0.4);
   --vi-elev-2: 0 12px 40px rgba(0, 0, 0, 0.55);
+  --vi-elev-3: 0 24px 80px rgba(0, 0, 0, 0.7), 0 8px 24px rgba(0, 0, 0, 0.5);
   --vi-glow:   0 0 0 1px var(--vi-accent), 0 0 24px var(--vi-accent-glow);
 
   /* ── Motion ── */
