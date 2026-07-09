@@ -213,7 +213,7 @@ export default function AcademyModule() {
       setModule(mod);
       if (mod) setAllModules(await m.getModulesForCourse(mod.courseId));
       setPremiumLoaded(true);
-    });
+    }).catch(() => setPremiumLoaded(true)); // chunk load failure → "Modulo non trovato" screen instead of infinite spinner
   }, [moduleId]);
 
   useEffect(() => {

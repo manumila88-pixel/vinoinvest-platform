@@ -145,11 +145,11 @@ export default function MarketSentiment() {
                 <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", paddingBottom: 12, borderBottom: i < 4 ? "1px solid rgba(30,41,59,0.3)" : "none" }}>
                   <span style={{ width: 8, height: 8, borderRadius: "50%", background: i % 2 === 0 ? "var(--vi-positive)" : "var(--vi-text-dim)", display: "inline-block", flexShrink: 0, marginTop: 5 }} />
                   <div>
-                    <a href={a.link} target="_blank" rel="noopener noreferrer" style={{ color: "#e2e8f0", textDecoration: "none", fontWeight: 600, fontSize: 14 }}>
+                    <a href={a.url || a.link} target="_blank" rel="noopener noreferrer" style={{ color: "#e2e8f0", textDecoration: "none", fontWeight: 600, fontSize: 14 }}>
                       {a.title}
                     </a>
                     <div style={{ fontSize: 11, color: "var(--vi-text-dim)", marginTop: 3 }}>
-                      {a.source} · {a.pubDate ? new Date(a.pubDate).toLocaleDateString("en-GB") : ""}
+                      {a.source?.name || (typeof a.source === "string" ? a.source : "")} · {(a.publishedAt || a.pubDate) ? new Date(a.publishedAt || a.pubDate).toLocaleDateString("en-GB") : ""}
                     </div>
                   </div>
                 </div>

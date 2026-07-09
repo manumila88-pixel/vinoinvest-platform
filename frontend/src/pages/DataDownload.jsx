@@ -114,7 +114,7 @@ Accessed: ${new Date().toISOString().split("T")[0]}`;
         </h2>
         <p style={{ color: "#94a3b8", fontSize: ".9rem", marginBottom: "1rem" }}>
           Accedi ai dati programmaticamente tramite la nostra API pubblica.
-          Documentazione completa su <a href="/api/docs" style={{ color: "#C9A227" }}>Swagger UI →</a>
+          Documentazione completa su <a href={`${BACKEND}/api/docs`} target="_blank" rel="noopener noreferrer" style={{ color: "#C9A227" }}>Swagger UI →</a>
         </p>
         <div style={{ background: "#0f172a", borderRadius: 8, padding: "1rem", fontFamily: "monospace", fontSize: ".85rem", color: "#94a3b8" }}>
           <div style={{ color: "#64748b", marginBottom: ".5rem" }}># Esempio: lista vini</div>
