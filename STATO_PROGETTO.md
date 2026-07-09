@@ -7,20 +7,16 @@
 
 ---
 
-## ⚠️ ALLARME CRITICO (scoperto 9 luglio 2026) — LOGIN ROTTO IN PRODUZIONE
-Il progetto Supabase `xghuyfgftvrhnmuezbbz.supabase.co` **NON RISOLVE PIÙ nel DNS**
-(NXDOMAIN verificato con Google DNS 8.8.8.8 e Cloudflare 1.1.1.1). Il bundle live
-su Vercel punta a quell'URL → **signup, login email+password, Google OAuth e
-password reset sono TUTTI rotti sul sito live**. Nessun utente può accedere.
-Non è fixabile da frontend/.
-AZIONE MANOEL (urgente, ~15 min):
-1. Aprire https://supabase.com/dashboard → verificare il progetto: se è in PAUSA
-   (free tier inattivo) → "Restore project"; se è stato cancellato → crearne uno
-   nuovo e ricreare la tabella `users` (id uuid PK, email text, account_type text).
-2. Se l'URL del progetto è cambiato: aggiornare `VITE_SUPABASE_URL` e
-   `VITE_SUPABASE_ANON_KEY` nelle Environment Variables di Vercel → redeploy.
-3. Supabase → Authentication → URL Configuration: verificare Site URL/Redirect.
-L'UI di login mostra correttamente l'errore ("Failed to fetch") ma resta inutilizzabile.
+## ✅ RISOLTO (10 luglio 2026) — ex allarme critico: login rotto in produzione
+Il 9 luglio il progetto Supabase `xghuyfgftvrhnmuezbbz.supabase.co` era NXDOMAIN
+(progetto in pausa/irraggiungibile) → login/signup/OAuth/reset tutti rotti sul
+sito live. Manoel ha ripristinato il progetto il 10 luglio.
+VERIFICATO: il dominio risolve di nuovo (Cloudflare) e /auth/v1/health risponde
+(401 senza apikey = server attivo). Stesso project ref → nessuna env da cambiare
+su Vercel. Manoel conferma login di produzione funzionante.
+LEZIONE: i progetti Supabase free-tier vanno in pausa dopo ~7 giorni di
+inattività. Finché non si passa a un piano a pagamento, fare login sul sito
+almeno una volta a settimana o attivare un ping periodico.
 
 ---
 
@@ -399,7 +395,8 @@ erano già fixate nei commit di questa sessione):
     backend giù); loadData() dashboard B2C su errore mostra €0 in silenzio.
 
 ## 5. APERTO / DA FARE (in ordine di priorità)
-- [ ] **[CRITICO — INFRA]** Ripristinare progetto Supabase (vedi ALLARME in cima).
+- [x] ~~[CRITICO — INFRA] Ripristinare progetto Supabase~~ → FATTO 10 luglio,
+      login live confermato da Manoel (vedi nota RISOLTO in cima).
 - [ ] **[VERIFICA MANUALE RICHIESTA]** Mobile su iPhone reale (logged-in) dopo il
       deploy del fix header: niente più contenuto schiacciato a sinistra.
       Lo stato resta "in attesa di verifica su dispositivo reale da parte di Manoel".
