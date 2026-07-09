@@ -380,6 +380,24 @@ raccoglie pageerror/console su OGNI route.
 11. localStorage `vino_user` NON basta per entrare (serve sessione Supabase
     vera via onAuthStateChange) — ricordarselo nei test.
 
+Integrazioni dai report finali degli agenti di audit (arrivati a fine sessione;
+le loro 2 priorità strutturali — ErrorBoundary globale e .catch su AcademyModule —
+erano già fixate nei commit di questa sessione):
+12. PressKit.jsx:162 — i bottoni "download asset" sono stub: alert("Contact
+    press@..."). Collegare a file reali o rimuovere la griglia download.
+13. B2B.jsx:569 — finto video player sulla landing B2B: il play fa
+    alert("Video demo in arrivo"). Registrare la demo o togliere il player.
+14. SocialProof.jsx (StatsCounter) — componente completo (fetch /api/stats/public)
+    ma MAI importato: codice morto con numeri fallback hardcoded (50.234 vini).
+    Cablarlo o eliminarlo.
+15. faq.js promette "in arrivo" Excel XLSX, doc Swagger e Status page — ma /data
+    linka già Swagger come live: allineare la FAQ allo stato reale.
+16. Academy: traduzioni incomplete (fallback "Translation coming soon" in
+    AcademyLesson/AcademyModule — solo IT è completo).
+17. UX "vuoto vs errore": news/blog/market in App.jsx mostrano "No news/articles
+    available" anche quando il fetch è FALLITO (non distinguono lista vuota da
+    backend giù); loadData() dashboard B2C su errore mostra €0 in silenzio.
+
 ## 5. APERTO / DA FARE (in ordine di priorità)
 - [ ] **[CRITICO — INFRA]** Ripristinare progetto Supabase (vedi ALLARME in cima).
 - [ ] **[VERIFICA MANUALE RICHIESTA]** Mobile su iPhone reale (logged-in) dopo il
