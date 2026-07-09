@@ -30,7 +30,7 @@ export default function LangSelector() {
   const current = i18n.language?.slice(0, 2) || "en";
 
   return (
-    <div style={{ position: "relative" }}>
+    <div className="lang-selector" style={{ position: "relative" }}>
       <button
         onClick={() => setOpen(o => !o)}
         style={{

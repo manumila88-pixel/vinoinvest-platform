@@ -68,7 +68,7 @@ export default function CurrencySelector() {
   const current = CURRENCIES.find(c => c.code === currency) || CURRENCIES[0];
 
   return (
-    <div style={{ position: "relative" }}>
+    <div className="currency-selector" style={{ position: "relative" }}>
       <button
         onClick={() => setOpen(o => !o)}
         style={{

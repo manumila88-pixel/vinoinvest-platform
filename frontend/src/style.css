@@ -992,6 +992,10 @@ h1, h2, h3, .playfair {
   margin-top: 22px;
 }
 
+/* Grid items default to min-width:auto and refuse to shrink below content width;
+   without this the trending list forces ~492px and gets clipped on mobile */
+.dashboard-cols > * { min-width: 0; }
+
 @media (max-width: 1200px) {
   .dashboard-cols { grid-template-columns: 1fr; }
 }
@@ -1000,6 +1004,10 @@ h1, h2, h3, .playfair {
 @media (max-width: 520px) {
   .landing-cta-btns { flex-direction: column !important; align-items: stretch !important; padding: 0 20px !important; gap: 10px !important; }
   .landing-cta-btns button { width: 100% !important; justify-content: center; text-align: center; }
+
+  /* Sotto 520px valuta+lingua non entrano nell'header senza espandere il
+     layout viewport (bug iOS "metà schermo"); i default EUR/it restano attivi */
+  .currency-selector, .lang-selector { display: none; }
 }
 
 /* ── Dashboard collapse toggle button ──────────────── */
@@ -1139,11 +1147,21 @@ h1, h2, h3, .playfair {
 }
 
 @media (max-width: 768px) {
-  /* Header */
-  .header { padding: 0 16px; }
-  .logo { font-size: 20px; }
+  /* Header — must never exceed the device width: once it does, iOS expands
+     the layout viewport ("content squeezed left, void right") and every
+     max-width media query stops matching. Fluid padding/gap/logo keep the
+     row within 360px. NOTE: this block is last in the file and overrides
+     the 480px/375px blocks above — header rules live HERE. */
+  .header { padding: 0 clamp(4px, 1.8vw, 16px); }
+  .logo { font-size: clamp(15px, 4.5vw, 20px); white-space: nowrap; }
   .badge { display: none; }
   .hamburger { display: flex; }
+
+  /* Header quick-links duplicano sidebar/command palette: nasconderli evita che
+     la fila di bottoni (~646px) allarghi il layout viewport su iOS — era la causa
+     del contenuto schiacciato a sinistra con vuoto a destra */
+  .header-quicklink, .header-email { display: none !important; } /* !important: alcuni bottoni hanno display flex inline */
+  .header-actions { min-width: 0; flex-shrink: 1; gap: clamp(3px, 1vw, 8px); }
 
   /* Sidebar: hidden off-screen, slides in on .open */
   .sidebar {

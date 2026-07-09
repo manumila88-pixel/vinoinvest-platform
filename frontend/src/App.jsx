@@ -1022,7 +1022,7 @@ function App() {
   useEffect(() => {
     const current = notifications.filter(n => !n.read).length;
     if (current > prevUnreadRef.current && prevUnreadRef.current !== 0) {
-      if (Notification.permission === "granted") {
+      if ("Notification" in window && Notification.permission === "granted") {
         new Notification("VinoInvest", { body: `${current - prevUnreadRef.current} new price alert${current - prevUnreadRef.current > 1 ? "s" : ""}`, icon: "/favicon.ico" });
       }
     }
@@ -1257,7 +1257,7 @@ function App() {
             <div className="logo">🍷 Vino<span>Invest</span></div>
           )}
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div className="header-actions" style={{ display: "flex", alignItems: "center", gap: 10 }}>
           {viewMode === "b2b" ? (
             <div className="badge" style={{ background: "rgba(96,165,250,0.1)", borderColor: "rgba(96,165,250,0.3)", color: "#60a5fa" }}>professional</div>
           ) : viewMode === "cantina" ? (
@@ -1273,6 +1273,7 @@ function App() {
             >{viewMode === "b2c" ? "⇄ B2B" : viewMode === "b2b" ? "⇄ Cantina" : "↩ B2C"}</button>
           )}
           <button
+            className="header-quicklink"
             onClick={() => { resetOnboarding(); setShowOnboarding(true); }}
             title="Riapri guida" aria-label="Riapri guida introduttiva"
             style={{ padding: "5px 10px", border: "1px solid rgba(201,162,39,0.25)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "var(--vi-font-sans)", transition: `all var(--vi-dur) var(--vi-ease)` }}
@@ -1280,6 +1281,7 @@ function App() {
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.25)"; }}
           >📖 Guida</button>
           <button
+            className="header-quicklink"
             onClick={() => { resetTour(); setShowTour(true); }}
             title="Fai il tour guidato" aria-label="Inizia tour guidato della piattaforma"
             style={{ padding: "5px 10px", border: "1px solid rgba(30,58,95,0.5)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "var(--vi-font-sans)", transition: `all var(--vi-dur) var(--vi-ease)` }}
@@ -1287,6 +1289,7 @@ function App() {
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(30,58,95,0.5)"; }}
           >🗺 Tour</button>
           <button
+            className="header-quicklink"
             onClick={() => setShowCalculator(true)}
             title="Investment Calculator" aria-label="Apri calcolatore investimento"
             style={{ padding: "5px 10px", border: "1px solid rgba(96,165,250,0.25)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "var(--vi-font-sans)" }}
@@ -1294,6 +1297,7 @@ function App() {
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.25)"; }}
           >🧮 {t('nav.calculator')}</button>
           <button
+            className="header-quicklink"
             onClick={() => navigate("/academy")}
             title="Wine Investment Academy" aria-label="Vai all'Academy vino"
             style={{ padding: "5px 10px", border: "1px solid rgba(74,222,128,0.25)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "var(--vi-font-sans)" }}
@@ -1301,17 +1305,18 @@ function App() {
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(74,222,128,0.25)"; }}
           >🎓 {t('nav.academy')}</button>
           <button
+            className="header-quicklink"
             onClick={() => navigate("/market-index")}
             title="VinoInvest Index" aria-label="Vai al VinoInvest Market Index"
             style={{ padding: "5px 10px", border: "1px solid rgba(201,162,39,0.25)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#3a5a7a", fontSize: 11, cursor: "pointer", fontFamily: "var(--vi-font-sans)" }}
             onMouseEnter={e => { e.currentTarget.style.color = "var(--vi-accent)"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.5)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "#3a5a7a"; e.currentTarget.style.borderColor = "rgba(201,162,39,0.25)"; }}
           >📊 {t('nav.index')}</button>
-          <button onClick={() => navigate("/scan")} title="Scan wine label" aria-label="Scansiona etichetta vino" style={{ padding: "6px 10px", border: "1px solid var(--vi-border)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#4a6a8a", fontSize: 11, cursor: "pointer", display: "flex", alignItems: "center", fontWeight: 600, fontFamily: "var(--vi-font-sans)" }}>Scan</button>
+          <button className="header-quicklink" onClick={() => navigate("/scan")} title="Scan wine label" aria-label="Scansiona etichetta vino" style={{ padding: "6px 10px", border: "1px solid var(--vi-border)", borderRadius: "var(--vi-radius-sm)", background: "transparent", color: "#4a6a8a", fontSize: 11, cursor: "pointer", display: "flex", alignItems: "center", fontWeight: 600, fontFamily: "var(--vi-font-sans)" }}>Scan</button>
           <CurrencySelector />
           <ThemeToggle />
           <LangSelector />
-          {userEmail && <span style={{ fontSize: 12, color: "#3a5a7a" }}>{userEmail}</span>}
+          {userEmail && <span className="header-email" style={{ fontSize: 12, color: "#3a5a7a" }}>{userEmail}</span>}
           {isAdmin && (
             <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
               <button onClick={() => navigate("/admin")} style={{ fontSize: 10, color: "var(--vi-accent)", border: "1px solid rgba(201,162,39,0.5)", borderRadius: 4, padding: "2px 8px", textTransform: "uppercase", fontWeight: 800, letterSpacing: "0.08em", background: "rgba(201,162,39,0.08)", cursor: "pointer", fontFamily: "var(--vi-font-sans)" }}>
@@ -2490,7 +2495,7 @@ function App() {
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, flexWrap: "wrap", gap: 10 }}>
                 <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 26, fontWeight: 800, margin: 0 }}>{t('notifications.title')}</h2>
                 <div style={{ display: "flex", gap: 8 }}>
-                  {Notification.permission !== "granted" && "Notification" in window && (
+                  {"Notification" in window && Notification.permission !== "granted" && (
                     <button
                       onClick={async () => {
                         const perm = await Notification.requestPermission();
@@ -2768,6 +2773,7 @@ createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <ToastProvider>
       <CurrencyProvider>
+        <ErrorBoundary>
         <Suspense fallback={<div style={{ minHeight: "100vh", background: "#0b1220", display: "flex", alignItems: "center", justifyContent: "center", color: "#C9A227", fontSize: 14 }}>Loading...</div>}>
         <Routes>
           <Route path="/landing" element={<LandingRoute />} />
@@ -2830,6 +2836,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="*" element={<App />} />
         </Routes>
         </Suspense>
+        </ErrorBoundary>
       </CurrencyProvider>
     </ToastProvider>
   </BrowserRouter>
