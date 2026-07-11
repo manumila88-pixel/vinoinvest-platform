@@ -799,6 +799,85 @@ export const BLOG_MANIFEST = [
     "audience": "both"
   },
   {
+    "slug": "alternative-a-wine-searcher-investitori",
+    "title": "Alternative a Wine-Searcher nel 2026: la Guida per chi Investe in Vino",
+    "meta_description": "Wine-Searcher è stata acquisita a maggio 2026. Guida fattuale alle alternative per investitori in vino: aste, exchange, intelligence. Confronto per esigenza.",
+    "category": "Piattaforme",
+    "reading_time": "6 min",
+    "keywords": [
+      "alternative a wine-searcher",
+      "wine-searcher alternativa",
+      "piattaforme investimento vino"
+    ],
+    "audience": "both"
+  },
+  {
+    "slug": "wine-searcher-glx-acquisition-what-it-means",
+    "title": "The Wine-Searcher Acquisition (May 2026): What It Means for European Collectors",
+    "meta_description": "Wine-Searcher was sold to GLX, the Goudet family vehicle, in May 2026. Verified facts about the deal and what European wine collectors should watch next.",
+    "category": "Piattaforme",
+    "reading_time": "5 min",
+    "keywords": [
+      "wine-searcher acquisition",
+      "wine-searcher glx",
+      "wine-searcher goudet",
+      "wine-searcher sold"
+    ],
+    "audience": "both"
+  },
+  {
+    "slug": "wine-searcher-alternatives-for-wine-investors",
+    "title": "Wine-Searcher Alternatives in 2026: A Guide for Wine Investors",
+    "meta_description": "Wine-Searcher was acquired in May 2026. A factual guide to alternatives for wine investors: auctions, trading platforms, and investment intelligence tools.",
+    "category": "Piattaforme",
+    "reading_time": "6 min",
+    "keywords": [
+      "wine-searcher alternatives",
+      "wine searcher alternative",
+      "wine investment platforms"
+    ],
+    "audience": "both"
+  },
+  {
+    "slug": "wine-searcher-acquisizione-glx-cosa-cambia",
+    "title": "Wine-Searcher Venduta a GLX: Cosa Cambia per Collezionisti e Investitori Europei",
+    "meta_description": "A maggio 2026 Wine-Searcher è passata a GLX (famiglia Goudet). Fatti verificati sull'acquisizione e cosa osservare ora, per collezionisti e investitori in Europa.",
+    "category": "Piattaforme",
+    "reading_time": "5 min",
+    "keywords": [
+      "wine-searcher acquisizione",
+      "wine-searcher glx",
+      "wine-searcher goudet"
+    ],
+    "audience": "both"
+  },
+  {
+    "slug": "wine-searcher-vs-piattaforme-investimento-vino",
+    "title": "Wine-Searcher vs Piattaforme di Investimento in Vino: Cosa Serve Davvero a Chi Investe",
+    "meta_description": "Wine-Searcher confronta prezzi retail; le piattaforme di investimento analizzano il vino come asset. Confronto fattuale: a cosa serve l'uno e a cosa le altre.",
+    "category": "Piattaforme",
+    "reading_time": "6 min",
+    "keywords": [
+      "wine-searcher vs",
+      "piattaforme investimento vino",
+      "investire in vino strumenti"
+    ],
+    "audience": "both"
+  },
+  {
+    "slug": "wine-searcher-vs-wine-investment-platforms",
+    "title": "Wine-Searcher vs Wine Investment Platforms: What Investors Actually Need",
+    "meta_description": "Wine-Searcher compares retail prices; investment platforms analyse wine as an asset. A factual comparison of what each tool does — and doesn't do.",
+    "category": "Piattaforme",
+    "reading_time": "6 min",
+    "keywords": [
+      "wine-searcher vs",
+      "wine investment platforms",
+      "wine investing tools"
+    ],
+    "audience": "both"
+  },
+  {
     "slug": "collezionismo-vs-investimento-vino",
     "title": "Collezionismo vs Investimento nel Vino: Differenze che Cambiano Tutto",
     "meta_description": "Scopri le differenze tra collezionismo vino e investimento. Leggi come l'appassionato vs investitore vino perseguono obiettivi diversi.",
