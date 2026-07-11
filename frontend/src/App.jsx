@@ -9,6 +9,7 @@ import { HelmetProvider, Helmet } from "react-helmet-async";
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ComposedChart } from "recharts";
 import PriceHistoryChart from "./components/PriceHistoryChart";
 import ErrorBoundary from "./components/ErrorBoundary";
+import WatchlistPanel from "./components/WatchlistPanel";
 import { init as initErrorReporting } from "./lib/errorReporting";
 import { ToastProvider, useToast } from "./components/Toast";
 import { fetchWithRetry } from "./lib/fetchWithRetry";
@@ -2133,6 +2134,13 @@ function App() {
           {tab === "myportfolio" && (
             <ErrorBoundary>
             <section className="ordersPanel">
+              <WatchlistPanel
+                watchlist={watchlist}
+                onToggleWatchlist={toggleWatchlist}
+                onSelectWine={setModalWine}
+                onGoMarket={() => setTab("market")}
+                navigate={navigate}
+              />
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 22, flexWrap: "wrap", gap: 10 }}>
                 <h2 style={{ margin: 0 }}>{t('portfolio.title')}</h2>
                 {holdings.length > 0 && (

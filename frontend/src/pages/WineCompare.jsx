@@ -1,4 +1,5 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import { ComposedChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Cell } from "recharts";
 
 const API = import.meta.env.VITE_BACKEND_URL || "https://vinoinvest-backend-2.onrender.com";
@@ -37,6 +38,42 @@ export default function WineCompare() {
   const [results, setResults] = useState([]);
   const [searching, setSearching] = useState(false);
   const [searchTimer, setSearchTimer] = useState(null);
+  const [prefilling, setPrefilling] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const prefilledRef = useRef(false);
+
+  // Deep link: /compare?ids=a,b,c preloads the comparison (shareable URL)
+  useEffect(() => {
+    if (prefilledRef.current) return;
+    prefilledRef.current = true;
+    const idsParam = (searchParams.get("ids") || "").trim();
+    if (!idsParam) return;
+    const ids = idsParam.split(",").map(s => s.trim()).filter(Boolean).slice(0, MAX_WINES);
+    if (ids.length === 0) return;
+    setPrefilling(true);
+    fetch(`${API}/api/wines?ids=${encodeURIComponent(ids.join(","))}`)
+      .then(r => (r.ok ? r.json() : { results: [] }))
+      .then(d => setWines((d.results || []).slice(0, MAX_WINES)))
+      .catch(() => {})
+      .finally(() => setPrefilling(false));
+  }, [searchParams]);
+
+  // Keep the URL in sync so the current comparison is always shareable
+  useEffect(() => {
+    if (!prefilledRef.current || prefilling) return;
+    const ids = wines.map(w => w.id).join(",");
+    const current = searchParams.get("ids") || "";
+    if (ids === current) return;
+    setSearchParams(ids ? { ids } : {}, { replace: true });
+  }, [wines, prefilling]);
+
+  function copyShareLink() {
+    const url = window.location.href;
+    (navigator.clipboard?.writeText(url) || Promise.reject())
+      .then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); })
+      .catch(() => { window.prompt("Copia il link:", url); });
+  }
 
   const search = useCallback((q) => {
     if (searchTimer) clearTimeout(searchTimer);
@@ -138,17 +175,37 @@ export default function WineCompare() {
           </div>
         )}
 
-        {wines.length === 0 && (
+        {prefilling && (
+          <div style={{ textAlign: "center", padding: "3rem 1rem", color: "var(--vi-text-dim)" }}>
+            Caricamento confronto…
+          </div>
+        )}
+
+        {!prefilling && wines.length === 0 && (
           <div style={{ textAlign: "center", padding: "4rem 1rem", color: "var(--vi-text-dim)" }}>
             <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🍷</div>
             <p>Search for wines above to start comparing.</p>
           </div>
         )}
 
+        {wines.length >= 2 && (
+          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
+            <button
+              onClick={copyShareLink}
+              style={{
+                background: copied ? "rgba(74,222,128,0.12)" : "transparent",
+                border: `1px solid ${copied ? "rgba(74,222,128,0.5)" : "var(--vi-border)"}`,
+                color: copied ? "#4ade80" : "var(--vi-text-dim)",
+                borderRadius: 8, padding: ".45rem 1rem", cursor: "pointer", fontSize: ".8rem", fontFamily: "inherit",
+              }}
+            >{copied ? "✓ Link copiato" : "🔗 Copia link al confronto"}</button>
+          </div>
+        )}
+
         {wines.length > 0 && (
           <>
             {/* Wine header cards */}
-            <div style={{ display: "grid", gridTemplateColumns: `repeat(${wines.length}, 1fr)`, gap: "1rem", marginBottom: "1.5rem" }}>
+            <div style={{ display: "grid", gridTemplateColumns: `repeat(auto-fit, minmax(min(160px, 100%), 1fr))`, gap: "1rem", marginBottom: "1.5rem" }}>
               {wines.map((w, i) => (
                 <div key={w.id} style={{
                   background: "var(--vi-bg-elev)", border: `1px solid ${PALETTE[i]}40`,
@@ -179,7 +236,7 @@ export default function WineCompare() {
             </div>
 
             {/* Metrics table */}
-            <div style={{ background: "var(--vi-bg-elev)", border: "1px solid var(--vi-border)", borderRadius: "var(--vi-radius)", overflow: "hidden", marginBottom: "1.5rem" }}>
+            <div style={{ background: "var(--vi-bg-elev)", border: "1px solid var(--vi-border)", borderRadius: "var(--vi-radius)", overflowX: "auto", marginBottom: "1.5rem" }}>
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
                   <tr style={{ borderBottom: "1px solid var(--vi-border)" }}>
@@ -195,6 +252,7 @@ export default function WineCompare() {
                   {[
                     { label: "AI Score", fn: w => { const s = normalizeScore(w); return s ? `${s}/100` : "–"; }, highlight: true },
                     { label: "Price",    fn: w => { const p = normalizePrice(w); return p ? `€${p.toLocaleString()}` : "–"; } },
+                    { label: "Critic Score", fn: w => { const c = Number(w.criticScore || w.critic_score || 0); return c ? `${c}/100` : "–"; } },
                     { label: "Vintage",  fn: w => w.vintage || "–" },
                     { label: "Region",   fn: w => w.region || "–" },
                     { label: "Type",     fn: w => w.type || "–" },
@@ -224,8 +282,8 @@ export default function WineCompare() {
 
             {/* Score bar chart */}
             {wines.length > 1 && (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1.5rem" }}>
-                <div style={{ background: "var(--vi-bg-elev)", border: "1px solid var(--vi-border)", borderRadius: "var(--vi-radius)", padding: "1rem" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "1rem", marginBottom: "1.5rem" }}>
+                <div style={{ background: "var(--vi-bg-elev)", border: "1px solid var(--vi-border)", borderRadius: "var(--vi-radius)", padding: "1rem", overflowX: "auto" }}>
                   <h3 style={{ fontSize: ".85rem", fontWeight: 600, color: "var(--vi-text-dim)", marginBottom: "1rem", textTransform: "uppercase", letterSpacing: ".05em" }}>AI Score Comparison</h3>
                   <ComposedChart width={340} height={180} data={wines.map((w, i) => ({ name: (w.name || "Wine").split(" ")[0], score: normalizeScore(w), fill: PALETTE[i] }))}>
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--vi-border)" vertical={false} />
@@ -240,7 +298,7 @@ export default function WineCompare() {
                   </ComposedChart>
                 </div>
 
-                <div style={{ background: "var(--vi-bg-elev)", border: "1px solid var(--vi-border)", borderRadius: "var(--vi-radius)", padding: "1rem" }}>
+                <div style={{ background: "var(--vi-bg-elev)", border: "1px solid var(--vi-border)", borderRadius: "var(--vi-radius)", padding: "1rem", overflowX: "auto" }}>
                   <h3 style={{ fontSize: ".85rem", fontWeight: 600, color: "var(--vi-text-dim)", marginBottom: "1rem", textTransform: "uppercase", letterSpacing: ".05em" }}>Price Comparison (€)</h3>
                   <ComposedChart width={340} height={180} data={wines.map((w, i) => ({ name: (w.name || "Wine").split(" ")[0], price: normalizePrice(w), fill: PALETTE[i] }))}>
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--vi-border)" vertical={false} />
@@ -258,7 +316,7 @@ export default function WineCompare() {
             )}
 
             {/* Wine-Searcher links */}
-            <div style={{ display: "grid", gridTemplateColumns: `repeat(${wines.length}, 1fr)`, gap: "1rem" }}>
+            <div style={{ display: "grid", gridTemplateColumns: `repeat(auto-fit, minmax(min(200px, 100%), 1fr))`, gap: "1rem" }}>
               {wines.map((w, i) => (
                 <a
                   key={w.id}

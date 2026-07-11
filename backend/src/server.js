@@ -974,6 +974,15 @@ app.get("/api/market/wines", cacheFor(600), (req, res) => {
 });
 
 app.get("/api/wines", cacheFor(300), (req, res) => {
+  // Direct lookup by ids (comma-separated) — used by watchlist view and /compare deep links
+  const idsParam = (req.query.ids || "").toString().trim();
+  if (idsParam) {
+    const ids = idsParam.split(",").map(s => s.trim()).filter(Boolean).slice(0, 24);
+    const byId = new Map(allWines.map(w => [String(w.id), w]));
+    const results = ids.map(id => byId.get(id)).filter(Boolean);
+    return res.json({ results, total: results.length, page: 1, totalPages: 1, hasMore: false });
+  }
+
   const search = (req.query.search || "").toString().trim();
   const page = Math.max(1, parseInt(req.query.page) || 1);
   const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 20));
