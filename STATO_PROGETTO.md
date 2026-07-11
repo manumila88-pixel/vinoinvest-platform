@@ -2,8 +2,52 @@
 
 > Questo file è il CERVELLO del progetto. Non si perde niente perché è scritto qui.
 > REGOLA: ogni agente lo LEGGE all'inizio e lo AGGIORNA alla fine di ogni sessione.
-> Ultimo aggiornamento: 9 luglio 2026 (audit backend pagamenti + sessione frontend
-> mobile-perfection/audit fondamenta — vedi sezione "Sessione 9 luglio FRONTEND")
+> Ultimo aggiornamento: 11 luglio 2026 (sessione competitiva Wine-Searcher:
+> analisi + marketplace + quick wins + SEO — branch feature/quick-wins)
+
+---
+
+### Sessione 11 luglio 2026 (COMPETITIVA — risposta all'acquisizione Wine-Searcher)
+Contesto: W-S acquisita ~11 maggio 2026 da GLX U.S. Inc. (Platin Sàrl / famiglia
+Olivier Goudet); strategia dichiarata: focus USA + più AI. Branch: feature/quick-wins.
+
+- [x] **ANALISI_COMPETITIVA.md creata** (root del repo): Parte 1 feature-per-feature
+      W-S vs VinoInvest con verdetti fare/non-fare/dopo (fonti: Harpers, Vino Joy,
+      Drinks Digest; dettagli W-S da snippet ufficiali marcati DA RIVERIFICARE);
+      Parte 2 fattibilità marketplace su 3 livelli con partner verificati
+      (affiliazioni ESISTENTI: Vino.com su Awin 6%, XtraWine 8-12%, Tannico su
+      Webgains, Catawiki CPL; per il broker: BordeauxIndex LiveTrade con API,
+      Aste Bolaffi, iDealwine 13%+IVA seller) e mappa normativa (PSD2/mediazione/
+      accise/MVV/aste/DAC7 — NON consulenza legale, tutto con fonti o
+      "da verificare"). Raccomandazione: Livello A subito (1-2 mesi) → B (3-5 mesi)
+      → C solo dopo, perimetro Italia/B2B. Esclusi: Vint (in liquidazione 6/2026),
+      Cavex (segnalazioni gravi).
+- [x] **Quick wins CODICE** (commit ca65f11): watchlist personale VERA (il tab
+      "Watchlist & Portfolio" mostrava solo il portfolio! ora WatchlistPanel con
+      prezzi/AI score/rischio, rimozione, stati loading/error/empty, selezione
+      fino a 4 vini → confronto) + /compare con deep-link condivisibili
+      (?ids=a,b,c), copy-link, riga Critic Score, fix mobile dello stato caricato
+      (prima irraggiungibile su mobile). Backend: /api/wines?ids=… (lookup diretto).
+      NIENTE alert prezzo nuovi: deliberato, finché non ci sono prezzi reali.
+      VERIFICATO E2E con backend locale + prod: deep-link, sync URL, select→compare,
+      rimozione stella; 0 errori; 0 overflow a 360/375/390/414/1280px.
+- [x] **SEO intercettazione: 6 articoli pubblicati** (3 IT + 3 EN, categoria
+      Piattaforme): alternative-a-wine-searcher-investitori,
+      wine-searcher-acquisizione-glx-cosa-cambia,
+      wine-searcher-vs-piattaforme-investimento-vino + le 3 versioni EN.
+      Tono fattuale, zero denigrazione, SOLO fatti confermati da fonte aperta
+      (acquirente, prezzo non divulgato, citazioni strategia, numeri dichiarati,
+      tema neutralità sollevato dalla stampa — attribuito, non affermato).
+      Pipeline: md in content/blog → gen-blog-data.mjs (manifest+public+sitemap)
+      → entry in BlogIndex.jsx → NUOVO script backend/src/scripts/
+      seedBlogFromContent.js (md→DB, riusabile) → **GIÀ LIVE su
+      /api/blog/:slug in produzione** (verificato con curl) e render SPA
+      verificato in locale (indice + articolo, 0 overflow mobile).
+- [ ] DA FARE dopo merge: gli articoli appaiono nell'indice SPA solo col deploy
+      del nuovo BlogIndex.jsx (i contenuti sono già nel DB live).
+- [ ] Decisione per Manoel (da ANALISI_COMPETITIVA): partire col Livello A?
+      Primi passi concreti: account Awin (Vino.com) + Webgains (Tannico),
+      quote API Wine-Searcher e Liv-ex Data-only.
 
 ---
 
