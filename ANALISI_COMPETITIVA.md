@@ -53,6 +53,8 @@ analisi: focus USA, più AI, probabile monetizzazione aggressiva stile private e
 
 ## 1.1 Modello di business W-S (per capire dove NON competere)
 - Listing merchant base gratuito; visibilità ai free solo per "sponsor" a pagamento;
+  Sponsored list flat ~$360–440/mese per retailer con 750+ prodotti (benchmark
+  BevSites 2014, DATATO: bevsites.com/single-post/2014/09/19 — DA RIVERIFICARE);
   Sponsored Lead ~$0,75/click; marketplace fee 10% (5% marketing + 5% payment/frode/CS);
   banner a CPM. [snippet /trade — DA RIVERIFICARE]
 - Pro riportato a $10,99/mese (annuale ~€82,99): tutti i prezzi (i free vedono solo
